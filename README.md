@@ -1,2 +1,1 @@
-# CONTESt
-Sistema de Controle de Eventos de Submissão
+![alt logotipo](/arquivos/imagens/contest_logotipo.png)
