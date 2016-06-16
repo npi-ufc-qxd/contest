@@ -6,10 +6,10 @@
 	<groupId>ufc.quixada.npi</groupId>
 	<artifactId>contest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>contest</name>
-	<description>Sistem de controle de eventos de submiss�o</description>
+	<description>Sistema de controle de eventos de submissão</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -31,15 +31,24 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
-		
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -48,6 +57,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-
 </project>
