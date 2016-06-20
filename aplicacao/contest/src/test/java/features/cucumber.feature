@@ -1,7 +1,8 @@
 # language: pt
-	Funcionalidade:
+	Funcionalidade: teste
 
-	  Cenario: 
-	    Dado 
-	    Quando 
-	    Entao 
+	  Cenário: teste
+	    Dado teste um
+	    Quando teste dois
+	    E teste tres
+	    Então teste quatro
