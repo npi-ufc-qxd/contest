@@ -8,23 +8,23 @@ import cucumber.api.java.pt.Quando;
 public class CucumberSteps {
 
 	@Dado("^teste um$")
-    public void teste_um() throws Throwable {
-		
+    public void testeUm() throws Throwable {
+	// caso de teste
     }
 	
 	@Quando("^teste dois$")
-    public void teste_dois() throws Throwable {
-		
+    public void testeDois() throws Throwable {
+	// caso de teste
     }
 	
 	@E("^teste tres$")
-    public void teste_tres() throws Throwable {
-		
+    public void testeTres() throws Throwable {
+	// caso de teste	
     }
 	
 	@Então("^teste quatro$")
-    public void teste_quatro() throws Throwable {
-		
+    public void testeQuatro() throws Throwable {
+	// caso de teste	
     }
 	
 }
