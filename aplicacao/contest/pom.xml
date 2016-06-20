@@ -29,7 +29,17 @@
 		<url.db>jdbc:postgresql://localhost:5432/contest</url.db>
 		<user.db>postgres</user.db>
 		<password.db>postgres</password.db>
+
+		<!-- LDAP -->
+		<npi.ldap.version>0.1.2</npi.ldap.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>npi-mvn-repo</id>
+			<url>http://npi-ufc-qxd.github.io/npi-mvn-repo/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -75,6 +85,13 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<!-- LDAP -->
+		<dependency>
+			<groupId>br.ufc.quixada.npi</groupId>
+			<artifactId>npi-ldap</artifactId>
+			<version>${npi.ldap.version}</version>
 		</dependency>
 	</dependencies>
 

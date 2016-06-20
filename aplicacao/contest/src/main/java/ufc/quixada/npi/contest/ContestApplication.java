@@ -6,7 +6,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class ContestApplication extends SpringBootServletInitializer{
+public class ContestApplication extends SpringBootServletInitializer {
 	private static Class<ContestApplication> applicationClass = ContestApplication.class;
 
 	public static void main(String[] args) {
