@@ -1,8 +1,8 @@
 # language: pt
-	Funcionalidade: teste
+	Funcionalidade: DEfinição da funcionalidade
 
-	  Cenário: teste
-	    Dado teste um
-	    Quando teste dois
-	    E teste tres
-	    Então teste quatro
+	  Cenário: Descrição do cenário
+	    Dado Escreva aqui a definição de Dado
+	    Quando Escreva aqui a definição de Quando
+	    E Escreva aqui a definição de E
+	    Então Escreva aqui a definição de Então
