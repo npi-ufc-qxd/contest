@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -12,9 +13,11 @@ import ufc.quixada.npi.contest.ContestApplication;
 @SpringApplicationConfiguration(classes = ContestApplication.class)
 @WebAppConfiguration
 public class ContestApplicationTests {
-
+	private boolean bugfix = true;
+	
 	@Test
 	public void contextLoads() {
+		Assert.assertTrue(bugfix); // Arquivo criado automaticamente
 	}
 
 }
