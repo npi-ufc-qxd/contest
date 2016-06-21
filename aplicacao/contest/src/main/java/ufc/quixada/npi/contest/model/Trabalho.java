@@ -32,7 +32,7 @@ public class Trabalho {
 	@ManyToOne
 	private Trilha trilha;
 
-	@OneToMany(mappedBy = "participacao_trabalho", targetEntity = ParticipacaoTrabalho.class)
+	@OneToMany(mappedBy = "trabalho")
 	private List<ParticipacaoTrabalho> participacoes;
 
 	public Long getId() {

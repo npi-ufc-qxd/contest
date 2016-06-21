@@ -33,10 +33,10 @@ public class Pessoa {
 	@NotEmpty
 	private String email;
 
-	@OneToMany(mappedBy = "participacao_evento", targetEntity = ParticipacaoEvento.class)
+	@OneToMany(mappedBy = "pessoa")
 	private List<ParticipacaoEvento> participacoesEvento;
 
-	@OneToMany(mappedBy = "participacao_trabalho", targetEntity = ParticipacaoTrabalho.class)
+	@OneToMany(mappedBy = "pessoa")
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 
 	public Long getId() {

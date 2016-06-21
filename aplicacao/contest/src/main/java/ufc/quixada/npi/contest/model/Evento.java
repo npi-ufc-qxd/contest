@@ -49,7 +49,7 @@ public class Evento {
 	@Column(name = "prazo_revisao")
 	private Date prazoDeRevisao;
 
-	@OneToMany(mappedBy = "participacao_evento")
+	@OneToMany(mappedBy = "evento")
 	private List<ParticipacaoEvento> participacoes;
 
 	public Integer getId() {

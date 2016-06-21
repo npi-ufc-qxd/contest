@@ -21,7 +21,7 @@ public class Revisao {
 	@Column(name = "conteudo")
 	private String conteudo;
 
-	@OneToOne(mappedBy = "revisao")
+	@OneToOne
 	private Pessoa revisor;
 
 	@ManyToOne
