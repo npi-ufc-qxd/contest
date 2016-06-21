@@ -48,6 +48,22 @@ public class ParticipacaoEvento {
 		this.papel = papel;
 	}
 
+	public Pessoa getPessoa() {
+		return pessoa;
+	}
+
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
+
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -75,6 +91,6 @@ public class ParticipacaoEvento {
 
 	@Override
 	public String toString() {
-		return "Participacao [id=" + id + ", papel=" + papel + "]";
+		return "ParticipacaoEvento [id=" + id + ", papel=" + papel + ", pessoa=" + pessoa + ", evento=" + evento + "]";
 	}
 }

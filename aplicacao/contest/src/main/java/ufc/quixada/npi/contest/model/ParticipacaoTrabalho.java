@@ -25,10 +25,10 @@ public class ParticipacaoTrabalho {
 	@Enumerated(EnumType.STRING)
 	@NotEmpty
 	private PapelEvento papel;
-	
+
 	@ManyToOne
 	private Pessoa pessoa;
-	
+
 	@ManyToOne
 	private Trabalho trabalho;
 
@@ -46,6 +46,22 @@ public class ParticipacaoTrabalho {
 
 	public void setPapel(PapelEvento papel) {
 		this.papel = papel;
+	}
+
+	public Pessoa getPessoa() {
+		return pessoa;
+	}
+
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
+
+	public Trabalho getTrabalho() {
+		return trabalho;
+	}
+
+	public void setTrabalho(Trabalho trabalho) {
+		this.trabalho = trabalho;
 	}
 
 	@Override
@@ -75,6 +91,7 @@ public class ParticipacaoTrabalho {
 
 	@Override
 	public String toString() {
-		return "Participacao [id=" + id + ", papel=" + papel + "]";
+		return "ParticipacaoTrabalho [id=" + id + ", papel=" + papel + ", pessoa=" + pessoa + ", trabalho=" + trabalho
+				+ "]";
 	}
 }
