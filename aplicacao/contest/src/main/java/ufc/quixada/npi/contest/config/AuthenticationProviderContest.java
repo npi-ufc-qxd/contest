@@ -59,4 +59,5 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	public boolean supports(Class<?> arg0) {
 		return true;
 	}
+
 }
