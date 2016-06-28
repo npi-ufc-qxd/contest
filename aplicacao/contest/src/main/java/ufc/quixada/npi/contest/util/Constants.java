@@ -14,4 +14,5 @@ public class Constants {
 
 	// Mensagens
 	public static final String LOGIN_INVALIDO = "Usuário e/ou senha inválidos";
+	public static final String LOGOUT_SUCESSO = "Sua sessão foi finalizada";
 }

@@ -2,9 +2,9 @@ package ufc.quixada.npi.contest.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.util.Constants;
 
@@ -21,10 +21,13 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
-	public String loginfailed(Model model) {
-		model.addAttribute("loginError", Constants.LOGIN_INVALIDO);
+	public String loginfailed(Authentication auth, RedirectAttributes redirectAttributes) {
+		if(auth != null && auth.isAuthenticated()) {
+			return "redirect:/";
+		}
 
-		return "login";
+		redirectAttributes.addFlashAttribute("loginError", Constants.LOGIN_INVALIDO);
+		return "redirect:/login";
 	}
 
 }
