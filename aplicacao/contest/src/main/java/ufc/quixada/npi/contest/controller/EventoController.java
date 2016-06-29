@@ -5,7 +5,9 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +24,7 @@ public class EventoController {
 
 	@Autowired
 	private PessoaService pessoaService;
-
+	
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
 
@@ -34,20 +36,28 @@ public class EventoController {
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
-	public String adicionarEvento(@Valid Evento evento, @RequestParam String organizador, BindingResult result,
+	public String adicionarEvento(@RequestParam String organizador, @Valid Evento evento, BindingResult result,
 			Model model) {
+		
 		if (result.hasErrors()) {
+			model.addAttribute("error", "Nome do Evento não pode ser vazio");
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
-
-		Pessoa pessoa = pessoaService.findPessoaPorId(Long.valueOf(organizador));
+			
+		Pessoa pessoa = null;
+		try{
+			pessoa = pessoaService.findPessoaPorId(Long.valueOf(organizador));
+		}catch(NumberFormatException e){
+			e.printStackTrace();
+		}
+		
 		if (pessoa != null) {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, PapelEvento.ORGANIZADOR);
 		} else {
 			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
-
+		
 		return "redirect:/evento";
 	}
 	
