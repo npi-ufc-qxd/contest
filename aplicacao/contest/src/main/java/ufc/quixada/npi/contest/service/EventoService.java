@@ -31,4 +31,8 @@ public class EventoService {
 		return eventoRepository.findOne(id);
 	}
 	
+	public Boolean existeEvento(int id){
+		return eventoRepository.exists(id);
+	}
+	
 }
