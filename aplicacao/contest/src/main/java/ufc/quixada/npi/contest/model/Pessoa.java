@@ -1,20 +1,28 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "pessoa")
-public class Pessoa {
+public class Pessoa implements UserDetails {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id")
@@ -29,6 +37,8 @@ public class Pessoa {
 	@NotEmpty
 	private String cpf;
 
+	private String password;
+
 	@Column(name = "email")
 	@NotEmpty
 	private String email;
@@ -38,6 +48,9 @@ public class Pessoa {
 
 	@OneToMany(mappedBy = "pessoa")
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private PapelLdap papelLdap;
 
 	public Long getId() {
 		return id;
@@ -87,6 +100,16 @@ public class Pessoa {
 		this.participacoesTrabalho = participacoesTrabalho;
 	}
 
+	public PapelLdap getPapelLdap() {
+		return papelLdap;
+	}
+
+	public void setPapelLdap(String papelLdap) {
+		PapelLdap papel = new PapelLdap();
+		papel.setNome(papelLdap);
+		this.papelLdap = papel;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -114,7 +137,47 @@ public class Pessoa {
 
 	@Override
 	public String toString() {
-		return "Pessoa [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", email=" + email + ", participacoesEvento="
-				+ participacoesEvento + ", participacoesTrabalho=" + participacoesTrabalho + "]";
+		return "Pessoa [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", password=" + password + ", email=" + email
+				+ ", participacoesEvento=" + participacoesEvento + ", participacoesTrabalho=" + participacoesTrabalho
+				+ ", papelLdap=" + papelLdap + "]";
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Arrays.asList(this.papelLdap);
+	}
+
+	@Override
+	public String getUsername() {
+		return this.cpf;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 }
