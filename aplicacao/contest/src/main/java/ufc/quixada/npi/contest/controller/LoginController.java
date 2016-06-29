@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ufc.quixada.npi.contest.util.Constants;
-
 @Controller
 public class LoginController {
 
@@ -26,7 +24,7 @@ public class LoginController {
 			return "redirect:/";
 		}
 
-		redirectAttributes.addFlashAttribute("loginError", Constants.LOGIN_INVALIDO);
+		redirectAttributes.addFlashAttribute("loginError", true);
 		return "redirect:/login";
 	}
 

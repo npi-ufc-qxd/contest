@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.config;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +15,6 @@ import br.ufc.quixada.npi.ldap.model.Usuario;
 import br.ufc.quixada.npi.ldap.service.UsuarioService;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.PessoaRepository;
-import ufc.quixada.npi.contest.util.Constants;
 
 @Component
 public class AuthenticationProviderContest implements AuthenticationProvider {
@@ -24,6 +24,9 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 
 	@Autowired
 	private UsuarioService usuarioService;
+
+	@Autowired
+	private MessageSource messages;
 
 	@Override
 	@Transactional
@@ -51,7 +54,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 
 			return new UsernamePasswordAuthenticationToken(pessoa, password, pessoa.getAuthorities());
 		} else {
-			throw new BadCredentialsException(Constants.LOGIN_INVALIDO);
+			throw new BadCredentialsException(messages.getMessage("LOGIN_INVALIDO", null, null));
 		}
 	}
 

@@ -12,7 +12,4 @@ public class Constants {
 	public static final String LDAP_OU = "ldap.ou";
 	public static final String BASE = LDAP_URL;
 
-	// Mensagens
-	public static final String LOGIN_INVALIDO = "Usuário e/ou senha inválidos";
-	public static final String LOGOUT_SUCESSO = "Sua sessão foi finalizada";
 }

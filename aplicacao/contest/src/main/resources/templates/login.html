@@ -36,11 +36,11 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div th:if="${loginError}" class="chip red darken-1">
-              <span class="white-text" th:text="${loginError}"></span>
+              <span class="white-text" th:text="#{LOGIN_INVALIDO}"></span>
               <i class="material-icons">close</i>
             </div>
-            <div th:if="${param.logout}" class="chip blue darken-1">
-              <span class="white-text" th:text="${param.logout}"></span>
+            <div th:if="${logoutSuccess}" class="chip blue darken-1">
+              <span class="white-text" th:text="#{LOGOUT_SUCESSO}"></span>
               <i class="material-icons">close</i>
             </div>
 
