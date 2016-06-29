@@ -1,11 +1,10 @@
 package ufc.quixada.npi.contest;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import org.mockito.InjectMocks;
@@ -16,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import cucumber.api.java.gl.E;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
@@ -56,16 +56,17 @@ public class CadastrarEventosSteps {
 
 	}
 
-	@Quando("^informa o organizador (.*) e o nome do evento (.*)$")
-	public void casoTesteQuando(String organizador, String nomeEvento) throws Throwable {
+	@Quando("^informar o organizador (.*) e o evento com nome (.*) e descricao (.*)")
+	public void casoTesteQuando(String organizador, String nomeEvento, String descricaoEvento) throws Throwable {
 
 		pessoa = new Pessoa();
-		pessoa.setNome("lucas");
+		pessoa.setNome(organizador);
 		pessoa.setCpf("789287454457");
 		pessoa.setEmail("a@a.com");
 
 		evento = new Evento();
 		evento.setNome(nomeEvento);
+		evento.setDescricao(descricaoEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		
 		when(pessoaService.findPessoaPorId(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
@@ -74,6 +75,7 @@ public class CadastrarEventosSteps {
 				.perform(post("/evento/adicionar")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("nome", nomeEvento)
+				.param("descricao", descricaoEvento)
 				.param("organizador", PESSOA_ID));
 		
 	}
@@ -85,7 +87,88 @@ public class CadastrarEventosSteps {
 				PapelEvento.ORGANIZADOR);
 
 		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
-
 	}
+	
+	
+	@Dado("^que o administrador deseja cadastrar um evento no sistema$")
+	public void administradorDesejaCadastrarUmEvento2(){
+		
+	}
+	
+	@Quando("^informar somente o nome do evento (.*)$")
+	public void casoTesteQuando2(String nomeEvento) throws Throwable {
 
+		evento = new Evento();
+		evento.setNome(nomeEvento);
+		evento.setEstado(EstadoEvento.INATIVO);
+		
+		String organizador =  "";
+
+		action = mockMvc
+				.perform(post("/evento/adicionar")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("nome", nomeEvento)
+				.param("organizador", organizador));
+		
+	}
+	
+	@Então("^O evento não deve ser cadastrado$")
+	public void casoTesteEntao2() throws Throwable {
+		action.andExpect(view().name("evento/add_ou_edit"));
+	}
+	
+	@Dado("^que o administrador deseja cadastrar um evento no sistema.$")
+	public void administradorDesejaCadastrarUmEvento3(){
+		
+	}
+	
+	@Quando("^informar o organizador (.*) e o nome evento (.*)")
+	public void casoTesteQuando3(String organizador, String nomeEvento) throws Throwable{
+		
+		evento = new Evento();
+		evento.setNome(nomeEvento);
+		evento.setEstado(EstadoEvento.INATIVO);
+		
+		when(pessoaService.findPessoaPorId(Long.valueOf(PESSOA_ID))).thenReturn(null);
+
+		action = mockMvc
+				.perform(post("/evento/adicionar")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("nome", nomeEvento)
+				.param("organizador", PESSOA_ID));
+	}
+	
+	@E("^o organizador do evento informado não está cadastrado no sistema$")
+	public void casoTesteE3(){
+		verify(pessoaService).findPessoaPorId(Long.valueOf(PESSOA_ID));
+	}
+	
+	@Então("^O evento não deve ser cadastrado no sistema$")
+	public void casoTesteEntao3() throws Exception{
+		action.andExpect(view().name("evento/add_ou_edit"));
+	}
+	
+	
+	@Dado("^que o administrador deseja cadastrar um evento no sistema contest$")
+	public void administradorDesejaCadastrarUmEvento4(){
+		
+	}
+	
+	@Quando("^informar somente o organizador (.*)$")
+	public void casoTesteQuando4(String organizador) throws Exception{
+		String nomeEvento = "";
+		
+		action = mockMvc
+				.perform(post("/evento/adicionar")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("nome", nomeEvento)
+				.param("organizador", PESSOA_ID));
+	
+	}
+	
+	@Então("^O evento não deve ser cadastrado devido ao nome vazio$")
+	public void casoTesteEntao4() throws Exception{
+		action.andExpect(model().attributeHasFieldErrors("evento", "nome"));
+	}
+	
 }
