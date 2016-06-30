@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,10 +27,10 @@ public class ParticipacaoEvento {
 	@NotEmpty
 	private PapelEvento papel;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	private Pessoa pessoa;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	private Evento evento;
 
 	public Long getId() {
