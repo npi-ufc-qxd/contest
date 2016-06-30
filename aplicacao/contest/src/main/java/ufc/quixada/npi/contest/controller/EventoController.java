@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.PapelEvento;
@@ -65,12 +66,13 @@ public class EventoController {
 	}
 
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
-	public String removerEvento(@PathVariable Integer id, Model model) {
+	public String removerEvento(@PathVariable Integer id, RedirectAttributes redirect) {
 		if (id != null) {
 			Evento evento = eventoService.buscarEventoPorId(id);
 			participacaoEventoService.removerParticipacaoEvento(evento);
+			redirect.addFlashAttribute("Evento excluido com sucesso", true);
 		} else {
-			model.addAttribute("error", "Não foi possivel remover evento");
+			redirect.addFlashAttribute("Não foi possivel excluir esse evento", true);
 		}
 		return "redirect:/evento";
 	}
