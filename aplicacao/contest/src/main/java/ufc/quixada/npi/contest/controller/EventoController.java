@@ -5,10 +5,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,10 +27,10 @@ public class EventoController {
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
-	
+
 	@Autowired
 	private EventoService eventoService;
-	
+
 	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/add_ou_edit";
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
@@ -43,32 +41,32 @@ public class EventoController {
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
 	public String adicionarEvento(@RequestParam String organizador, @Valid Evento evento, BindingResult result,
 			Model model) {
-		
+
 		if (result.hasErrors()) {
 			model.addAttribute("error", "Nome do Evento não pode ser vazio");
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
-			
+
 		Pessoa pessoa = null;
-		try{
+		try {
 			pessoa = pessoaService.findPessoaPorId(Long.valueOf(organizador));
-		}catch(NumberFormatException e){
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-		
+
 		if (pessoa != null) {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, PapelEvento.ORGANIZADOR);
 		} else {
 			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
-		
+
 		return "redirect:/evento";
 	}
-	
+
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
-	public String removerEvento(@PathVariable Integer id, Model model){
-		if(id != null){
+	public String removerEvento(@PathVariable Integer id, Model model) {
+		if (id != null) {
 			Evento evento = eventoService.buscarEventoPorId(id);
 			participacaoEventoService.removerParticipacaoEvento(evento);
 		} else {
