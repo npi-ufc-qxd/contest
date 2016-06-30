@@ -70,9 +70,9 @@ public class EventoController {
 		if (id != null) {
 			Evento evento = eventoService.buscarEventoPorId(id);
 			participacaoEventoService.removerParticipacaoEvento(evento);
-			redirect.addFlashAttribute("Evento excluido com sucesso", true);
+			redirect.addFlashAttribute("sucesso","Evento excluido com sucesso");
 		} else {
-			redirect.addFlashAttribute("Não foi possivel excluir esse evento", true);
+			redirect.addFlashAttribute("erro","Não foi possivel excluir esse evento");
 		}
 		return "redirect:/evento";
 	}
