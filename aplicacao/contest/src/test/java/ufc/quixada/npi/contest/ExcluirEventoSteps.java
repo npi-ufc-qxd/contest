@@ -56,13 +56,13 @@ public class ExcluirEventoSteps extends Mockito {
 		evento.setId(Integer.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Integer.valueOf(idEvento))).thenReturn(evento);
 
-		action = mockMvc.perform(get("/evento/remover/{id}", Long.valueOf(ID_EVENTO)));
+		action = mockMvc.perform(get("/paginas_administrador/remover/{id}", Long.valueOf(ID_EVENTO)));
 	}
 
 	@Então("^evento deve ser excluido com sucesso$")
 	public void eventoDeveSerExcluidoComSucesso() throws Throwable {
 
-		action.andExpect(status().isFound()).andExpect(redirectedUrl("/evento"));
+		action.andExpect(status().isFound()).andExpect(redirectedUrl("/paginas_administrador"));
 
 		verify(participacaoEventoService).removerParticipacaoEvento(evento);
 	}
@@ -74,7 +74,7 @@ public class ExcluirEventoSteps extends Mockito {
 		evento.setId(Integer.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Integer.valueOf(idEvento))).thenReturn(evento);
 
-		action = mockMvc.perform(get("/evento/remover/{id}", Long.valueOf(ID_EVENTO)));
+		action = mockMvc.perform(get("/paginas_administrador/remover/{id}", Long.valueOf(ID_EVENTO)));
 	}
 
 	@Então("^acontece uma excecao$")

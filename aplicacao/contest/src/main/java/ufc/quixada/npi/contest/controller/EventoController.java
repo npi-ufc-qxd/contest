@@ -20,7 +20,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 
 @Controller
-@RequestMapping("/evento")
+@RequestMapping("/paginas_administrador")
 public class EventoController {
 
 	@Autowired
@@ -32,7 +32,7 @@ public class EventoController {
 	@Autowired
 	private EventoService eventoService;
 
-	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/add_ou_edit";
+	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "paginas_administrador/admin_cadastrar";
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento() {
@@ -62,7 +62,7 @@ public class EventoController {
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
 
-		return "redirect:/evento";
+		return "redirect:/paginas_administrador";
 	}
 
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
@@ -74,6 +74,6 @@ public class EventoController {
 		} else {
 			redirect.addFlashAttribute("erro","Não foi possivel excluir esse evento");
 		}
-		return "redirect:/evento";
+		return "redirect:/paginas_administrador";
 	}
 }
