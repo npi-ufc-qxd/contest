@@ -5,9 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +26,7 @@ public class EventoController {
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
 
-	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/add_ou_edit";
+	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/admin_cadastrar";
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento() {
