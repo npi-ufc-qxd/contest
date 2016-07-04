@@ -26,12 +26,12 @@ public class PessoaService {
 		return (List<Pessoa>) pessoaRepository.findAll();
 	}
 
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		if (pessoaRepository.findOne(id) != null)
 			pessoaRepository.delete(id);
 	}
 
-	public Pessoa get(Integer id) {
+	public Pessoa get(Long id) {
 		return pessoaRepository.findOne(id);
 	}
 
