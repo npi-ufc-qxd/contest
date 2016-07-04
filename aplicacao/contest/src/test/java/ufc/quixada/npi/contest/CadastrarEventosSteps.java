@@ -22,7 +22,7 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelEvento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -84,7 +84,7 @@ public class CadastrarEventosSteps {
 	public void casoTesteEntao() throws Throwable {
 		verify(pessoaService).get(Integer.valueOf(PESSOA_ID));
 		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, pessoa,
-				PapelEvento.ORGANIZADOR);
+				Papel.ORGANIZADOR);
 
 		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
 	}
