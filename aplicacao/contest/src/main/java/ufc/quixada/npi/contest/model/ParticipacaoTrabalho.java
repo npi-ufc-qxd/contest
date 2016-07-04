@@ -24,7 +24,7 @@ public class ParticipacaoTrabalho {
 	@Column(name = "papel")
 	@Enumerated(EnumType.STRING)
 	@NotEmpty
-	private PapelEvento papel;
+	private Papel papel;
 
 	@ManyToOne
 	private Pessoa pessoa;
@@ -40,11 +40,11 @@ public class ParticipacaoTrabalho {
 		this.id = id;
 	}
 
-	public PapelEvento getPapel() {
+	public Papel getPapel() {
 		return papel;
 	}
 
-	public void setPapel(PapelEvento papel) {
+	public void setPapel(Papel papel) {
 		this.papel = papel;
 	}
 
