@@ -18,6 +18,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import ufc.quixada.npi.contest.model.PapelLdap.Tipo;
+
 @Entity
 @Table(name = "pessoa")
 public class Pessoa implements UserDetails {
@@ -37,6 +39,7 @@ public class Pessoa implements UserDetails {
 	@NotEmpty
 	private String cpf;
 
+	@Column(name = "password")
 	private String password;
 
 	@Column(name = "email")
@@ -104,10 +107,13 @@ public class Pessoa implements UserDetails {
 		return papelLdap;
 	}
 
-	public void setPapelLdap(String papelLdap) {
-		PapelLdap papel = new PapelLdap();
-		papel.setNome(papelLdap);
-		this.papelLdap = papel;
+	public void setPapelLdap(String papelLdap) throws IllegalArgumentException {
+		try {
+			PapelLdap papel = new PapelLdap(Tipo.valueOf(papelLdap));
+			this.papelLdap = papel;
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("Papel proveniente do LDAP não condiz com os papéis mapeados pelo sistema");
+		}
 	}
 
 	@Override

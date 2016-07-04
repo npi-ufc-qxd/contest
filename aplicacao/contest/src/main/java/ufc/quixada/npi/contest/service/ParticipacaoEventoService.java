@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelEvento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.ParticipacaoEventoRepository;
@@ -20,7 +20,7 @@ public class ParticipacaoEventoService {
 		return participacaoEventoRepository.findOne(id);
 	}
 	
-	public void adicionarOuEditarParticipacaoEvento(Evento evento, Pessoa pessoa, PapelEvento papelEvento){
+	public void adicionarOuEditarParticipacaoEvento(Evento evento, Pessoa pessoa, Papel papelEvento){
 		ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
 		participacaoEvento.setEvento(evento);
 		participacaoEvento.setPessoa(pessoa);

@@ -25,7 +25,7 @@ public class ParticipacaoEvento {
 	@Column(name = "papel")
 	@Enumerated(EnumType.STRING)
 	@NotEmpty
-	private PapelEvento papel;
+	private Papel papel;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	private Pessoa pessoa;
@@ -41,11 +41,11 @@ public class ParticipacaoEvento {
 		this.id = id;
 	}
 
-	public PapelEvento getPapel() {
+	public Papel getPapel() {
 		return papel;
 	}
 
-	public void setPapel(PapelEvento papel) {
+	public void setPapel(Papel papel) {
 		this.papel = papel;
 	}
 
