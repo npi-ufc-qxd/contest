@@ -29,22 +29,36 @@
 		<url.db>jdbc:postgresql://localhost:5432/contest</url.db>
 		<user.db>postgres</user.db>
 		<password.db>postgres</password.db>
+
+		<!-- Webjars -->
+		<materialize.version>0.97.6</materialize.version>
+		<jquery.version>2.2.4</jquery.version>
+
+		<!-- LDAP -->
+		<npi.ldap.version>0.1.2</npi.ldap.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>npi-mvn-repo</id>
+			<url>http://npi-ufc-qxd.github.io/npi-mvn-repo/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 
 		<dependency>
-	        <groupId>info.cukes</groupId>
-	        <artifactId>cucumber-java</artifactId>
-	        <version>1.2.4</version>
-	    </dependency>
-	    
-	    <dependency>
-	        <groupId>info.cukes</groupId>
-	        <artifactId>cucumber-junit</artifactId>
-	        <version>1.2.4</version>
-    	</dependency>
-    
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -86,6 +100,25 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<!-- LDAP -->
+		<dependency>
+			<groupId>br.ufc.quixada.npi</groupId>
+			<artifactId>npi-ldap</artifactId>
+			<version>${npi.ldap.version}</version>
+		</dependency>
+
+		<!-- Webjars -->
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>materialize</artifactId>
+			<version>${materialize.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${jquery.version}</version>
 		</dependency>
 	</dependencies>
 

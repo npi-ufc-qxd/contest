@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelEvento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -46,9 +46,9 @@ public class EventoController {
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
 
-		Pessoa pessoa = pessoaService.findPessoaPorId(Long.valueOf(organizador));
+		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
 		if (pessoa != null) {
-			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, PapelEvento.ORGANIZADOR);
+			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
 		} else {
 			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
 			return TEMPLATE_ADICIONAR_OU_EDITAR;

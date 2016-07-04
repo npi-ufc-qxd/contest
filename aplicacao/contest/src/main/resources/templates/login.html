@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Contest - Controle de Eventos de Submissão</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+<body>
+  <nav class="purple darken-4" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo center"><img th:src="@{/img/logotipo_white.png}" width="200px" alt="logo" /></a>
+    </div>
+  </nav>
+  <div class="parallax-container">
+    <div class="parallax"><img th:src="@{/img/papersubmit.png}" /></div>
+  </div>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <div class="row">
+        <h1 class="center header">Controle de Eventos de Submissão</h1>
+        <div class="col s12 m6">
+          <p>
+            Mussum Ipsum, cacilds vidis litro abertis. Quem num gosti di mum que vai caçá sua turmis! Mé faiz elementum girarzis, nisi eros vermeio. Posuere libero varius. Nullam a nisl ut ante blandit hendrerit. Aenean sit amet nisi. Quem num gosta di mé, boa gente num é.
+          </p>
+          <p>
+            Mussum Ipsum, cacilds vidis litro abertis. Quem num gosti di mum que vai caçá sua turmis! Mé faiz elementum girarzis, nisi eros vermeio. Posuere libero varius. Nullam a nisl ut ante blandit hendrerit. Aenean sit amet nisi. Quem num gosta di mé, boa gente num é.
+          </p>
+        </div>
+        <div class="col s12 m6" >
+          <form name="loginForm" th:action="@{/login}" class="valign" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div th:if="${loginError}" class="chip red darken-1">
+              <span class="white-text" th:text="#{LOGIN_INVALIDO}"></span>
+              <i class="material-icons">close</i>
+            </div>
+            <div th:if="${logoutSuccess}" class="chip blue darken-1">
+              <span class="white-text" th:text="#{LOGOUT_SUCESSO}"></span>
+              <i class="material-icons">close</i>
+            </div>
+
+            <div class="input-field">
+              <i class="material-icons prefix">account_circle</i>
+              <input type="text" id="user" th:name="username" />
+              <label for="user">Usuário</label>
+            </div>
+
+            <div class="input-field">
+              <i class="material-icons prefix">vpn_key</i>
+              <input type="password" id="password" th:name="password" />
+              <label for="password">Senha</label>
+            </div>
+            <input class="right btn waves-effect waves-light purple darken-4" type="submit" value="Entrar" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="page-footer purple darken-4">
+    <div class="footer-copyright">
+      <div class="container">
+        Desenvolvido por <a class="orange-text text-lighten-3" th:href="@{http://www.npi.quixada.ufc.br}" target="_blank">NPI - Núcleo de Práticas em Informática</a>
+      </div>
+    </div>
+  </footer>
+
+  <!--  Scripts-->
+  <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+  <script>
+    $(document).ready(function(){
+	  $('.parallax').parallax();
+    });
+  </script>
+</body>
+</html>

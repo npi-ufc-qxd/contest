@@ -27,12 +27,12 @@ public class EventoService {
 		return (List<Evento>) eventoRepository.findAll();
 	}
 	
-	public Evento buscarEventoPorId(Integer id){
-		return eventoRepository.findOne(id);
+	public Evento buscarEventoPorId(Long long1){
+		return eventoRepository.findOne(long1);
 	}
 	
-	public Boolean existeEvento(int id){
-		return eventoRepository.exists(id);
+	public Boolean existeEvento(Long long1){
+		return eventoRepository.exists(long1);
 	}
 	
 }
