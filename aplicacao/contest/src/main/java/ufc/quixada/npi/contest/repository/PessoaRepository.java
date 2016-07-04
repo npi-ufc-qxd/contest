@@ -9,6 +9,6 @@ import ufc.quixada.npi.contest.model.Pessoa;
 
 @Repository
 @Transactional
-public interface PessoaRepository extends CrudRepository<Pessoa, Long>{
-
+public interface PessoaRepository extends CrudRepository<Pessoa, Integer>{
+	Pessoa getByCpf(String cpf);
 }
