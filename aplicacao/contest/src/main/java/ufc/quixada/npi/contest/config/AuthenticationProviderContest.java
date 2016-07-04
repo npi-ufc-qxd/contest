@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 import br.ufc.quixada.npi.ldap.model.Usuario;
 import br.ufc.quixada.npi.ldap.service.UsuarioService;
 import ufc.quixada.npi.contest.model.Pessoa;
-import ufc.quixada.npi.contest.repository.PessoaRepository;
+import ufc.quixada.npi.contest.service.PessoaService;
 
 @Component
 public class AuthenticationProviderContest implements AuthenticationProvider {
 
 	@Autowired
-	private PessoaRepository pessoaRepository;
+	private PessoaService pessoaService;
 
 	@Autowired
 	private UsuarioService usuarioService;
@@ -31,31 +31,32 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	@Override
 	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		String cpf = authentication.getName();
+		String cpf = (String) authentication.getName();
 		String password = (String) authentication.getCredentials();
 
-		Pessoa pessoa = pessoaRepository.getByCpf(cpf);
+		Pessoa pessoa = pessoaService.getByCpf(cpf);
 
-		if (usuarioService.autentica(cpf, password)) {
+		if (pessoa != null) { // Pessoa existe
+			if(!pessoaService.autentica(pessoa, cpf, password))
+				throw new BadCredentialsException(messages.getMessage("LOGIN_INVALIDO", null, null));
+		}
+		else if (usuarioService.autentica(cpf, password)) { // Pessoa não existe, então tenta autenticar via LDAP
 			Usuario usuario = usuarioService.getByCpf(cpf);
 
-			if (pessoa == null) {
-				pessoa = new Pessoa();
-				pessoa.setCpf(usuario.getCpf());
-				pessoa.setEmail(usuario.getEmail());
-				pessoa.setNome(usuario.getNome());
-				pessoa.setPassword(usuario.getPassword());
-				pessoa.setPapelLdap(usuario.getAuthorities().get(0).getNome());
+			pessoa = new Pessoa();
+			pessoa.setCpf(cpf);
+			pessoa.setEmail(usuario.getEmail());
+			pessoa.setNome(usuario.getNome());
+			pessoa.setPassword(pessoaService.encodePassword(password));
+			pessoa.setPapelLdap(usuario.getAuthorities().get(0).getNome());
 
-				pessoaRepository.save(pessoa);
-			} else if (pessoa.getAuthorities() == null || pessoa.getAuthorities().isEmpty()) {
-				pessoa.setPapelLdap(usuario.getAuthorities().get(0).getNome());
-			}
-
-			return new UsernamePasswordAuthenticationToken(pessoa, password, pessoa.getAuthorities());
-		} else {
+			pessoaService.addOrUpdate(pessoa);
+		}
+		else {
 			throw new BadCredentialsException(messages.getMessage("LOGIN_INVALIDO", null, null));
 		}
+
+		return new UsernamePasswordAuthenticationToken(pessoa, pessoaService.encodePassword(password), pessoa.getAuthorities());
 	}
 
 	@Override
