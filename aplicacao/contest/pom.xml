@@ -32,6 +32,7 @@
 
 		<!-- Webjars -->
 		<materialize.version>0.97.6</materialize.version>
+		<font.awesome.version>4.6.3</font.awesome.version>
 		<jquery.version>2.2.4</jquery.version>
 
 		<!-- LDAP -->
@@ -101,7 +102,6 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 		</dependency>
-<<<<<<< HEAD
 
 		<!-- LDAP -->
 		<dependency>
@@ -120,12 +120,11 @@
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>jquery</artifactId>
 			<version>${jquery.version}</version>
-=======
+		</dependency>
 		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>2.11.0</version>
->>>>>>> refs/remotes/origin/US-03_Excluir_Evento
+		    <groupId>org.webjars</groupId>
+		    <artifactId>font-awesome</artifactId>
+		    <version>${font.awesome.version}</version>
 		</dependency>
 	</dependencies>
 

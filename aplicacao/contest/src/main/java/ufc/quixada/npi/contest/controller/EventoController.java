@@ -35,7 +35,8 @@ public class EventoController {
 	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/admin_cadastrar";
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
-	public String adicionarEvento() {
+	public String adicionarEvento(Model model) {
+		model.addAttribute("evento", new Evento());
 		return TEMPLATE_ADICIONAR_OU_EDITAR;
 	}
 
