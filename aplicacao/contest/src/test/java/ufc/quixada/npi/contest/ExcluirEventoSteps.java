@@ -53,7 +53,7 @@ public class ExcluirEventoSteps extends Mockito {
 	public void removoEventoComIdValido(String idEvento) throws Throwable {
 		evento = new Evento();
 		evento.setEstado(EstadoEvento.INATIVO);
-		evento.setId(Integer.valueOf(ID_EVENTO));
+		evento.setId(Long.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Integer.valueOf(idEvento))).thenReturn(evento);
 
 		action = mockMvc.perform(get("/paginas_administrador/remover/{id}", Long.valueOf(ID_EVENTO)));
@@ -71,7 +71,7 @@ public class ExcluirEventoSteps extends Mockito {
 	public void removoEventoComIdValidoEstadoAtivo(String estado, String idEvento) throws Throwable {
 		evento = new Evento();
 		evento.setEstado(EstadoEvento.valueOf(estado));
-		evento.setId(Integer.valueOf(ID_EVENTO));
+		evento.setId(Long.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Integer.valueOf(idEvento))).thenReturn(evento);
 
 		action = mockMvc.perform(get("/paginas_administrador/remover/{id}", Long.valueOf(ID_EVENTO)));
