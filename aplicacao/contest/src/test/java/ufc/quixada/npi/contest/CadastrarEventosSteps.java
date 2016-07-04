@@ -129,7 +129,6 @@ public class CadastrarEventosSteps {
 		evento.setNome(nomeEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		
-<<<<<<< HEAD
 		when(pessoaService.get(Integer.valueOf(PESSOA_ID))).thenReturn(null);
 
 		action = mockMvc
@@ -142,20 +141,6 @@ public class CadastrarEventosSteps {
 	@E("^o organizador do evento informado não está cadastrado no sistema$")
 	public void casoTesteE3(){
 		verify(pessoaService).get(Integer.valueOf(PESSOA_ID));
-=======
-		when(pessoaService.findPessoaPorId(Long.valueOf(PESSOA_ID))).thenReturn(null);
-
-		action = mockMvc
-				.perform(post("/evento/adicionar")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("nome", nomeEvento)
-				.param("organizador", PESSOA_ID));
-	}
-	
-	@E("^o organizador do evento informado não está cadastrado no sistema$")
-	public void casoTesteE3(){
-		verify(pessoaService).findPessoaPorId(Long.valueOf(PESSOA_ID));
->>>>>>> branch 'US-01-CadastrarEvento' of https://github.com/npi-ufc-qxd/contest.git
 	}
 	
 	@Então("^O evento não deve ser cadastrado no sistema$")
