@@ -18,7 +18,6 @@ import cucumber.api.java.pt.*;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -62,7 +61,7 @@ public class AlterarEventoInativoSteps {
 		pessoa.setEmail("a@a.com");
 
 	
-		when(pessoaService.findPessoaPorId(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
 	}
 	
 	@Quando("^o administrador tenta alterar um evento que não existe$")
@@ -90,15 +89,15 @@ public class AlterarEventoInativoSteps {
 	public void serEventoInativo(String nomeEvento) throws Throwable{
 		evento = new Evento();
 		evento.setNome(nomeEvento);
-		evento.setId(Integer.valueOf(EVENTO_ID));
+		evento.setId(Long.valueOf(EVENTO_ID));
 		evento.setEstado(EstadoEvento.INATIVO);
 	}
 
 	@Quando("^um novo nome (.*) do evento é informado$")
 	public void novoNomeDeEventoInformado(String novoNome) throws Throwable {
 		
-		when(eventoService.buscarEventoPorId(Integer.valueOf(EVENTO_ID))).thenReturn(evento);
-		when(pessoaService.findPessoaPorId(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
+		when(eventoService.buscarEventoPorId(Long.valueOf(EVENTO_ID))).thenReturn(evento);
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
 		
 		action = mockMvc
 				.perform(post("/evento/adicionar")
@@ -111,8 +110,8 @@ public class AlterarEventoInativoSteps {
 
 	@Então("^os dados do evento devem ser atualizados$")
 	public void eventoAtualizado() throws Throwable {
-		verify(eventoService).buscarEventoPorId(Integer.valueOf(EVENTO_ID));
-		verify(pessoaService).findPessoaPorId(Long.valueOf(PESSOA_ID));
+		verify(eventoService).buscarEventoPorId(Long.valueOf(EVENTO_ID));
+		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
 		action.andExpect(redirectedUrl(TEMPLATE_ADICIONAR_OU_EDITAR));
 	}
 }

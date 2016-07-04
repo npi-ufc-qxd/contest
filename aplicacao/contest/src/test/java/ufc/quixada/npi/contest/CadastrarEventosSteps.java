@@ -22,7 +22,7 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelEvento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -67,7 +67,7 @@ public class CadastrarEventosSteps {
 		evento.setNome(nomeEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		
-		when(pessoaService.findPessoaPorId(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
 
 		action = mockMvc
 				.perform(post("/evento/adicionar")
@@ -79,9 +79,9 @@ public class CadastrarEventosSteps {
 
 	@Então("^o evento deve ser cadastrado com visibilidade privada e estado inativo.$")
 	public void casoTesteEntao() throws Throwable {
-		verify(pessoaService).findPessoaPorId(Long.valueOf(PESSOA_ID));
+		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
 		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, pessoa,
-				PapelEvento.ORGANIZADOR);
+				Papel.ORGANIZADOR);
 		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
 
 	}

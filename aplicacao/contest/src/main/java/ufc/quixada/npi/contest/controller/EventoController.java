@@ -58,7 +58,7 @@ public class EventoController {
 	}
 	
 	@RequestMapping(value = "/alterar", method = RequestMethod.POST)
-	public String alterarEvento(@RequestParam int id, Model model){
+	public String alterarEvento(@RequestParam Long id, Model model){
 		if (eventoService.existeEvento(id)){
 			model.addAttribute("evento", eventoService.buscarEventoPorId(id));
 			return TEMPLATE_ADICIONAR_OU_EDITAR;

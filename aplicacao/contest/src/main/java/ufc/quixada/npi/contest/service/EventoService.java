@@ -18,7 +18,7 @@ public class EventoService {
 		eventoRepository.save(evento);
 	}
 	
-	public void removerEvento(Integer id){
+	public void removerEvento(Long id){
 		if(eventoRepository.findOne(id) != null)
 			eventoRepository.delete(id);
 	}
@@ -27,12 +27,12 @@ public class EventoService {
 		return (List<Evento>) eventoRepository.findAll();
 	}
 	
-	public Evento buscarEventoPorId(Long long1){
-		return eventoRepository.findOne(long1);
+	public Evento buscarEventoPorId(Long id){
+		return eventoRepository.findOne(id);
 	}
 	
-	public Boolean existeEvento(Long long1){
-		return eventoRepository.exists(long1);
+	public Boolean existeEvento(Long id){
+		return eventoRepository.exists(id);
 	}
 	
 }
