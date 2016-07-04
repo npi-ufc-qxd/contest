@@ -20,7 +20,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 
 @Controller
-@RequestMapping("/administrador")
+@RequestMapping("/evento")
 public class EventoController {
 
 	@Autowired
@@ -32,7 +32,7 @@ public class EventoController {
 	@Autowired
 	private EventoService eventoService;
 
-	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "administrador/admin_cadastrar";
+	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/admin_cadastrar";
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento() {
