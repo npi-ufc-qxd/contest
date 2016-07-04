@@ -29,22 +29,33 @@
 		<url.db>jdbc:postgresql://localhost:5432/contest</url.db>
 		<user.db>postgres</user.db>
 		<password.db>postgres</password.db>
+
+		<!-- Webjars -->
+		<materialize.version>0.97.6</materialize.version>
+		<jquery.version>2.2.4</jquery.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>npi-mvn-repo</id>
+			<url>http://npi-ufc-qxd.github.io/npi-mvn-repo/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 
 		<dependency>
-	        <groupId>info.cukes</groupId>
-	        <artifactId>cucumber-java</artifactId>
-	        <version>1.2.4</version>
-	    </dependency>
-	    
-	    <dependency>
-	        <groupId>info.cukes</groupId>
-	        <artifactId>cucumber-junit</artifactId>
-	        <version>1.2.4</version>
-    	</dependency>
-    
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -87,10 +98,17 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 		</dependency>
+
+		<!-- Webjars -->
 		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>2.11.0</version>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>materialize</artifactId>
+			<version>${materialize.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${jquery.version}</version>
 		</dependency>
 	</dependencies>
 
