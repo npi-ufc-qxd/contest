@@ -31,19 +31,15 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	@Override
 	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		String cpf = (String) authentication.getName();
-		String password = (String) authentication.getCredentials();
+		String cpf = authentication.getName();
+		String password = authentication.getCredentials().toString();
 
 		Pessoa pessoa = pessoaService.getByCpf(cpf);
 
 		if (pessoa != null) { // Pessoa existe
 			if (!pessoaService.autentica(pessoa, cpf, password))
 				throw new BadCredentialsException(messages.getMessage("LOGIN_INVALIDO", null, null));
-		} else if (usuarioService.autentica(cpf, password)) { // Pessoa não
-																// existe, então
-																// tenta
-																// autenticar
-																// via LDAP
+		} else if (usuarioService.autentica(cpf, password)) { // Pessoa não existe, então tenta autenticar via LDAP
 			Usuario usuario = usuarioService.getByCpf(cpf);
 
 			pessoa = new Pessoa();
