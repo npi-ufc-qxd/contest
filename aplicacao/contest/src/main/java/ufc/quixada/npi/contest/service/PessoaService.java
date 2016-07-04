@@ -39,21 +39,15 @@ public class PessoaService {
 		return pessoaRepository.findByCpf(cpf);
 	}
 
-	public String encodePassword(String password){
+	public String encodePassword(String password) {
 		return passwordEncoder.encode(password);
 	}
 
 	public boolean autenticaBD(String cpf, String password) {
-		if (pessoaRepository.findByCpfAndPassword(cpf, passwordEncoder.encode(password)) != null)
-			return true;
-
-		return false;
+		return (pessoaRepository.findByCpfAndPassword(cpf, passwordEncoder.encode(password)) != null);
 	}
 
 	public boolean autentica(Pessoa pessoa, String cpf, String password) {
-		if (pessoa.getCpf().equals(cpf) && passwordEncoder.matches(password, pessoa.getPassword()))
-			return true;
-
-		return false;
+		return (pessoa.getCpf().equals(cpf) && passwordEncoder.matches(password, pessoa.getPassword()));
 	}
 }

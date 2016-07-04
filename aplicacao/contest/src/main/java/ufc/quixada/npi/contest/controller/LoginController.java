@@ -16,7 +16,7 @@ public class LoginController {
 
 	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
 	public String loginfailed(Authentication auth, RedirectAttributes redirectAttributes) {
-		if(auth != null && auth.isAuthenticated()) {
+		if (auth != null && auth.isAuthenticated()) {
 			return "redirect:/";
 		}
 

@@ -20,12 +20,12 @@ public class PapelLdap implements GrantedAuthority {
 
 	@Enumerated(EnumType.STRING)
 	private Tipo nome;
-	
-	public PapelLdap(){
+
+	public PapelLdap() {
 		super();
 	}
-	
-	public PapelLdap(Tipo nome){
+
+	public PapelLdap(Tipo nome) {
 		super();
 		this.nome = nome;
 	}
@@ -45,13 +45,13 @@ public class PapelLdap implements GrantedAuthority {
 	public void setNome(Tipo nome) {
 		this.nome = nome;
 	}
-	
+
 	enum Tipo {
 		ADMIN("ADMIN-CONTEST"), DOCENTE("DOCENTE"), DISCENTE("DISCENTE"), STA("STA");
-		
-		private String tipo; 
-		
-		Tipo(String tipo){
+
+		private String tipo;
+
+		Tipo(String tipo) {
 			this.tipo = tipo;
 		}
 
@@ -62,9 +62,9 @@ public class PapelLdap implements GrantedAuthority {
 		public void setTipo(String tipo) {
 			this.tipo = tipo;
 		}
-		
+
 	}
-	
+
 	@Override
 	public String getAuthority() {
 		return this.nome.name();
