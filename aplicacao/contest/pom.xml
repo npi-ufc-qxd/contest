@@ -101,6 +101,7 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 		</dependency>
+<<<<<<< HEAD
 
 		<!-- LDAP -->
 		<dependency>
@@ -119,6 +120,12 @@
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>jquery</artifactId>
 			<version>${jquery.version}</version>
+=======
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.11.0</version>
+>>>>>>> refs/remotes/origin/US-03_Excluir_Evento
 		</dependency>
 	</dependencies>
 
