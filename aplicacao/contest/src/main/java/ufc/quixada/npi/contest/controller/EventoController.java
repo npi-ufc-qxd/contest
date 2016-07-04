@@ -46,7 +46,7 @@ public class EventoController {
 			
 		Pessoa pessoa = null;
 		try{
-			pessoa = pessoaService.findPessoaPorId(Long.valueOf(organizador));
+			pessoa = pessoaService.get(Integer.valueOf(organizador));
 		}catch(NumberFormatException e){
 			e.printStackTrace();
 		}
