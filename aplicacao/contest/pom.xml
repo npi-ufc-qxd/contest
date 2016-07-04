@@ -33,6 +33,9 @@
 		<!-- Webjars -->
 		<materialize.version>0.97.6</materialize.version>
 		<jquery.version>2.2.4</jquery.version>
+
+		<!-- LDAP -->
+		<npi.ldap.version>0.1.2</npi.ldap.version>
 	</properties>
 
 	<repositories>

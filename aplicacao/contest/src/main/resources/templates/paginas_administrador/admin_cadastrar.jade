@@ -1,0 +1,24 @@
+//output:admin_cadastrar.html, pretty:true
+extends admin_base.jade
+block conteudo
+  include ../jade_componentes/admin_opcoes.jade  
+  div.row
+    h2 Adicionar Evento
+    
+    form.col.s12
+      div.input-field.col.m6.s6
+        input#nome_evento(type="text")
+        label(for="input_text") Nome do Evento
+
+      div.input-field.col.m6.s6
+        select#pessoas_select(name='Pessoas')
+          option(value="" disabled selected) Selecione uma pessoa
+          option(value='1') pessoa 1
+          option(value='2') pessoa 2
+        label(for="pessoas_select") Organizador do Evento
+        
+      div.input-field.col.s4
+        a.waves-effect.waves-light.btn.white-text Salvar Evento
+          i.fa.fa-download.left(aria-hidden="true")    
+    
+    
