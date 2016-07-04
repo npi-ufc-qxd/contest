@@ -10,17 +10,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class LoginController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String login(Authentication auth) {
-		if(auth != null && auth.isAuthenticated()) {
-			return "redirect:/";
-		}
-
+	public String login() {
 		return "login";
 	}
 
 	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
 	public String loginfailed(Authentication auth, RedirectAttributes redirectAttributes) {
-		if(auth != null && auth.isAuthenticated()) {
+		if (auth != null && auth.isAuthenticated()) {
 			return "redirect:/";
 		}
 

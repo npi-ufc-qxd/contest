@@ -1,6 +1,8 @@
 package ufc.quixada.npi.contest.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,8 +17,18 @@ public class PapelLdap implements GrantedAuthority {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
-	private String nome;
+
+	@Enumerated(EnumType.STRING)
+	private Tipo nome;
+
+	public PapelLdap() {
+		super();
+	}
+
+	public PapelLdap(Tipo nome) {
+		super();
+		this.nome = nome;
+	}
 
 	public Integer getId() {
 		return id;
@@ -27,16 +39,35 @@ public class PapelLdap implements GrantedAuthority {
 	}
 
 	public String getNome() {
-		return nome;
+		return nome.name();
 	}
 
-	public void setNome(String nome) {
+	public void setNome(Tipo nome) {
 		this.nome = nome;
 	}
-	
+
+	enum Tipo {
+		ADMIN("ADMIN-CONTEST"), DOCENTE("DOCENTE"), DISCENTE("DISCENTE"), STA("STA");
+
+		private String tipo;
+
+		Tipo(String tipo) {
+			this.tipo = tipo;
+		}
+
+		public String getTipo() {
+			return tipo;
+		}
+
+		public void setTipo(String tipo) {
+			this.tipo = tipo;
+		}
+
+	}
+
 	@Override
 	public String getAuthority() {
-		return this.nome;
+		return this.nome.name();
 	}
 
 	@Override
