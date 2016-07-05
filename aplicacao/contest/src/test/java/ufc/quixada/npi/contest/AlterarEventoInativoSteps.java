@@ -2,9 +2,11 @@ package ufc.quixada.npi.contest;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +20,7 @@ import cucumber.api.java.pt.*;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -44,74 +47,76 @@ public class AlterarEventoInativoSteps {
 
 	private MockMvc mockMvc;
 	private ResultActions action;
-	private Pessoa pessoa;
+	private Pessoa admin;
+	private Pessoa org;
 	private Evento evento;
 
 	@cucumber.api.java.Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
-	}
-	
-	@Dado("^que existe um administrador$")
-	public void existeAdministrador() throws Throwable{
-		pessoa = new Pessoa();
-		pessoa.setNome("lucas");
-		pessoa.setCpf("789287454457");
-		pessoa.setEmail("a@a.com");
-
-	
-		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
-	}
-	
-	@Quando("^o administrador tenta alterar um evento que não existe$")
-	public void administradorAlteraEventoInexistente() throws Throwable{
-		action = mockMvc
-				.perform(post("/evento/alterar")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("id", "100")
-				);
-		
-
-	}
-	
-	@Então("^uma mensagem de erro é retornada$")
-	public void conclusaoAlterarInexistente() throws Throwable{
-		action.andExpect(redirectedUrl("/evento"));
-	}
-
-	@Dado("^que o administrador deseja alterar um evento$")
-	public void administradorDesejaAlterarUmEvento() throws Throwable {
-		
-	}
-	
-	@E("^o evento escolhido é um evento inativo de nome (.*)$")
-	public void serEventoInativo(String nomeEvento) throws Throwable{
 		evento = new Evento();
-		evento.setNome(nomeEvento);
+		org = new Pessoa();
+	}
+	
+	@Dado("^o administrador deseja alterar um evento$")
+	public void desejaAlterarEvento() throws Throwable{
+		admin = new Pessoa();
+		admin.setNome("lucas");
+		admin.setCpf("789287454457");
+		admin.setEmail("a@a.com");
+	}
+	
+	@Quando("^escolho alterar um evento com nome (.*), descrição (.*) e organizador (.*)$")
+	public void escolheEventoId(String nome, String descricao, String organizador ) throws Throwable{
+		evento.setNome(nome);
+		evento.setDescricao(descricao);
 		evento.setId(Long.valueOf(EVENTO_ID));
 		evento.setEstado(EstadoEvento.INATIVO);
-	}
-
-	@Quando("^um novo nome (.*) do evento é informado$")
-	public void novoNomeDeEventoInformado(String novoNome) throws Throwable {
 		
+		
+		org.setNome(organizador);
+		org.setCpf("789287454457");
+		org.setEmail("a@a.com");
+		org.setPapelLdap("DOCENTE");
+		
+		when(eventoService.existeEvento(Long.valueOf(EVENTO_ID))).thenReturn(true);
 		when(eventoService.buscarEventoPorId(Long.valueOf(EVENTO_ID))).thenReturn(evento);
-		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
-		
 		action = mockMvc
-				.perform(post("/evento/adicionar")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("organizador", PESSOA_ID)
-				.param("nome", novoNome)
+				.perform(get("/evento/alterar")
 				.param("id", EVENTO_ID));
+	}
+	
+	@Entao("^devo ser redirecionado para a pagina de formulario$")
+	public void redirecionaFormulario() throws Throwable{
+		action.andExpect(view().name(TEMPLATE_ADICIONAR_OU_EDITAR));
+	}
+	
+	@Quando("^tento alterar o nome de um evento para (.*)$")
+	public void alteraNomeEvento(String entrada) throws Throwable{
+		evento.setNome(entrada);
 		
 	}
-
-	@Então("^os dados do evento devem ser atualizados$")
-	public void eventoAtualizado() throws Throwable {
-		verify(eventoService).buscarEventoPorId(Long.valueOf(EVENTO_ID));
-		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
-		action.andExpect(redirectedUrl(TEMPLATE_ADICIONAR_OU_EDITAR));
+	
+	@E("^tento alterar a descrição de um evento para (.*)$")
+	public void alteraDescricaoEvento(String entrada) throws Throwable{
+		evento.setDescricao(entrada);
+		
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(org);
+		action = mockMvc
+				.perform(post("/evento/alterar")
+				.param("organizador", PESSOA_ID)
+				.param("nome", evento.getNome())
+				.param("descricao", evento.getDescricao()));
 	}
+	
+	
+	@Entao("^as configurações do evento são alteradas$")
+	public void configuracoesAlteradas() throws Throwable{
+		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
+		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, org,
+				Papel.ORGANIZADOR);
+		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
+	}
+		
 }

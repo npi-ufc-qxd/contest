@@ -57,12 +57,30 @@ public class EventoController {
 		return "redirect:/evento";
 	}
 	
-	@RequestMapping(value = "/alterar", method = RequestMethod.POST)
+	@RequestMapping(value = "/alterar", method = RequestMethod.GET)
 	public String alterarEvento(@RequestParam Long id, Model model){
 		if (eventoService.existeEvento(id)){
 			model.addAttribute("evento", eventoService.buscarEventoPorId(id));
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
+		return "redirect:/evento";
+	}
+	
+	@RequestMapping(value = "/alterar", method = RequestMethod.POST)
+	public String alterarEvento(@RequestParam String organizador, @Valid Evento evento, BindingResult result,
+			Model model) {
+		if (result.hasErrors()) {
+			return TEMPLATE_ADICIONAR_OU_EDITAR;
+		}
+
+		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
+		if (pessoa != null) {
+			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
+		} else {
+			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
+			return TEMPLATE_ADICIONAR_OU_EDITAR;
+		}
+
 		return "redirect:/evento";
 	}
 

@@ -50,7 +50,7 @@ public class AlterarEventoInativoRequestSteps {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
 	}
 	
-	@Dado("^que existe um administrador$")
+	/*@Dado("^que o administrador deseja alterar um evento$")
 	public void existeAdministrador() throws Throwable{
 		pessoa = new Pessoa();
 		pessoa.setNome("lucas");
@@ -73,6 +73,6 @@ public class AlterarEventoInativoRequestSteps {
 	@Então("^é redirecionado para a pagina de formulario$")
 	public void conclusaoAlterarInexistente() throws Throwable{
 		action.andExpect(view().name(TEMPLATE_ADICIONAR_OU_EDITAR));
-	}
+	}*/
 	
 }
