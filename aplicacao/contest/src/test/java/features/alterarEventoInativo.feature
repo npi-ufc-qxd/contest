@@ -17,4 +17,9 @@
 		E tento alterar a descrição de um evento para DESCRICAO
 		Então as configurações do evento são alteradas
 
+	Cenário: Alterar um evento ativo
+		Dado que o administrador deseja alterar um evento
+		Quando o evento escolhido é um evento ativo
+		Então o evento não deve ser alterado
+		E o usuário é avisado via mensagem o motivo do insucesso do cadastro
 	
