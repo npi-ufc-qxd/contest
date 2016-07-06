@@ -1,6 +1,7 @@
-package ufc.quixada.npi.contest;
+ package ufc.quixada.npi.contest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.MessageSource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -37,6 +39,9 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
+	
+	@Mock
+	private MessageSource messages;
 
 	private static final String ID_EVENTO = "1";
 	private static final String TEMPLATE_REMOVER = "/evento/remover/{id}";
@@ -80,6 +85,7 @@ public class ExcluirEventoSteps extends Mockito {
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setId(Long.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Long.valueOf(idEvento))).thenReturn(evento);
+		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null)).thenReturn("Evento inativo excluido com sucesso");
 
 		action = mockMvc.perform(get(TEMPLATE_REMOVER, Long.valueOf(ID_EVENTO)));
 	}
@@ -87,7 +93,9 @@ public class ExcluirEventoSteps extends Mockito {
 	@Então("^evento deve ser excluido com sucesso$")
 	public void eventoDeveSerExcluidoComSucesso() throws Throwable {
 		//evento/ativos e inativos
-		action.andExpect(status().isFound()).andExpect(redirectedUrl("/evento/inativos"));
+		action		
+			.andExpect(status().isFound()).andExpect(redirectedUrl("/evento/inativos"))
+			.andExpect(flash().attributeExists("sucesso"));
 
 		verify(participacaoEventoService).removerParticipacaoEvento(evento);
 	}
@@ -104,6 +112,7 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Então("^o usuário é informado que não pode excluir esse evento$")
 	public void aconteceExcecao() throws Throwable {
+		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null)).thenReturn("Evento não encontrado");
 		doThrow(IllegalArgumentException.class).when(participacaoEventoService).removerParticipacaoEvento(evento);
 
 		action.andExpect(status().is3xxRedirection());

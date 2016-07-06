@@ -69,7 +69,7 @@ public class CadastrarEventosSteps {
 		evento.setDescricao(descricaoEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		
-		when(pessoaService.get(Integer.valueOf(PESSOA_ID))).thenReturn(pessoa);
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
 
 		action = mockMvc
 				.perform(post("/evento/adicionar")
@@ -82,7 +82,7 @@ public class CadastrarEventosSteps {
 
 	@Então("^o evento deve ser cadastrado com visibilidade privada e estado inativo.$")
 	public void casoTesteEntao() throws Throwable {
-		verify(pessoaService).get(Integer.valueOf(PESSOA_ID));
+		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
 		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, pessoa,
 				Papel.ORGANIZADOR);
 
@@ -129,7 +129,7 @@ public class CadastrarEventosSteps {
 		evento.setNome(nomeEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		
-		when(pessoaService.get(Integer.valueOf(PESSOA_ID))).thenReturn(null);
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(null);
 
 		action = mockMvc
 				.perform(post("/evento/adicionar")
@@ -140,7 +140,7 @@ public class CadastrarEventosSteps {
 	
 	@E("^o organizador do evento informado não está cadastrado no sistema$")
 	public void casoTesteE3(){
-		verify(pessoaService).get(Integer.valueOf(PESSOA_ID));
+		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
 	}
 	
 	@Então("^O evento não deve ser cadastrado no sistema$")

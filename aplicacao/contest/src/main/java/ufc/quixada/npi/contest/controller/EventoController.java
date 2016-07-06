@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,6 +38,9 @@ public class EventoController {
 	@Autowired
 	private EventoService eventoService;
 	
+	@Autowired
+	private MessageSource messages;
+	
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model){
 		List<Evento> listaEventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
@@ -46,17 +50,13 @@ public class EventoController {
 	
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model){
-//		Pessoa pessoa = new Pessoa();
-//		pessoa.setNome("Matheus");
-//		pessoa.setCpf("1234545");
-//		pessoa.setEmail("a@a");
 //		Evento evento = new Evento();
-//		evento.setNome("Novo Evento434");
-//		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 //		evento.setEstado(EstadoEvento.INATIVO);
+//		evento.setNome("NOVO");
+//		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 //		
-//		pessoaService.addOrUpdate(pessoa);
-//		Pessoa p = pessoaService.getByCpf("1234545");
+//		
+//		Pessoa p = pessoaService.getByCpf("12");
 //		participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, p, Papel.ORGANIZADOR);
 		
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosInativos();
@@ -80,7 +80,7 @@ public class EventoController {
 
 		Pessoa pessoa = null;
 		try {
-			pessoa = pessoaService.get(Integer.valueOf(organizador));
+			pessoa = pessoaService.get(Long.valueOf(organizador));
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
@@ -99,16 +99,16 @@ public class EventoController {
 	public String removerEvento(@PathVariable String id, RedirectAttributes redirect) {
 		try{
 			Long idEvento = Long.valueOf(id);
-			
-			if (idEvento != null) {
-				Evento evento = eventoService.buscarEventoPorId(idEvento);
+			Evento evento = eventoService.buscarEventoPorId(idEvento);
+			if (evento != null) {
 				participacaoEventoService.removerParticipacaoEvento(evento);
-				redirect.addFlashAttribute("sucesso","Evento excluido com sucesso");
-			} else {
-				redirect.addFlashAttribute("erro","Não foi possivel excluir esse evento");
+				
+				redirect.addFlashAttribute("sucesso", messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null));
+			}else{
+				redirect.addFlashAttribute("erro",messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
 			}
 		}catch(NumberFormatException e){
-			
+			redirect.addFlashAttribute("erro",messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
 		}
 
 		return "redirect:/evento/inativos";
