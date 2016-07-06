@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,14 +37,18 @@ public class CadastrarEventosSteps {
 
 	@Mock
 	private PessoaService pessoaService;
+	
+	@Mock
+	private MessageSource messages;
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
-
+	
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Pessoa pessoa;
 	private Evento evento;
+	private final String TEMPLATE_ADD_EVENTO = "evento/admin_cadastrar";
 
 	@cucumber.api.java.Before
 	public void setup() {
@@ -69,7 +74,7 @@ public class CadastrarEventosSteps {
 		evento.setDescricao(descricaoEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		
-		when(pessoaService.get(Integer.valueOf(PESSOA_ID))).thenReturn(pessoa);
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
 
 		action = mockMvc
 				.perform(post("/evento/adicionar")
@@ -82,7 +87,7 @@ public class CadastrarEventosSteps {
 
 	@Então("^o evento deve ser cadastrado com visibilidade privada e estado inativo.$")
 	public void casoTesteEntao() throws Throwable {
-		verify(pessoaService).get(Integer.valueOf(PESSOA_ID));
+		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
 		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, pessoa,
 				Papel.ORGANIZADOR);
 
@@ -103,7 +108,10 @@ public class CadastrarEventosSteps {
 		evento.setEstado(EstadoEvento.INATIVO);
 		
 		String organizador =  "";
-
+		
+		when(messages.getMessage("ORGANIZADOR_VAZIO_ERROR", null, null))
+			.thenReturn("O organizador do evento deve ser informado");
+		
 		action = mockMvc
 				.perform(post("/evento/adicionar")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -114,7 +122,7 @@ public class CadastrarEventosSteps {
 	
 	@Então("^O evento não deve ser cadastrado$")
 	public void casoTesteEntao2() throws Throwable {
-		action.andExpect(view().name("evento/add_ou_edit"));
+		action.andExpect(view().name(TEMPLATE_ADD_EVENTO)).andExpect(model().attributeHasErrors("evento"));
 	}
 	
 	@Dado("^que o administrador deseja cadastrar um evento no sistema.$")
@@ -129,8 +137,10 @@ public class CadastrarEventosSteps {
 		evento.setNome(nomeEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		
-		when(pessoaService.get(Integer.valueOf(PESSOA_ID))).thenReturn(null);
-
+		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(null);
+		when(messages.getMessage("PESSOA_NAO_ENCONTRADA", null, null))
+			.thenReturn("Pessoa nao encontrada");
+		
 		action = mockMvc
 				.perform(post("/evento/adicionar")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -140,12 +150,12 @@ public class CadastrarEventosSteps {
 	
 	@E("^o organizador do evento informado não está cadastrado no sistema$")
 	public void casoTesteE3(){
-		verify(pessoaService).get(Integer.valueOf(PESSOA_ID));
+		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
 	}
 	
 	@Então("^O evento não deve ser cadastrado no sistema$")
 	public void casoTesteEntao3() throws Exception{
-		action.andExpect(view().name("evento/add_ou_edit"));
+		action.andExpect(view().name(TEMPLATE_ADD_EVENTO));
 	}
 	
 	
@@ -157,6 +167,9 @@ public class CadastrarEventosSteps {
 	@Quando("^informar somente o organizador (.*)$")
 	public void casoTesteQuando4(String organizador) throws Exception{
 		String nomeEvento = "";
+		
+		when(messages.getMessage("NOME_EVENTO_VAZIO_ERROR", null, null))
+		.thenReturn("O nome do evento não pode ser vazio");
 		
 		action = mockMvc
 				.perform(post("/evento/adicionar")

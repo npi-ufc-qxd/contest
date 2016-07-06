@@ -1,16 +1,23 @@
 package ufc.quixada.npi.contest.controller;
 
+
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
@@ -31,37 +38,44 @@ public class EventoController {
 
 	@Autowired
 	private EventoService eventoService;
+	
+	@Autowired
+	private MessageSource messages;
 
 	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/admin_cadastrar";
-
-	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
+	
+	@ModelAttribute("pessoas")
+	public List<Pessoa> listarPessoas(){
+		return pessoaService.list();
+	}
+	
+	
+	@RequestMapping(value = "/adicionar", method = RequestMethod.GET) 
 	public String adicionarEvento(Model model) {
 		model.addAttribute("evento", new Evento());
 		return TEMPLATE_ADICIONAR_OU_EDITAR;
 	}
-
+  
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
-	public String adicionarEvento(@RequestParam String organizador, @Valid Evento evento, BindingResult result,
-			Model model) {
-
+	public String adicionarEvento(@RequestParam(required = false) String organizador, @Valid Evento evento, BindingResult result,
+			Model model, RedirectAttributes redirectAttributes) {
+		
+		if(organizador == null || organizador.isEmpty()){
+			result.reject("organizadorError", messages.getMessage("ORGANIZADOR_VAZIO_ERROR", null, null));
+		}  
+		 
 		if (result.hasErrors()) {
-			model.addAttribute("error", "Nome do Evento não pode ser vazio");
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
 		}
 
-		Pessoa pessoa = null;
-		try {
-			pessoa = pessoaService.get(Integer.valueOf(organizador));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
+		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
 
 		if (pessoa != null) {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
 		} else {
-			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
+			result.reject("organizadorError", messages.getMessage("PESSOA_NAO_ENCONTRADA", null, null));
 			return TEMPLATE_ADICIONAR_OU_EDITAR;
-		}
+		} 
 
 		return "redirect:/evento";
 	}

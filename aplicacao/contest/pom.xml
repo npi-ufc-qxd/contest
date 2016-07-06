@@ -126,6 +126,10 @@
 		    <artifactId>font-awesome</artifactId>
 		    <version>${font.awesome.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc-portlet</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -26,7 +26,7 @@ public class Evento {
 	@Column(name = "id")
 	private Long id;
 
-	@NotEmpty
+	@NotEmpty(message="Nome do evento não pode ser vazio")
 	@Column(name = "nome")
 	private String nome;
 

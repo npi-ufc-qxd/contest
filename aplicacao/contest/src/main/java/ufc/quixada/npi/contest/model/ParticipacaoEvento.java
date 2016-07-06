@@ -24,7 +24,6 @@ public class ParticipacaoEvento {
 
 	@Column(name = "papel")
 	@Enumerated(EnumType.STRING)
-	@NotEmpty
 	private Papel papel;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
