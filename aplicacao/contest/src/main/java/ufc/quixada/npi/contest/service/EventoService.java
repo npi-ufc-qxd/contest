@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 
@@ -18,7 +19,7 @@ public class EventoService {
 		eventoRepository.save(evento);
 	}
 	
-	public void removerEvento(Integer id){
+	public void removerEvento(Long id){
 		if(eventoRepository.findOne(id) != null)
 			eventoRepository.delete(id);
 	}
@@ -27,8 +28,12 @@ public class EventoService {
 		return (List<Evento>) eventoRepository.findAll();
 	}
 	
-	public Evento buscarEventoPorId(Integer id){
+	public Evento buscarEventoPorId(Long id){
 		return eventoRepository.findOne(id);
+	}
+	
+	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
+		return eventoRepository.findByEstadoEquals(estado);
 	}
 	
 }
