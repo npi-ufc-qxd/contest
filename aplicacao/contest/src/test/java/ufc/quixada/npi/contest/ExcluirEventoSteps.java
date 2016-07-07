@@ -58,7 +58,7 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Dado("^o administrador deseja excluir um evento$")
 	public void administradorDesejaExcluirEventoEmOutroEstado() throws Throwable {
-
+		//Nenhuma ação de teste necessária aqui.
 	}
 
 	@Quando("^ele selecionar a lista de eventos (.*)$")
