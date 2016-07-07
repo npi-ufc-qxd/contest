@@ -32,6 +32,7 @@
 
 		<!-- Webjars -->
 		<materialize.version>0.97.6</materialize.version>
+		<font.awesome.version>4.6.3</font.awesome.version>
 		<jquery.version>2.2.4</jquery.version>
 
 		<!-- LDAP -->
@@ -119,6 +120,15 @@
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>jquery</artifactId>
 			<version>${jquery.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>font-awesome</artifactId>
+		    <version>${font.awesome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc-portlet</artifactId>
 		</dependency>
 	</dependencies>
 
