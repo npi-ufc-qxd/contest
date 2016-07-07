@@ -37,33 +37,24 @@ public class EventoController {
 
 	@Autowired
 	private EventoService eventoService;
-	
+
 	@Autowired
 	private MessageSource messages;
-	
+
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
-	public String listarEventosAtivos(Model model){
-		List<Evento> listaEventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		model.addAttribute("eventosAtivos",listaEventos);
+	public String listarEventosAtivos(Model model) {
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.ATIVO);
+		model.addAttribute("eventosAtivos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_ATIVOS;
 	}
-	
+
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
-	public String listarEventosInativos(Model model){
-//		Evento evento = new Evento();
-//		evento.setEstado(EstadoEvento.INATIVO);
-//		evento.setNome("NOVO");
-//		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
-//		
-//		
-//		Pessoa p = pessoaService.getByCpf("12");
-//		participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, p, Papel.ORGANIZADOR);
-		
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosInativos();
-		model.addAttribute("eventosInativos",listaEventos);
+	public String listarEventosInativos(Model model) {
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.INATIVO);
+		model.addAttribute("eventosInativos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_INATIVOS;
 	}
-	
+
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento() {
 		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
@@ -97,18 +88,19 @@ public class EventoController {
 
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
 	public String removerEvento(@PathVariable String id, RedirectAttributes redirect) {
-		try{
+		try {
 			Long idEvento = Long.valueOf(id);
 			Evento evento = eventoService.buscarEventoPorId(idEvento);
 			if (evento != null) {
 				participacaoEventoService.removerParticipacaoEvento(evento);
-				
-				redirect.addFlashAttribute("sucesso", messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null));
-			}else{
-				redirect.addFlashAttribute("erro",messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
+
+				redirect.addFlashAttribute("sucesso",
+						messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null));
+			} else {
+				redirect.addFlashAttribute("erro", messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
 			}
-		}catch(NumberFormatException e){
-			redirect.addFlashAttribute("erro",messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
+		} catch (NumberFormatException e) {
+			redirect.addFlashAttribute("erro", messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
 		}
 
 		return "redirect:/evento/inativos";

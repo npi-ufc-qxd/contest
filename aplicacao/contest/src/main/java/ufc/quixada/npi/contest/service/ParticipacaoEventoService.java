@@ -46,9 +46,9 @@ public class ParticipacaoEventoService {
 		return null;
 	}
 	
-	public List<ParticipacaoEvento> getEventosInativos(){
+	public List<ParticipacaoEvento> getEventosByEstado(EstadoEvento estado){
 		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
-		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapel(EstadoEvento.INATIVO, Papel.ORGANIZADOR);
+		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapel(estado, Papel.ORGANIZADOR);
 		return listaParticipacaoEventos;
 	}
 }

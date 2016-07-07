@@ -8,10 +8,14 @@
 		Dado o administrador deseja excluir um evento
 	
 				
-	Cenário: Listar eventos inativos
-		Quando ele selecionar a lista de eventos inativos
-		Então todos os eventos inativos devem ser exibidos
-		
+	Esquema do Cenário: Listar eventos inativos
+		Quando ele selecionar a lista de eventos <estado>
+		Então todos os eventos <estado> devem ser exibidos
+		Exemplos:
+			| estado     |
+			| INATIVO    |
+			| ATIVO      |
+			
 	Cenário: Excluir um evento inativo com sucesso.    
 		Quando removo um evento com id 1
 		Então evento deve ser excluido com sucesso

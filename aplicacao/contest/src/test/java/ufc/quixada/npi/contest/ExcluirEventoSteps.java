@@ -1,4 +1,4 @@
- package ufc.quixada.npi.contest;
+package ufc.quixada.npi.contest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -39,7 +39,7 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
-	
+
 	@Mock
 	private MessageSource messages;
 
@@ -55,29 +55,36 @@ public class ExcluirEventoSteps extends Mockito {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
 	}
-	
+
 	@Dado("^o administrador deseja excluir um evento$")
 	public void administradorDesejaExcluirEventoEmOutroEstado() throws Throwable {
 
 	}
-	
-	@Quando("^ele selecionar a lista de eventos inativos$")
-	public void administradorVaiParaPaginaDeEventosInativos() throws Throwable {
-		listaParticipacaoEvento = popularParticipacaoEvento();
-		when(participacaoEventoService.getEventosInativos()).thenReturn(listaParticipacaoEvento);
-		action = 
-				mockMvc.perform(get("/evento/inativos"))
-						.andExpect(view().name("evento/admin_lista_inativos"));
+
+	@Quando("^ele selecionar a lista de eventos (.*)$")
+	public void administradorVaiParaPaginaDeEventosInativos(String estado) throws Throwable {
+		listaParticipacaoEvento = new ArrayList<>();
+		when(participacaoEventoService.getEventosByEstado(EstadoEvento.valueOf(estado)))
+				.thenReturn(listaParticipacaoEvento);
+
+		if (estado.equals(EstadoEvento.INATIVO)) {
+			action = mockMvc.perform(get("/evento/inativos"))
+					.andExpect(view().name("evento/admin_lista_inativos"));
+		} else {
+			action = mockMvc.perform(get("/evento/ativos"))
+					.andExpect(view().name("evento/admin_lista_ativos"));
+		}
 	}
-	
-	@Então("^todos os eventos inativos devem ser exibidos$")
-	public void umaListaDeEventosInativosEMostrada() throws Throwable {
-		
-		
-		action
-			.andExpect(model().attribute("eventosInativos", listaParticipacaoEvento));
+
+	@Então("^todos os eventos (.*) devem ser exibidos$")
+	public void umaListaDeEventosInativosEMostrada(String estado) throws Throwable {
+		if (estado.equals(EstadoEvento.INATIVO)) {
+			action.andExpect(model().attribute("eventosInativos", listaParticipacaoEvento));
+		} else {
+			action.andExpect(model().attribute("eventosAtivos", listaParticipacaoEvento));
+		}
+
 	}
-	
 
 	@Quando("^removo um evento com id (.*)$")
 	public void removoEventoComIdValido(String idEvento) throws Throwable {
@@ -85,17 +92,16 @@ public class ExcluirEventoSteps extends Mockito {
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setId(Long.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Long.valueOf(idEvento))).thenReturn(evento);
-		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null)).thenReturn("Evento inativo excluido com sucesso");
+		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null))
+				.thenReturn("Evento inativo excluido com sucesso");
 
 		action = mockMvc.perform(get(TEMPLATE_REMOVER, Long.valueOf(ID_EVENTO)));
 	}
 
 	@Então("^evento deve ser excluido com sucesso$")
 	public void eventoDeveSerExcluidoComSucesso() throws Throwable {
-		//evento/ativos e inativos
-		action		
-			.andExpect(status().isFound()).andExpect(redirectedUrl("/evento/inativos"))
-			.andExpect(flash().attributeExists("sucesso"));
+		action.andExpect(status().isFound()).andExpect(redirectedUrl("/evento/inativos"))
+				.andExpect(flash().attributeExists("sucesso"));
 
 		verify(participacaoEventoService).removerParticipacaoEvento(evento);
 	}
@@ -117,15 +123,15 @@ public class ExcluirEventoSteps extends Mockito {
 
 		action.andExpect(status().is3xxRedirection());
 	}
-	
-	public List<ParticipacaoEvento> popularParticipacaoEvento(){
+
+	public List<ParticipacaoEvento> popularParticipacaoEvento() {
 		listaParticipacaoEvento = new ArrayList<>();
-		
-		for(int i=0; i < 10; i++){
+
+		for (int i = 0; i < 10; i++) {
 			ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
 			listaParticipacaoEvento.add(participacaoEvento);
 		}
-		
+
 		return listaParticipacaoEvento;
 	}
 }
