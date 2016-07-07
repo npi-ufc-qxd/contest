@@ -9,6 +9,6 @@ import ufc.quixada.npi.contest.model.Evento;
 
 @Repository
 @Transactional
-public interface EventoRepository extends CrudRepository<Evento, Integer>{
+public interface EventoRepository extends CrudRepository<Evento, Long>{
 	
 }

@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
+import cucumber.api.java.Before;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
@@ -38,7 +39,7 @@ public class ExcluirEventoSteps extends Mockito {
 	private ResultActions action;
 	private Evento evento;
 
-	@cucumber.api.java.Before
+	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
@@ -54,7 +55,7 @@ public class ExcluirEventoSteps extends Mockito {
 		evento = new Evento();
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setId(Long.valueOf(ID_EVENTO));
-		when(eventoService.buscarEventoPorId(Integer.valueOf(idEvento))).thenReturn(evento);
+		when(eventoService.buscarEventoPorId(Long.valueOf(idEvento))).thenReturn(evento);
 
 		action = mockMvc.perform(get("/evento/remover/{id}", Long.valueOf(ID_EVENTO)));
 	}
@@ -72,7 +73,7 @@ public class ExcluirEventoSteps extends Mockito {
 		evento = new Evento();
 		evento.setEstado(EstadoEvento.valueOf(estado));
 		evento.setId(Long.valueOf(ID_EVENTO));
-		when(eventoService.buscarEventoPorId(Integer.valueOf(idEvento))).thenReturn(evento);
+		when(eventoService.buscarEventoPorId(Long.valueOf(idEvento))).thenReturn(evento);
 
 		action = mockMvc.perform(get("/evento/remover/{id}", Long.valueOf(ID_EVENTO)));
 	}
