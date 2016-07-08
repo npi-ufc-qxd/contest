@@ -20,6 +20,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -47,24 +48,24 @@ public class EventoController {
 		return pessoaService.list();
 	}
 
-	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
+	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.ATIVO);
 		model.addAttribute("eventosAtivos", listaEventos);
-		return Constants.TEMPLATE_LISTAR_ATIVOS;
+		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.INATIVO);
 		model.addAttribute("eventosInativos", listaEventos);
-		return Constants.TEMPLATE_LISTAR_INATIVOS;
+		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS;
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento(Model model) {
 		model.addAttribute("evento", new Evento());
-		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
+		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
@@ -76,17 +77,18 @@ public class EventoController {
 		}
 
 		if (result.hasErrors()) {
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 
 		evento.setEstado(EstadoEvento.INATIVO);
+		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
 
 		if (pessoa != null) {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
 		} else {
 			result.reject("organizadorError", messageService.getMessage("PESSOA_NAO_ENCONTRADA"));
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 
 		return "redirect:/evento/inativos";

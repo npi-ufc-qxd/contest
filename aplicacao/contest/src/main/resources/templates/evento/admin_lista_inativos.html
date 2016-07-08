@@ -34,10 +34,8 @@
 
       <div class="row">
       	<h2 class="col s12">Eventos Inativos</h2>
-      </div>
-
-      <div class="row" th:switch="${!#lists.isEmpty(eventosInativos)}">
-        <div th:if="${sucesso}" class="chip blue darken-1">
+      	
+      	<div th:if="${sucesso}" class="chip blue darken-1">
           <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_SUCESSO}"></span>
           <i class="material-icons">close</i>
         </div>
@@ -45,21 +43,28 @@
           <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_ERRO}"></span>
           <i class="material-icons">close</i>
         </div>
-         		
+        
+      </div>
+
+      <div class="row" th:switch="${!#lists.isEmpty(eventosInativos)}">
+
         <div th:case="${true}">
       
          <div th:each="participacaoEventoInativos : ${eventosInativos}" class="col m6 s12">
           <div class="card">
-            <div class="card-content"><span class="card-title" th:text="${participacaoEventoInativos.evento.nome}">Nome do Evento</span>
+            <div class="card-content"><span class="card-title" th:text="${participacaoEventoInativos.evento.nome}"></span>
               <p th:text="|Organizador: ${participacaoEventoInativos.pessoa.nome}|"></p>
               <p th:text="|Visibilidade: ${participacaoEventoInativos.evento.visibilidade.visibilidade}|"></p>
             </div>
-            <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light">Ativar</a><a th:href="@{/evento/adicionar}" class="btn white-text waves-effect waves-light orange">Editar  </a><a id="excluir" th:attr="idevento=${participacaoEventoInativos.evento.id}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a></div>
+            <div class="card-action">
+              <a href="#" class="btn white-text waves-effect waves-light orange">Editar</a>
+              <a id="excluir" th:attr="id_evento=${participacaoEventoInativos.evento.id}, nome_evento=${participacaoEventoInativos.evento.nome}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a>
+            </div>
           </div>
          </div>
         </div>
         
-        <div class="col m4 s4" th:case="${false}">
+        <div class="col m4 s12" th:case="${false}">
           <p>Não há eventos inativos</p>
         </div>
         
@@ -76,6 +81,7 @@
         <div id="modal" class="modal">
           <div class="modal-content">
             <h4>Excluir Evento</h4>
+            <h5 id="nomeEventoModal"></h5>
             <p>Tem certeza que quer excluir esse evento?</p>
           </div>
           <div class="modal-footer"><a id="confirmarExclusao" href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a></div>
@@ -178,8 +184,10 @@
         $('.modal-trigger').leanModal();
         
         $('.excluirOnclick').click( function(){
-        	var idEvento = $(this).attr("idevento"); 
+        	var idEvento = $(this).attr("id_evento");
+        	var nomeEvento = $(this).attr("nome_evento");
         	$('#confirmarExclusao').attr("href","/evento/remover/"+idEvento);
+        	$('#nomeEventoModal').text("O evento '" + nomeEvento + "' será excluído.");
         });
       });
     </script>
