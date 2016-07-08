@@ -26,9 +26,13 @@ public class PessoaService {
 		return (List<Pessoa>) pessoaRepository.findAll();
 	}
 
-	public void delete(Long id) {
-		if (pessoaRepository.findOne(id) != null)
+	public boolean delete(Long id) {
+		if (pessoaRepository.findOne(id) != null) {
 			pessoaRepository.delete(id);
+			return true;
+		}
+
+		return false;
 	}
 
 	public Pessoa get(Long id) {

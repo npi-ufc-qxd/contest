@@ -15,11 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import cucumber.api.java.Before;
 import cucumber.api.java.gl.E;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
+import cucumber.api.java.Before;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
@@ -44,7 +44,7 @@ public class CadastrarEventosSteps {
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
-
+	
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Pessoa pessoa;
@@ -94,7 +94,7 @@ public class CadastrarEventosSteps {
 
 		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
 	}
-
+	
 	@Quando("^informar somente o nome do evento (.*)$")
 	public void casoTesteQuando2(String nomeEvento) throws Throwable {
 
@@ -128,9 +128,13 @@ public class CadastrarEventosSteps {
 		evento.setEstado(EstadoEvento.INATIVO);
 		
 		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(null);
+<<<<<<< HEAD
+
+=======
 		when(messageService.getMessage("PESSOA_NAO_ENCONTRADA"))
 			.thenReturn("Pessoa nao encontrada");
 		
+>>>>>>> refs/remotes/origin/master
 		action = mockMvc
 				.perform(post("/evento/adicionar")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)

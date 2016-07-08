@@ -18,25 +18,45 @@ public class EventoService {
 	public void adicionarOuAtualizarEvento(Evento evento) {
 		eventoRepository.save(evento);
 	}
+<<<<<<< HEAD
+	
+	public void removerEvento(Long id){
+		if(eventoRepository.findOne(id) != null)
+=======
 
 	public boolean removerEvento(Long id) {
 		if (eventoRepository.findOne(id) != null) {
+>>>>>>> refs/remotes/origin/master
 			eventoRepository.delete(id);
 			return true;
 		}
 
 		return false;
 	}
+<<<<<<< HEAD
+	
+	public List<Evento> buscarEventos(){
+		return (List<Evento>) eventoRepository.findAll();
+	}
+	
+	public Evento buscarEventoPorId(Long id){
+=======
 
 	public Evento buscarEventoPorId(Long id) {
+>>>>>>> refs/remotes/origin/master
 		return eventoRepository.findOne(id);
 	}
+<<<<<<< HEAD
+	
+	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
+		return eventoRepository.findByEstadoEquals(estado);
+	}
+	
+=======
 
 	public List<Evento> buscarEventos() {
 		return (List<Evento>) eventoRepository.findAll();
 	}
 
-	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
-		return eventoRepository.findByEstadoEquals(estado);
-	}
+>>>>>>> refs/remotes/origin/master
 }

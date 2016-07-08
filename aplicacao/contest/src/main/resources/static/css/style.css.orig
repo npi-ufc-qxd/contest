@@ -3,23 +3,26 @@ h1, h2, h3 {
   color:#37474f ;
 }
 
-.page {
+.page{
   min-height: 650px;
 }
 
 .page a, .page a:visited {
   color: #6a1b9a;
-  margin: 0 6px;
+  margin-right: 20px;
 }
 
+<<<<<<< HEAD
+=======
 .opcoes {
 	margin-top: 20px;
 }
 
-.opcoes a {
+>>>>>>> refs/remotes/origin/master
+.opcoes a{
   margin-right: 20px;
 }
-.opcoes a:hover, .opcoes a.ativo {
+.opcoes a:hover{
   border-bottom: 2px solid #6a1b9a;
 }
 
@@ -28,6 +31,53 @@ h1, h2, h3 {
 }
 
 /* label color */
+<<<<<<< HEAD
+   .input-field label {
+     color: #000;
+   }
+   /* label focus color */
+   .input-field input[type=text]:focus + label {
+     color: #6a1b9a;
+   }
+   /* label underline focus color */
+   .input-field input[type=text]:focus {
+     border-bottom: 1px solid #6a1b9a;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* valid color */
+   .input-field input[type=text].valid {
+     border-bottom: 1px solid #6a1b9a ;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* invalid color */
+   .input-field input[type=text].invalid {
+     border-bottom: 1px solid #6a1b9a ;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* label focus color */
+   .input-field input[type=password]:focus + label {
+     color: #6a1b9a;
+   }
+   /* label underline focus color */
+   .input-field input[type=password]:focus {
+     border-bottom: 1px solid #6a1b9a;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* valid color */
+   .input-field input[type=password].valid {
+     border-bottom: 1px solid #6a1b9a ;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* invalid color */
+   .input-field input[type=password].invalid {
+     border-bottom: 1px solid #6a1b9a ;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* icon prefix focus color */
+   .input-field .prefix.active {
+     color:#6a1b9a ;
+   }
+=======
 .input-field label {
   color: #000;
 }
@@ -77,3 +127,4 @@ h1, h2, h3 {
 .error_area .chip {
 	margin-right: 15px;
 }
+>>>>>>> refs/remotes/origin/master

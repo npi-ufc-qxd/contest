@@ -14,20 +14,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.MessageSource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import cucumber.api.java.Before;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
+import cucumber.api.java.Before;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.service.EventoService;
-import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 
 public class ExcluirEventoSteps extends Mockito {
@@ -42,7 +42,7 @@ public class ExcluirEventoSteps extends Mockito {
 	private ParticipacaoEventoService participacaoEventoService;
 
 	@Mock
-	private MessageService messages;
+	private MessageSource messages;
 
 	private static final String ID_EVENTO = "1";
 	private static final String TEMPLATE_REMOVER = "/evento/remover/{id}";
@@ -93,8 +93,11 @@ public class ExcluirEventoSteps extends Mockito {
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setId(Long.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Long.valueOf(idEvento))).thenReturn(evento);
-		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO"))
+<<<<<<< HEAD
+		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null))
 				.thenReturn("Evento inativo excluido com sucesso");
+=======
+>>>>>>> refs/remotes/origin/master
 
 		action = mockMvc.perform(get(TEMPLATE_REMOVER, Long.valueOf(ID_EVENTO)));
 	}
@@ -119,7 +122,7 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Então("^o usuário é informado que não pode excluir esse evento$")
 	public void aconteceExcecao() throws Throwable {
-		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO")).thenReturn("Evento não encontrado");
+		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null)).thenReturn("Evento não encontrado");
 		doThrow(IllegalArgumentException.class).when(participacaoEventoService).removerParticipacaoEvento(evento);
 
 		action.andExpect(status().is3xxRedirection());

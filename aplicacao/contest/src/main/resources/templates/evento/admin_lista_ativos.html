@@ -23,13 +23,23 @@
         </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
     </nav>
-    <div class="container page"><br/>
-      <div class="row opcoes"><a th:href="@{/evento/ativos}">Eventos Ativos</a><a th:href="@{/evento/inativos}">Eventos Inativos</a><a th:href="@{/evento/adicionar}">Adicionar Evento</a></div>
+    <div class="container page">
+      <div class="row opcoes">
+      	<div class="col s12">
+          <a class="ativo" th:href="@{/evento/ativos}">Eventos Ativos</a>
+          <a th:href="@{/evento/inativos}">Eventos Inativos</a>
+          <a th:href="@{/evento/adicionar}">Adicionar Evento</a>
+        </div>
+      </div>
+      
+      <div class="row">
+      	<h2 class="col s12">Eventos Ativos</h2>
+      </div>
+
       <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}">
-        <h2>Lista de Eventos Ativos</h2>
         <div th:case="${true}">
          
-         <div th:each="participacaoEventoAtivos : ${eventosAtivos}" class="col m6 s12">
+         <div th:each="participacaoEventoAtivos : ${eventosAtivos}" class="col m6 s6">
           <div class="card">
             <div class="card-content"><span class="card-title" th:text="${participacaoEventoAtivos.evento.nome}" >Nome do Evento</span>
               <p th:text="|Organizador: ${participacaoEventoAtivos.pessoa.nome}|"></p>
@@ -39,15 +49,19 @@
           </div>
          </div>
         </div>
+
+        <div class="col m4 s4" th:case="${false}">
+          <p>Não há eventos ativos</p>
+        </div>
         
-                <div class="center">
-                  <ul class="pagination">
-                    <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li class="waves-effect"><a href="#">2</a></li>
-                    <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-                  </ul>
-                </div>
+        <div class="center">
+          <ul class="pagination">
+            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li class="waves-effect"><a href="#">2</a></li>
+            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+          </ul>
+        </div>
       </div>
     </div>
     <footer class="page-footer purple darken-4">

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
+<<<<<<< HEAD
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+=======
+>>>>>>> refs/remotes/origin/master
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
@@ -40,12 +44,8 @@ public class EventoController {
 	private EventoService eventoService;
 
 	@Autowired
-	private MessageService messageService;
-
-	@ModelAttribute("pessoas")
-	public List<Pessoa> listarPessoas() {
-		return pessoaService.list();
-	}
+<<<<<<< HEAD
+	private MessageSource messages;
 
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
@@ -59,12 +59,26 @@ public class EventoController {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.INATIVO);
 		model.addAttribute("eventosInativos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_INATIVOS;
+=======
+	private MessageService messageService;
+
+	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/admin_cadastrar";
+
+	@ModelAttribute("pessoas")
+	public List<Pessoa> listarPessoas() {
+		return pessoaService.list();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
+<<<<<<< HEAD
+	public String adicionarEvento() {
+		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
+=======
 	public String adicionarEvento(Model model) {
 		model.addAttribute("evento", new Evento());
-		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
+		return TEMPLATE_ADICIONAR_OU_EDITAR;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
@@ -76,23 +90,42 @@ public class EventoController {
 		}
 
 		if (result.hasErrors()) {
+<<<<<<< HEAD
+			model.addAttribute("error", "Nome do Evento não pode ser vazio");
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
+=======
+			return TEMPLATE_ADICIONAR_OU_EDITAR;
+>>>>>>> refs/remotes/origin/master
 		}
 
-		evento.setEstado(EstadoEvento.INATIVO);
+<<<<<<< HEAD
+		Pessoa pessoa = null;
+		try {
+			pessoa = pessoaService.get(Long.valueOf(organizador));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+=======
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
+>>>>>>> refs/remotes/origin/master
 
 		if (pessoa != null) {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
 		} else {
-			result.reject("organizadorError", messageService.getMessage("PESSOA_NAO_ENCONTRADA"));
+<<<<<<< HEAD
+			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR;
+=======
+			result.reject("organizadorError", messageService.getMessage("PESSOA_NAO_ENCONTRADA"));
+			return TEMPLATE_ADICIONAR_OU_EDITAR;
+>>>>>>> refs/remotes/origin/master
 		}
 
-		return "redirect:/evento/inativos";
+		return "redirect:/paginas_administrador";
 	}
 
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
+<<<<<<< HEAD
 	public String removerEvento(@PathVariable String id, RedirectAttributes redirect) {
 		try {
 			Long idEvento = Long.valueOf(id);
@@ -100,12 +133,21 @@ public class EventoController {
 			if (evento != null) {
 				participacaoEventoService.removerParticipacaoEvento(evento);
 
-				redirect.addFlashAttribute("sucesso", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO"));
+				redirect.addFlashAttribute("sucesso",
+						messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO", null, null));
 			} else {
-				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
+				redirect.addFlashAttribute("erro", messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
 			}
 		} catch (NumberFormatException e) {
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
+			redirect.addFlashAttribute("erro", messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO", null, null));
+=======
+	public String removerEvento(@PathVariable Long id, Model model) {
+		if (id != null) {
+			Evento evento = eventoService.buscarEventoPorId(id);
+			participacaoEventoService.removerParticipacaoEvento(evento);
+		} else {
+			model.addAttribute("error", "Não foi possivel remover evento");
+>>>>>>> refs/remotes/origin/master
 		}
 
 		return "redirect:/evento/inativos";
