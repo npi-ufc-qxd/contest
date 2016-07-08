@@ -92,7 +92,7 @@ public class CadastrarEventosSteps {
 		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, pessoa,
 				Papel.ORGANIZADOR);
 
-		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
+		action.andExpect(redirectedUrl("/evento/inativos")).andExpect(model().hasNoErrors());
 	}
 
 	@Quando("^informar somente o nome do evento (.*)$")

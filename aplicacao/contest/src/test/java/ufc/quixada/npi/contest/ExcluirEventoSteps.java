@@ -29,6 +29,7 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.PessoaService;
 
 public class ExcluirEventoSteps extends Mockito {
 
@@ -40,6 +41,9 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
+	
+	@Mock
+	private PessoaService pessoaService;
 
 	@Mock
 	private MessageService messages;
@@ -68,7 +72,7 @@ public class ExcluirEventoSteps extends Mockito {
 		when(participacaoEventoService.getEventosByEstado(EstadoEvento.valueOf(estado)))
 				.thenReturn(listaParticipacaoEvento);
 
-		if (estado.equals(EstadoEvento.INATIVO)) {
+		if (estado.equals(EstadoEvento.INATIVO.toString())) {
 			action = mockMvc.perform(get("/evento/inativos"))
 					.andExpect(view().name("evento/admin_lista_inativos"));
 		} else {
@@ -79,7 +83,7 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Então("^todos os eventos (.*) devem ser exibidos$")
 	public void umaListaDeEventosInativosEMostrada(String estado) throws Throwable {
-		if (estado.equals(EstadoEvento.INATIVO)) {
+		if (estado.equals(EstadoEvento.INATIVO.toString())) {
 			action.andExpect(model().attribute("eventosInativos", listaParticipacaoEvento));
 		} else {
 			action.andExpect(model().attribute("eventosAtivos", listaParticipacaoEvento));
