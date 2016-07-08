@@ -1,5 +1,8 @@
 package ufc.quixada.npi.contest.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +32,7 @@ public class ParticipacaoEventoService {
 	}
 	
 	public void removerParticipacaoEvento(Evento evento){
-		if(evento != null && evento.getEstado().equals(EstadoEvento.ATIVO)){
+		if(evento != null && evento.getEstado().equals(EstadoEvento.INATIVO)){
 			ParticipacaoEvento participacaoEvento = findByEvento(evento);
 			participacaoEventoRepository.delete(participacaoEvento);
 		}else{
@@ -41,5 +44,11 @@ public class ParticipacaoEventoService {
 		if(evento != null)
 			return participacaoEventoRepository.findByEvento(evento);
 		return null;
+	}
+	
+	public List<ParticipacaoEvento> getEventosByEstado(EstadoEvento estado){
+		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
+		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapel(estado, Papel.ORGANIZADOR);
+		return listaParticipacaoEventos;
 	}
 }

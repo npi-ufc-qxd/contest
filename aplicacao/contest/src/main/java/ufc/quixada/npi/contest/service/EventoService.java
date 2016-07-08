@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 
@@ -35,4 +36,7 @@ public class EventoService {
 		return (List<Evento>) eventoRepository.findAll();
 	}
 
+	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
+		return eventoRepository.findByEstadoEquals(estado);
+	}
 }

@@ -15,11 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import cucumber.api.java.Before;
 import cucumber.api.java.gl.E;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
-import cucumber.api.java.Before;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
@@ -44,7 +44,7 @@ public class CadastrarEventosSteps {
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
-	
+
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Pessoa pessoa;
@@ -92,9 +92,9 @@ public class CadastrarEventosSteps {
 		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, pessoa,
 				Papel.ORGANIZADOR);
 
-		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
+		action.andExpect(redirectedUrl("/evento/inativos")).andExpect(model().hasNoErrors());
 	}
-	
+
 	@Quando("^informar somente o nome do evento (.*)$")
 	public void casoTesteQuando2(String nomeEvento) throws Throwable {
 

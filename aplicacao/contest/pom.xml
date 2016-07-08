@@ -109,7 +109,7 @@
 			<artifactId>npi-ldap</artifactId>
 			<version>${npi.ldap.version}</version>
 		</dependency>
-
+		
 		<!-- Webjars -->
 		<dependency>
 			<groupId>org.webjars.bower</groupId>

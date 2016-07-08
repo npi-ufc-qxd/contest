@@ -3,23 +3,23 @@ h1, h2, h3 {
   color:#37474f ;
 }
 
-.page{
+.page {
   min-height: 650px;
 }
 
 .page a, .page a:visited {
   color: #6a1b9a;
-  margin-right: 20px;
+  margin: 0 6px;
 }
 
 .opcoes {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 
-.opcoes a{
+.opcoes a {
   margin-right: 20px;
 }
-.opcoes a:hover{
+.opcoes a:hover, .opcoes .ativo {
   border-bottom: 2px solid #6a1b9a;
 }
 
