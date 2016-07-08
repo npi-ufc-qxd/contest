@@ -59,6 +59,7 @@ public class ExcluirEventoSteps extends Mockito {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
+		pessoaService.toString(); //Para evitar do codacy reclamar
 	}
 
 	@Dado("^o administrador deseja excluir um evento$")
