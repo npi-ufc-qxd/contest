@@ -1,11 +1,15 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,9 +39,6 @@ public class EventoController {
 
 	@Autowired
 	private EventoService eventoService;
-
-	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
 	
 	@Autowired
 	private MessageService messageService;
@@ -90,7 +91,7 @@ public class EventoController {
 	public String alterarEvento(@RequestParam Long id, Model model){
 		if (eventoService.existeEvento(id)){
 			model.addAttribute("evento", eventoService.buscarEventoPorId(id));
-			return TEMPLATE_ADICIONAR_OU_EDITAR;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 		return "redirect:/evento";
 	}
@@ -99,7 +100,7 @@ public class EventoController {
 	public String alterarEvento(@RequestParam String organizador, @Valid Evento evento, BindingResult result,
 			Model model) {
 		if (result.hasErrors()) {
-			return TEMPLATE_ADICIONAR_OU_EDITAR;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
@@ -107,7 +108,7 @@ public class EventoController {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
 		} else {
 			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
-			return TEMPLATE_ADICIONAR_OU_EDITAR;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 
 		return "redirect:/evento";
