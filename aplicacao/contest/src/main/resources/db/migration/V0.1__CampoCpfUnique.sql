@@ -1,0 +1,1 @@
+ALTER TABLE pessoa ADD CONSTRAINT cpf_unique UNIQUE (cpf);
