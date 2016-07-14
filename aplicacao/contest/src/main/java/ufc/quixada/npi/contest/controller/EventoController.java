@@ -70,7 +70,7 @@ public class EventoController {
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
 	public String adicionarEvento(@RequestParam(required = false) String organizador, @Valid Evento evento,
-			BindingResult result, Model model) {
+			BindingResult result, RedirectAttributes redirect) {
 
 		if (organizador == null || organizador.isEmpty()) {
 			result.reject("organizadorError", messageService.getMessage("ORGANIZADOR_VAZIO_ERROR"));
@@ -88,6 +88,9 @@ public class EventoController {
 			ParticipacaoEvento participacao = new ParticipacaoEvento();
 			if(evento.getId() != null){
 				participacao = participacaoEventoService.findByEventoId(evento.getId());
+				redirect.addFlashAttribute("sucessoEditar", messageService.getMessage("EVENTO_EDITADO_COM_SUCESSO"));
+			}else{
+				redirect.addFlashAttribute("sucessoCadastrar", messageService.getMessage("EVENTO_CADASTRADO_COM_SUCESSO"));
 			}
 			participacao.setEvento(evento);
 			participacao.setPessoa(pessoa);
@@ -147,12 +150,12 @@ public class EventoController {
 			if (evento != null) {
 				participacaoEventoService.removerParticipacaoEvento(evento);
 
-				redirect.addFlashAttribute("sucesso", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO"));
+				redirect.addFlashAttribute("sucessoExcluir", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO"));
 			} else {
-				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
+				redirect.addFlashAttribute("erroExcluir", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
 			}
 		} catch (NumberFormatException e) {
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
+			redirect.addFlashAttribute("erroExcluir", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
 		}
 
 		return "redirect:/evento/inativos";

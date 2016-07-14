@@ -35,11 +35,22 @@
       <div class="row">
       	<h2 class="col s12">Eventos Inativos</h2>
       	
-      	<div th:if="${sucesso}" class="chip blue darken-1">
+      	<div th:if="${sucessoExcluir}" class="chip blue darken-1">
           <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_SUCESSO}"></span>
           <i class="material-icons">close</i>
         </div>
-        <div th:if="${erro}" class="chip red darken-1">
+        
+        <div th:if="${sucessoCadastrar}" class="chip blue darken-1">
+          <span class="white-text" th:text="#{EVENTO_CADASTRADO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${sucessoEditar}" class="chip blue darken-1">
+          <span class="white-text" th:text="#{EVENTO_EDITADO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${erroExcluir}" class="chip red darken-1">
           <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_ERRO}"></span>
           <i class="material-icons">close</i>
         </div>
