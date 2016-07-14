@@ -57,7 +57,7 @@
               <p th:text="|Visibilidade: ${participacaoEventoInativos.evento.visibilidade.visibilidade}|"></p>
             </div>
             <div class="card-action">
-              <a href="#" class="btn white-text waves-effect waves-light orange">Editar</a>
+              <a th:href="@{'/evento/editar/' + ${participacaoEventoInativos.evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
               <a id="excluir" th:attr="id_evento=${participacaoEventoInativos.evento.id}, nome_evento=${participacaoEventoInativos.evento.nome}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a>
             </div>
           </div>

@@ -44,20 +44,20 @@ public class EventoController {
 	private MessageService messageService;
 
 	@ModelAttribute("pessoas")
-	public List<Pessoa> listarPessoas() {
-		return pessoaService.list();
+	public List<Pessoa> listaPossiveisOrganizadores() {
+		return pessoaService.getPossiveisOrganizadores();
 	}
 
 	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.ATIVO);
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
 		model.addAttribute("eventosAtivos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.INATIVO);
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
 		model.addAttribute("eventosInativos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS;
 	}
@@ -83,20 +83,45 @@ public class EventoController {
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
-
-		return "redirect:/evento";
-	}
-	
-	@RequestMapping(value = "/alterar", method = RequestMethod.GET)
-	public String alterarEvento(@RequestParam Long id, Model model){
-		if (eventoService.existeEvento(id)){
-			model.addAttribute("evento", eventoService.buscarEventoPorId(id));
+		
+		if (pessoa != null) {
+			ParticipacaoEvento participacao = new ParticipacaoEvento();
+			if(evento.getId() != null){
+				participacao = participacaoEventoService.findByEventoId(evento.getId());
+			}
+			participacao.setEvento(evento);
+			participacao.setPessoa(pessoa);
+			participacao.setPapel(Papel.ORGANIZADOR);
+			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
+		} else {
+			result.reject("organizadorError", messageService.getMessage("PESSOA_NAO_ENCONTRADA"));
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
-		return "redirect:/evento";
+
+		return "redirect:/evento/inativos";
 	}
 	
-	@RequestMapping(value = "/alterar", method = RequestMethod.POST)
+	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+	public String alterarEvento(@PathVariable String id, Model model, RedirectAttributes redirect){
+		try{
+			Long idEvento = Long.valueOf(id);
+			Evento evento = eventoService.buscarEventoPorId(idEvento);
+			if (evento != null){
+				ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
+				model.addAttribute("evento", participacao.getEvento());
+				model.addAttribute("idPessoa", participacao.getPessoa().getId());
+				model.addAttribute("idParticipacaoEvento", participacao.getId());
+				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
+			}else{
+				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+			}
+		}catch(NumberFormatException e){
+			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+		}
+		return "redirect:/evento/inativos";
+	}
+	
+	@RequestMapping(value = "/editar", method = RequestMethod.POST)
 	public String alterarEvento(@RequestParam String organizador, @Valid Evento evento, BindingResult result,
 			Model model) {
 		if (result.hasErrors()) {
@@ -105,7 +130,7 @@ public class EventoController {
 
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
 		if (pessoa != null) {
-			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
+			//participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
 		} else {
 			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;

@@ -23,6 +23,7 @@ import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -116,8 +117,11 @@ public class AlterarEventoInativoSteps {
 	@Entao("^as configurações do evento são alteradas$")
 	public void configuracoesAlteradas() throws Throwable{
 		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
-		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, org,
-				Papel.ORGANIZADOR);
+		ParticipacaoEvento participacao = new ParticipacaoEvento();
+		participacao.setEvento(evento);
+		participacao.setPessoa(org);
+		participacao.setPapel(Papel.ORGANIZADOR);
+		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(participacao);
 		action.andExpect(redirectedUrl("/evento")).andExpect(model().hasNoErrors());
 	}
 		

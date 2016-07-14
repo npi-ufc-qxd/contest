@@ -54,4 +54,8 @@ public class PessoaService {
 	public boolean autentica(Pessoa pessoa, String cpf, String password) {
 		return (pessoa.getCpf().equals(cpf) && passwordEncoder.matches(password, pessoa.getPassword()));
 	}
+	
+	public List<Pessoa> getPossiveisOrganizadores(){
+		return pessoaRepository.getPossiveisOrganizadores();
+	}
 }

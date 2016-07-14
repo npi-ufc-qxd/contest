@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import cucumber.api.java.Before;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.E;
 import cucumber.api.java.pt.Entao;
@@ -25,7 +26,7 @@ import ufc.quixada.npi.contest.service.PessoaService;
 
 public class AlterarEventoAtivoSteps {
 
-	private static final String PESSOA_ID = "1";
+	//private static final String PESSOA_ID = "1";
 	private static final String EVENTO_ID = "1";
 	private static final String TEMPLATE_ADICIONAR_OU_EDITAR = "evento/add_ou_edit";
 
@@ -48,7 +49,7 @@ public class AlterarEventoAtivoSteps {
 	private Pessoa org;
 	private Evento evento;
 
-	@cucumber.api.java.Before
+	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
@@ -92,6 +93,16 @@ public class AlterarEventoAtivoSteps {
 	@E("^o usuário é avisado via mensagem o motivo do insucesso do cadastro$")
 	public void redirecionado() throws Throwable{
 		action.andExpect(view().name(TEMPLATE_ADICIONAR_OU_EDITAR));
+	}
+	
+	
+	@Quando("^tento alterar o nome de um evento para (.*) e descrição para (.*)$")
+	public void alteraNomeDoEventoEDescricao(String nome, String descricao) throws Throwable{
+
+	}
+	
+	@Entao("^as configurações do evento são alteradas$")
+	public void configuracoesSaoAlteradas() throws Throwable{
 	}
 	
 	

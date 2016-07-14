@@ -1,7 +1,5 @@
 package ufc.quixada.npi.contest;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +24,7 @@ import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -91,8 +90,11 @@ public class CadastrarEventosSteps {
 	@Então("^o evento deve ser cadastrado com visibilidade privada e estado inativo.$")
 	public void casoTesteEntao() throws Throwable {
 		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
-		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(evento, pessoa,
-				Papel.ORGANIZADOR);
+		ParticipacaoEvento participacao = new ParticipacaoEvento();
+		participacao.setEvento(evento);
+		participacao.setPessoa(pessoa);
+		participacao.setPapel(Papel.ORGANIZADOR);
+		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(participacao);
 
 		action.andExpect(redirectedUrl("/evento/inativos")).andExpect(model().hasNoErrors());
 	}
