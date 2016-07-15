@@ -10,7 +10,6 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
-import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.ParticipacaoEventoRepository;
 
 @Service
@@ -23,30 +22,26 @@ public class ParticipacaoEventoService {
 		return participacaoEventoRepository.findOne(id);
 	}
 	
-	public void adicionarOuEditarParticipacaoEvento(Evento evento, Pessoa pessoa, Papel papelEvento){
-		ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
-		participacaoEvento.setEvento(evento);
-		participacaoEvento.setPessoa(pessoa);
-		participacaoEvento.setPapel(papelEvento);
+	public void adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacaoEvento){
 		participacaoEventoRepository.save(participacaoEvento);
 	}
 	
 	public void removerParticipacaoEvento(Evento evento){
 		if(evento != null && evento.getEstado().equals(EstadoEvento.INATIVO)){
-			ParticipacaoEvento participacaoEvento = findByEvento(evento);
+			ParticipacaoEvento participacaoEvento = findByEventoId(evento.getId());
 			participacaoEventoRepository.delete(participacaoEvento);
 		}else{
 			throw new IllegalArgumentException("So é possivel remover eventos inativos");
 		}
 	}
 	
-	public ParticipacaoEvento findByEvento(Evento evento){
-		if(evento != null)
-			return participacaoEventoRepository.findByEvento(evento);
+	public ParticipacaoEvento findByEventoId(Long idEvento){
+		if(idEvento != null)
+			return participacaoEventoRepository.findByEventoId(idEvento);
 		return null;
 	}
 	
-	public List<ParticipacaoEvento> getEventosByEstado(EstadoEvento estado){
+	public List<ParticipacaoEvento> getEventosByEstadoAndPapelOrganizador(EstadoEvento estado){
 		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
 		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapel(estado, Papel.ORGANIZADOR);
 		return listaParticipacaoEventos;

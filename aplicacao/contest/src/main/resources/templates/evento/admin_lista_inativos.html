@@ -35,11 +35,22 @@
       <div class="row">
       	<h2 class="col s12">Eventos Inativos</h2>
       	
-      	<div th:if="${sucesso}" class="chip blue darken-1">
+      	<div th:if="${sucessoExcluir}" class="chip blue darken-1">
           <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_SUCESSO}"></span>
           <i class="material-icons">close</i>
         </div>
-        <div th:if="${erro}" class="chip red darken-1">
+        
+        <div th:if="${sucessoCadastrar}" class="chip blue darken-1">
+          <span class="white-text" th:text="#{EVENTO_CADASTRADO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${sucessoEditar}" class="chip blue darken-1">
+          <span class="white-text" th:text="#{EVENTO_EDITADO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${erroExcluir}" class="chip red darken-1">
           <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_ERRO}"></span>
           <i class="material-icons">close</i>
         </div>
@@ -57,7 +68,7 @@
               <p th:text="|Visibilidade: ${participacaoEventoInativos.evento.visibilidade.visibilidade}|"></p>
             </div>
             <div class="card-action">
-              <a href="#" class="btn white-text waves-effect waves-light orange">Editar</a>
+              <a th:href="@{'/evento/editar/' + ${participacaoEventoInativos.evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
               <a id="excluir" th:attr="id_evento=${participacaoEventoInativos.evento.id}, nome_evento=${participacaoEventoInativos.evento.nome}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a>
             </div>
           </div>

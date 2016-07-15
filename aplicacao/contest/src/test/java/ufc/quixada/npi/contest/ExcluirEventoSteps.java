@@ -70,7 +70,7 @@ public class ExcluirEventoSteps extends Mockito {
 	@Quando("^ele selecionar a lista de eventos (.*)$")
 	public void administradorVaiParaPaginaDeEventosInativos(String estado) throws Throwable {
 		listaParticipacaoEvento = new ArrayList<>();
-		when(participacaoEventoService.getEventosByEstado(EstadoEvento.valueOf(estado)))
+		when(participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.valueOf(estado)))
 				.thenReturn(listaParticipacaoEvento);
 
 		if (estado.equals(EstadoEvento.INATIVO.toString())) {
@@ -106,8 +106,9 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Então("^evento deve ser excluido com sucesso$")
 	public void eventoDeveSerExcluidoComSucesso() throws Throwable {
-		action.andExpect(status().isFound()).andExpect(redirectedUrl("/evento/inativos"))
-				.andExpect(flash().attributeExists("sucesso"));
+		action.andExpect(status().isFound())
+			  .andExpect(redirectedUrl("/evento/inativos"))
+			  .andExpect(flash().attributeExists("sucessoExcluir"));
 
 		verify(participacaoEventoService).removerParticipacaoEvento(evento);
 	}

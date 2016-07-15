@@ -98,34 +98,6 @@ CREATE SEQUENCE notificacao_id_seq
 ALTER SEQUENCE notificacao_id_seq OWNED BY notificacao.id;
 
 
---
--- Name: papel_ldap; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE papel_ldap (
-    id integer NOT NULL,
-    nome character varying(255)
-);
-
-
---
--- Name: papel_ldap_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE papel_ldap_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: papel_ldap_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE papel_ldap_id_seq OWNED BY papel_ldap.id;
-
 
 --
 -- Name: participacao_evento; Type: TABLE; Schema: public; Owner: -
@@ -199,7 +171,7 @@ CREATE TABLE pessoa (
     email character varying(255) NOT NULL,
     nome character varying(255) NOT NULL,
     password character varying(255),
-    papel_ldap_id integer
+    papel_ldap character varying(255)
 );
 
 
@@ -359,12 +331,6 @@ ALTER TABLE ONLY evento ALTER COLUMN id SET DEFAULT nextval('evento_id_seq'::reg
 ALTER TABLE ONLY notificacao ALTER COLUMN id SET DEFAULT nextval('notificacao_id_seq'::regclass);
 
 
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY papel_ldap ALTER COLUMN id SET DEFAULT nextval('papel_ldap_id_seq'::regclass);
-
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
@@ -439,19 +405,6 @@ SELECT pg_catalog.setval('evento_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('notificacao_id_seq', 1, false);
-
-
---
--- Data for Name: papel_ldap; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Name: papel_ldap_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('papel_ldap_id_seq', 1, false);
 
 
 --
@@ -562,14 +515,6 @@ ALTER TABLE ONLY notificacao
 
 
 --
--- Name: papel_ldap_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY papel_ldap
-    ADD CONSTRAINT papel_ldap_pkey PRIMARY KEY (id);
-
-
---
 -- Name: participacao_evento_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -639,14 +584,6 @@ ALTER TABLE ONLY submissao
 
 ALTER TABLE ONLY trilha
     ADD CONSTRAINT fk_9kxiwwysc10fjk6x0c5msark3 FOREIGN KEY (evento_id) REFERENCES evento(id);
-
-
---
--- Name: fk_dkw1r7qkw63y4bpd3o0joe7n4; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY pessoa
-    ADD CONSTRAINT fk_dkw1r7qkw63y4bpd3o0joe7n4 FOREIGN KEY (papel_ldap_id) REFERENCES papel_ldap(id);
 
 
 --

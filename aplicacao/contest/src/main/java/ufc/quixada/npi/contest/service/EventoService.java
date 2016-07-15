@@ -36,7 +36,13 @@ public class EventoService {
 		return (List<Evento>) eventoRepository.findAll();
 	}
 
+	public Boolean existeEvento(Long id){
+		return eventoRepository.exists(id);
+	}
+	
+
 	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
 		return eventoRepository.findByEstadoEquals(estado);
 	}
+	
 }

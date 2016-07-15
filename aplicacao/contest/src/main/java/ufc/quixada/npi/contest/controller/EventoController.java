@@ -39,25 +39,25 @@ public class EventoController {
 
 	@Autowired
 	private EventoService eventoService;
-
+	
 	@Autowired
 	private MessageService messageService;
 
 	@ModelAttribute("pessoas")
-	public List<Pessoa> listarPessoas() {
-		return pessoaService.list();
+	public List<Pessoa> listaPossiveisOrganizadores() {
+		return pessoaService.getPossiveisOrganizadores();
 	}
 
 	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.ATIVO);
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
 		model.addAttribute("eventosAtivos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstado(EstadoEvento.INATIVO);
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
 		model.addAttribute("eventosInativos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS;
 	}
@@ -70,7 +70,7 @@ public class EventoController {
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
 	public String adicionarEvento(@RequestParam(required = false) String organizador, @Valid Evento evento,
-			BindingResult result, Model model) {
+			BindingResult result, RedirectAttributes redirect) {
 
 		if (organizador == null || organizador.isEmpty()) {
 			result.reject("organizadorError", messageService.getMessage("ORGANIZADOR_VAZIO_ERROR"));
@@ -80,17 +80,48 @@ public class EventoController {
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 
-		evento.setEstado(EstadoEvento.INATIVO);
-		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
-
+		
 		if (pessoa != null) {
-			participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
+			ParticipacaoEvento participacao = new ParticipacaoEvento();
+			if(evento.getId() != null){
+				participacao = participacaoEventoService.findByEventoId(evento.getId());
+				redirect.addFlashAttribute("sucessoEditar", messageService.getMessage("EVENTO_EDITADO_COM_SUCESSO"));
+			}else{
+				redirect.addFlashAttribute("sucessoCadastrar", messageService.getMessage("EVENTO_CADASTRADO_COM_SUCESSO"));
+			}
+
+			evento.setEstado(EstadoEvento.INATIVO);
+			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
+
+			participacao.setEvento(evento);
+			participacao.setPessoa(pessoa);
+			participacao.setPapel(Papel.ORGANIZADOR);
+			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 		} else {
 			result.reject("organizadorError", messageService.getMessage("PESSOA_NAO_ENCONTRADA"));
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 
+		return "redirect:/evento/inativos";
+	}
+	
+	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+	public String alterarEvento(@PathVariable String id, Model model, RedirectAttributes redirect){
+		try{
+			Long idEvento = Long.valueOf(id);
+			Evento evento = eventoService.buscarEventoPorId(idEvento);
+			if (evento != null){
+				ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
+				model.addAttribute("evento", participacao.getEvento());
+				model.addAttribute("idPessoa", participacao.getPessoa().getId());
+				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
+			}else{
+				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+			}
+		}catch(NumberFormatException e){
+			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+		}
 		return "redirect:/evento/inativos";
 	}
 
@@ -102,12 +133,12 @@ public class EventoController {
 			if (evento != null) {
 				participacaoEventoService.removerParticipacaoEvento(evento);
 
-				redirect.addFlashAttribute("sucesso", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO"));
+				redirect.addFlashAttribute("sucessoExcluir", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO"));
 			} else {
-				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
+				redirect.addFlashAttribute("erroExcluir", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
 			}
 		} catch (NumberFormatException e) {
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
+			redirect.addFlashAttribute("erroExcluir", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
 		}
 
 		return "redirect:/evento/inativos";
