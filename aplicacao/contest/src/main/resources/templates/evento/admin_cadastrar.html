@@ -42,7 +42,7 @@
     </div>
     <form class="row" action="#" th:action="@{/evento/adicionar}" th:object="${evento}" method="post">
       <input type="hidden" th:field="*{id}" />
-      <div class="error_area" th:if="${#fields.hasErrors('*')}">
+      <div class="error_area col s12" th:if="${#fields.hasErrors('*')}">
         <div class="chip row red left" th:each="err : ${#fields.errors('*')}">
           <span class="white-text" th:text="${err}"></span>
           <i class="material-icons">close</i>
