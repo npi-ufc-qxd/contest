@@ -26,6 +26,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -45,6 +46,9 @@ public class CadastrarEventosSteps {
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
+	
+	@Mock
+	private EventoService eventoservice;
 
 	private MockMvc mockMvc;
 	private ResultActions action;

@@ -80,8 +80,6 @@ public class EventoController {
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 		}
 
-		evento.setEstado(EstadoEvento.INATIVO);
-		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
 		
 		if (pessoa != null) {
@@ -92,6 +90,10 @@ public class EventoController {
 			}else{
 				redirect.addFlashAttribute("sucessoCadastrar", messageService.getMessage("EVENTO_CADASTRADO_COM_SUCESSO"));
 			}
+
+			evento.setEstado(EstadoEvento.INATIVO);
+			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
+
 			participacao.setEvento(evento);
 			participacao.setPessoa(pessoa);
 			participacao.setPapel(Papel.ORGANIZADOR);
@@ -113,7 +115,6 @@ public class EventoController {
 				ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
 				model.addAttribute("evento", participacao.getEvento());
 				model.addAttribute("idPessoa", participacao.getPessoa().getId());
-				model.addAttribute("idParticipacaoEvento", participacao.getId());
 				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
 			}else{
 				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
@@ -122,24 +123,6 @@ public class EventoController {
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
 		return "redirect:/evento/inativos";
-	}
-	
-	@RequestMapping(value = "/editar", method = RequestMethod.POST)
-	public String alterarEvento(@RequestParam String organizador, @Valid Evento evento, BindingResult result,
-			Model model) {
-		if (result.hasErrors()) {
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
-		}
-
-		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
-		if (pessoa != null) {
-			//participacaoEventoService.adicionarOuEditarParticipacaoEvento(evento, pessoa, Papel.ORGANIZADOR);
-		} else {
-			model.addAttribute("error", "Essa pessoa não está cadastrada no sistema");
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
-		}
-
-		return "redirect:/evento";
 	}
 
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)

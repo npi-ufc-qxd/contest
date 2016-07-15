@@ -106,8 +106,9 @@ public class ExcluirEventoSteps extends Mockito {
 
 	@Então("^evento deve ser excluido com sucesso$")
 	public void eventoDeveSerExcluidoComSucesso() throws Throwable {
-		action.andExpect(status().isFound()).andExpect(redirectedUrl("/evento/inativos"))
-				.andExpect(flash().attributeExists("sucesso"));
+		action.andExpect(status().isFound())
+			  .andExpect(redirectedUrl("/evento/inativos"))
+			  .andExpect(flash().attributeExists("sucessoExcluir"));
 
 		verify(participacaoEventoService).removerParticipacaoEvento(evento);
 	}
