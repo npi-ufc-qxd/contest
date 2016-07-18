@@ -28,8 +28,8 @@ import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
-@RequestMapping("/evento")
-public class EventoController {
+@RequestMapping("/eventoOrganizador")
+public class EventoControllerOrganizador {
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -48,24 +48,24 @@ public class EventoController {
 		return pessoaService.getPossiveisOrganizadores();
 	}
 
-	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
+	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
 		model.addAttribute("eventosAtivos", listaEventos);
-		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ADMIN;
+		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
 		model.addAttribute("eventosInativos", listaEventos);
-		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ADMIN;
+		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento(Model model) {
 		model.addAttribute("evento", new Evento());
-		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
@@ -77,7 +77,7 @@ public class EventoController {
 		}
 
 		if (result.hasErrors()) {
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
 		}
 
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
@@ -100,10 +100,10 @@ public class EventoController {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 		} else {
 			result.reject("organizadorError", messageService.getMessage("PESSOA_NAO_ENCONTRADA"));
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
 		}
 
-		return "redirect:/evento/inativos";
+		return "redirect:/eventoOrganizador/inativos";
 	}
 	
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
@@ -115,14 +115,14 @@ public class EventoController {
 				ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
 				model.addAttribute("evento", participacao.getEvento());
 				model.addAttribute("idPessoa", participacao.getPessoa().getId());
-				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
 			}else{
 				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 			}
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
-		return "redirect:/evento/inativos";
+		return "redirect:/eventoOrganizador/inativos";
 	}
 
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
@@ -141,6 +141,29 @@ public class EventoController {
 			redirect.addFlashAttribute("erroExcluir", messageService.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO"));
 		}
 
-		return "redirect:/evento/inativos";
+		return "redirect:/eventoOrganizador/inativos";
+	}
+	
+	@RequestMapping(value = "ativar/{id}", method = RequestMethod.GET)
+	public String ativarEvento(@PathVariable String id, Model model, RedirectAttributes redirect){
+		try{
+			Long idEvento = Long.valueOf(id);
+			Evento evento = eventoService.buscarEventoPorId(idEvento);
+			model.addAttribute("evento", evento);
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+		}catch(NumberFormatException e){
+			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+		}
+		return "redirect:/eventoOrganizador/inativos";
+	}
+	
+	@RequestMapping(value = "ativar}", method = RequestMethod.POST)
+	public String ativarEvento(@Valid Evento evento, BindingResult result, RedirectAttributes redirect){
+		try{
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+		}catch(NumberFormatException e){
+			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+		}
+		return "redirect:/eventoOrganizador/inativos";
 	}
 }
