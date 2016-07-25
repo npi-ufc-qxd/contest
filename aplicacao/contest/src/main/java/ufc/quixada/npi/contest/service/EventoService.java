@@ -15,8 +15,21 @@ public class EventoService {
 	@Autowired
 	private EventoRepository eventoRepository;
 
-	public void adicionarOuAtualizarEvento(Evento evento) {
-		eventoRepository.save(evento);
+	public boolean adicionarOuAtualizarEvento(Evento evento) {
+		if(evento.getPrazoSubmissaoInicial() != null && evento.getPrazoSubmissaoFinal() != null &&
+		   evento.getPrazoRevisaoInicial() != null && evento.getPrazoRevisaoFinal() != null){
+			if(evento.getPrazoSubmissaoInicial().before(evento.getPrazoSubmissaoFinal()) &&
+			   evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoInicial()) &&
+			   evento.getPrazoRevisaoInicial().before(evento.getPrazoRevisaoFinal()) &&
+			   evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoFinal())){
+				eventoRepository.save(evento);
+				return true;
+			}
+			return false;
+		}else{
+			eventoRepository.save(evento);
+			return true;
+		}
 	}
 
 	public boolean removerEvento(Long id) {

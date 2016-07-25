@@ -1,5 +1,8 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -60,12 +63,6 @@ public class EventoControllerOrganizador {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
 		model.addAttribute("eventosInativos", listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
-	}
-
-	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
-	public String adicionarEvento(Model model) {
-		model.addAttribute("evento", new Evento());
-		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
@@ -144,7 +141,7 @@ public class EventoControllerOrganizador {
 		return "redirect:/eventoOrganizador/inativos";
 	}
 	
-	@RequestMapping(value = "ativar/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/ativar/{id}", method = RequestMethod.GET)
 	public String ativarEvento(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
 			Long idEvento = Long.valueOf(id);
@@ -156,14 +153,43 @@ public class EventoControllerOrganizador {
 		}
 		return "redirect:/eventoOrganizador/inativos";
 	}
-	
-	@RequestMapping(value = "ativar}", method = RequestMethod.POST)
-	public String ativarEvento(@Valid Evento evento, BindingResult result, RedirectAttributes redirect){
-		try{
+
+	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
+	public String ativarEvento(@RequestParam("prazoSubmissaoInicial") String prazoSubmissaoInicial,
+			@RequestParam("prazoSubmissaoFinal") String prazoSubmissaoFinal, @RequestParam("prazoRevisaoInicial") String prazoRevisaoInicial,
+			@RequestParam("prazoRevisaoFinal") String prazoRevisaoFinal, @RequestParam("visibilidade") String visibilidade,
+			@Valid Evento evento, BindingResult result, RedirectAttributes redirect){
+		
+		if (result.hasErrors()){
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
-		}catch(NumberFormatException e){
+		}
+		
+		if(eventoService.existeEvento(evento.getId())){
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy");
+			LocalDate dateSubmissaoInicial = LocalDate.parse(prazoSubmissaoInicial, formatter);
+			LocalDate dateSubmissaoFinal = LocalDate.parse(prazoSubmissaoFinal, formatter);
+			LocalDate dateRevisaoInicial = LocalDate.parse(prazoRevisaoInicial, formatter);
+			LocalDate dateRevisaoFinal = LocalDate.parse(prazoRevisaoFinal, formatter);
+
+			evento.setPrazoSubmissaoInicial(Date.valueOf(dateSubmissaoInicial));
+			evento.setPrazoSubmissaoFinal(Date.valueOf(dateSubmissaoFinal));
+			evento.setPrazoRevisaoInicial(Date.valueOf(dateRevisaoInicial));
+			evento.setPrazoRevisaoFinal(Date.valueOf(dateRevisaoFinal));
+			evento.setEstado(EstadoEvento.ATIVO);
+
+			if(visibilidade.equals("on")){
+				evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
+			}else{
+				evento.setVisibilidade(VisibilidadeEvento.PUBLICO);
+			}
+			if(!eventoService.adicionarOuAtualizarEvento(evento)){			
+				result.reject("ativarEventoErro", messageService.getMessage("ERRO_NAS_DATAS"));
+				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+			}
+		}else{
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
-		return "redirect:/eventoOrganizador/inativos";
+
+		return "redirect:/eventoOrganizador/ativos";
 	}
 }

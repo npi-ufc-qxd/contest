@@ -27,13 +27,19 @@
       </div>
     </nav>
     <div class="container page"><br/>
-      <div class="row opcoes"><a href="org_eventos_ativos.html">Eventos Ativos</a><a href="org_eventos_inativos.html">Eventos Inativos</a><a href="org_revisores.html">Revisores</a><a href="org_trilhas.html">Trilhas</a></div>
+      <div class="row opcoes">
+        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+        <a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        <a href="org_revisores.html">Revisores</a>
+        <a href="org_trilhas.html">Trilhas</a></div>
       <div class="row">
         <h2>Editando Dados do Evento</h2>
         <form class="col s12" th:action="@{/eventoOrganizador/ativar}" th:object="${evento}" method="post">
-          <div id="error_area" class="row chip red white-text">
-            "Mensagem de Erro"
-            <i class="material-icons">close</i>
+          <div class="error_area col s12" th:if="${#fields.hasErrors('nome')}">
+            <div class="chip row red left" th:each="err : ${#fields.errors('nome')}">
+              <span class="white-text" th:text="${err}"></span>
+              <i class="material-icons">close</i>
+            </div>
           </div>
           <div class="row"> 
           </div>
@@ -42,51 +48,46 @@
             <input id="nome_evento" type="text" th:field="*{nome}" />
           </div>
           <div class="input-field col m4 s12">
-            <div class="switch" th:switch="*{visibilidade.visibilidade}">
-              <div th:case="'Privado'">
+            <div class="switch">
                 <label>
                   Público
-                  <input checked="checked" type="checkbox"/>
+                  <input checked="checked" name="visibilidade" type="checkbox"/>
                   <span class="lever"></span>
                   Privado
                 </label>
-              </div>
-              <div th:case="'Publico'">
-                <label>
-                  Público
-                  <input disabled="disabled" type="checkbox"/>
-                  <span class="lever"></span>
-                  Privado
-                </label>
-              </div>
             </div>
           </div>
           <div class="input-field col s12">
             <textarea id="descricao_evento" class="materialize-textarea" th:field="*{descricao}"></textarea>
           </div>
-          <div class="row">
-                        <div class="col s3">
-                          <div class="card-content"><span class="card-title"> Prazo de Submissão - Inicial</span>
-                            <input type="date" id="prazo_submissao_inicial" class="datepicker"/>
-                          </div>
-                        </div>
-                        <div class="col s3">
-                          <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
-                            <input type="date" id="prazo_submissao_final" disabled="disabled" class="datepicker"/>
-                          </div>
-                        </div>
-                        <div class="col s3">
-                          <div class="card-content"><span class="card-title"> Prazo de Revisão - Inicial</span>
-                            <input type="date" id="prazo_revisao_inicial" disabled="disabled" class="datepicker"/>
-                          </div>
-                        </div>
-                        <div class="col s3">
-                          <div class="card-content"><span class="card-title"> Prazo de Revisão  - Final</span>
-                            <input type="date" id="prazo_revisao_final" disabled="disabled" class="datepicker"/>
-                          </div>
-                        </div>
+          <div class="input-field col s12">
+            <div class="col s3">
+              <div class="card-content"><span class="card-title"> Prazo de Submissão - Inicial</span>
+                <input type="date" th:field="*{prazoSubmissaoInicial}" id="prazo_submissao_inicial" class="datepicker"/>
+              </div>
+            </div>
+            <div class="col s3">
+              <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
+                <input type="date" th:field="*{prazoSubmissaoFinal}" id="prazo_submissao_final" disabled="disabled" class="datepicker"/>
+              </div>
+            </div>
+            <div class="col s3">
+              <div class="card-content"><span class="card-title"> Prazo de Revisão - Inicial</span>
+                <input type="date" th:field="*{prazoRevisaoInicial}" id="prazo_revisao_inicial" disabled="disabled" class="datepicker"/>
+              </div>
+            </div>
+            <div class="col s3">
+              <div class="card-content"><span class="card-title"> Prazo de Revisão  - Final</span>
+                <input type="date" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final" disabled="disabled" class="datepicker"/>
+              </div>
+            </div>
           </div>
-          <div class="row"><a class="waves-effect waves-light btn white-text">Salvar Detalhes e Ativar<i aria-hidden="true" class="fa fa-upload left"></i></a></div>
+          <div class="input-field col s12">
+            <button type="submit" class="waves-effect waves-light btn white-text">
+            Salvar Detalhes e Ativar<i aria-hidden="true" class="fa fa-floppy-o left"></i>
+            </button>
+          </div>
+        
         </form>
       </div>
     </div>
