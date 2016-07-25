@@ -45,7 +45,9 @@ public class EventoControllerOrganizador {
 	
 	@Autowired
 	private MessageService messageService;
-
+	
+	private static final String CHECKED = "on";
+	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
@@ -160,7 +162,7 @@ public class EventoControllerOrganizador {
 			@RequestParam("prazoRevisaoFinal") String prazoRevisaoFinal, @RequestParam("visibilidade") String visibilidade,
 			@Valid Evento evento, BindingResult result, RedirectAttributes redirect){
 		
-		if (result.hasErrors()){
+		if (result.hasFieldErrors("nome")){
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
 		}
 		
@@ -177,7 +179,7 @@ public class EventoControllerOrganizador {
 			evento.setPrazoRevisaoFinal(Date.valueOf(dateRevisaoFinal));
 			evento.setEstado(EstadoEvento.ATIVO);
 
-			if(visibilidade.equals("on")){
+			if(visibilidade.equals(CHECKED)){
 				evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 			}else{
 				evento.setVisibilidade(VisibilidadeEvento.PUBLICO);

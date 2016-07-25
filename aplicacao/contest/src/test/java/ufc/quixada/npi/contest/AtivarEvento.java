@@ -26,9 +26,6 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.ParticipacaoEvento;
-import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
@@ -59,33 +56,18 @@ public class AtivarEvento {
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
-	private ParticipacaoEvento participacao;
-	private Pessoa org;
 	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoControllerOrganizador).build();
 		evento = new Evento();
-		org = new Pessoa();
-		participacao = new ParticipacaoEvento();
 		
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setNome("teste");
 		evento.setDescricao("descricao");
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		evento.setId(1L);
-		
-		org.setCpf("123");
-		org.setEmail("a@a");
-		org.setId(Long.valueOf("1"));
-		org.setNome("Joao");
-		
-		
-		participacao.setEvento(evento);
-		participacao.setId(Long.valueOf("2"));
-		participacao.setPapel(Papel.ORGANIZADOR);
-		participacao.setPessoa(org);
 		
 		participacaoEventoService.toString();
 		pessoaService.toString();
@@ -134,7 +116,6 @@ public class AtivarEvento {
 	public void eventoEAtivado() throws Exception{
 		action.andExpect(status().isFound())
 	      .andExpect(redirectedUrl(TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG));
-		//verify(eventoService).adicionarOuAtualizarEvento(evento);
 	}
 	
 	@Quando("^o organizador apaga o campo nome e ativa o evento com visibilidade (.*)$")
