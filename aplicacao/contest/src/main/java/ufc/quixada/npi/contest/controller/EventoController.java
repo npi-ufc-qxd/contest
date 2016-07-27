@@ -52,20 +52,20 @@ public class EventoController {
 	public String listarEventosAtivos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
 		model.addAttribute("eventosAtivos", listaEventos);
-		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS;
+		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ADMIN;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
 		model.addAttribute("eventosInativos", listaEventos);
-		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS;
+		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ADMIN;
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento(Model model) {
 		model.addAttribute("evento", new Evento());
-		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
+		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
@@ -77,7 +77,7 @@ public class EventoController {
 		}
 
 		if (result.hasErrors()) {
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 		}
 
 		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
@@ -100,7 +100,7 @@ public class EventoController {
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 		} else {
 			result.reject("organizadorError", messageService.getMessage("PESSOA_NAO_ENCONTRADA"));
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 		}
 
 		return "redirect:/evento/inativos";
@@ -115,7 +115,7 @@ public class EventoController {
 				ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
 				model.addAttribute("evento", participacao.getEvento());
 				model.addAttribute("idPessoa", participacao.getPessoa().getId());
-				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO;
+				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 			}else{
 				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 			}

@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "evento")
@@ -42,12 +43,24 @@ public class Evento {
 	private EstadoEvento estado;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "prazo_submissao")
-	private Date prazoDeSubmissao;
+	@Column(name = "prazo_submissao_inicial")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private Date prazoSubmissaoInicial;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "prazo_revisao")
-	private Date prazoDeRevisao;
+	@Column(name = "prazo_submissao_final")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private Date prazoSubmissaoFinal;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "prazo_revisao_inicial")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private Date prazoRevisaoInicial;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "prazo_revisao_final")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private Date prazoRevisaoFinal;
 
 	@OneToMany(mappedBy = "evento")
 	private List<ParticipacaoEvento> participacoes;
@@ -92,20 +105,36 @@ public class Evento {
 		this.estado = estado;
 	}
 
-	public Date getPrazoDeSubmissao() {
-		return prazoDeSubmissao;
+	public Date getPrazoSubmissaoInicial() {
+		return prazoSubmissaoInicial;
 	}
 
-	public void setPrazoDeSubmissao(Date prazoDeSubmissao) {
-		this.prazoDeSubmissao = prazoDeSubmissao;
+	public void setPrazoSubmissaoInicial(Date prazoSubmissaoInicial) {
+		this.prazoSubmissaoInicial = prazoSubmissaoInicial;
+	}
+	
+	public Date getPrazoSubmissaoFinal() {
+		return prazoSubmissaoFinal;
 	}
 
-	public Date getPrazoDeRevisao() {
-		return prazoDeRevisao;
+	public void setPrazoSubmissaoFinal(Date prazoSubmissaoFinal) {
+		this.prazoSubmissaoFinal = prazoSubmissaoFinal;
 	}
 
-	public void setPrazoDeRevisao(Date prazoDeRevisao) {
-		this.prazoDeRevisao = prazoDeRevisao;
+	public Date getPrazoRevisaoInicial() {
+		return prazoRevisaoInicial;
+	}
+
+	public void setPrazoRevisaoInicial(Date prazoRevisaoInicial) {
+		this.prazoRevisaoInicial = prazoRevisaoInicial;
+	}
+
+	public Date getPrazoRevisaoFinal() {
+		return prazoRevisaoFinal;
+	}
+
+	public void setPrazoRevisaoFinal(Date prazoRevisaoFinal) {
+		this.prazoRevisaoFinal = prazoRevisaoFinal;
 	}
 
 	public List<ParticipacaoEvento> getParticipacoes() {
@@ -144,7 +173,8 @@ public class Evento {
 	@Override
 	public String toString() {
 		return "Evento [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", visibilidade=" + visibilidade
-				+ ", estado=" + estado + ", prazoDeSubmissao=" + prazoDeSubmissao + ", prazoDeRevisao=" + prazoDeRevisao
-				+ ", participacoes=" + participacoes + "]";
+				+ ", estado=" + estado + ", prazoSubmissaoInicial=" + prazoSubmissaoInicial + ", prazoSubmissaoFinal="
+				+ prazoSubmissaoFinal + ", prazoRevisaoInicial=" + prazoRevisaoInicial + ", prazoRevisaoFinal="
+				+ prazoRevisaoFinal + ", participacoes=" + participacoes + "]";
 	}
 }
