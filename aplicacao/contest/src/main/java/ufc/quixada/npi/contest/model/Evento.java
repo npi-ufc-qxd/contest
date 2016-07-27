@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "evento")
@@ -43,18 +44,22 @@ public class Evento {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "prazo_submissao_inicial")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoSubmissaoInicial;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "prazo_submissao_final")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoSubmissaoFinal;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "prazo_revisao_inicial")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoRevisaoInicial;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "prazo_revisao_final")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoRevisaoFinal;
 
 	@OneToMany(mappedBy = "evento")

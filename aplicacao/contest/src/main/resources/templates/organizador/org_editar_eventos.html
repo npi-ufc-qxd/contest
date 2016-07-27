@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -47,16 +48,14 @@
           <div class="input-field col m8 s12">
             <input id="nome_evento" type="text" th:field="*{nome}" />
           </div>
+          
           <div class="input-field col m4 s12">
-            <div class="switch">
-                <label>
-                  Público
-                  <input checked="checked" name="visibilidade" type="checkbox"/>
-                  <span class="lever"></span>
-                  Privado
-                </label>
-            </div>
+           	<input th:field="*{visibilidade}" th:value="PUBLICO" type="radio" /> 
+            <label for="visibilidade1">Publico</label>
+            <input th:field="*{visibilidade}" th:value="PRIVADO" type="radio" /> 
+            <label for="visibilidade2">Privado</label>
           </div>
+          
           <div class="input-field col s12">
             <textarea id="descricao_evento" class="materialize-textarea" th:field="*{descricao}"></textarea>
           </div>
@@ -67,11 +66,6 @@
               </div>
             </div>
             <div class="col s3">
-              <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
-                <input type="date" th:field="*{prazoSubmissaoFinal}" id="prazo_submissao_final" disabled="disabled" class="datepicker"/>
-              </div>
-            </div>
-            <div class="col s3">
               <div class="card-content"><span class="card-title"> Prazo de Revisão - Inicial</span>
                 <input type="date" th:field="*{prazoRevisaoInicial}" id="prazo_revisao_inicial" disabled="disabled" class="datepicker"/>
               </div>
@@ -79,6 +73,11 @@
             <div class="col s3">
               <div class="card-content"><span class="card-title"> Prazo de Revisão  - Final</span>
                 <input type="date" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final" disabled="disabled" class="datepicker"/>
+              </div>
+            </div>
+            <div class="col s3">
+              <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
+                <input type="date" th:field="*{prazoSubmissaoFinal}" id="prazo_submissao_final" disabled="disabled" class="datepicker"/>
               </div>
             </div>
           </div>
@@ -125,7 +124,9 @@
           weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
           today: 'Hoje',
           clear: 'Limpar',
-          close: 'Fechar'
+          close: 'Fechar',
+          formatSubmit: 'dd/mm/yyyy',     
+          format: 'dd/mm/yyyy',     
         });
         
         //Trata as datas na tela org_editar_eventos 
@@ -158,10 +159,15 @@
           var picker = getPicker(idCalendarioInicial);
           var dataAtual = picker.get();
           var umDia = 1;
+          //dataAtual = dataAtual.split("/");
+          //var dataMinima = new Date(dataAtual[2], dataAtual[1] - 1, dataAtual[0]);
           
-          var dataMinima = new Date(dataAtual);
-          dataMinima.setDate(dataMinima.getDate()+umDia);
-                
+		  dataAtual = dataAtual.split("/");
+		  
+		  var dataMinima = new Date(dataAtual[2], dataAtual[1] - 1, dataAtual[0]);
+          
+		  dataMinima.setDate(dataMinima.getDate()+umDia);
+          
           if (dataAtual.length == 0) {
             desabilitarCalendario(idCalendarioFinal);
           } else {
@@ -172,19 +178,16 @@
         }
         
         $(calendarioSubmissaoInicial).on("change",function(){
-          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
-        });
-        
-        $(calendarioSubmissaoFinal).on("change",function(){
-          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
+          configurarCalendario(calendarioSubmissaoInicial, calendarioRevisaoInicial);
         });
         
         $(calendarioRevisaoInicial).on("change",function(){
           configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
-        });
+        }); 
         
-        //Inicialização do Modal excluir Evento
-        $('.modal-trigger').leanModal();
+        $(calendarioRevisaoFinal).on("change",function(){
+          configurarCalendario(calendarioRevisaoFinal, calendarioSubmissaoFinal);
+        });
         
       });
     </script>

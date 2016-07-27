@@ -69,7 +69,6 @@
             <div class="card-action">
               <a th:href="@{'/eventoOrganizador/ativar/' + ${participacaoEventoInativos.evento.id}}"  class="btn white-text waves-effect waves-light">Ativar</a>
               <a th:href="@{'/eventoOrganizador/editar/' + ${participacaoEventoInativos.evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
-              <a id="excluir" th:attr="id_evento=${participacaoEventoInativos.evento.id}, nome_evento=${participacaoEventoInativos.evento.nome}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a>
             </div>
           </div>
          </div>
@@ -89,17 +88,7 @@
                     <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
                   </ul>
                 </div>
-        <div id="modal" class="modal">
-          <div class="modal-content">
-            <h4>Excluir Evento</h4>
-            <h5 id="nomeEventoModal"></h5>
-            <p>Tem certeza que quer excluir esse evento?</p>
-          </div>
-          <div class="modal-footer">
-            <a id="confirmarExclusao" href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a>
-            <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-          </div>
-        </div>
+
       </div>
     <footer class="page-footer purple darken-4">
       <div class="footer-copyright">
@@ -195,15 +184,6 @@
           configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
         });
         
-        //Inicialização do Modal excluir Evento
-        $('.modal-trigger').leanModal();
-
-        $('.excluirOnclick').click( function(){
-        	var idEvento = $(this).attr("id_evento");
-        	var nomeEvento = $(this).attr("nome_evento");
-        	$('#confirmarExclusao').attr("href","/eventoOrganizador/remover/"+idEvento);
-        	$('#nomeEventoModal').text("O evento '" + nomeEvento + "' será excluído.");
-        });
       });
     </script>
   </body>
