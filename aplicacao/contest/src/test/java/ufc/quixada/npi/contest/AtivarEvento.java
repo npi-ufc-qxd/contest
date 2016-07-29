@@ -48,7 +48,7 @@ public class AtivarEvento {
 	@Mock
 	private MessageService messageService;
 	
-	private static final String PAGINA_ADD_OR_EDIT_EVENTO_ORG = "organizador/org_editar_eventos";
+	private static final String PAGINA_ADD_OR_EDIT_EVENTO_ORG = "organizador/org_ativar_eventos";
 	private static final String TEMPLATE_ATIVAR_EVENTO_GET = "/eventoOrganizador/ativar/{id}";
 	private static final String TEMPLATE_ATIVAR_EVENTO_POST = "/eventoOrganizador/ativar";
 	private static final String TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG = "/eventoOrganizador/ativos";

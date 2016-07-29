@@ -22,7 +22,10 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.RevisaoService;
+import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.validator.EditarEventoValidator;
 
 @Controller
 @RequestMapping("/eventoOrganizador")
@@ -36,10 +39,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 
 	@Autowired
 	private EventoService eventoService;
-	
+
 	@Autowired
 	private MessageService messageService;
+
+	@Autowired
+	private EditarEventoValidator editarEventoValidator;
 	
+	@Autowired
+	private RevisaoService revisaoService;
+	
+	@Autowired
+	private SubmissaoService submissaoService;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -62,7 +73,25 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect){
-		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG, "redirect:/eventoOrganizador/inativos");
+		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
+		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
+		boolean eventoAtivo = true;
+		boolean eventoInativo = true;
+		if(exiteSubmissao){
+			if(existeRevisao){
+				model.addAttribute("existeSubmissaoRevisao", exiteSubmissao);
+			}else{
+				model.addAttribute("existeSubmissao", exiteSubmissao);
+			}
+		}else{
+			Evento evento = eventoService.buscarEventoPorId(Long.valueOf(id));
+			if(evento.getEstado().equals(EstadoEvento.ATIVO)){
+				model.addAttribute("eventoAtivo",eventoAtivo);
+			}else{
+				model.addAttribute("eventoInativo",eventoInativo);
+			}
+		}
+		return alterarEvento(id, model, redirect, Constants.TEMPLATE_EDITAR_EVENTO_ORG, "redirect:/eventoOrganizador/inativos");
 	}
 
 	@RequestMapping(value = "/ativar/{id}", method = RequestMethod.GET)
@@ -71,7 +100,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			Long idEvento = Long.valueOf(id);
 			Evento evento = eventoService.buscarEventoPorId(idEvento);
 			model.addAttribute("evento", evento);
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+			return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
@@ -81,16 +110,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
 	public String ativarEvento(@Valid Evento evento, BindingResult result, RedirectAttributes redirect){
 		
-		if (result.hasFieldErrors("nome")){
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+		editarEventoValidator.validate(evento, result);
+		
+		if (result.hasErrors()){
+			return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
 		}
 		
 		if(eventoService.existeEvento(evento.getId())){
+			
 			evento.setEstado(EstadoEvento.ATIVO);
 
 			if(!eventoService.adicionarOuAtualizarEvento(evento)){			
-				result.reject("ativarEventoErro", messageService.getMessage("ERRO_NAS_DATAS"));
-				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+				return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
 			}
 		}else{
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));

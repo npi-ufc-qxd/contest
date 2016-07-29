@@ -56,7 +56,6 @@ public class EventoService {
 		return eventoRepository.exists(id);
 	}
 	
-
 	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
 		return eventoRepository.findByEstadoEquals(estado);
 	}
