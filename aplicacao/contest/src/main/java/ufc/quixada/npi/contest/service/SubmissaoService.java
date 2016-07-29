@@ -12,10 +12,6 @@ public class SubmissaoService {
 	private SubmissaoRepository submissaoRepository;
 	
 	public boolean existeTrabalhoNesseEvento(Long id){
-		if(submissaoRepository.existTrabalhoNesseEvento(id) > 0){
-			return true;
-		}else{
-			return false;
-		}
+		return submissaoRepository.existTrabalhoNesseEvento(id);
 	}
 }

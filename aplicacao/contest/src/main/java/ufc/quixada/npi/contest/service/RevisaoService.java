@@ -12,10 +12,6 @@ public class RevisaoService {
 	private RevisaoRepository revisaoRepository;
 	
 	public boolean existeTrabalhoNesseEvento(Long id){
-		if(revisaoRepository.existTrabalhoNesseEvento(id) > 0){
-			return true;
-		}else{
-			return false;
-		}
+		return revisaoRepository.existTrabalhoNesseEvento(id);
 	}
 }
