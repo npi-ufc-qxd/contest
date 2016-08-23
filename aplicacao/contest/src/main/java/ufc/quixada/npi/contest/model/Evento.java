@@ -64,6 +64,9 @@ public class Evento {
 
 	@OneToMany(mappedBy = "evento")
 	private List<ParticipacaoEvento> participacoes;
+	
+	@OneToMany(mappedBy = "evento")
+	private List<Trilha> trilhas;
 
 	public Long getId() {
 		return id;

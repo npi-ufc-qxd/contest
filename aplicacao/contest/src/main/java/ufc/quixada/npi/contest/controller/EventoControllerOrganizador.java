@@ -16,12 +16,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
@@ -40,6 +44,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@Autowired
 	private MessageService messageService;
 	
+	@Autowired
+	private TrilhaService trilhaService;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -98,4 +104,20 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 
 		return "redirect:/eventoOrganizador/ativos";
 	}
+	
+	@RequestMapping(value = "/trilha", method = RequestMethod.POST)
+	public String cadastraTrilha(@PathVariable String idEvento, @Valid Trilha trilha, BindingResult result){
+		if (result.hasErrors()) {
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+		}
+		
+		if (eventoService.existeEvento(Long.parseLong(idEvento))) {
+			trilhaService.adicionarOuAtualizarTrilha(trilha);
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+		}else{
+			result.reject("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
+			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+		}
+	}
+	
 }
