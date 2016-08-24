@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.mockito.InjectMocks;
@@ -31,9 +32,11 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.util.Constants;
 
 public class CadastrarTrilhasSteps {
 	private static final String PESSOA_ID = "1";
+	private static final String EVENTO_ID = "2";
 
 	@InjectMocks
 	private EventoController eventoController;
@@ -55,7 +58,6 @@ public class CadastrarTrilhasSteps {
 	private Pessoa pessoa;
 	private Evento evento;
 	private Trilha trilha;
-	private final String TEMPLATE_ADD_EVENTO = "evento/admin_cadastrar";
 
 	@Before
 	public void setup() {
@@ -64,12 +66,7 @@ public class CadastrarTrilhasSteps {
 		eventoService.toString();//Para evitar do codacy reclamar
 	}
 
-	@Dado("^o administrador deseja cadastrar um evento.$")
-	public void administradorDesejaCadastrarUmEvento() throws Throwable {
-		// nenhuma ação de teste necessária
-	}
-
-	@Quando("^existe um organizador (.*)")
+	@Dado("^existe um organizador (.*)")
 	public void existeOrganizador(String organizador) throws Throwable {
 		pessoa = new Pessoa();
 		pessoa.setNome(organizador);
@@ -82,37 +79,28 @@ public class CadastrarTrilhasSteps {
 		evento = new Evento();
 		evento.setNome(nomeEvento);
 		evento.setDescricao(descricaoEvento);
-		evento.setEstado(EstadoEvento.INATIVO);
-		
-		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
-
-		action = mockMvc
-				.perform(post("/evento/adicionar")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("nome", nomeEvento)
-				.param("descricao", descricaoEvento)
-				.param("organizador", PESSOA_ID));
+		evento.setEstado(EstadoEvento.ATIVO);
+		evento.setId(2l);
 	}
 
-	@Quando("^o organizador cadastra uma trilha de submissão$")
-	public void casoTesteQuando2(String nomeEvento) throws Throwable {
-
+	@Quando("^o organizador cadastra uma trilha de submissão (.*)$")
+	public void cadastraSubmissao(String nomeTrilha) throws Throwable {
 		trilha = new Trilha();
-		trilha.setNome(nomeEvento);
-		trilha.setEvento(evento);
-		trilha.setId(100L);
+		trilha.setNome(nomeTrilha);
+		trilha.setId(3L);
 		
-		/*action = mockMvc
-				.perform(post("/eventoOrganizador/")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("nome", nomeEvento)
-				.param("organizador", organizador));*/
-		
+		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
+		action = mockMvc
+				.perform(post("/eventoOrganizador/trilha")
+				.param("eventoId", evento.getId().toString())
+				.param("nome", trilha.getNome())
+				.param("id", trilha.getId().toString())
+				);
 	}
 	
 	@Então("^a trilha de submissão é cadastrada$")
-	public void casoTesteEntao2() throws Throwable {
-		action.andExpect(view().name(TEMPLATE_ADD_EVENTO)).andExpect(model().attributeHasErrors("evento"));
+	public void submissaoCadastrada() throws Throwable {
+		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG));
 	}
 	
 }

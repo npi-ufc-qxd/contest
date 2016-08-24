@@ -32,4 +32,8 @@ public class TrilhaService {
 		}
 		return false;
 	}
+	
+	public List<Trilha> buscarEventos() {
+		return (List<Trilha>) trilhaRepository.findAll();
+	}
 }

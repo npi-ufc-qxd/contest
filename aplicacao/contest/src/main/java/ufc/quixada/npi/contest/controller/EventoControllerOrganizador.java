@@ -106,17 +106,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/trilha", method = RequestMethod.POST)
-	public String cadastraTrilha(@PathVariable String idEvento, @Valid Trilha trilha, BindingResult result){
+	public String cadastraTrilha(@PathVariable String eventoId, @Valid Trilha trilha, BindingResult result){
 		if (result.hasErrors()) {
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}
-		
-		if (eventoService.existeEvento(Long.parseLong(idEvento))) {
+		long id = Long.parseLong(eventoId);
+		if (eventoService.existeEvento(id)) {
+			trilha.setEvento(eventoService.buscarEventoPorId(id));
 			trilhaService.adicionarOuAtualizarTrilha(trilha);
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}else{
 			result.reject("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}
 	}
 	
