@@ -19,6 +19,7 @@ public class Constants {
 	public static final String TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG = "organizador/org_editar_eventos";
 	public static final String TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG = "organizador/org_eventos_listar_ativos";
 	public static final String TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG = "organizador/org_eventos_listar_inativos";
+	
 	public static final String TEMPLATE_LISTAR_TRILHAS_ORG = "organizador/org_trilhas";
 	public static final String TEMPLATE_DETALHES_TRILHA_ORG = "organizador/org_eventos_detalhes_trilha";
 }

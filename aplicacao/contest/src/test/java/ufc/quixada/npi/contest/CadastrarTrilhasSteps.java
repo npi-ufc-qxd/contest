@@ -94,7 +94,6 @@ public class CadastrarTrilhasSteps {
 		trilha.setNome(nomeTrilha);
 		trilha.setId(3L);
 		
-
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/trilhas")
@@ -106,7 +105,7 @@ public class CadastrarTrilhasSteps {
 
 	@Então("^a trilha de submissão é cadastrada$")
 	public void submissaoCadastrada() throws Throwable {
-		action.andExpect(view().name(Constants.TEMPLATE_LISTAR_TRILHAS_ORG));
+		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG));
 	}
 	
 }
