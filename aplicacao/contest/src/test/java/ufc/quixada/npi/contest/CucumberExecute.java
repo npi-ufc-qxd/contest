@@ -13,4 +13,4 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 @CucumberOptions (features = "classpath:features", glue={"ufc.quixada.npi.contest"})
 public class CucumberExecute {
-}
+} 

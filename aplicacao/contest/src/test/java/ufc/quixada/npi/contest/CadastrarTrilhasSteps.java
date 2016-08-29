@@ -22,6 +22,8 @@ import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoController;
+import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
+import ufc.quixada.npi.contest.controller.EventoGenericoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
@@ -32,6 +34,7 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
 public class CadastrarTrilhasSteps {
@@ -39,13 +42,16 @@ public class CadastrarTrilhasSteps {
 	private static final String EVENTO_ID = "2";
 
 	@InjectMocks
-	private EventoController eventoController;
+	private EventoControllerOrganizador eventoControllerOrganizador;
+	
+	@InjectMocks
+	private EventoGenericoController eventoGenericoController;
 
 	@Mock
 	private PessoaService pessoaService;
 	
 	@Mock
-	private MessageService messageService;
+	private TrilhaService trilhaService;
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
@@ -62,8 +68,7 @@ public class CadastrarTrilhasSteps {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
-		eventoService.toString();//Para evitar do codacy reclamar
+		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoControllerOrganizador).build();
 	}
 
 	@Dado("^existe um organizador (.*)")
@@ -80,7 +85,7 @@ public class CadastrarTrilhasSteps {
 		evento.setNome(nomeEvento);
 		evento.setDescricao(descricaoEvento);
 		evento.setEstado(EstadoEvento.ATIVO);
-		evento.setId(2l);
+		evento.setId(Long.parseLong(EVENTO_ID));
 	}
 
 	@Quando("^o organizador cadastra uma trilha de submissão (.*)$")
@@ -89,18 +94,19 @@ public class CadastrarTrilhasSteps {
 		trilha.setNome(nomeTrilha);
 		trilha.setId(3L);
 		
+
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		action = mockMvc
-				.perform(post("/eventoOrganizador/trilha")
+				.perform(post("/eventoOrganizador/trilhas")
 				.param("eventoId", evento.getId().toString())
 				.param("nome", trilha.getNome())
 				.param("id", trilha.getId().toString())
 				);
 	}
-	
+
 	@Então("^a trilha de submissão é cadastrada$")
 	public void submissaoCadastrada() throws Throwable {
-		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG));
+		action.andExpect(view().name(Constants.TEMPLATE_LISTAR_TRILHAS_ORG));
 	}
 	
 }
