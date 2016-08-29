@@ -11,7 +11,7 @@ import ufc.quixada.npi.contest.service.MessageService;
 
 
 @Named
-public class EditarEventoValidator implements Validator{
+public class EventoValidator implements Validator{
 	
 	@Autowired
 	private MessageService messageService;
@@ -30,8 +30,8 @@ public class EditarEventoValidator implements Validator{
 	@Override
 	public void validate(Object object, Errors erros) {
 		Evento  evento = (Evento) object;
-		if(evento == null || datasOuVisibilidadeNull(evento)){
-			erros.rejectValue(EVENTO_CAMPO_NULL, EVENTO_CAMPO_NULL, messageService.getMessage("ERRO_CAMPOS_EVENTO_NULL"));
+		if(datasOuVisibilidadeNull(evento)){
+			erros.rejectValue(null, EVENTO_CAMPO_NULL, messageService.getMessage("ERRO_CAMPOS_EVENTO_NULL"));
 		}else{
 			if (evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoInicial())
 					|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoFinal())
@@ -56,12 +56,13 @@ public class EditarEventoValidator implements Validator{
 		}
 	}
 	public boolean datasOuVisibilidadeNull(Evento evento){
-		if(evento.getPrazoRevisaoFinal() == null || evento.getPrazoRevisaoInicial() == null
+		if(evento == null){
+			return true;
+		}else if(evento.getPrazoRevisaoFinal() == null || evento.getPrazoRevisaoInicial() == null
 			|| evento.getPrazoSubmissaoFinal() == null || evento.getPrazoSubmissaoInicial() == null
 			|| evento.getVisibilidade() == null){
 			return true;
-		}else{
-			return false;
 		}
+		return false;
 	}
 }

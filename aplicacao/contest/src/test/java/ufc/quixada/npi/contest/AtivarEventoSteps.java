@@ -8,10 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -31,8 +27,11 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.RevisaoService;
+import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.validator.EventoValidator;
 
-public class AtivarEvento {
+public class AtivarEventoSteps {
 	@InjectMocks
 	private EventoControllerOrganizador eventoControllerOrganizador;
 	
@@ -48,10 +47,19 @@ public class AtivarEvento {
 	@Mock
 	private MessageService messageService;
 	
-	private static final String PAGINA_ADD_OR_EDIT_EVENTO_ORG = "organizador/org_ativar_eventos";
-	private static final String TEMPLATE_ATIVAR_EVENTO_GET = "/eventoOrganizador/ativar/{id}";
-	private static final String TEMPLATE_ATIVAR_EVENTO_POST = "/eventoOrganizador/ativar";
-	private static final String TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG = "/eventoOrganizador/ativos";
+	@Mock
+	private EventoValidator eventoValidator;
+	
+	@Mock
+	private RevisaoService revisaoService;
+	
+	@Mock
+	private SubmissaoService submissaoService;
+	
+	private static final String TEMPLATE_ADD_OR_EDIT_EVENTO_ORG = "organizador/org_ativar_eventos";
+	private static final String PAGINA_ATIVAR_EVENTO_GET = "/eventoOrganizador/ativar/{id}";
+	private static final String PAGINA_ATIVAR_EVENTO_POST = "/eventoOrganizador/ativar";
+	private static final String PAGINA_LISTAR_EVENTOS_ATIVOS_ORG = "/eventoOrganizador/ativos";
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
@@ -76,33 +84,25 @@ public class AtivarEvento {
 	@Dado("^que o organizado deseja ativar um evento com o id (.*)$")
 	public void administradorDesejaAtivarEvento(String id) throws Throwable {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		action = mockMvc.perform(get(TEMPLATE_ATIVAR_EVENTO_GET, Long.valueOf(id))).andExpect(view().name(PAGINA_ADD_OR_EDIT_EVENTO_ORG));
+		action = mockMvc.perform(get(PAGINA_ATIVAR_EVENTO_GET, Long.valueOf(id))).andExpect(view().name(TEMPLATE_ADD_OR_EDIT_EVENTO_ORG));
 	}
 
 	@Quando("^o organizador configura o evento para a data de submissao inicial para (.*), data final de submissao para (.*), data de revisão inicial para (.*) e data de revisão final para (.*) e visibilidade (.*)$")
 	public void organizadorConfiguraDatasDeSubimissaoERevisaoEVisibilidade(String dataSubmissaoInicial, String dataSubmissaoFinal, 
 			String dataRevisaoInicial, String dataRevisaoFinal, String visibilidade) throws Exception{
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-		LocalDate dateSubmissaoInicial = LocalDate.parse(dataSubmissaoInicial, formatter);
-		LocalDate dateSubmissaoFinal = LocalDate.parse(dataSubmissaoFinal, formatter);
-		LocalDate dateRevisaoInicial = LocalDate.parse(dataRevisaoInicial, formatter);
-		LocalDate dateRevisaoFinal = LocalDate.parse(dataRevisaoFinal, formatter);
-
-		evento.setPrazoSubmissaoInicial(Date.valueOf(dateSubmissaoInicial));
-		evento.setPrazoSubmissaoFinal(Date.valueOf(dateSubmissaoFinal));
-		evento.setPrazoRevisaoInicial(Date.valueOf(dateRevisaoInicial));
-		evento.setPrazoRevisaoFinal(Date.valueOf(dateRevisaoFinal));
 		
 		if(visibilidade.equals(VisibilidadeEvento.PRIVADO)){
 			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		}else{
 			evento.setVisibilidade(VisibilidadeEvento.PUBLICO);
 		}
+		when(eventoService.adicionarOuAtualizarEvento(evento)).thenReturn(true);
 		
 		action = mockMvc
-				.perform(post(TEMPLATE_ATIVAR_EVENTO_POST)
+				.perform(post(PAGINA_ATIVAR_EVENTO_POST)
 				.param("nome", evento.getNome())
+				.param("id", "1")
 				.param("descricao", evento.getDescricao())
 				.param("visibilidade", evento.getVisibilidade().toString())
 				.param("prazoSubmissaoInicial", dataSubmissaoInicial)
@@ -115,39 +115,34 @@ public class AtivarEvento {
 	@Então("^o evento é ativado$")
 	public void eventoEAtivado() throws Exception{
 		action.andExpect(status().isFound())
-	      .andExpect(redirectedUrl(TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG));
+	      .andExpect(redirectedUrl(PAGINA_LISTAR_EVENTOS_ATIVOS_ORG));
 	}
 	
 	@Quando("^o organizador apaga o campo nome e ativa o evento com visibilidade (.*)$")
 	public void organizadorAtivaEventoSemNome(String visibilidade) throws Exception{
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		
-		String dataSubmissaoInicial = "01-02-2020";
-		String dataSubmissaoFinal = "28-02-2020";
-		String dataRevisaoInicial = "12-02-2020";
-		String dataRevisaoFinal = "20-02-2020";
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-		LocalDate dateSubmissaoInicial = LocalDate.parse(dataSubmissaoInicial, formatter);
-		LocalDate dateSubmissaoFinal = LocalDate.parse(dataSubmissaoFinal, formatter);
-		LocalDate dateRevisaoInicial = LocalDate.parse(dataRevisaoInicial, formatter);
-		LocalDate dateRevisaoFinal = LocalDate.parse(dataRevisaoFinal, formatter);
+		String dataSubmissaoInicial = "01//02//2020";
+		String dataSubmissaoFinal = "28//02//2020";
+		String dataRevisaoInicial = "12//02//2020";
+		String dataRevisaoFinal = "20//02//2020";
 
-		evento.setPrazoSubmissaoInicial(Date.valueOf(dateSubmissaoInicial));
-		evento.setPrazoSubmissaoFinal(Date.valueOf(dateSubmissaoFinal));
-		evento.setPrazoRevisaoInicial(Date.valueOf(dateRevisaoInicial));
-		evento.setPrazoRevisaoFinal(Date.valueOf(dateRevisaoFinal));
-		
 		when(messageService.getMessage("NOME_EVENTO_VAZIO_ERROR"))
 		.thenReturn("O nome do evento deve ser informado");
+		
 		if(visibilidade.equals(VisibilidadeEvento.PRIVADO)){
 			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		}else{
 			evento.setVisibilidade(VisibilidadeEvento.PUBLICO);
 		}
+		
+		when(submissaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(false);
+		when(revisaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(false);
+		
 		action = mockMvc
-				.perform(post(TEMPLATE_ATIVAR_EVENTO_POST)
+				.perform(post(PAGINA_ATIVAR_EVENTO_POST)
 				.param("nome", "")
+				.param("id", "1")
 				.param("descricao", evento.getDescricao())
 				.param("visibilidade",evento.getVisibilidade().toString())
 				.param("prazoSubmissaoInicial", dataSubmissaoInicial)

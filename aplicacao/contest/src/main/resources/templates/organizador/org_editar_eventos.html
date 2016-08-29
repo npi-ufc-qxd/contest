@@ -35,10 +35,10 @@
         <a href="org_trilhas.html">Trilhas</a></div>
       <div class="row">
         <h2>Editando Dados do Evento</h2>
-        <form class="col s12" th:action="@{/eventoOrganizador/ativar}" th:object="${evento}" method="post">	
+        <form class="col s12" th:action="@{/eventoOrganizador/editar}" th:object="${evento}" method="post">	
           <div class="error_area col s12" th:if="${#fields.hasErrors('*')}">
-            <div class="chip row red left" th:each="err : ${#fields.errors('*')}">
-              <span class="white-text" th:text="${err}"></span>
+            <div class="chip row red left" th:each="erro : ${#fields.errors('*')}">
+              <span class="white-text" th:text="${erro}"></span>
               <i class="material-icons">close</i>
             </div>
           </div>
@@ -49,7 +49,7 @@
             <input id="nome_evento" type="text" th:field="*{nome}" />
           </div>
           
-          <div th:if="*{visibilidade.visibilidade}== Publico" class="input-field col m4 s12">
+          <div th:if="*{visibilidade.visibilidade} == Publico" class="input-field col m4 s12">
            	<input th:field="*{visibilidade}" th:value="PUBLICO" checked="checked" type="radio" /> 
             <label for="visibilidade1">Publico</label>
             <input th:field="*{visibilidade}" th:value="PRIVADO" type="radio" /> 

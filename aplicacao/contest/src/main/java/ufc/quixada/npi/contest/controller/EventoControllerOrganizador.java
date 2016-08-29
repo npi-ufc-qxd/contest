@@ -25,7 +25,6 @@ import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.util.Constants;
-import ufc.quixada.npi.contest.validator.EditarEventoValidator;
 
 @Controller
 @RequestMapping("/eventoOrganizador")
@@ -42,9 +41,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 
 	@Autowired
 	private MessageService messageService;
-
-	@Autowired
-	private EditarEventoValidator editarEventoValidator;
 	
 	@Autowired
 	private RevisaoService revisaoService;
@@ -75,8 +71,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect){
 		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
 		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
-		boolean eventoAtivo = true;
-		boolean eventoInativo = true;
+		
 		if(exiteSubmissao){
 			if(existeRevisao){
 				model.addAttribute("existeSubmissaoRevisao", exiteSubmissao);
@@ -85,6 +80,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			}
 		}else{
 			Evento evento = eventoService.buscarEventoPorId(Long.valueOf(id));
+			boolean eventoAtivo = true;
+			boolean eventoInativo = true;
 			if(evento.getEstado().equals(EstadoEvento.ATIVO)){
 				model.addAttribute("eventoAtivo",eventoAtivo);
 			}else{
@@ -92,6 +89,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			}
 		}
 		return alterarEvento(id, model, redirect, Constants.TEMPLATE_EDITAR_EVENTO_ORG, "redirect:/eventoOrganizador/inativos");
+	}
+	
+	@RequestMapping(value = "/editar", method = RequestMethod.POST)
+	public String editarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
+		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_EDITAR_EVENTO_ORG);
 	}
 
 	@RequestMapping(value = "/ativar/{id}", method = RequestMethod.GET)
@@ -108,25 +110,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 
 	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
-	public String ativarEvento(@Valid Evento evento, BindingResult result, RedirectAttributes redirect){
-		
-		editarEventoValidator.validate(evento, result);
-		
-		if (result.hasErrors()){
-			return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
-		}
-		
-		if(eventoService.existeEvento(evento.getId())){
-			
-			evento.setEstado(EstadoEvento.ATIVO);
-
-			if(!eventoService.adicionarOuAtualizarEvento(evento)){			
-				return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
-			}
-		}else{
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
-		}
-
-		return "redirect:/eventoOrganizador/ativos";
+	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
+		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
+
 }
