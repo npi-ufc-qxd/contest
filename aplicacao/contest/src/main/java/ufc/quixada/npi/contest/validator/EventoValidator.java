@@ -13,6 +13,12 @@ import ufc.quixada.npi.contest.service.MessageService;
 @Named
 public class EventoValidator implements Validator{
 	
+	private static final String ERRO_DATA_SUBMISSAO_FINAL = "ERRO_DATA_SUBMISSAO_FINAL";
+	private static final String ERRO_DATA_REVISAO_FINAL = "ERRO_DATA_REVISAO_FINAL";
+	private static final String ERRO_DATA_REVISAO_INICIAL = "ERRO_DATA_REVISAO_INICIAL";
+	private static final String ERRO_DATA_SUBMISSAO_INICIAL = "ERRO_DATA_SUBMISSAO_INICIAL";
+	private static final String ERRO_CAMPOS_EVENTO_NULL = "ERRO_CAMPOS_EVENTO_NULL";
+
 	@Autowired
 	private MessageService messageService;
 	
@@ -31,27 +37,27 @@ public class EventoValidator implements Validator{
 	public void validate(Object object, Errors erros) {
 		Evento  evento = (Evento) object;
 		if(datasOuVisibilidadeNull(evento)){
-			erros.rejectValue(null, EVENTO_CAMPO_NULL, messageService.getMessage("ERRO_CAMPOS_EVENTO_NULL"));
+			erros.rejectValue(null, EVENTO_CAMPO_NULL, messageService.getMessage(ERRO_CAMPOS_EVENTO_NULL));
 		}else{
 			if (evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoInicial())
 					|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoFinal())
 					|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoSubmissaoFinal())) {
-					erros.rejectValue(PRAZO_SUBMISSAO_INICIAL, PRAZO_SUBMISSAO_INICIAL, messageService.getMessage("ERRO_DATA_SUBMISSAO_INICIAL"));
+					erros.rejectValue(PRAZO_SUBMISSAO_INICIAL, PRAZO_SUBMISSAO_INICIAL, messageService.getMessage(ERRO_DATA_SUBMISSAO_INICIAL));
 			}
 			if(evento.getPrazoRevisaoInicial().after(evento.getPrazoRevisaoFinal())
 				|| evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoFinal())
 				|| evento.getPrazoRevisaoInicial().before(evento.getPrazoSubmissaoInicial())){
-				erros.rejectValue(PRAZO_REVISAO_INICIAL, PRAZO_REVISAO_INICIAL, messageService.getMessage("ERRO_DATA_REVISAO_INICIAL"));
+				erros.rejectValue(PRAZO_REVISAO_INICIAL, PRAZO_REVISAO_INICIAL, messageService.getMessage(ERRO_DATA_REVISAO_INICIAL));
 			}
 			if(evento.getPrazoRevisaoFinal().after(evento.getPrazoSubmissaoFinal())
 				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoRevisaoInicial())
 				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoInicial())){
-				erros.rejectValue(PRAZO_REVISAO_FINAL, PRAZO_REVISAO_FINAL, messageService.getMessage("ERRO_DATA_REVISAO_FINAL"));
+				erros.rejectValue(PRAZO_REVISAO_FINAL, PRAZO_REVISAO_FINAL, messageService.getMessage(ERRO_DATA_REVISAO_FINAL));
 			}
 			if(evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoFinal())
 				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoInicial())
 				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoSubmissaoInicial())){
-				erros.rejectValue(PRAZO_SUBMISSAO_FINAL, PRAZO_SUBMISSAO_FINAL, messageService.getMessage("ERRO_DATA_SUBMISSAO_FINAL"));
+				erros.rejectValue(PRAZO_SUBMISSAO_FINAL, PRAZO_SUBMISSAO_FINAL, messageService.getMessage(ERRO_DATA_SUBMISSAO_FINAL));
 			}
 		}
 	}

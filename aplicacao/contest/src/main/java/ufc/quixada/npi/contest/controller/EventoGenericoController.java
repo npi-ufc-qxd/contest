@@ -22,6 +22,13 @@ import ufc.quixada.npi.contest.validator.EventoValidator;
 @Controller
 public class EventoGenericoController {
 
+	private static final String EVENTO_INATIVO = "eventoInativo";
+	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
+	private static final String ID_PESSOA = "idPessoa";
+	private static final String EVENTO = "evento";
+	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
+	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
+
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
 
@@ -46,14 +53,14 @@ public class EventoGenericoController {
             Evento evento = eventoService.buscarEventoPorId(idEvento);
             if (evento != null){
                 ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
-                model.addAttribute("evento", participacao.getEvento());
-                model.addAttribute("idPessoa", participacao.getPessoa().getId());
+                model.addAttribute(EVENTO, participacao.getEvento());
+                model.addAttribute(ID_PESSOA, participacao.getPessoa().getId());
                 return viewSucesso;
             }else{
-                redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+                redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
             }
         }catch(NumberFormatException e){
-            redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+            redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
         }
         return viewFallha;
 	}
@@ -68,12 +75,12 @@ public class EventoGenericoController {
 			
 			if(exiteSubmissao){
 				if(existeRevisao){
-					model.addAttribute("existeSubmissaoRevisao", exiteSubmissao);
+					model.addAttribute(SUBMISSAO_REVISAO, exiteSubmissao);
 				}else{
-					model.addAttribute("existeSubmissao", exiteSubmissao);
+					model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
 				}
 			}else{
-				model.addAttribute("eventoInativo",true);
+				model.addAttribute(EVENTO_INATIVO,true);
 			}
 			return viewFallha;
 		}
@@ -86,7 +93,7 @@ public class EventoGenericoController {
 				return viewFallha;
 			}
 		}else{
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+			redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
 		}
 
 		return viewSucesso;

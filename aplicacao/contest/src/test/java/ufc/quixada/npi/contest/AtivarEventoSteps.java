@@ -32,27 +32,25 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.validator.EventoValidator;
 
 public class AtivarEventoSteps {
+	private static final String PRAZO_REVISAO_FINAL = "prazoRevisaoFinal";
+	private static final String PRAZO_REVISAO_INICIAL = "prazoRevisaoInicial";
+	private static final String PRAZO_SUBMISSAO_FINAL = "prazoSubmissaoFinal";
+	private static final String PRAZO_SUBMISSAO_INICIAL = "prazoSubmissaoInicial";
+	private static final String ID = "1";
 	@InjectMocks
 	private EventoControllerOrganizador eventoControllerOrganizador;
-	
 	@Mock
 	private EventoService eventoService;
-
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
-	
 	@Mock
 	private PessoaService pessoaService;
-
 	@Mock
 	private MessageService messageService;
-	
 	@Mock
 	private EventoValidator eventoValidator;
-	
 	@Mock
 	private RevisaoService revisaoService;
-	
 	@Mock
 	private SubmissaoService submissaoService;
 	
@@ -103,13 +101,13 @@ public class AtivarEventoSteps {
 		action = mockMvc
 				.perform(post(PAGINA_ATIVAR_EVENTO_POST)
 				.param("nome", evento.getNome())
-				.param("id", "1")
+				.param("id", ID)
 				.param("descricao", evento.getDescricao())
 				.param("visibilidade", evento.getVisibilidade().toString())
-				.param("prazoSubmissaoInicial", dataSubmissaoInicial)
-				.param("prazoSubmissaoFinal", dataSubmissaoFinal)
-				.param("prazoRevisaoInicial", dataRevisaoInicial)
-				.param("prazoRevisaoFinal", dataRevisaoFinal));
+				.param(PRAZO_SUBMISSAO_INICIAL, dataSubmissaoInicial)
+				.param(PRAZO_SUBMISSAO_FINAL, dataSubmissaoFinal)
+				.param(PRAZO_REVISAO_INICIAL, dataRevisaoInicial)
+				.param(PRAZO_REVISAO_FINAL, dataRevisaoFinal));
 		
 	}
 
@@ -143,13 +141,13 @@ public class AtivarEventoSteps {
 		action = mockMvc
 				.perform(post(PAGINA_ATIVAR_EVENTO_POST)
 				.param("nome", "")
-				.param("id", "1")
+				.param("id", ID)
 				.param("descricao", evento.getDescricao())
 				.param("visibilidade",evento.getVisibilidade().toString())
-				.param("prazoSubmissaoInicial", dataSubmissaoInicial)
-				.param("prazoSubmissaoFinal", dataSubmissaoFinal)
-				.param("prazoRevisaoInicial", dataRevisaoInicial)
-				.param("prazoRevisaoFinal", dataRevisaoFinal));
+				.param(PRAZO_SUBMISSAO_INICIAL, dataSubmissaoInicial)
+				.param(PRAZO_SUBMISSAO_FINAL, dataSubmissaoFinal)
+				.param(PRAZO_REVISAO_INICIAL, dataRevisaoInicial)
+				.param(PRAZO_REVISAO_FINAL, dataRevisaoFinal));
 		
 	}
 

@@ -30,6 +30,13 @@ import ufc.quixada.npi.contest.util.Constants;
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController{
 
+	private static final String EVENTO_INATIVO = "eventoInativo";
+	private static final String EVENTO_ATIVO = "eventoAtivo";
+	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
+	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
+	private static final String EVENTOS_INATIVOS = "eventosInativos";
+	private static final String EVENTOS_ATIVOS = "eventosAtivos";
+
 	@Autowired
 	private PessoaService pessoaService;
 
@@ -56,14 +63,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
-		model.addAttribute("eventosAtivos", listaEventos);
+		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
-		model.addAttribute("eventosInativos", listaEventos);
+		model.addAttribute(EVENTOS_INATIVOS, listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 	
@@ -74,18 +81,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		
 		if(exiteSubmissao){
 			if(existeRevisao){
-				model.addAttribute("existeSubmissaoRevisao", exiteSubmissao);
+				model.addAttribute(SUBMISSAO_REVISAO, exiteSubmissao);
 			}else{
-				model.addAttribute("existeSubmissao", exiteSubmissao);
+				model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
 			}
 		}else{
 			Evento evento = eventoService.buscarEventoPorId(Long.valueOf(id));
 			boolean eventoAtivo = true;
 			boolean eventoInativo = true;
 			if(evento.getEstado().equals(EstadoEvento.ATIVO)){
-				model.addAttribute("eventoAtivo",eventoAtivo);
+				model.addAttribute(EVENTO_ATIVO,eventoAtivo);
 			}else{
-				model.addAttribute("eventoInativo",eventoInativo);
+				model.addAttribute(EVENTO_INATIVO,eventoInativo);
 			}
 		}
 		return alterarEvento(id, model, redirect, Constants.TEMPLATE_EDITAR_EVENTO_ORG, "redirect:/eventoOrganizador/inativos");

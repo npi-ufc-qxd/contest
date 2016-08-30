@@ -40,6 +40,7 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.validator.EventoValidator;
 
 public class AlterarDetalheEventoSteps {
+	private static final String EVENTO = "evento";
 	private static final String PRAZO_REVISAO_FINAL = "prazoRevisaoFinal";
 	private static final String PRAZO_REVISAO_INICIAL = "prazoRevisaoInicial";
 	private static final String PRAZO_SUBMISSAO_FINAL = "prazoSubmissaoFinal";
@@ -47,28 +48,20 @@ public class AlterarDetalheEventoSteps {
 
 	@InjectMocks
 	private EventoControllerOrganizador eventoControllerOrganizador;
-	
 	@InjectMocks
 	private EventoGenericoController eventoGenericoController;
-	
 	@Mock
 	private EventoService eventoService;
-
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
-	
 	@Mock
 	private PessoaService pessoaService;
-
 	@Mock
 	private MessageService messageService;
-	
 	@Mock
 	private EventoValidator eventoValidator;
-	
 	@Mock
 	private RevisaoService revisaoService;
-	
 	@Mock
 	private SubmissaoService submissaoService;
 	
@@ -176,7 +169,7 @@ public class AlterarDetalheEventoSteps {
 
 	@Então("^uma mensagem de erro é retornada$")
 	public void mensagemDeErroNaDatasEMostrada() throws Exception{
-		action.andExpect(model().attributeHasFieldErrors("evento", PRAZO_SUBMISSAO_FINAL));
+		action.andExpect(model().attributeHasFieldErrors(EVENTO, PRAZO_SUBMISSAO_FINAL));
 	}
 
 	@Dado("^que existe um evento com apenas submissões realizadas$")
@@ -263,6 +256,6 @@ public class AlterarDetalheEventoSteps {
 
 	@Então("^uma mensagem de erro na data de revisão é mostrada$")
 	public void mensagemDeErroNaDataRevisaoEMostrada() throws Exception{
-		action.andExpect(model().attributeHasFieldErrors("evento", PRAZO_REVISAO_FINAL));
+		action.andExpect(model().attributeHasFieldErrors(EVENTO, PRAZO_REVISAO_FINAL));
 	}
 }
