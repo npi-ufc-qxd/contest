@@ -29,7 +29,7 @@ import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
 @RequestMapping("/evento")
-public class EventoController {
+public class EventoController extends EventoGenericoController{
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -107,22 +107,8 @@ public class EventoController {
 	}
 	
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
-	public String alterarEvento(@PathVariable String id, Model model, RedirectAttributes redirect){
-		try{
-			Long idEvento = Long.valueOf(id);
-			Evento evento = eventoService.buscarEventoPorId(idEvento);
-			if (evento != null){
-				ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
-				model.addAttribute("evento", participacao.getEvento());
-				model.addAttribute("idPessoa", participacao.getPessoa().getId());
-				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
-			}else{
-				redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
-			}
-		}catch(NumberFormatException e){
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
-		}
-		return "redirect:/evento/inativos";
+	public String alterarEventoAdmin(@PathVariable String id, Model model, RedirectAttributes redirect){
+		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN, "redirect:/evento/inativos");
 	}
 
 	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
