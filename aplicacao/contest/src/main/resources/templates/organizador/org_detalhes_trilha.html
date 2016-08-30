@@ -6,13 +6,13 @@
     <title>Constest - Controle de Eventos de Submissão</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- CSS-->
-    <link media="screen,projection" rel="stylesheet" href="../css/materialize.min.css">
-    <link media="screen,projection" rel="stylesheet" href="../css/font-awesome.min.css">
-    <link media="screen,projection" rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <nav role="navigation" class="purple darken-4">
-      <div class="nav-wrapper container"><a href="#"><img src="../imgs/logotipo_white.png" alt="Contest" width="200px"></a>
+      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}"  alt="Contest" width="200px"/></a>
         <ul class="white-text right hide-on-med-and-down">
           <li><a href="#">Link 01</a></li>
           <li><a href="#">Link 02</a></li>
@@ -23,7 +23,7 @@
         </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
     </nav>
-    <div class="container page"><br>
+    <div class="container page"><br/>
       <div class="row opcoes"><a href="org_eventos_ativos.html">Eventos Ativos</a><a href="org_eventos_inativos.html">Eventos Inativos</a><a href="org_revisores.html">Revisores</a><a href="org_trilhas.html">Trilhas</a></div>
       <div class="row">
         <h2>Detalhes da Trilha : "Nome da Trilha"</h2>
@@ -87,7 +87,7 @@
           <h4>Selecione o Revisor desejado</h4>
           <form>
             <div class="input-field col m6 s6">
-              <input id="nome_do_revisor" type="text">
+              <input id="nome_do_revisor" type="text"/>
               <label for="nome_do_revisor">Nome do Revisor</label>
             </div>
           </form>
@@ -106,7 +106,7 @@
           <h4>Alterar nome da Trilha</h4>
           <form>
             <div class="input-field col m6 s6">
-              <input id="nome_do_revisor" type="text">
+              <input id="nome_do_revisor" type="text"/>
               <label for="nome_do_revisor">Nome da Trilha</label>
             </div>
           </form>
@@ -119,8 +119,8 @@
         <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
       </div>
     </footer>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="../js/materialize.js"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         //Inicialização dos elementos no JS
