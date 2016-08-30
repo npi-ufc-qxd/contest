@@ -180,4 +180,12 @@ public class Evento {
 				+ prazoSubmissaoFinal + ", prazoRevisaoInicial=" + prazoRevisaoInicial + ", prazoRevisaoFinal="
 				+ prazoRevisaoFinal + ", participacoes=" + participacoes + "]";
 	}
+
+	public List<Trilha> getTrilhas() {
+		return trilhas;
+	}
+
+	public void setTrilhas(List<Trilha> trilhas) {
+		this.trilhas = trilhas;
+	}
 }

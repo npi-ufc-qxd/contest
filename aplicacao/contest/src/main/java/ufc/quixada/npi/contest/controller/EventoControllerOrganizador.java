@@ -17,11 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
-import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
