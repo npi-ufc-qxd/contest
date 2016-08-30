@@ -84,7 +84,8 @@ public class AtivarEventoSteps {
 	@Dado("^que o organizado deseja ativar um evento com o id (.*)$")
 	public void administradorDesejaAtivarEvento(String id) throws Throwable {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		action = mockMvc.perform(get(PAGINA_ATIVAR_EVENTO_GET, Long.valueOf(id))).andExpect(view().name(TEMPLATE_ADD_OR_EDIT_EVENTO_ORG));
+		action = mockMvc.perform(get(PAGINA_ATIVAR_EVENTO_GET, Long.valueOf(id)))
+				.andExpect(view().name(TEMPLATE_ADD_OR_EDIT_EVENTO_ORG));
 	}
 
 	@Quando("^o organizador configura o evento para a data de submissao inicial para (.*), data final de submissao para (.*), data de revisão inicial para (.*) e data de revisão final para (.*) e visibilidade (.*)$")
