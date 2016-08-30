@@ -8,7 +8,6 @@
 	      	
 		
 			Cenário: O organizador cadastra uma trilha de submissão
-			    Quando existe um organizador OrganizadorNome
-			    E que existe um evento EventoNome e DescricaoEvento
+			    Dado que existe um evento EventoNome e DescricaoEvento
 			    Quando o organizador cadastra uma trilha de submissão NomeTrilha
 			    Então a trilha de submissão é cadastrada
