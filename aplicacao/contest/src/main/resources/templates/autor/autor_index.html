@@ -38,10 +38,10 @@
 	<div class="container page">
 		<br/>
 		<div class="row opcoes">
-			<a href="autor_index.html">Eventos Ativos</a><a
-				href="autor_meus_trabalhos.html">Meus Trabalhos</a><a
-				href="../paginas_organizador/org_revisores.html">Revisores </a><a
-				href="../paginas_organizador/org_trilhas.html">Trilhas </a>
+			<a href="autor_index.html">Eventos Ativos</a>
+			<a th:href="@{/autor/meusTrabalhos}">Meus Trabalhos</a>
+			<a href="../paginas_organizador/org_revisores.html">Revisores </a>
+			<a href="../paginas_organizador/org_trilhas.html">Trilhas </a>
 		</div>
 		<div>
 			<div id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;">
@@ -92,7 +92,7 @@
 						<h5 th:text="${evento.nome}"></h5>
 						<p>Tem certeza que quer participar deste evento?</p>
 					</div>
-					<form th:action="@{/autor/participarevento}" method="post">
+					<form th:action="@{/autor/participarEvento}" method="post">
 						
 						<div class="modal-footer">
 							<input type="hidden" name="idEvento" th:value="${evento.id}"/>
@@ -141,11 +141,9 @@
 			</div>
 		</div>
 	</footer>
-	<script type="text/javascript"
-		th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
-	<script type="text/javascript">
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script type="text/javascript">
 		$(document)
 				.ready(
 						function() {
