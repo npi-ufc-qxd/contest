@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Constest - Controle de Eventos de Submissão</title>
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+<!-- CSS  -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet" />
+<link
+	th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}"
+	type="text/css" rel="stylesheet" media="screen,projection" />
+<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}"
+	type="text/css" rel="stylesheet" />
+<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
+	media="screen,projection" />
+</head>
+<body>
+	<nav role="navigation" class="purple darken-4">
+		<div class="nav-wrapper container">
+			<a href="#"><img th:src="@{/img/logotipo_white.png}"
+				alt="Contest" width="200px" /></a>
+			<ul class="white-text right hide-on-med-and-down">
+				<li><a href="#">Home</a></li>
+				<li><a href="#">Profile</a></li>
+			</ul>
+			<ul id="nav-mobile" class="side-nav">
+				<li><a href="#">Home</a></li>
+				<li><a href="#">Profile</a></li>
+			</ul>
+			<a href="#" data-activates="nav-mobile" class="button-collapse"><i
+				class="material-icons">menu</i></a>
+		</div>
+	</nav>
+	<div class="container page">
+		<br/>
+		<div class="row opcoes">
+			<a href="autor_index.html">Eventos Ativos</a><a
+				href="autor_meus_trabalhos.html">Meus Trabalhos</a><a
+				href="../paginas_organizador/org_revisores.html">Revisores </a><a
+				href="../paginas_organizador/org_trilhas.html">Trilhas </a>
+		</div>
+		<div>
+			<div id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;">
+				"Mensagem de Erro"<i class="material-icons">close</i>
+			</div>
+			<div id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;">
+				"Mensagem de Erro"<i class="material-icons">close</i>
+			</div>
+			<div id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;">
+				"Mensagem de Erro"<i class="material-icons">close</i>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<div class="input-field row">
+					<input placeholder="Procurando um evento especifico?"
+						id="first_name" type="text" class="col s11 validate" /><a
+						class="btn-floating btn-large waves-effect waves-light right">
+						<i class="material-icons">search</i>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="col s12" th:if="${not #lists.isEmpty(eventos)}">
+
+			<div class="col s12 m7" th:each="evento : ${eventos}">
+				<div class="card horizontal">
+					<div class="card-stacked">
+						<div class="card-content">
+							<h5 th:text="${evento.nome}"></h5>
+							<p th:text="${evento.descricao}"></p>
+							<p
+								th:text="'Inicio da Submissão: ' + ${evento.prazoSubmissaoInicial}">Início
+								da Submissão</p>
+							<p th:text="'Fim da Submissão: ' + ${evento.prazoSubmissaoFinal}"></p>
+						</div>
+						<div class="card-action">
+							<a th:attr="href='#modal' + ${evento.id}"
+								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+						</div>
+					</div>
+				</div>
+
+				<div th:attr="id='modal' + ${evento.id}" class="modal">
+					<div class="modal-content">
+						<h4>Participar do Evento</h4>
+						<h5 th:text="${evento.nome}"></h5>
+						<p>Tem certeza que quer participar deste evento?</p>
+					</div>
+					<form th:action="@{/autor/participarevento}" method="post">
+						
+						<div class="modal-footer">
+							<input type="hidden" name="idEvento" th:value="${evento.id}"/>
+							<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button><a
+							href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="col s12 m7">
+				<div class="card horizontal">
+					<div class="card-stacked">
+						<div class="card-content">
+							<h5>Nome do Eventos</h5>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+								sed do eiusmod tempor incididunt ut labore et dolore magna
+								aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+								ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+								aute irure dolor in reprehenderit in voluptate velit</p>
+							<p>Início da Submissão: 00/00/0000</p>
+							<p>Fim da Submissão: 00/00/0000</p>
+						</div>
+						<div class="card-action">
+							<a class="waves-effect waves-light btn">Participando</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row col s12 center">
+			<ul class="pagination">
+				<li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+				<li class="active"><a href="#">1</a></li>
+				<li class="waves-effect"><a href="#">2</a></li>
+				<li class="waves-effect"><a href="#"><i
+						class="material-icons">chevron_right</i></a></li>
+			</ul>
+		</div>
+	</div>
+	<footer class="page-footer purple darken-4">
+		<div class="footer-copyright">
+			<div class="container">
+				<a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido
+					por NPI - Núcleo de Práticas em Informática</a>
+			</div>
+		</div>
+	</footer>
+	<script type="text/javascript"
+		th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							//Inicialização dos elementos no JS
+							//Parallax BG
+							$('.parallax').parallax();
+
+							//sideNav
+							$(".button-collapse").sideNav();
+
+							//Tooltips
+							$('.tooltipped').tooltip({
+								delay : 50
+							});
+
+							//select_initializer
+							$('select').material_select();
+
+							//datepicker
+							$('.datepicker').pickadate(
+									{
+										selectMonths : true, // Creates a dropdown to control month
+										selectYears : 15, // Creates a dropdown of 15 years to control year
+										//Persnonalizando nomes dos meses do ano
+										monthsFull : [ 'Janeiro', 'Fevereiro',
+												'Março', 'Abril', 'Maio',
+												'Junho', 'Julho', 'Agosto',
+												'Setembro', 'Outubro',
+												'Novembro', 'Dezembro' ],
+										//Persnonalizando nomes dos dias da semana
+										weekdaysFull : [ 'Domingo', 'Segunda',
+												'Terça', 'Quarta', 'Quinta',
+												'Sexta', 'Sábado' ],
+										weekdaysShort : [ 'Dom', 'Seg', 'Ter',
+												'Qua', 'Qui', 'Sex', 'Sab' ],
+										weekdaysLetter : [ 'D', 'S', 'T', 'Q',
+												'Q', 'S', 'S' ],
+										today : 'Hoje',
+										clear : 'Limpar',
+										close : 'Fechar'
+									});
+
+							//Trata as datas na tela org_editar_eventos 
+							var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
+							var calendarioSubmissaoFinal = "#prazo_submissao_final";
+							var calendarioRevisaoInicial = "#prazo_revisao_inicial";
+							var calendarioRevisaoFinal = "#prazo_revisao_final";
+
+							function habilitarCalendario(calendario) {
+								$(calendario).removeAttr("disabled");
+							}
+
+							function desabilitarCalendario(calendario) {
+								$(calendario).attr("disabled", true);
+								$(calendario).pickadate("clear");
+							}
+
+							function definirDataMinimaCalendario(calendario,
+									dataMin) {
+								var picker = getPicker(calendario);
+								picker.set("min", dataMin);
+							}
+
+							function getPicker(idCalendario) {
+								var $input = $(idCalendario).pickadate();
+								var picker = $input.pickadate("picker");
+								return picker;
+							}
+
+							function configurarCalendario(idCalendarioInicial,
+									idCalendarioFinal) {
+								var picker = getPicker(idCalendarioInicial);
+								var dataAtual = picker.get();
+								var umDia = 1;
+
+								var dataMinima = new Date(dataAtual);
+								dataMinima
+										.setDate(dataMinima.getDate() + umDia);
+
+								if (dataAtual.length == 0) {
+									desabilitarCalendario(idCalendarioFinal);
+								} else {
+									habilitarCalendario(idCalendarioFinal);
+
+									definirDataMinimaCalendario(
+											idCalendarioFinal, dataMinima);
+								}
+							}
+
+							$(calendarioSubmissaoInicial).on(
+									"change",
+									function() {
+										configurarCalendario(
+												calendarioSubmissaoInicial,
+												calendarioSubmissaoFinal);
+									});
+
+							$(calendarioSubmissaoFinal).on(
+									"change",
+									function() {
+										configurarCalendario(
+												calendarioSubmissaoFinal,
+												calendarioRevisaoInicial);
+									});
+
+							$(calendarioRevisaoInicial).on(
+									"change",
+									function() {
+										configurarCalendario(
+												calendarioRevisaoInicial,
+												calendarioRevisaoFinal);
+									});
+
+							//Inicialização do Modal excluir Evento
+							$('.modal-trigger').leanModal();
+
+						});
+	</script>
+</body>
+</html>

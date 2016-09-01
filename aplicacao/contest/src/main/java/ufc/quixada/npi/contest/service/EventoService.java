@@ -58,4 +58,12 @@ public class EventoService {
 		return eventoRepository.findByEstadoEquals(estado);
 	}
 	
+	public List<Evento> buscarEventosAtivosEPublicos(){
+		return eventoRepository.findEventosAtivosEPublicos();
+	}
+	
+//	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor){
+//		return eventoRepository.findEventosDoAutor(idAutor);
+//	}
+	
 }
