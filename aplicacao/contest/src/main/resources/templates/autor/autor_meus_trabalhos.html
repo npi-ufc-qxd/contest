@@ -25,69 +25,40 @@
     </nav>
     <div class="container page"><br/>
       <div class="row opcoes">
-        <a href="#">Eventos Ativos</a>
+        <a th:href="@{/autor/participarEvento}">Eventos Ativos</a>
         <a th:href="@{/autor/meusTrabalhos}" class="ativo">Meus Trabalhos</a>
         <a href="#">Revisores </a>
         <a href="#">Trilhas </a>
       </div>
       <div>
-        <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+        <div th:if="${naoHaTrabalhos != null}" id="error_area" class="row chip red white-text" th:text="${naoHaTrabalhos}">
+          <i class="material-icons">close</i>
+        </div>
       </div>
-      <div class="col s12">
-        <div class="col s12 m7">
+      <div class="col s12" th:if="${not #lists.isEmpty(eventos)}">
+        
+        <div class="col s12 m7" th:each="evento,iter : ${eventos}">
           <div class="card horizontal">
             <div class="card-stacked">
               <div class="card-content">
-                <h5>Nome do Eventos</h5>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt 
-                  ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-                  in voluptate velit 
-                </p>
-                <p>Início da Submissão: 00/00/0000</p>
-                <p>Fim da Submissão: 00/00/0000</p>
+                <h5 th:text="${evento.nome}"></h5>
+                <p th:text="${evento.descricao}"></p>
+                <p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
+                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
+                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'ENVIARTRABALHO'">
+                  <a href="../paginas_autor/autor_enviar_trabalho.html" class="waves-effect waves-light btn green">Enviar Trabalho</a>
+                </div>
+                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'SUBMISSAO'">
+                  <a href="../paginas_autor/autor_enviar_trabalho.html" class="waves-effect waves-light btn yellow">Reenviar Trabalho</a>
+                </div>
+                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'REVISAO'">
+                  <a href="../paginas_autor/autor_revisao.html" class="waves-effect waves-light btn blue">Ver Revisao</a>
+                </div>
               </div>
-              <div class="card-action"><a href="../paginas_autor/autor_enviar_trabalho.html" class="waves-effect waves-light btn yellow">Reenviar Trabalho</a></div>
             </div>
           </div>
         </div>
-        <div class="col s12 m7">
-          <div class="card horizontal">
-            <div class="card-stacked">
-              <div class="card-content">
-                <h5>Nome do Eventos</h5>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt 
-                  ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-                  in voluptate velit 
-                </p>
-                <p>Início da Submissão: 00/00/0000</p>
-                <p>Fim da Submissão: 00/00/0000</p>
-              </div>
-              <div class="card-action"><a href="../paginas_autor/autor_enviar_trabalho.html" class="waves-effect waves-light btn green">Enviar Trabalho</a></div>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m7">
-          <div class="card horizontal">
-            <div class="card-stacked">
-              <div class="card-content">
-                <h5>Nome do Eventos</h5>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt 
-                  ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-                  in voluptate velit 
-                </p>
-                <p>Início da Submissão: 00/00/0000</p>
-                <p>Fim da Submissão: 00/00/0000</p>
-              </div>
-              <div class="card-action"><a href="../paginas_autor/autor_revisao.html" class="waves-effect waves-light btn blue">Ver Revisao</a></div>
-            </div>
-          </div>
-        </div>
+        
       </div>
             <div class="row col s12 center">
               <ul class="pagination">

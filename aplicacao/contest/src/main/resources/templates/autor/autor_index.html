@@ -38,21 +38,28 @@
 	<div class="container page">
 		<br/>
 		<div class="row opcoes">
-			<a href="autor_index.html">Eventos Ativos</a>
+			<a th:href="@{/autor/participarEvento}" class="ativo">Eventos Ativos</a>
 			<a th:href="@{/autor/meusTrabalhos}">Meus Trabalhos</a>
 			<a href="../paginas_organizador/org_revisores.html">Revisores </a>
 			<a href="../paginas_organizador/org_trilhas.html">Trilhas </a>
 		</div>
 		<div>
-			<div id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;">
-				"Mensagem de Erro"<i class="material-icons">close</i>
+			<div th:if="${eventoVazioError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoVazioError}">
+				<i class="material-icons">close</i>
 			</div>
-			<div id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;">
-				"Mensagem de Erro"<i class="material-icons">close</i>
+			
+			<div th:if="${eventoInexistenteError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoInexistenteError}">
+				<i class="material-icons">close</i>
 			</div>
-			<div id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;">
-				"Mensagem de Erro"<i class="material-icons">close</i>
+			
+			<div th:if="${participarEventoInativoError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${${participarEventoInativoError}">
+				<i class="material-icons">close</i>
 			</div>
+			
+			<div th:if="${particapacaoEventoSucesso != null}" id="success_area" class="row chip green white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${particapacaoEventoSucesso}">
+				"M<i class="material-icons">close</i>
+			</div>
+			
 		</div>
 		<div class="row">
 			<div class="col s12">
@@ -66,18 +73,18 @@
 			</div>
 		</div>
 
-		<div class="col s12" th:if="${not #lists.isEmpty(eventos)}">
-
-			<div class="col s12 m7" th:each="evento : ${eventos}">
+		<div class="col s12" th:if="${!#lists.isEmpty(eventosParaParticipar)}">
+			
+			<div class="col s12 m7" th:each="evento : ${eventosParaParticipar}">
 				<div class="card horizontal">
 					<div class="card-stacked">
 						<div class="card-content">
 							<h5 th:text="${evento.nome}"></h5>
 							<p th:text="${evento.descricao}"></p>
 							<p
-								th:text="'Inicio da Submissão: ' + ${evento.prazoSubmissaoInicial}">Início
+								th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início
 								da Submissão</p>
-							<p th:text="'Fim da Submissão: ' + ${evento.prazoSubmissaoFinal}"></p>
+							<p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
 						</div>
 						<div class="card-action">
 							<a th:attr="href='#modal' + ${evento.id}"
@@ -102,23 +109,18 @@
 					</form>
 				</div>
 			</div>
-
-			<div class="col s12 m7">
-				<div class="card horizontal">
-					<div class="card-stacked">
-						<div class="card-content">
-							<h5>Nome do Eventos</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-								sed do eiusmod tempor incididunt ut labore et dolore magna
-								aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-								ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
-								aute irure dolor in reprehenderit in voluptate velit</p>
-							<p>Início da Submissão: 00/00/0000</p>
-							<p>Fim da Submissão: 00/00/0000</p>
-						</div>
-						<div class="card-action">
-							<a class="waves-effect waves-light btn">Participando</a>
-						</div>
+		</div>
+		<div class="col s12 m7" th:if="${!#lists.isEmpty(eventoParticipando)}">
+			<div class="card horizontal" th:each="evento : ${eventoParticipando}">
+				<div class="card-stacked">
+					<div class="card-content">
+						<h5 th:text="${evento.nome}"></h5>
+						<p th:text="${evento.descricao}"></p>
+						<p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
+						<p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
+					</div>
+					<div class="card-action">
+						<a class="waves-effect waves-light btn">Participando</a>
 					</div>
 				</div>
 			</div>

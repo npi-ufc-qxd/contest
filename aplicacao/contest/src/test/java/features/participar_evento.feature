@@ -17,11 +17,3 @@ Funcionalidade: O Aluno participa de um evento
 		Quando o aluno decide participar deste evento
 		Então uma mensagem de erro é retornada dizendo que o aluno não pode participar de eventos inativos
 		
-	  Cenário: O aluno recebe convite para participar de evento privado
-		Dado que existe um evento privado e ativo cadastrado no sistema
-		E o organizador deste evento convida o aluno para participar
-		Então o aluno é notificado do convite de participação
-		Quando o aluno aceitar o convite
-		Então o sistema registra a participação
-		E o organizador do evento é notificado sobre participação do aluno
-		E retorna uma mensagem de sucesso para o aluno

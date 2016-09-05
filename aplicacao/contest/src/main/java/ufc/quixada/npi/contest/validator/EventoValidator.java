@@ -36,37 +36,66 @@ public class EventoValidator implements Validator{
 	@Override
 	public void validate(Object object, Errors erros) {
 		Evento  evento = (Evento) object;
-		if(datasOuVisibilidadeNull(evento)){
+		if(datasVisibilidadeOuventoNull(evento)){
 			erros.rejectValue(null, EVENTO_CAMPO_NULL, messageService.getMessage(ERRO_CAMPOS_EVENTO_NULL));
 		}else{
-			if (evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoInicial())
-					|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoFinal())
-					|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoSubmissaoFinal())) {
+			if (haErrosPrazoSubmissaoInicial(evento)) {
 					erros.rejectValue(PRAZO_SUBMISSAO_INICIAL, PRAZO_SUBMISSAO_INICIAL, messageService.getMessage(ERRO_DATA_SUBMISSAO_INICIAL));
 			}
-			if(evento.getPrazoRevisaoInicial().after(evento.getPrazoRevisaoFinal())
-				|| evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoFinal())
-				|| evento.getPrazoRevisaoInicial().before(evento.getPrazoSubmissaoInicial())){
+			if(haErrosPrazoRevisaoInicial(evento)){
 				erros.rejectValue(PRAZO_REVISAO_INICIAL, PRAZO_REVISAO_INICIAL, messageService.getMessage(ERRO_DATA_REVISAO_INICIAL));
 			}
-			if(evento.getPrazoRevisaoFinal().after(evento.getPrazoSubmissaoFinal())
-				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoRevisaoInicial())
-				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoInicial())){
+			if(haErrosPrazoRevisaoFinal(evento)){
 				erros.rejectValue(PRAZO_REVISAO_FINAL, PRAZO_REVISAO_FINAL, messageService.getMessage(ERRO_DATA_REVISAO_FINAL));
 			}
-			if(evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoFinal())
-				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoInicial())
-				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoSubmissaoInicial())){
+			if(haErrosPrazoSubmissaoFinal(evento)){
 				erros.rejectValue(PRAZO_SUBMISSAO_FINAL, PRAZO_SUBMISSAO_FINAL, messageService.getMessage(ERRO_DATA_SUBMISSAO_FINAL));
 			}
 		}
 	}
-	public boolean datasOuVisibilidadeNull(Evento evento){
+
+	public boolean datasVisibilidadeOuventoNull(Evento evento){
 		if(evento == null){
 			return true;
 		}else if(evento.getPrazoRevisaoFinal() == null || evento.getPrazoRevisaoInicial() == null
 			|| evento.getPrazoSubmissaoFinal() == null || evento.getPrazoSubmissaoInicial() == null
 			|| evento.getVisibilidade() == null){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean haErrosPrazoSubmissaoInicial(Evento evento){
+		if(evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoInicial())
+				|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoFinal())
+				|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoSubmissaoFinal())){
+			return true;
+		}
+		return false;
+	}
+	private boolean haErrosPrazoRevisaoInicial(Evento evento) {
+		if(evento.getPrazoRevisaoInicial().after(evento.getPrazoRevisaoFinal())
+				|| evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoFinal())
+				|| evento.getPrazoRevisaoInicial().before(evento.getPrazoSubmissaoInicial())){
+			return true;
+		}
+		return false;
+	}
+	
+
+	private boolean haErrosPrazoSubmissaoFinal(Evento evento) {
+		if(evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoFinal())
+				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoInicial())
+				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoSubmissaoInicial())){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean haErrosPrazoRevisaoFinal(Evento evento) {
+		if(evento.getPrazoRevisaoFinal().after(evento.getPrazoSubmissaoFinal())
+				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoRevisaoInicial())
+				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoInicial())){
 			return true;
 		}
 		return false;

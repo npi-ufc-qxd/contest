@@ -20,15 +20,18 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 			+ "e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO")
 	public List<Evento> findEventosAtivosEPublicos();
 	
-	@Query("SELECT  * FROM Evento e " + 
-	"WHERE e.id NOT in ( SELECT DISTINCT pe.Evento.id FROM ParticipacaoEvento pe WHERE :idAutor = pe.pessoa_id) "
-	+ "AND  e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO"+
+	@Query("SELECT e FROM Evento e " + 
+	"WHERE e.id NOT in ( SELECT DISTINCT pe.evento.id FROM ParticipacaoEvento pe WHERE :idAutor = pe.pessoa.id) "
+	+ "AND e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO "
+	+ "AND e.estado = ufc.quixada.npi.contest.model.EstadoEvento.ATIVO "+
 	"ORDER BY e.id")
 	public List<Evento> eventosParaParticipar(@Param("idAutor") Long idAutor);
 	
-	//TODO Terminar a Query de buscar todos os eventos em que o autor esta participando
-//	@Query("select p.evento from ParticipacaoEvento p where p.pessoa.id = 2")
-//	public List<Evento> findEventosDoAutor(@Param("idAutor") Long idAutor);
+	@Query("SELECT e FROM Evento e " + 
+			"WHERE e.id in ( SELECT DISTINCT pe.evento.id FROM ParticipacaoEvento pe WHERE :idAutor = pe.pessoa.id) "
+			+ "AND  e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO "+
+			"ORDER BY e.id")
+	public List<Evento> findEventosDoAutor(@Param("idAutor") Long idAutor);
 	
 	
 }
