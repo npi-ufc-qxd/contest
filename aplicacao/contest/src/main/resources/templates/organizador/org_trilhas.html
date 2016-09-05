@@ -24,18 +24,20 @@
       </div>
     </nav>
     <div class="container page"><br/>
-      <div class="row opcoes">
-        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
-        <a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
-        <a href="org_revisores.html">Revisores</a>
-        <a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
-      </div>
+    	<div class="row opcoes">
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+        	<a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
+		</div>
       <div class="row">
         <h2>Trilhas do Evento : "Nome do Evento"</h2>
         <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
         <form class="col s12">
           <div class="row"></div>
-          <div class="input-field col m3 offset-m10 s6"> <a href="#modal" class="waves-effect waves-light btn white-text modal-trigger">Trilha<i aria-hidden="true" class="fa fa-plus left"> </i></a></div>
+          <div class="input-field col m3 offset-m10 s6"> 
+          	<a id="btn-modal" href="#modal1" class="waves-effect waves-light btn white-text modal-trigger">Trilha<i aria-hidden="true" class="fa fa-plus left"> </i></a>
+          </div>
           <div class="row">
             <div class="input-field col m12 s6">
               <table class="striped centered">
@@ -46,19 +48,9 @@
                     <th>Ações</th>
                   </tr>
                 </thead>
-                <tbody>             
-                  <tr>
-                    <td>Trilha Padrão</td>
-                    <td>0</td>
-                    <td> <a href="org_detalhes_trilha.html">Ver Trilha</a></td>
-                  </tr>
-                  <tr>
-                    <td>Trilha de lot</td>
-                    <td>2</td>
-                    <td> <a href="org_detalhes_trilha.html">Ver Trilha</a></td>
-                  </tr>
-                  <tr>
-                    <td>Trilha de hue</td>
+                <tbody >             
+                  <tr th:each="itemTrilha : ${trilhas}">
+                    <td><p th:text="${itemTrilha.nome}"></p></td>
                     <td>2</td>
                     <td> <a href="org_detalhes_trilha.html">Ver Trilha      </a></td>
                   </tr>
@@ -78,28 +70,35 @@
           </div>
         </form>
       </div>
-      <div id="modal" class="modal">
-        <div class="modal-content">
-          <h4>Adicionar Trilha</h4>
-          <form>
-            <div th:action="@{/eventoOrganizador/trilhas}" th:object="${trilha}" method="post" class="input-field col m6 s6">
-              <input id="nome_da_trilha" type="text"/>
-              <label for="nome_da_trilha">Nome da Trilha</label>
+      <form th:action="@{/eventoOrganizador/trilhas}" action="#" th:object="${trilha}" method="post">
+        <div id="modal1" class="modal">
+          <div class="modal-content">
+            <h4>Adicionar Trilha</h4>
+            <div class="input-field col m6 s6">
+            	<input type="hidden" th:value="${eventoId}" name = "eventoId"/>
+            	<input id="nome_da_trilha" th:field="*{nome}" name="nome" type="text" />
+            	<label for="nome_da_trilha">Nome da Trilha</label>
             </div>
-          </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+          	<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+       	  </div>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar            </a></div>
-      </div>
+      </form>
     </div>
     <footer class="page-footer purple darken-4">
       <div class="footer-copyright">
         <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
       </div>
     </footer>
-    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../../js/materialize.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
+    	//Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();  
+    	 
         //Inicialização dos elementos no JS
         //Parallax BG
         $('.parallax').parallax();
@@ -183,8 +182,7 @@
           configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
         });
         
-        //Inicialização do Modal excluir Evento
-        $('.modal-trigger').leanModal();
+        
         
       });
     </script>

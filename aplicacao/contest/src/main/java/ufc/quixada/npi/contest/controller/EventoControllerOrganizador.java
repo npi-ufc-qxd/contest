@@ -83,9 +83,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return "redirect:/eventoOrganizador/inativos";
 	}
 	
-	@RequestMapping(value = "/trilhas", method = RequestMethod.GET)
-	public String listarTrilhas() {
-		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+	@RequestMapping(value = "/trilhas/{id}", method = RequestMethod.GET)
+	public String listaTrilhas(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		try{
+			Long eventoId = Long.valueOf(id);
+			model.addAttribute("trilhas", trilhaService.buscarTrilhas(eventoId));
+			model.addAttribute("trilha", new Trilha());
+			model.addAttribute("eventoId", id);
+			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+		}catch(NumberFormatException e){
+			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+		}
+		return "redirect:/eventoOrganizador/ativos";
 	}
 
 	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
@@ -121,6 +130,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			result.reject("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}
+/*		System.out.println(trilha.getNome());
+		return Constants.TEMPLATE_DETALHES_TRILHA_ORG;*/
 	}
 
 }
