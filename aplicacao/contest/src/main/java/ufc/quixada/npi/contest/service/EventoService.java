@@ -17,16 +17,14 @@ public class EventoService {
 
 	public boolean adicionarOuAtualizarEvento(Evento evento) {
 		if(evento.getPrazoSubmissaoInicial() != null && evento.getPrazoSubmissaoFinal() != null &&
-		   evento.getPrazoRevisaoInicial() != null && evento.getPrazoRevisaoFinal() != null){
-			if(!evento.getEstado().equals(EstadoEvento.FINALIZADO)){
-				if(evento.getPrazoSubmissaoInicial().before(evento.getPrazoSubmissaoFinal()) &&
-				   evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoInicial()) &&
-				   evento.getPrazoRevisaoInicial().before(evento.getPrazoRevisaoFinal()) &&
-				   evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoFinal())){
-					
-					eventoRepository.save(evento);
-					return true;
-				}
+           evento.getPrazoRevisaoInicial() != null && evento.getPrazoRevisaoFinal() != null){
+			if(!evento.getEstado().equals(EstadoEvento.FINALIZADO) && evento.getPrazoSubmissaoInicial().before(evento.getPrazoSubmissaoFinal()) &&
+			   evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoInicial()) &&
+			   evento.getPrazoRevisaoInicial().before(evento.getPrazoRevisaoFinal()) &&
+			   evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoFinal())){
+				
+				eventoRepository.save(evento);
+				return true;
 			}
 			return false;
 		}else{
@@ -53,11 +51,27 @@ public class EventoService {
 	}
 
 	public Boolean existeEvento(Long id){
-		return eventoRepository.exists(id);
+		if(id.toString().isEmpty() || id == null){
+			return false;
+		}else{
+			return eventoRepository.exists(id);
+		}
 	}
 	
 	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
 		return eventoRepository.findByEstadoEquals(estado);
+	}
+	
+	public List<Evento> buscarEventosAtivosEPublicos(){
+		return eventoRepository.findEventosAtivosEPublicos();
+	}
+
+	public List<Evento> eventosParaParticipar(Long idAutor) {
+		return eventoRepository.eventosParaParticipar(idAutor);
+	}
+	
+	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor){
+		return eventoRepository.findEventosDoAutor(idAutor);
 	}
 	
 }
