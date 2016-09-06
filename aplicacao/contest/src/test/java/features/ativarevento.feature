@@ -12,7 +12,7 @@ Funcionalidade: Ativar Evento
 		Dado que o organizado deseja ativar um evento com o id 1
 	
 	Esquema do Cenário: O organizador configura um evento de forma correta
-        Quando o organizador configura o evento para a data de submissao inicial para 10-06-2020, data final de submissao para 28-06-2020, data de revisão inicial para 15-06-2020 e data de revisão final para 25-06-2020 e visibilidade <visibilidade>
+        Quando o organizador configura o evento para a data de submissao inicial para 10/06/2020, data final de submissao para 28/06/2020, data de revisão inicial para 15/06/2020 e data de revisão final para 18/06/2020 e visibilidade <visibilidade>
         Então o evento é ativado
 		Exemplos:
 			| visibilidade |

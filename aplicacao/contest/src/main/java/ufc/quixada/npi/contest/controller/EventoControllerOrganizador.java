@@ -25,11 +25,20 @@ import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrilhaService;
+import ufc.quixada.npi.contest.service.RevisaoService;
+import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController{
+
+	private static final String EVENTO_INATIVO = "eventoInativo";
+	private static final String EVENTO_ATIVO = "eventoAtivo";
+	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
+	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
+	private static final String EVENTOS_INATIVOS = "eventosInativos";
+	private static final String EVENTOS_ATIVOS = "eventosAtivos";
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -39,12 +48,17 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 
 	@Autowired
 	private EventoService eventoService;
-	
+
 	@Autowired
 	private MessageService messageService;
 	
 	@Autowired
 	private TrilhaService trilhaService;
+	@Autowired
+	private RevisaoService revisaoService;
+	
+	@Autowired
+	private SubmissaoService submissaoService;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -54,20 +68,44 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
-		model.addAttribute("eventosAtivos", listaEventos);
+		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
-		model.addAttribute("eventosInativos", listaEventos);
+		model.addAttribute(EVENTOS_INATIVOS, listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 	
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect){
-		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG, "redirect:/eventoOrganizador/inativos");
+		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
+		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
+		
+		if(exiteSubmissao){
+			if(existeRevisao){
+				model.addAttribute(SUBMISSAO_REVISAO, exiteSubmissao);
+			}else{
+				model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
+			}
+		}else{
+			Evento evento = eventoService.buscarEventoPorId(Long.valueOf(id));
+			boolean eventoAtivo = true;
+			boolean eventoInativo = true;
+			if(evento.getEstado().equals(EstadoEvento.ATIVO)){
+				model.addAttribute(EVENTO_ATIVO,eventoAtivo);
+			}else{
+				model.addAttribute(EVENTO_INATIVO,eventoInativo);
+			}
+		}
+		return alterarEvento(id, model, redirect, Constants.TEMPLATE_EDITAR_EVENTO_ORG, "redirect:/eventoOrganizador/inativos");
+	}
+	
+	@RequestMapping(value = "/editar", method = RequestMethod.POST)
+	public String editarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
+		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_EDITAR_EVENTO_ORG);
 	}
 
 	@RequestMapping(value = "/ativar/{id}", method = RequestMethod.GET)
@@ -76,7 +114,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			Long idEvento = Long.valueOf(id);
 			Evento evento = eventoService.buscarEventoPorId(idEvento);
 			model.addAttribute("evento", evento);
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
+			return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
@@ -110,22 +148,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 
 	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
-	public String ativarEvento(@Valid Evento evento, BindingResult result, RedirectAttributes redirect){
-		if (result.hasFieldErrors("nome")){
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
-		}
-		
-		if(eventoService.existeEvento(evento.getId())){
-			evento.setEstado(EstadoEvento.ATIVO);
-			if(!eventoService.adicionarOuAtualizarEvento(evento)){			
-				result.reject("ativarEventoErro", messageService.getMessage("ERRO_NAS_DATAS"));
-				return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ORG;
-			}
-		}else{
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
-		}
-
-		return "redirect:/eventoOrganizador/ativos";
+	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
+		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
 
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)

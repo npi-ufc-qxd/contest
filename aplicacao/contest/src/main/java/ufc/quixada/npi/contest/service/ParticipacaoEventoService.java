@@ -22,8 +22,12 @@ public class ParticipacaoEventoService {
 		return participacaoEventoRepository.findOne(id);
 	}
 	
-	public void adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacaoEvento){
-		participacaoEventoRepository.save(participacaoEvento);
+	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacaoEvento){
+		if(participacaoEvento != null){
+			participacaoEventoRepository.save(participacaoEvento);
+			return true;
+		}
+		return false;
 	}
 	
 	public void removerParticipacaoEvento(Evento evento){
