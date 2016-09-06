@@ -26,7 +26,7 @@
     <div class="container page"><br/>
       <div class="row opcoes"><a href="org_eventos_ativos.html">Eventos Ativos</a><a href="org_eventos_inativos.html">Eventos Inativos</a><a href="org_revisores.html">Revisores</a><a href="org_trilhas.html">Trilhas</a></div>
       <div class="row">
-        <h2>Detalhes da Trilha : "Nome da Trilha"</h2>
+        <h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
       </div>
       <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
       <div class="row">

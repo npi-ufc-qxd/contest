@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.TrilhaRepository;
 
@@ -33,4 +34,13 @@ public class TrilhaService {
 		trilhas = trilhaRepository.findAllByEventoId(id);
 		return trilhas;
 	}
+	
+	public Trilha get(Long id) {
+		return trilhaRepository.findOne(id);
+	}
+	
+	public boolean exists(String nome, Long eventoId){
+		return trilhaRepository.findByNomeAndEvento_id(nome, eventoId);
+	}
+	
 }

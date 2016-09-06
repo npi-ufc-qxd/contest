@@ -31,8 +31,8 @@
         	<a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
 		</div>
       <div class="row">
-        <h2>Trilhas do Evento : "Nome do Evento"</h2>
-        <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+        <h2 th:text="'Trilhas do Evento :' + ${evento.nome}"></h2>
+        <div id="error_area" class="row chip red white-text" th:text= "${organizadorError}">"Mensagem de Erro"<i class="material-icons">close</i></div>
         <form class="col s12">
           <div class="row"></div>
           <div class="input-field col m3 offset-m10 s6"> 
@@ -51,8 +51,8 @@
                 <tbody >             
                   <tr th:each="itemTrilha : ${trilhas}">
                     <td><p th:text="${itemTrilha.nome}"></p></td>
-                    <td>2</td>
-                    <td> <a href="org_detalhes_trilha.html">Ver Trilha      </a></td>
+                    <td>Numero de Submissoes</td>
+                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} }">Ver Trilha      </a></td>
                   </tr>
                 </tbody>
               </table>
@@ -75,7 +75,7 @@
           <div class="modal-content">
             <h4>Adicionar Trilha</h4>
             <div class="input-field col m6 s6">
-            	<input type="hidden" th:value="${eventoId}" name = "eventoId"/>
+            	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
             	<input id="nome_da_trilha" th:field="*{nome}" name="nome" type="text" />
             	<label for="nome_da_trilha">Nome da Trilha</label>
             </div>
