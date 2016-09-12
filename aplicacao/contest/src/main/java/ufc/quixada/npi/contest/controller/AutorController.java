@@ -8,9 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
@@ -18,11 +20,13 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
+import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.util.Constants;
 
@@ -61,6 +65,13 @@ public class AutorController {
 	
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	private final StorageService storageService;
+
+    @Autowired
+    public AutorController(StorageService storageService) {
+        this.storageService = storageService;
+    }
 	
 	@RequestMapping
 	public String index(Model model){
@@ -134,8 +145,33 @@ public class AutorController {
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
 	
+	@RequestMapping(value = "/enviarTrabalho/{id}", method = RequestMethod.GET)
+	public String enviarTrabalho(@PathVariable String id, Model model, RedirectAttributes redirect){
+		if(!eventoService.existeEvento(Long.parseLong(id))){
+			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
+			return "redirect:/autor/meusTrabalhos";
+		}
+		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
+		model.addAttribute("evento", evento);
+
+		return Constants.TEMPLATE_ENVIAR_TRABALHO_AUTOR;
+	}
+
+	
+	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
+	public String enviarTrabalhoForm(@PathVariable String id, Model model){
+		model.addAttribute("trabalho", new Trabalho());
+		model.addAttribute("eventoId", id);
+		return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
+	}
+	
+	@RequestMapping(value = "/enviarTrabalhoForm", method = RequestMethod.POST)
+	public String enviarTrabalhoForm(@RequestParam("file") MultipartFile file){
+		storageService.store(file);
+		return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
+	}
+	
 	public Pessoa getAutorLogado(){
-		//fazer verificações
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String cpf = auth.getName();
 		Pessoa autorLogado = pessoaService.getByCpf(cpf);
