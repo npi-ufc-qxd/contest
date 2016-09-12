@@ -168,5 +168,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}
 	}
+	
+	@RequestMapping(value = "/trilhas", method = RequestMethod.PUT)
+	public String atualizaTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, RedirectAttributes redirect){
+		long idEvento = Long.parseLong(eventoId);
+		if (trilha.getNome().trim() == "") {
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
+		}
+		if (trilhaService.exists(trilha.getNome(), idEvento) ) {
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
+		}
+		if (eventoService.existeEvento(idEvento)) {
+			trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
+			trilhaService.adicionarOuAtualizarTrilha(trilha);
+			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+		}else{
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
+			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+		}
+	}
 
 }

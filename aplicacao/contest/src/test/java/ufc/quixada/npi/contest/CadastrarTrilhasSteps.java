@@ -68,9 +68,9 @@ public class CadastrarTrilhasSteps {
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/trilhas")
-				.param("eventoId", evento.getId().toString())
-				.param("nome", trilha.getNome())
-				.param("id", trilha.getId().toString())
+					.param("eventoId", evento.getId().toString())
+					.param("nome", trilha.getNome())
+					.param("id", trilha.getId().toString())
 				);
 	}
 

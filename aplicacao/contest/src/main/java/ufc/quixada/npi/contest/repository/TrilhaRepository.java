@@ -18,6 +18,6 @@ public interface TrilhaRepository extends CrudRepository<Trilha, Long>{
 	
 	@Query("select case when count(*) > 0 then true else false end "
 			+ "FROM Trilha as t  WHERE t.nome = :nome and t.evento.id = :eventoId")
-	public boolean findByNomeAndEventoId(@Param("nome") String nome, @Param("evento_id") Long eventoId);
+	public boolean findByNomeAndEventoId(@Param("nome") String nome, @Param("eventoId") Long eventoId);
 	
 }
