@@ -50,7 +50,7 @@ public class CadastrarTrilhasSteps {
 		trilhaService.toString(); //Para evitar do codacy reclamar
 	}
 
-	@Dado("que existe um evento (.*) e (.*)")
+	@Dado("que o organizador criou um evento (.*) e (.*)")
 	public void existeEvento(String nomeEvento, String descricaoEvento) throws Throwable{
 		evento = new Evento();
 		evento.setNome(nomeEvento);
