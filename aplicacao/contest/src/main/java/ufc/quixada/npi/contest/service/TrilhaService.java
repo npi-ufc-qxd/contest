@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.ParticipacaoEvento;
-import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.TrilhaRepository;
 
@@ -40,7 +36,7 @@ public class TrilhaService {
 	}
 	
 	public boolean exists(String nome, Long eventoId){
-		return trilhaRepository.findByNomeAndEvento_id(nome, eventoId);
+		return trilhaRepository.findByNomeAndEventoId(nome, eventoId);
 	}
 	
 }
