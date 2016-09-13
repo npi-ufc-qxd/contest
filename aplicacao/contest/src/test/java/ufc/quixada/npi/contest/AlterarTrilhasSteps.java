@@ -53,6 +53,9 @@ public class AlterarTrilhasSteps {
 	private TrilhaService trilhaService;
 
 	@Mock
+	private MessageService messageService;
+	
+	@Mock
 	private EventoService eventoService;
 
 	private MockMvc mockMvc;
@@ -93,13 +96,13 @@ public class AlterarTrilhasSteps {
 	@E("^o organizador fornecer um novo nome para a trilha$")
 	public void forneceNovoNomeParaTrilha() throws Throwable{
 		String novoNome = "novoNome";
-		when(trilhaService.exists(trilha.getNome(), evento.getId())).thenReturn(false);
+		when(trilhaService.exists(novoNome, evento.getId())).thenReturn(false);
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		action = mockMvc
 				.perform(put("/eventoOrganizador/trilhas")
-					.param("eventoId", evento.getId().toString())
-					.param("nome", novoNome)
-					.param("id", trilha.getId().toString())
+						.param("eventoId", evento.getId().toString())
+						.param("nome", novoNome)
+						.param("id", trilha.getId().toString())
 				);
 	}
 	
@@ -114,43 +117,46 @@ public class AlterarTrilhasSteps {
 	}
 	
 	@E("^não fornece o novo nome da trilha$")
-	public void naoForneceNomeDaTrilha() throws Exception{
-		String novoNome = " ";
+	public void naoForneceNomeDaTrilha() throws Throwable{
+		when(messageService.getMessage("TRILHA_NOME_VAZIO"))
+		.thenReturn("Não é possível haver uma Trilha com nome vazio");
+		when(trilhaService.exists(" ", evento.getId())).thenReturn(false);
+		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		action = mockMvc
 				.perform(put("/eventoOrganizador/trilhas")
 					.param("eventoId", evento.getId().toString())
-					.param("nome", novoNome)
+					.param("nome", " ")
 					.param("id", trilha.getId().toString())
 				);
 	}
 	
 	@Entao("^o nome da trilha não será atualizado$")
-	public void trilhaNaoAtualizada() throws Exception{
-		action.andExpect(view().name(Constants.TEMPLATE_LISTAR_TRILHAS_ORG+"/"+EVENTO_ID));
+	public void trilhaNaoAtualizada() throws Throwable{
+		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG));
 	}
 	
 	@E("^o organizador deve visualizar uma mensagem de erro$")
-	public void visualizarMensagemDeErro() throws Exception{
-	//TODO	Teste
+	public void visualizarMensagemDeErro() throws Throwable{
+	//TODO	
 	}
 	
 	@Quando("^a trilha possui algum trabalho cadastrado$")
-	public void trilhaPossuiTrabalhoCadastrado() throws Exception{
+	public void trilhaPossuiTrabalhoCadastrado() throws Throwable{
 	//TODO	verficação de trabalhos submetidos
 	}
 	
 	@E("^o organizador fornece um novo nome para a trilha$")
-	public void organizadorForneceNovoNomeParaTrilha() throws Exception{
+	public void organizadorForneceNovoNomeParaTrilha() throws Throwable{
 	//TODO	Teste
 	}
 	
 	@Então("^o nome da trilha não deve ser atualizado$")
-	public void nomeTrilhaNaoAtualizado() throws Exception{
+	public void nomeTrilhaNaoAtualizado() throws Throwable{
 	//TODO	Teste
 	}
 	
 	@E("^o organizador deve visualizará uma mensagem de erro$")
-	public void organizadorVisualizaMensagemDeErro() throws Exception{
+	public void organizadorVisualizaMensagemDeErro() throws Throwable{
 	//TODO	Teste
 	}
 }

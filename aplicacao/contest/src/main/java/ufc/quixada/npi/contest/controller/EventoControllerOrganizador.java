@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import groovy.util.logging.Log;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
@@ -170,24 +171,28 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/trilhas", method = RequestMethod.PUT)
-	public String atualizaTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, RedirectAttributes redirect){
-		long idEvento = Long.parseLong(eventoId);
-		if (trilha.getNome().trim() == "") {
+	public String atualizaTrilha(@RequestParam String eventoId, @Valid Trilha trilha, Model model, BindingResult result, RedirectAttributes redirect){
+		model.addAttribute("trilha", trilhaService.get(trilha.getId()));
+		if (result.hasErrors()) {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
-			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
-		}
-		if (trilhaService.exists(trilha.getNome(), idEvento) ) {
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
-			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
-		}
-		if (eventoService.existeEvento(idEvento)) {
-			trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
-			trilhaService.adicionarOuAtualizarTrilha(trilha);
 			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}else{
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
-			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+			long idEvento = Long.parseLong(eventoId);
+			if (trilhaService.exists(trilha.getNome(), idEvento) ) {
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
+				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			}
+			if (eventoService.existeEvento(idEvento)) {
+				trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
+				trilhaService.adicionarOuAtualizarTrilha(trilha);
+				model.addAttribute("trilha", trilhaService.get(trilha.getId()));
+				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			}else{
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
+				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			}	
 		}
+
 	}
 
 }
