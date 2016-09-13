@@ -66,12 +66,16 @@ public class EventoService {
 		return eventoRepository.findEventosAtivosEPublicos();
 	}
 
-	public List<Evento> eventosParaParticipar(Long idAutor) {
-		return eventoRepository.eventosParaParticipar(idAutor);
+	public List<Evento> eventosParaParticipar(Long idPessoa) {
+		return eventoRepository.eventosParaParticipar(idPessoa);
 	}
 	
 	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor){
 		return eventoRepository.findEventosDoAutor(idAutor);
+	}
+	
+	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor){
+		return eventoRepository.findEventosDoAutor(idRevisor);
 	}
 	
 }
