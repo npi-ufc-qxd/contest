@@ -64,6 +64,9 @@ public class Evento {
 
 	@OneToMany(mappedBy = "evento")
 	private List<ParticipacaoEvento> participacoes;
+	
+	@OneToMany(mappedBy = "evento")
+	private List<Trilha> trilhas;
 
 	public Long getId() {
 		return id;
@@ -176,5 +179,13 @@ public class Evento {
 				+ ", estado=" + estado + ", prazoSubmissaoInicial=" + prazoSubmissaoInicial + ", prazoSubmissaoFinal="
 				+ prazoSubmissaoFinal + ", prazoRevisaoInicial=" + prazoRevisaoInicial + ", prazoRevisaoFinal="
 				+ prazoRevisaoFinal + ", participacoes=" + participacoes + "]";
+	}
+
+	public List<Trilha> getTrilhas() {
+		return trilhas;
+	}
+
+	public void setTrilhas(List<Trilha> trilhas) {
+		this.trilhas = trilhas;
 	}
 }

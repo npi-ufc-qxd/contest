@@ -13,4 +13,4 @@ import ufc.quixada.npi.contest.config.ContestApplication;
 @WebAppConfiguration
 @CucumberOptions (features = "classpath:features", glue={"ufc.quixada.npi.contest"})
 public class CucumberExecute {
-}
+} 
