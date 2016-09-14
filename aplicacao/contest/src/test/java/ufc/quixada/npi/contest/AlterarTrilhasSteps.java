@@ -3,7 +3,7 @@ package ufc.quixada.npi.contest;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -99,7 +99,7 @@ public class AlterarTrilhasSteps {
 		when(trilhaService.exists(novoNome, evento.getId())).thenReturn(false);
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		action = mockMvc
-				.perform(put("/eventoOrganizador/trilhas")
+				.perform(post("/eventoOrganizador/trilha/editar")
 						.param("eventoId", evento.getId().toString())
 						.param("nome", novoNome)
 						.param("id", trilha.getId().toString())
@@ -123,7 +123,7 @@ public class AlterarTrilhasSteps {
 		when(trilhaService.exists(" ", evento.getId())).thenReturn(false);
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
 		action = mockMvc
-				.perform(put("/eventoOrganizador/trilhas")
+				.perform(post("/eventoOrganizador/trilha/editar")
 					.param("eventoId", evento.getId().toString())
 					.param("nome", " ")
 					.param("id", trilha.getId().toString())

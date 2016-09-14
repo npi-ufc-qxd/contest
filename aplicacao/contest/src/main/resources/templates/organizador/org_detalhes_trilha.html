@@ -87,8 +87,8 @@
           <h4>Selecione o Revisor desejado</h4>
           <form>
             <div class="input-field col m6 s6">
-              <input id="nome_do_revisor" type="text"/>
-              <label for="nome_do_revisor">Nome do Revisor</label>
+              	<input id="nome_do_revisor" type="text"/>
+              	<label for="nome_do_revisor">Nome do Revisor</label>
             </div>
           </form>
         </div>
@@ -104,14 +104,20 @@
       <div id="modalTrilha" class="modal">
         <div class="modal-content">
           <h4>Alterar nome da Trilha</h4>
-          <form>
+          <form th:action="@{/eventoOrganizador/trilha/editar}" action="#" th:object="${trilha}" method="POST">
             <div class="input-field col m6 s6">
-              <input id="nome_do_revisor" type="text"/>
+				<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
+              	<input id="nome_da_trilha" th:field="*{nome}" name="nome" type="text" value = "${trilha.nome}"/>
+              	<input type="hidden" th:field="*{id}" th:value="${trilha.id}" name = "id"/>
               <label for="nome_do_revisor">Nome da Trilha</label>
             </div>
-          </form>
+          	 <div class="modal-footer">
+	        <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Alterar</button> 
+	        <a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+	    </div>
+	    </form>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Alterar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a></div>
+       
       </div>
     </div>
     <footer class="page-footer purple darken-4">
