@@ -49,7 +49,7 @@
                 <p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
                 <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'ENVIARTRABALHO'">
-                  <a th:href="@{'/autor/enviarTrabalho/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
+                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
                 </div>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'SUBMISSAO'">
                   <a href="#" class="waves-effect waves-light btn yellow">Reenviar Trabalho</a>

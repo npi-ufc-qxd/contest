@@ -37,18 +37,29 @@
         
         
         <form class="col s12" th:action="@{/autor/enviarTrabalhoForm}"  th:object="${trabalho}" method="POST" enctype="multipart/form-data">
-          <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
-          <input type="hidden" th:value="${eventoId}" id="eventoId"/>
+          <div class="chip row red left" id="error_area" th:if="${erro != null}">
+             <span class="white-text" th:text="${erro}"></span>
+             <i class="material-icons">close</i>
+          </div>
+          
+          <div class="error_area col s12" th:if="${#fields.hasErrors('*')}">
+            <div class="chip row red left" th:each="err : ${#fields.errors('*')}">
+              <span class="white-text" th:text="${err}"></span>
+              <i class="material-icons">close</i>
+            </div>
+          </div>
+          
+          <input type="hidden" th:value="${eventoId}" name="eventoId"/>
           <div class="input-field col m12 s12">
-            <input id="titulo_do_trabalho" type="text"/>
+            <input id="titulo_do_trabalho" type="text" th:field="*{titulo}"/>
             <label for="titulo_do_trabalho">Titulo do Trabalho</label>
           </div>
           <div class="input-field col m6 s6">
-            <input id="nome_do_orientador" type="text"/>
+            <input id="nome_do_orientador" type="text" name="nomeOrientador"/>
             <label for="nome_do_orientador">Nome do Orientador</label>
           </div>
           <div class="input-field col m6 s6">
-            <input id="email_do_orientador" type="text"/>
+            <input id="email_do_orientador" type="text" name="emailOrientador"/>
             <label for="email_do_orientador">Email do Orientador      </label>
           </div>
           <div class="input-field col m6 s6">

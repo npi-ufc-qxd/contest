@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ufc.quixada.npi.contest.model.StorageProperties;
 import ufc.quixada.npi.contest.validator.StorageException;
+import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
 
 @Service
 public class FileSystemStorageService implements StorageService{
@@ -25,7 +26,10 @@ public class FileSystemStorageService implements StorageService{
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
-
+    
+    @Autowired
+    private MessageService messsagemService;
+    
 	@Override
 	public void init() {
 		
@@ -35,7 +39,7 @@ public class FileSystemStorageService implements StorageService{
 	public void store(MultipartFile file) {
 		 try {
 	            if (file.isEmpty()) {
-	                throw new StorageException("Arquivo vazio " + file.getOriginalFilename());
+	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
 	            Files.copy(file.getInputStream(), Paths.get("src/main/resources/static/arquivos", file.getOriginalFilename()));
 	        } catch (IOException e) {
@@ -49,7 +53,7 @@ public class FileSystemStorageService implements StorageService{
                     .filter(path -> !path.equals(this.rootLocation))
                     .map(path -> this.rootLocation.relativize(path));
         } catch (IOException e) {
-            throw new StorageException("Falha ao ler o arquivo", e);
+            throw new StorageException(messsagemService.getMessage("FALHA_AO_LER_ARQUIVO"));
         }
 	}
 
@@ -67,11 +71,11 @@ public class FileSystemStorageService implements StorageService{
                 return resource;
             }
             else {
-                return null;
+            	throw new StorageFileNotFoundException(messsagemService.getMessage("FALHA_AO_LER_ARQUIVO"));
 
             }
         } catch (MalformedURLException e) {
-        	 return null;
+        	throw new StorageFileNotFoundException(messsagemService.getMessage("FALHA_AO_LER_ARQUIVO"));
         }
 	}
 

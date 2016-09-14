@@ -1,13 +1,17 @@
 package ufc.quixada.npi.contest.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,22 +23,28 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Submissao;
+import ufc.quixada.npi.contest.model.TipoSubmissao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
 
 @Controller
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String FORMATO_ARQUIVO_INVALIDO = "FORMATO_ARQUIVO_INVALIDO";
 	private static final String NAO_HA_TRABALHOS = "NAO_HA_TRABALHOS";
 	private static final String ENVIARTRABALHO = "ENVIARTRABALHO";
 	private static final String SUBMISSAO = "SUBMISSAO";
@@ -65,6 +75,12 @@ public class AutorController {
 	
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	@Autowired
+	private TrabalhoValidator trabalhoValidator;
+	
+	@Autowired
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	private final StorageService storageService;
 
@@ -145,17 +161,17 @@ public class AutorController {
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
 	
-	@RequestMapping(value = "/enviarTrabalho/{id}", method = RequestMethod.GET)
-	public String enviarTrabalho(@PathVariable String id, Model model, RedirectAttributes redirect){
-		if(!eventoService.existeEvento(Long.parseLong(id))){
-			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
-			return "redirect:/autor/meusTrabalhos";
-		}
-		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-		model.addAttribute("evento", evento);
-
-		return Constants.TEMPLATE_ENVIAR_TRABALHO_AUTOR;
-	}
+//	@RequestMapping(value = "/enviarTrabalho/{id}", method = RequestMethod.GET)
+//	public String enviarTrabalho(@PathVariable String id, Model model, RedirectAttributes redirect){
+//		if(!eventoService.existeEvento(Long.parseLong(id))){
+//			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
+//			return "redirect:/autor/meusTrabalhos";
+//		}
+//		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
+//		model.addAttribute("evento", evento);
+//
+//		return Constants.TEMPLATE_ENVIAR_TRABALHO_AUTOR;
+//	}
 
 	
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
@@ -166,9 +182,37 @@ public class AutorController {
 	}
 	
 	@RequestMapping(value = "/enviarTrabalhoForm", method = RequestMethod.POST)
-	public String enviarTrabalhoForm(@RequestParam("file") MultipartFile file){
-		storageService.store(file);
-		return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
+	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, @RequestParam("file") MultipartFile file, @RequestParam("eventoId") String eventoId,
+			@RequestParam("nomeOrientador") String nomeOrientador, @RequestParam("emailOrientador") String emailOrientador, RedirectAttributes redirect){
+       
+		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
+		trabalho.setEvento(evento);
+		
+		trabalhoValidator.validate(trabalho, result);
+
+		if(result.hasErrors()){
+			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
+		}else{
+			if(validarArquivo(file)){
+				Pessoa pessoaOrientador = pessoaService.getByEmail(emailOrientador);
+				Pessoa pessoaAutor = getAutorLogado();
+				if(pessoaOrientador != null){
+					adicionarTrabalho(trabalho, pessoaOrientador, pessoaAutor, eventoId, file);
+					return "redirect:/autor/meusTrabalhos";
+				}else{
+					Pessoa orientador = new Pessoa();
+					orientador.setEmail(emailOrientador);
+					orientador.setNome(nomeOrientador);
+					orientador.setCpf("111.111.111-11");
+					pessoaService.addOrUpdate(orientador);
+					adicionarTrabalho(trabalho, orientador, pessoaAutor, eventoId, file);
+					return "redirect:/autor/meusTrabalhos";
+				}
+			}else{
+				redirect.addFlashAttribute("erro", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
+				return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
+			}
+		}
 	}
 	
 	public Pessoa getAutorLogado(){
@@ -176,5 +220,41 @@ public class AutorController {
 		String cpf = auth.getName();
 		Pessoa autorLogado = pessoaService.getByCpf(cpf);
 		return autorLogado;
+	}
+	public boolean validarArquivo(MultipartFile file){
+		String fileExtentions = ".pdf";
+		String fileName = file.getOriginalFilename();
+		int lastIndex = fileName.lastIndexOf('.');
+		String substring = fileName.substring(lastIndex, fileName.length());
+		if(fileExtentions.contains(substring)){
+			return true;
+		}
+		return false;
+	}
+	
+	public void adicionarTrabalho(Trabalho trabalho, Pessoa pessoaOrientador, Pessoa pessoaAutor, String eventoId, MultipartFile file){
+		ParticipacaoTrabalho participacaoTrabalhoOrientador = new ParticipacaoTrabalho();
+		ParticipacaoTrabalho participacaoTrabalhoAutor = new ParticipacaoTrabalho();
+		
+		participacaoTrabalhoOrientador.setPessoa(pessoaOrientador);
+		participacaoTrabalhoOrientador.setTrabalho(trabalho);
+		participacaoTrabalhoOrientador.setPapel(Papel.ORIENTADOR);
+		
+		participacaoTrabalhoAutor.setPessoa(pessoaAutor);
+		participacaoTrabalhoAutor.setTrabalho(trabalho);
+		participacaoTrabalhoAutor.setPapel(Papel.AUTOR);
+		
+		Submissao submissao = new Submissao();
+		
+		Date data = new Date(System.currentTimeMillis());  
+
+		submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
+		submissao.setTrabalho(trabalho);
+		submissao.setDataSubmissao(data);
+		
+		submissaoService.adicionarOuEditar(submissao);
+		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalhoOrientador);
+		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalhoAutor);
+		storageService.store(file);
 	}
 }
