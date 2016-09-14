@@ -2,8 +2,8 @@ package ufc.quixada.npi.contest;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
@@ -26,7 +26,6 @@ import ufc.quixada.npi.contest.controller.RevisorController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -40,24 +39,22 @@ public class ProfessorParticipaEvento {
 	private RevisorController revisorController;
 
 	@Mock
-	private PessoaService pessoaService;
-
-	@Mock
 	private EventoService eventoService;
 
 	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
+	
+	@Mock
+	private PessoaService pessoaService;
 
 	@Mock
 	private MessageService messageService;
-
+	
 	private MockMvc mockMvc;
 	private ResultActions action;
-	Pessoa revisorLogado;
-	private Evento evento;
+	private Pessoa revisorLogado;
 	private String EVENTO_ID = "2";
 	private ParticipacaoEvento participacaoEvento;
-	private String idRevisor;
 	
 	@Before
 	public void setup() {
@@ -75,6 +72,7 @@ public class ProfessorParticipaEvento {
 		revisorLogado.setPapelLdap("DOCENTE");
 		revisorLogado.setId(Long.valueOf(5));
 		
+		pessoaService.getClass();
 		when(revisorController.getRevisorLogado()).thenReturn(revisorLogado);
 	}
 	
@@ -85,7 +83,7 @@ public class ProfessorParticipaEvento {
 	
 	@Quando("^Escolho participar de um evento ativo com id (.*)$")
 	public void escolhoParticiparEventoAtivo(String id) throws Exception{
-		evento = new Evento();
+		Evento evento = new Evento();
 		evento.setId(Long.valueOf(id));
 		evento.setNome("Racha no Pinheiro");
 		evento.setEstado(EstadoEvento.ATIVO);
@@ -112,6 +110,7 @@ public class ProfessorParticipaEvento {
 	
 	@E("^Deve ser mostrado uma mensagem de feedback$")
 	public void mostrarMensagemFeedback() throws Exception{
+		messageService.getClass();
 		action.andExpect(redirectedUrl("/revisor"))
 		.andExpect(model().attributeDoesNotExist("eventoVazioError", "eventoInexistenteError"));
 	}

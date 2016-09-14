@@ -5,7 +5,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,16 +25,16 @@ import ufc.quixada.npi.contest.service.PessoaService;
 public class RevisorController {
 	
 	@Autowired
-	EventoService eventoService;
+	private EventoService eventoService;
 	
 	@Autowired
-	PessoaService pessoaService;
+	private PessoaService pessoaService;
 
 	@Autowired
-	MessageService messageService;
+	private MessageService messageService;
 	
 	@Autowired
-	ParticipacaoEventoService participacaoEventoService;
+	private ParticipacaoEventoService participacaoEventoService;
 	
 	private static final String REVISOR_INDEX = "revisor/revisor_index";
 	private static final String REVISOR_MEUS_EVENTOS = "revisor/revisor_meus_eventos";
