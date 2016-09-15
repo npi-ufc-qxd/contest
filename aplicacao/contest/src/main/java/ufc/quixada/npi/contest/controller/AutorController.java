@@ -203,7 +203,6 @@ public class AutorController {
 					Pessoa orientador = new Pessoa();
 					orientador.setEmail(emailOrientador);
 					orientador.setNome(nomeOrientador);
-					orientador.setCpf("111.111.111-11");
 					pessoaService.addOrUpdate(orientador);
 					adicionarTrabalho(trabalho, orientador, pessoaAutor, eventoId, file);
 					return "redirect:/autor/meusTrabalhos";
