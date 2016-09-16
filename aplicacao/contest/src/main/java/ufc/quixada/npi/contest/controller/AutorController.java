@@ -44,6 +44,9 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String CAMPOS_VAZIOS = "CAMPOS_VAZIOS";
+	private static final String ERRO_CADASTRO_TRABALHO = "ERRO_CADASTRO_TRABALHO";
+	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
 	private static final String FORMATO_ARQUIVO_INVALIDO = "FORMATO_ARQUIVO_INVALIDO";
 	private static final String NAO_HA_TRABALHOS = "NAO_HA_TRABALHOS";
 	private static final String ENVIARTRABALHO = "ENVIARTRABALHO";
@@ -82,12 +85,10 @@ public class AutorController {
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
-	private final StorageService storageService;
+	@Autowired
+	private StorageService storageService;
 
-    @Autowired
-    public AutorController(StorageService storageService) {
-        this.storageService = storageService;
-    }
+    
 	
 	@RequestMapping
 	public String index(Model model){
@@ -184,28 +185,36 @@ public class AutorController {
 	@RequestMapping(value = "/enviarTrabalhoForm", method = RequestMethod.POST)
 	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, @RequestParam("file") MultipartFile file, @RequestParam("eventoId") String eventoId,
 			@RequestParam("nomeOrientador") String nomeOrientador, @RequestParam("emailOrientador") String emailOrientador, RedirectAttributes redirect){
-       
-		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
-		trabalho.setEvento(evento);
-		
+		try{
+			Long id = Long.parseLong(eventoId);
+			Evento evento = eventoService.buscarEventoPorId(id);
+			trabalho.setEvento(evento);
+		}catch(NumberFormatException e){
+			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
+			return "redirect:/autor/meusTrabalhos";
+		}
+        
 		trabalhoValidator.validate(trabalho, result);
-
 		if(result.hasErrors()){
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
-				Pessoa pessoaOrientador = pessoaService.getByEmail(emailOrientador);
-				Pessoa pessoaAutor = getAutorLogado();
-				if(pessoaOrientador != null){
-					adicionarTrabalho(trabalho, pessoaOrientador, pessoaAutor, eventoId, file);
-					return "redirect:/autor/meusTrabalhos";
+				if(!emailOrientador.trim().isEmpty() && !nomeOrientador.trim().isEmpty()){
+					Pessoa orientador = pessoaService.getByEmail(emailOrientador);
+					Pessoa autor = getAutorLogado();
+					if(orientador != null){
+						return adicionarTrabalho(trabalho, orientador, autor, eventoId, file, redirect);
+					}else{
+						orientador = new Pessoa();
+						orientador.setEmail(emailOrientador);
+						orientador.setNome(nomeOrientador);
+						pessoaService.addOrUpdate(orientador);
+						
+						return adicionarTrabalho(trabalho, orientador, autor, eventoId, file, redirect);
+					}
 				}else{
-					Pessoa orientador = new Pessoa();
-					orientador.setEmail(emailOrientador);
-					orientador.setNome(nomeOrientador);
-					pessoaService.addOrUpdate(orientador);
-					adicionarTrabalho(trabalho, orientador, pessoaAutor, eventoId, file);
-					return "redirect:/autor/meusTrabalhos";
+						redirect.addFlashAttribute("camposVazios", messageService.getMessage(CAMPOS_VAZIOS));
+						return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
 				}
 			}else{
 				redirect.addFlashAttribute("erro", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
@@ -231,7 +240,8 @@ public class AutorController {
 		return false;
 	}
 	
-	public void adicionarTrabalho(Trabalho trabalho, Pessoa pessoaOrientador, Pessoa pessoaAutor, String eventoId, MultipartFile file){
+	public String adicionarTrabalho(Trabalho trabalho, Pessoa pessoaOrientador, Pessoa pessoaAutor, 
+			String eventoId, MultipartFile file, RedirectAttributes redirect){
 		ParticipacaoTrabalho participacaoTrabalhoOrientador = new ParticipacaoTrabalho();
 		ParticipacaoTrabalho participacaoTrabalhoAutor = new ParticipacaoTrabalho();
 		
@@ -255,5 +265,8 @@ public class AutorController {
 		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalhoOrientador);
 		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalhoAutor);
 		storageService.store(file);
+		
+		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
+		return "redirect:/autor/meusTrabalhos";
 	}
 }

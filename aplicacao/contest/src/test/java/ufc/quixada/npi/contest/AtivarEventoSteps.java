@@ -32,11 +32,7 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.validator.EventoValidator;
 
 public class AtivarEventoSteps {
-	private static final String PRAZO_REVISAO_FINAL = "prazoRevisaoFinal";
-	private static final String PRAZO_REVISAO_INICIAL = "prazoRevisaoInicial";
-	private static final String PRAZO_SUBMISSAO_FINAL = "prazoSubmissaoFinal";
-	private static final String PRAZO_SUBMISSAO_INICIAL = "prazoSubmissaoInicial";
-	private static final String ID = "1";
+	
 	@InjectMocks
 	private EventoControllerOrganizador eventoControllerOrganizador;
 	@Mock
@@ -58,6 +54,12 @@ public class AtivarEventoSteps {
 	private static final String PAGINA_ATIVAR_EVENTO_GET = "/eventoOrganizador/ativar/{id}";
 	private static final String PAGINA_ATIVAR_EVENTO_POST = "/eventoOrganizador/ativar";
 	private static final String PAGINA_LISTAR_EVENTOS_ATIVOS_ORG = "/eventoOrganizador/ativos";
+	private static final String PRAZO_REVISAO_FINAL = "prazoRevisaoFinal";
+	private static final String PRAZO_REVISAO_INICIAL = "prazoRevisaoInicial";
+	private static final String PRAZO_SUBMISSAO_FINAL = "prazoSubmissaoFinal";
+	private static final String PRAZO_SUBMISSAO_INICIAL = "prazoSubmissaoInicial";
+	private static final String ID = "1";
+	
 	
 	private MockMvc mockMvc;
 	private ResultActions action;

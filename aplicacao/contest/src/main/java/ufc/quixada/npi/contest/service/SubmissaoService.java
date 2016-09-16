@@ -16,7 +16,11 @@ public class SubmissaoService {
 		return submissaoRepository.existTrabalhoNesseEvento(id);
 	}
 	
-	public void adicionarOuEditar(Submissao submissao){
-		submissaoRepository.save(submissao);
+	public boolean adicionarOuEditar(Submissao submissao){
+		if(submissao != null){
+			submissaoRepository.save(submissao);
+			return true;
+		}
+		return false;
 	}
 }

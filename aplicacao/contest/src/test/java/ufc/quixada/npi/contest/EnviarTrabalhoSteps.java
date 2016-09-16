@@ -1,0 +1,226 @@
+package ufc.quixada.npi.contest;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import cucumber.api.java.Before;
+import cucumber.api.java.pt.Dado;
+import cucumber.api.java.pt.Então;
+import cucumber.api.java.pt.Quando;
+import ufc.quixada.npi.contest.controller.AutorController;
+import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Submissao;
+import ufc.quixada.npi.contest.service.EventoService;
+import ufc.quixada.npi.contest.service.MessageService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
+import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.StorageService;
+import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.validator.TrabalhoValidator;
+
+public class EnviarTrabalhoSteps {
+	
+	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
+	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID = "/autor/enviarTrabalhoForm/{id}";
+	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/lucas.vieira/Downloads/certificado.pdf";
+	private static final String CAMINHO_ARQUIVO_INVALIDO = "/home/lucas.vieira/Downloads/pgadmin.log";
+	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM = "/autor/enviarTrabalhoForm";
+	private static final String EMAIL_ORIENTADOR = "emailOrientador";
+	private static final String NOME_ORIENTADOR = "nomeOrientador";
+	private static final String TITULO = "titulo";
+	private static final String EVENTO_ID = "eventoId";
+	private static final String TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM = "autor/autor_enviar_trabalho_form";
+	@InjectMocks
+	private AutorController autorController;
+	@Mock
+	private EventoService eventoService;
+	@Mock
+	private TrabalhoValidator trabalhoValidator;
+	@Mock
+	private PessoaService pessoaService;
+	@Mock
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
+	@Mock
+	private StorageService storageService;
+	@Mock
+	private MessageService messageService;
+	@Mock
+	private SubmissaoService submissaoService;
+	
+	private MockMvc mockMvc;
+	private ResultActions action;
+	private Evento evento;
+	private Pessoa pessoa;
+	private Submissao submissao;
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		this.mockMvc = MockMvcBuilders.standaloneSetup(autorController).build();
+		evento = new Evento();
+		pessoa = new Pessoa();
+		submissao = new Submissao();
+		
+		evento.setId(1L);
+
+		pessoa.setCpf("123");
+		pessoa.setEmail("teste@tes.com");
+	}
+	
+	@Dado("^que o autor seleciona um evento que ele participa$")
+	public void autorSelecionaEvento() throws Throwable{
+		action = mockMvc.perform(
+				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"))
+				.andExpect(view().name(TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM));
+	}
+	
+	@Quando("^ele preenche os campos corretamente e escolhe um arquivo .pdf$")
+	public void preencherOsCamposSemErro() throws Exception{
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
+		
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("123");
+		SecurityContextHolder.setContext(context);
+		
+		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
+		
+		
+		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
+		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+                        .file(multipartFile)
+                        .param(EVENTO_ID, "1")
+                        .param(TITULO, "Teste")
+                        .param(NOME_ORIENTADOR, "joao")
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+	}
+	@Então("^o autor deve ser redirecionado para a página meusTrabalhos com uma mensagem de sucesso$")
+	public void mensagemDeSucesso() throws Exception{
+		action.andExpect(redirectedUrl(PAGINA_AUTOR_MEUS_TRABALHOS))
+			  .andExpect(status().isFound());
+	}
+	
+	@Quando("^ele não preenche o campo titulo$")
+	public void campoTituloNaoPreenchido() throws Exception{
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		
+		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
+		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+                        .file(multipartFile)
+                        .param(EVENTO_ID, "1")
+                        .param(TITULO, "")
+                        .param(NOME_ORIENTADOR, "joao")
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+	}
+	@Então("^deve ser mostrado uma mensagem de erro dizendo que o titulo está em branco$")
+	public void mostrarErroNoCampoTitulo() throws Exception{
+		action.andExpect(model().attributeHasFieldErrors("trabalho", TITULO))
+		      .andExpect(view().name(TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM));
+	}
+	
+	@Quando("^ele não preenche os campos nom do orientador e email do orientador$")
+	public void camposNomeEEmailDoOrientadorEmBranco() throws Exception{
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		
+		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
+		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+                        .file(multipartFile)
+                        .param(EVENTO_ID, "1")
+                        .param(TITULO, "Titulo")
+                        .param(NOME_ORIENTADOR, "")
+                        .param(EMAIL_ORIENTADOR , ""));
+	}
+	@Então("^deve ser mostrado uma mensagem de erro que há campos em branco$")
+	public void camposEmBanco() throws Exception{
+		action.andExpect(status().isFound())
+		      .andExpect(redirectedUrl(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM+"/1"))
+		      .andExpect(flash().attribute("camposVazios", messageService.getMessage("CAMPOS_VAZIOS")));;
+	}
+	
+	@Quando("^o autor escolhe um arquivo em um formato diferete de .pdf$")
+	public void autoEscolheArquivoInvalido() throws Exception{
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
+		
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("123");
+		SecurityContextHolder.setContext(context);
+		
+		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
+		
+		
+		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_INVALIDO));
+		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "pgadmin.log","multipart/form-data",fi2);
+
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+                        .file(multipartFile)
+                        .param(EVENTO_ID, "1")
+                        .param(TITULO, "Teste")
+                        .param(NOME_ORIENTADOR, "joao")
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+		
+	}
+	@Então("^deve ser mostrado uma mensagem de erro que o formato do arquivo é invalido$")
+	public void mensagemDeErroArquivoInvalido() throws Exception{
+		action.andExpect(status().isFound())
+	      .andExpect(redirectedUrl(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM+"/1"))
+	      .andExpect(flash().attribute("erro", messageService.getMessage("FORMATO_ARQUIVO_INVALIDO")));;;
+	}
+	
+	@Quando("^ele muda o id do evento para um inexistente$")
+	public void eventoInexistente() throws Exception{
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(null);
+		
+		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
+		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+                        .file(multipartFile)
+                        .param(EVENTO_ID, "155")
+                        .param(TITULO, "")
+                        .param(NOME_ORIENTADOR, "joao")
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+		
+	}
+	@Então("^deve ser mostrado uma mensagem de erro de evento não existe$")
+	public void eventoNaoExiste() throws Exception{
+		action.andExpect(model().hasErrors())
+		      .andExpect(view().name(TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM))
+		      .andExpect(status().isOk());
+	}
+	
+}

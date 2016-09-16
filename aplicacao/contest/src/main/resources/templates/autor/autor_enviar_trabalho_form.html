@@ -37,8 +37,12 @@
         
         
         <form class="col s12" th:action="@{/autor/enviarTrabalhoForm}"  th:object="${trabalho}" method="POST" enctype="multipart/form-data">
-          <div class="chip row red left" id="error_area" th:if="${erro != null}">
-             <span class="white-text" th:text="${erro}"></span>
+          <div class="chip row red left" id="error_area" th:if="${erro}">
+             <span class="white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}"></span>
+             <i class="material-icons">close</i>
+          </div>
+          <div class="chip row red left" id="error_area" th:if="${camposVazios}">
+             <span class="white-text" th:text="#{CAMPOS_VAZIOS}"></span>
              <i class="material-icons">close</i>
           </div>
           

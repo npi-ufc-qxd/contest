@@ -38,19 +38,19 @@
 			<a href="#">Revisores </a>
 		</div>
 		<div>
-			<div th:if="${eventoVazioError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoVazioError}">
+			<div th:if="${eventoVazioError}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="#{ID_EVENTO_VAZIO_ERROR}">
 				<i class="material-icons">close</i>
 			</div>
 			
-			<div th:if="${eventoInexistenteError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoInexistenteError}">
+			<div th:if="${eventoInexistenteError}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="#{EVENTO_NAO_EXISTE}">
 				<i class="material-icons">close</i>
 			</div>
 			
-			<div th:if="${participarEventoInativoError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${${participarEventoInativoError}">
+			<div th:if="${participarEventoInativoError}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="#{PARTICIPAR_EVENTO_INATIVO}">
 				<i class="material-icons">close</i>
 			</div>
 			
-			<div th:if="${particapacaoEventoSucesso != null}" id="success_area" class="row chip green white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${particapacaoEventoSucesso}">
+			<div th:if="${particapacaoEventoSucesso}" id="success_area" class="row chip green white-text" style="margin-right: 5px;margin-left: 5px;" th:text="#{PARTICAPAR_EVENTO_SUCESSO}">
 				"M<i class="material-icons">close</i>
 			</div>
 			

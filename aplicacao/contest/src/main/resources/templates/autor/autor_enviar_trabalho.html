@@ -31,7 +31,7 @@
         <a href="#">Revisores </a>
       </div>
       <div>
-        <div th:if="${eventoVazioError != null}" th:text="${eventoVazioError}" id="error_area" class="row chip red white-text">
+        <div th:if="${eventoVazioError}" th:text="${eventoVazioError}" id="error_area" class="row chip red white-text">
           <i class="material-icons">close</i>
         </div>
       </div>

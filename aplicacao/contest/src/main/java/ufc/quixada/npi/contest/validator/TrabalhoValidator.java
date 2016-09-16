@@ -32,7 +32,7 @@ public class TrabalhoValidator implements Validator{
 	public void validate(Object target, Errors errors) {
 		Trabalho trabalho = (Trabalho) target;
 		if(trabalho != null){
-			if(trabalho.getTitulo().isEmpty()){
+			if(trabalho.getTitulo().trim().isEmpty()){
 				errors.rejectValue(TITULO, TITULO_NULL, messageService.getMessage(NOME_DO_TRABALHO_VAZIO));
 			}
 			if(trabalho.getEvento() == null){
