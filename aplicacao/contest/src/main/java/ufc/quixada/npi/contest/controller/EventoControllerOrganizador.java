@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import groovy.util.logging.Log;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
@@ -25,9 +24,9 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
-import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
@@ -142,7 +141,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			Long trilhaId = Long.valueOf(id);
 			Trilha trilha = trilhaService.get(trilhaId);
 			model.addAttribute("trilha", trilhaService.get(trilhaId));
-			model.addAttribute("evento", trilha.getEvento());
 			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
@@ -173,8 +171,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 	}
 	
-	@RequestMapping(value = "/trilha/editar", method = RequestMethod.POST)
-	public String atualizaTrilha(@RequestParam String eventoId, @Valid Trilha trilha, Model model, BindingResult result, RedirectAttributes redirect){
+	@RequestMapping(value = "/editarTrilha", method = RequestMethod.POST)
+	public String atualizaTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, BindingResult result, RedirectAttributes redirect){
 		model.addAttribute("trilha", trilhaService.get(trilha.getId()));
 		if (result.hasErrors()) {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
@@ -193,7 +191,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			}else{
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
 				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
-			}	
+			}
 		}
 
 	}
