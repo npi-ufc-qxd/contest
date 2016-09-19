@@ -35,6 +35,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
+	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
@@ -121,6 +122,27 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return "redirect:/eventoOrganizador/inativos";
 	}
 	
+	
+	@RequestMapping(value = "/detalhes-evento/{id}", method = RequestMethod.GET)
+	public String detalhesEvento(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		try{
+			Long eventoId = Long.valueOf(id);
+			model.addAttribute("qtdTrilhas", trilhaService.buscarTrilhas(eventoId).size());
+			Evento evento = eventoService.buscarEventoPorId(eventoId);
+			if (!eventoService.existeEvento(eventoId)) {
+				model.addAttribute(EVENTO_INATIVO, messageService.getMessage("EVENTO_INATIVO"));
+			}else if (evento.getEstado().equals(EstadoEvento.INATIVO)) {
+				model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
+			} else{
+				model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
+				return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+			}
+		}catch(NumberFormatException e){
+			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+		}
+		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+	}
+		
 	@RequestMapping(value = "/trilhas/{id}", method = RequestMethod.GET)
 	public String listaTrilhas(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try{

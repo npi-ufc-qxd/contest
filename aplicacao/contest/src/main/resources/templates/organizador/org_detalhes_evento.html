@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+ 
     <!-- CSS-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
@@ -23,69 +23,92 @@
         </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
     </nav>
-    <div class="container page"><br/>
-    	<div class="row opcoes">
-        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
-	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
-        	<a href="org_revisores.html">Revisores</a>
-        	<a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
-		</div>
-      <div class="row">
-        <h2 th:text="'Trilhas do Evento :' + ${evento.nome}"></h2>
-        <div id="error_area" class="row chip red white-text" th:text= "${organizadorError}">"Mensagem de Erro"<i class="material-icons">close</i></div>
-        <form class="col s12">
-          <div class="row"></div>
-          <div class="input-field col m3 offset-m10 s6"> 
-          	<a id="btn-modal" href="#modal1" class="waves-effect waves-light btn white-text modal-trigger">Trilha<i aria-hidden="true" class="fa fa-plus left"> </i></a>
-          </div>
-          <div class="row">
-            <div class="input-field col m12 s6">
-              <table class="striped centered">
-                <thead>
-                  <tr> 
-                    <th>Trilha</th>
-                    <th>Trabalhos Enviados</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody >             
-                  <tr th:each="itemTrilha : ${trilhas}">
-                    <td><p th:text="${itemTrilha.nome}"></p></td>
-                    <td>Numero de Submissoes</td>
-                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} }">Ver Trilha      </a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div id="paginacao">         
-	          <div class="row col s12 center">
-	            <ul class="pagination">
-	              <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-	              <li class="active"><a href="#">1</a></li>
-	              <li class="waves-effect"><a href="#">2</a></li>
-	              <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-	            </ul>
-	          </div>
-          </div>
-        </form>
+    <div class="container page"><br />
+      <div class="row opcoes">
+        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+        <a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        <a href="org_revisores.html">Revisores</a>
+        <a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
       </div>
-      <form th:action="@{/eventoOrganizador/trilhas}" action="#" th:object="${trilha}" method="post">
-        <div id="modal1" class="modal">
-          <div class="modal-content">
-            <h4>Adicionar Trilha</h4>
-            <div class="input-field col m6 s6">
-            	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
-            	<input id="nome_da_trilha" th:field="*{nome}" name="nome" type="text" />
-            	<label for="nome_da_trilha">Nome da Trilha</label>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-          	<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
-       	  </div>
-        </div>
-      </form>
+      
+      <div class="row" th:switch="${evento != null}">
+      	<div th:if="${eventoInativo}" class="chip red darken-1">
+        	<span class="white-text" th:text="#{EVENTO_INATIVO}"></span>
+        	<i class="material-icons">close</i>
+       	</div>
+       	<div th:if="${eventoInexistente}" class="chip red darken-1">
+         	<span class="white-text" th:text="#{EVENTO_NAO_EXISTE}"></span>
+         	<i class="material-icons">close</i>
+       	</div>
+      	<div th:case="${true}">
+	        <h2>Detalhes do Evento: <spam th:text="${evento.nome}"></spam></h2>
+	        <p th:text="${evento.descricao}"></p>
+	        <div>
+	          <div class="col s12">
+	            <div class="card horizontal">
+	              <div class="card-stacked">
+	                <div class="card-content">
+	                  <div class="row"><span class="card-title">Datas do Evento</span></div>
+	                  <div class="row">
+	                    <div class="col s3">
+	                      <p>Prazo de Submissão - Inicio</p>
+	                      <p th:text="${evento.prazoSubmissaoInicial}"></p>
+	                    </div>
+	                    <div class="col s3">
+	                      <p>Prazo de Submissão - Final</p>
+	                      <p th:text="${evento.prazoSubmissaoFinal}"></p>
+	                    </div>
+	                    <div class="col s3">
+	                      <p>Prazo de Revisão - Inicio</p>
+	                      <p th:text="${evento.prazoRevisaoInicial}"></p>
+	                    </div>
+	                    <div class="col s3">
+	                      <p>Prazo de Revisão - Final</p>
+	                      <p th:text="${evento.prazoRevisaoFinal}"></p>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	        <div>
+	          <div class="col s4">
+	            <div class="card horizontal small">
+	              <div class="card-stacked">
+	                <div class="card-content"><span class="card-title">Trilhas do Evento</span>
+	                  <p>Número de trilhas: <spam th:text="${qtdTrilhas}"></spam> </p>
+	                </div>
+	                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trilhas</a></div>
+	              </div>
+	            </div>
+	          </div>
+	          <div class="col s4">
+	            <div class="card horizontal small">
+	              <div class="card-stacked">
+	                <div class="card-content"><span class="card-title">Revisores do Evento</span>
+	                  <p>Número de revisores: <spam th:text="${qtdTrilhas}"></spam> </p> 
+	                </div>
+	                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a></div>
+	              </div>
+	            </div>
+	          </div>
+	          <div class="col s4">
+	            <div class="card horizontal small">
+	              <div class="card-stacked">
+	                <div class="card-content"><span class="card-title">Trabalhos do Evento</span>
+	                  <p>Submetidos: <spam th:text="${qtdTrilhas}"></spam> </p>
+	                  <p>Revisados: <spam th:text="${qtdTrilhas}"></spam> </p>
+	                  <p>Aguardando revisão: <spam th:text="${qtdTrilhas}"></spam> </p>
+	                </div>
+	                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a></div>
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+      	</div>
+      </div>
+    
     </div>
     <footer class="page-footer purple darken-4">
       <div class="footer-copyright">
@@ -93,12 +116,9 @@
       </div>
     </footer>
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="../../js/materialize.js"></script>
+    <script src="../js/materialize.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
-    	//Inicialização do Modal excluir Evento
-        $('.modal-trigger').leanModal();  
-    	 
         //Inicialização dos elementos no JS
         //Parallax BG
         $('.parallax').parallax();
@@ -182,7 +202,8 @@
           configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
         });
         
-        
+        //Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();
         
       });
     </script>
