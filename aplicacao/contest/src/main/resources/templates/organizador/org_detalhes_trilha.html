@@ -28,7 +28,7 @@
       <div class="row">
         <h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
       </div>
-      <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+      <div id="error_area" class="row chip red white-text" th:text= "${organizadorError}">"Mensagem de Erro"<i class="material-icons">close</i></div>      
       <div class="row">
         <div class="input-field col m4 s5">  <a href="#modalTrilha" class="waves-effect waves-light btn white-text modal-trigger">Alterar nome da Trilha<i aria-hidden="true" class="fa fa-pencil left"></i></a></div>
         <div class="input-field col m5 s5"> <a href="#modalExcluir" class="waves-effect waves-light btn white-text modal-trigger">Excluir Trilha<i aria-hidden="true" class="fa fa-trash left">        </i></a></div>
@@ -99,12 +99,12 @@
           <h4>Excluir Trilha</h4>
           <p>Tem certeza que quer excluir essa Trilha?</p>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar </a></div>
+        <div class="modal-footer"><a th:href="@{'/eventoOrganizador/trilha/excluir/' + ${trilha.id} +'/'+ ${trilha.evento.id} }" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar </a></div>
       </div>
       <div id="modalTrilha" class="modal">
         <div class="modal-content">
           <h4>Alterar nome da Trilha</h4>
-          <form th:action="@{/eventoOrganizador/editarTrilha}" th:object="${trilha}" method="POST">
+          <form th:action="@{/eventoOrganizador/trilha/editar}" th:object="${trilha}" method="POST">
             <div class="input-field col m6 s6">
 				<input id="nome_da_trilha" th:field="*{nome}" th:value="${trilha.nome}" name="nome" type="text" />
 	           	<input type="hidden" th:value="${trilha.id}" name = "id"/>

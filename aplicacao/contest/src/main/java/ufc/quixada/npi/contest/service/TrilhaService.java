@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.service;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.TrilhaRepository;
@@ -17,11 +18,8 @@ public class TrilhaService {
 		trilhaRepository.save(trilha);
 	}
 
-	public boolean removerTrilha(Long id) {
-		if (trilhaRepository.findOne(id) != null) {
-			trilhaRepository.delete(id);
-			return true;
-		}
+	public boolean removerTrilha(Trilha trilha) {
+		trilhaRepository.delete(trilha);
 		return false;
 	}
 	
@@ -31,8 +29,8 @@ public class TrilhaService {
 		return trilhas;
 	}
 	
-	public Trilha get(Long id) {
-		return trilhaRepository.findOne(id);
+	public Trilha get(Long trilhaId, Long eventoId) {
+		return trilhaRepository.findByTrilhaIdAndEventoId( trilhaId, eventoId);
 	}
 	
 	public boolean exists(String nome, Long eventoId){

@@ -52,7 +52,7 @@
                   <tr th:each="itemTrilha : ${trilhas}">
                     <td><p th:text="${itemTrilha.nome}"></p></td>
                     <td>Numero de Submissoes</td>
-                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} }">Ver Trilha      </a></td>
+                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} +'/'+ ${evento.id}}">Ver Trilha      </a></td>
                   </tr>
                 </tbody>
               </table>
