@@ -132,7 +132,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String detalhesEvento(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try{
 			Long eventoId = Long.valueOf(id);
-			model.addAttribute("qtdTrilhas", trilhaService.buscarTrilhas(eventoId).size());
+			
 			Evento evento = eventoService.buscarEventoPorId(eventoId);
 			if (!eventoService.existeEvento(eventoId)) {
 				model.addAttribute(EVENTO_INATIVO, messageService.getMessage("EVENTO_INATIVO"));
@@ -140,6 +140,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
 			} else{
 				model.addAttribute("evento", evento);
+				model.addAttribute("qtdTrilhas", evento.getTrilhas().size());
 				model.addAttribute("revisores", pessoaService.pessoasPorPapelNoEvento(Papel.REVISOR, eventoId));
 				model.addAttribute("qtdTrabalhos", trabalhoService.getTrabalhosEvento(evento).size());
 				return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
