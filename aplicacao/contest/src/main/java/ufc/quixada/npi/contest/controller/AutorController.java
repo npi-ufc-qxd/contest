@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,15 +8,18 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -44,6 +48,7 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String FORA_DA_DATA_DE_SUBMISSAO = "FORA_DA_DATA_DE_SUBMISSAO";
 	private static final String CAMPOS_VAZIOS = "CAMPOS_VAZIOS";
 	private static final String ERRO_CADASTRO_TRABALHO = "ERRO_CADASTRO_TRABALHO";
 	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
@@ -161,20 +166,7 @@ public class AutorController {
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
-	
-//	@RequestMapping(value = "/enviarTrabalho/{id}", method = RequestMethod.GET)
-//	public String enviarTrabalho(@PathVariable String id, Model model, RedirectAttributes redirect){
-//		if(!eventoService.existeEvento(Long.parseLong(id))){
-//			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
-//			return "redirect:/autor/meusTrabalhos";
-//		}
-//		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-//		model.addAttribute("evento", evento);
-//
-//		return Constants.TEMPLATE_ENVIAR_TRABALHO_AUTOR;
-//	}
 
-	
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
 	public String enviarTrabalhoForm(@PathVariable String id, Model model){
 		model.addAttribute("trabalho", new Trabalho());
@@ -183,34 +175,42 @@ public class AutorController {
 	}
 	
 	@RequestMapping(value = "/enviarTrabalhoForm", method = RequestMethod.POST)
-	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, @RequestParam("file") MultipartFile file, @RequestParam("eventoId") String eventoId,
+	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, @RequestParam(value="file",required = true) MultipartFile file, @RequestParam("eventoId") String eventoId,
 			@RequestParam("nomeOrientador") String nomeOrientador, @RequestParam("emailOrientador") String emailOrientador, RedirectAttributes redirect){
+		Evento evento;
 		try{
 			Long id = Long.parseLong(eventoId);
-			Evento evento = eventoService.buscarEventoPorId(id);
+			evento = eventoService.buscarEventoPorId(id);
 			trabalho.setEvento(evento);
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
 		}
-        
 		trabalhoValidator.validate(trabalho, result);
 		if(result.hasErrors()){
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
 				if(!emailOrientador.trim().isEmpty() && !nomeOrientador.trim().isEmpty()){
-					Pessoa orientador = pessoaService.getByEmail(emailOrientador);
-					Pessoa autor = getAutorLogado();
-					if(orientador != null){
-						return adicionarTrabalho(trabalho, orientador, autor, eventoId, file, redirect);
+					Date dataDeEnvio = new Date(System.currentTimeMillis());
+					if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
+					   evento.getPrazoSubmissaoInicial().before(dataDeEnvio) 
+					   ){
+						Pessoa orientador = pessoaService.getByEmail(emailOrientador);
+						Pessoa autor = getAutorLogado();
+						if(orientador != null){
+							return adicionarTrabalho(trabalho, orientador, autor, eventoId, file, redirect);
+						}else{
+							orientador = new Pessoa();
+							orientador.setEmail(emailOrientador);
+							orientador.setNome(nomeOrientador);
+							pessoaService.addOrUpdate(orientador);
+							
+							return adicionarTrabalho(trabalho, orientador, autor, eventoId, file, redirect);
+						}
 					}else{
-						orientador = new Pessoa();
-						orientador.setEmail(emailOrientador);
-						orientador.setNome(nomeOrientador);
-						pessoaService.addOrUpdate(orientador);
-						
-						return adicionarTrabalho(trabalho, orientador, autor, eventoId, file, redirect);
+						redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
+						return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
 					}
 				}else{
 						redirect.addFlashAttribute("camposVazios", messageService.getMessage(CAMPOS_VAZIOS));
@@ -240,8 +240,9 @@ public class AutorController {
 		return false;
 	}
 	
+	
 	public String adicionarTrabalho(Trabalho trabalho, Pessoa pessoaOrientador, Pessoa pessoaAutor, 
-			String eventoId, MultipartFile file, RedirectAttributes redirect){
+			String eventoId, MultipartFile file, RedirectAttributes redirect) {
 		ParticipacaoTrabalho participacaoTrabalhoOrientador = new ParticipacaoTrabalho();
 		ParticipacaoTrabalho participacaoTrabalhoAutor = new ParticipacaoTrabalho();
 		
@@ -268,5 +269,10 @@ public class AutorController {
 		
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";
+	}
+	
+	@ExceptionHandler(IOException.class)
+	public String tamanhoArquivoError(IOException e){
+		return "quebou";
 	}
 }

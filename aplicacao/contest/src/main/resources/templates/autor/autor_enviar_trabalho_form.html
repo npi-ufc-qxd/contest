@@ -41,6 +41,10 @@
              <span class="white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}"></span>
              <i class="material-icons">close</i>
           </div>
+          <div class="chip row red left" id="error_area" th:if="${foraDoPrazoDeSubmissao}">
+             <span class="white-text" th:text="#{FORA_DA_DATA_DE_SUBMISSAO}"></span>
+             <i class="material-icons">close</i>
+          </div>
           <div class="chip row red left" id="error_area" th:if="${camposVazios}">
              <span class="white-text" th:text="#{CAMPOS_VAZIOS}"></span>
              <i class="material-icons">close</i>

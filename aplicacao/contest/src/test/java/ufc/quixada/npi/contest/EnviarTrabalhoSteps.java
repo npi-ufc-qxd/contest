@@ -211,7 +211,8 @@ public class EnviarTrabalhoSteps {
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
                         .file(multipartFile)
                         .param(EVENTO_ID, "155")
-                        .param(TITULO, "")
+                        .param(TITULO, ""
+                        		+ "")
                         .param(NOME_ORIENTADOR, "joao")
                         .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
 		
