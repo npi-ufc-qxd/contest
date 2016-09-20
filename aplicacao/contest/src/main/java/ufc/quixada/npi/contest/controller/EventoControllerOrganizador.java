@@ -62,9 +62,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@Autowired
 	private SubmissaoService submissaoService;
 	
-	@Autowired
-	private TrabalhoService trabalhoService;
-	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
@@ -181,28 +178,24 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String atualizarTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, BindingResult result, RedirectAttributes redirect){
 		long idEvento = Long.parseLong(eventoId);
 		model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
-		if (result.hasErrors()) {
+		if (trilha.getNome().isEmpty()) {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
-			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}else{
-			if (trabalhoService.existeTrabalho(3L) ) {
-				redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
-				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
-			}
 			if (eventoService.existeEvento(idEvento)) {
-				if (trilhaService.existeTrabalho(trilha.getId()) ) {
+				if (trilhaService.exists(trilha.getNome(), idEvento)) {
+					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
+				}else if (trilhaService.existeTrabalho(trilha.getId()) ) {
 					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
-					return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+				}else{
+					trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
+					trilhaService.adicionarOuAtualizarTrilha(trilha);
+					model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
 				}
-				trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
-				trilhaService.adicionarOuAtualizarTrilha(trilha);
-				model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
-				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 			}else{
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
-				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 			}
 		}
+		return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 	}
 	
 	@RequestMapping(value = "/trilha/excluir/{trilhaId}/{eventoId}", method = RequestMethod.GET)

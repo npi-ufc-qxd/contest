@@ -17,11 +17,13 @@
 				Cenário: O organizador tenta alterar o nome da trilha de submissão com um nome inválido
 					Quando a trilha não possui nenhum trabalho cadastrado
 					E não fornece o novo nome da trilha
-				  Então o nome da trilha não será atualizado
-					E o organizador deve visualizar uma mensagem de erro
+				  Então o nome da trilha não será atualizado e visualiza uma mensagem de erro
 
-				Cenário: O organizador tenta altera o nome da trilha de submissão que possui trabalhos submetidos
+				Cenário: O organizador tenta alterar o nome da trilha de submissão que possui trabalhos submetidos
 					Quando a trilha possui algum trabalho cadastrado
 					E o organizador fornece um novo nome para a trilha
-				  Então o nome da trilha não deve ser atualizado
-					E o organizador deve visualizará uma mensagem de erro
+				  Então o nome da trilha não deve ser atualizado e o organizador deve visualizar uma mensagem de erro
+				  
+				Cenário: O organizador tenta alterar o nome da trilha para um nome que já existe
+					E o organizador fornece um novo nome que já existe
+					Então o organizador deve visualizar uma mensagem de erro

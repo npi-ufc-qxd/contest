@@ -3,7 +3,6 @@ package ufc.quixada.npi.contest;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.mockito.InjectMocks;
@@ -34,7 +33,6 @@ public class AlterarTrilhasSteps {
 
 	private static final String EVENTO_ID = "2";
 	private static final String TRILHA_ID = "3";
-	private static final String TRABALHO_ID = "4";
 
 	@InjectMocks
 	private EventoControllerOrganizador eventoControllerOrganizador;
@@ -126,14 +124,9 @@ public class AlterarTrilhasSteps {
 				);
 	}
 	
-	@Entao("^o nome da trilha não será atualizado$")
+	@Entao("^o nome da trilha não será atualizado e visualiza uma mensagem de erro$")
 	public void trilhaNaoAtualizada() throws Throwable{
 		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG));
-	}
-	
-	@E("^o organizador deve visualizar uma mensagem de erro$")
-	public void visualizarMensagemDeErro() throws Throwable{
-	//TODO	
 	}
 	
 	@Quando("^a trilha possui algum trabalho cadastrado$")
@@ -154,13 +147,27 @@ public class AlterarTrilhasSteps {
 				);
 	}
 	
-	@Então("^o nome da trilha não deve ser atualizado$")
+	@Então("^o nome da trilha não deve ser atualizado e o organizador deve visualizar uma mensagem de erro$")
 	public void nomeTrilhaNaoAtualizado() throws Throwable{
-		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG));
+		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG)).andExpect(model().attribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO")));
 	}
 	
-	@E("^o organizador deve visualizará uma mensagem de erro$")
-	public void organizadorVisualizaMensagemDeErro() throws Throwable{
-		//action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG)).andExpect(model().attributeHasErrors("organizadorError"));
+	@E("^o organizador fornece um novo nome que já existe$")
+	public void organizadorForneceNovoNomeQueJaExiste() throws Throwable{
+		String novoNome = "novoNome";
+		when(trilhaService.exists(novoNome, evento.getId())).thenReturn(true);
+		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
+		action = mockMvc
+				.perform(post("/eventoOrganizador/trilha/editar")
+						.param("eventoId", evento.getId().toString())
+						.param("nome", novoNome)
+						.param("id", trilha.getId().toString())
+				);
 	}
+	
+	@Então("^o organizador deve visualizar uma mensagem de erro$")
+	public void nomeNaoAtualizadoERetornaMensagemDeErro() throws Throwable{
+		action.andExpect(view().name(Constants.TEMPLATE_DETALHES_TRILHA_ORG)).andExpect(model().attribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE")));
+	}
+
 }
