@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,8 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "participacao_trabalho")
@@ -23,13 +23,13 @@ public class ParticipacaoTrabalho {
 
 	@Column(name = "papel")
 	@Enumerated(EnumType.STRING)
-	@NotEmpty
+	@NotNull
 	private Papel papel;
 
 	@ManyToOne
 	private Pessoa pessoa;
-
-	@ManyToOne
+	
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Trabalho trabalho;
 
 	public Long getId() {

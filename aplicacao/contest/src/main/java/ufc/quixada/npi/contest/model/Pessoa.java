@@ -36,7 +36,6 @@ public class Pessoa implements UserDetails {
 	private String nome;
 
 	@Column(name = "cpf", unique = true)
-	@NotEmpty
 	private String cpf;
 
 	@Column(name = "password")

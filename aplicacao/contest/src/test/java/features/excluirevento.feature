@@ -1,5 +1,5 @@
 # language: pt
-	Funcionalidade: Excluir Evento
+Funcionalidade: Excluir Evento
 	
 	Eu como administrador gostaria de excluir um evento inativo
 	Ao solicitar a exclusão, o usuário deverá confirmar a solicitação de exclusão
