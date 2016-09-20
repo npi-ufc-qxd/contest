@@ -26,6 +26,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
@@ -54,11 +55,15 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@Autowired
 	private TrilhaService trilhaService;
+	
 	@Autowired
 	private RevisaoService revisaoService;
 	
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	@Autowired
+	private TrabalhoService trabalhoService;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -180,11 +185,15 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
 			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}else{
-			if (trilhaService.exists(trilha.getNome(), idEvento) ) {
+			if (trabalhoService.existeTrabalho(3L) ) {
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
 				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 			}
 			if (eventoService.existeEvento(idEvento)) {
+				if (trilhaService.existeTrabalho(trilha.getId()) ) {
+					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
+					return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+				}
 				trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
 				trilhaService.adicionarOuAtualizarTrilha(trilha);
 				model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
