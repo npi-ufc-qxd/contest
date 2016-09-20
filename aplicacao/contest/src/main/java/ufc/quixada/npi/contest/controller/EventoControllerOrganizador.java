@@ -28,6 +28,7 @@ import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
@@ -61,6 +62,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	@Autowired
+	TrabalhoService trabalhoService;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -135,8 +139,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			}else if (evento.getEstado().equals(EstadoEvento.INATIVO)) {
 				model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
 			} else{
-				model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
+				model.addAttribute("evento", evento);
 				model.addAttribute("revisores", pessoaService.pessoasPorPapelNoEvento(Papel.REVISOR, eventoId));
+				model.addAttribute("qtdTrabalhos", trabalhoService.getTrabalhosEvento(evento).size());
 				return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 			}
 		}catch(NumberFormatException e){
