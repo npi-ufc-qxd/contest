@@ -46,8 +46,9 @@
               
             </div>
             <div class="card-action">
-              <a th:href="@{/evento}" >Inativar</a>
-              <a th:href="@{'/eventoOrganizador/trilhas/' + ${participacaoEventoAtivos.evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Ver Trilhas</a>
+				<a th:href="@{/evento}" class="btn white-text waves-effect waves-light blue-grey">Inativar</a>
+				<a href="org_detalhes_evento.html" class="btn white-text waves-effect waves-light blue-grey">Detalhes</a></div>
+                <a th:href="@{'/eventoOrganizador/trilhas/' + ${participacaoEventoAtivos.evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Ver Trilhas</a>
             </div>
           </div>
          </div>

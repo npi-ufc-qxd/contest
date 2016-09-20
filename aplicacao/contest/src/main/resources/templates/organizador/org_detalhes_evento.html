@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Constest - Controle de Eventos de Submissão</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- CSS-->
+    <link media="screen,projection" rel="stylesheet" href="../css/materialize.min.css">
+    <link media="screen,projection" rel="stylesheet" href="../css/font-awesome.min.css">
+    <link media="screen,projection" rel="stylesheet" href="../css/style.css">
+  </head>
+  <body>
+    <nav role="navigation" class="purple darken-4">
+      <div class="nav-wrapper container"><a href="#"><img src="../imgs/logotipo_white.png" alt="Contest" width="200px"></a>
+        <ul class="white-text right hide-on-med-and-down">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+        <ul id="nav-mobile" class="side-nav">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      </div>
+    </nav>
+    <div class="container page"><br>
+      <div class="row opcoes"><a href="org_eventos_ativos.html">Eventos Ativos</a><a href="org_eventos_inativos.html">Eventos Inativos</a><a href="org_revisores.html">Revisores</a><a href="org_trilhas.html">Trilhas</a></div>
+      <div class="row">
+        <h2>Detalhes do Evento: Nome do Evento</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet nulla sem. Etiam finibus lorem vel ex interdum, id egestas arcu cursus. Pellentesque tempus, sapien sed laoreet dapibus, massa dolor eleifend nibh, nec eleifend ex eros ac lectus. Suspendisse mattis facilisis malesuada. Sed fermentum varius purus sed pellentesque. Curabitur semper vestibulum gravida. Nunc pellentesque semper viverra.</p>
+        <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+        <div>
+          <div class="col s12">
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div class="card-content">
+                  <div class="row"><span class="card-title">Datas do Evento</span></div>
+                  <div class="row">
+                    <div class="col s3">
+                      <p>Prazo de Submissão - Inicio</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Submissão - Final</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Revisão - Inicio</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Revisão - Final</p>
+                      <p>00/00/0000</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Trilhas do Evento</span>
+                  <p>Número de trilhas: 0</p>
+                </div>
+                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trilhas</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Revisores do Evento</span>
+                  <p>Número de trilhas: 0</p>
+                </div>
+                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Trabalhos do Evento</span>
+                  <p>Número de trilhas: 0</p>
+                  <p>Número de trilhas: 0</p>
+                  <p>Número de trilhas: 0</p>
+                </div>
+                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="page-footer purple darken-4">
+      <div class="footer-copyright">
+        <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
+      </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../js/materialize.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //Inicialização dos elementos no JS
+        //Parallax BG
+        $('.parallax').parallax();
+        
+        //sideNav
+        $(".button-collapse").sideNav();
+        
+        //Tooltips
+        $('.tooltipped').tooltip({delay: 50});
+        
+        //select_initializer
+        $('select').material_select();
+        
+        //datepicker
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 15, // Creates a dropdown of 15 years to control year
+          //Persnonalizando nomes dos meses do ano
+          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+          //Persnonalizando nomes dos dias da semana
+          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+          today: 'Hoje',
+          clear: 'Limpar',
+          close: 'Fechar'
+        });
+        
+        //Trata as datas na tela org_editar_eventos 
+        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
+        var calendarioSubmissaoFinal = "#prazo_submissao_final";
+        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
+        var calendarioRevisaoFinal = "#prazo_revisao_final";
+        
+        function habilitarCalendario(calendario){
+          $(calendario).removeAttr( "disabled" );
+        }
+        
+        function desabilitarCalendario(calendario){
+          $(calendario).attr( "disabled", true );
+          $(calendario).pickadate("clear");
+        }
+        
+        function definirDataMinimaCalendario(calendario, dataMin){
+          var picker = getPicker(calendario);
+          picker.set("min", dataMin);
+        }
+        
+        function getPicker(idCalendario){
+          var $input = $(idCalendario).pickadate();
+          var picker = $input.pickadate("picker");
+          return picker;
+        }
+        
+        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
+          var picker = getPicker(idCalendarioInicial);
+          var dataAtual = picker.get();
+          var umDia = 1;
+          
+          var dataMinima = new Date(dataAtual);
+          dataMinima.setDate(dataMinima.getDate()+umDia);
+                
+          if (dataAtual.length == 0) {
+            desabilitarCalendario(idCalendarioFinal);
+          } else {
+            habilitarCalendario(idCalendarioFinal);       
+            
+            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
+          }
+        }
+        
+        $(calendarioSubmissaoInicial).on("change",function(){
+          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
+        });
+        
+        $(calendarioSubmissaoFinal).on("change",function(){
+          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
+        });
+        
+        $(calendarioRevisaoInicial).on("change",function(){
+          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
+        });
+        
+        //Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();
+        
+      });
+    </script>
+  </body>
+</html>
