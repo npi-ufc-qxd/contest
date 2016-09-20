@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -135,7 +136,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
 			} else{
 				model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
-				
+				model.addAttribute("revisores", pessoaService.pessoasPorPapelNoEvento(Papel.REVISOR, eventoId));
 				return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 			}
 		}catch(NumberFormatException e){

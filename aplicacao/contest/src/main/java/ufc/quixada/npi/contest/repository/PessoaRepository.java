@@ -23,5 +23,5 @@ public interface PessoaRepository extends CrudRepository<Pessoa, Long>{
 	public List<Pessoa> getPossiveisOrganizadores();
 	
 	@Query("SELECT pe FROM Pessoa pe, ParticipacaoEvento pa WHERE pe.papelLdap.nome = :papel AND pa.evento.id = :idEvento")
-	public List<Pessoa> pessoasPorPapelNoEvento(@Param("papel")Papel papel, @Param("idEvento")Long idEvento);
+	public List<Pessoa> pessoasPorPapelNoEvento(@Param("papel")String papel, @Param("idEvento")Long idEvento);
 }
