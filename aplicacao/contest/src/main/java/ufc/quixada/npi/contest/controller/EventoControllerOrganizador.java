@@ -135,6 +135,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
 			} else{
 				model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
+				
 				return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 			}
 		}catch(NumberFormatException e){

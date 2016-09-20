@@ -31,15 +31,17 @@
         <a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
       </div>
       
-      <div class="row" th:switch="${evento != null}">
-      	<div th:if="${eventoInativo}" class="chip red darken-1">
-        	<span class="white-text" th:text="#{EVENTO_INATIVO}"></span>
+      <div th:if="${eventoInativo}" class="chip red darken-1">
+      	<span class="white-text" th:text="#{EVENTO_INATIVO}"></span>
+      		<i class="material-icons">close</i>
+      </div>
+      <div th:if="${eventoInexistente}" class="chip red darken-1">
+      	<span class="white-text" th:text="#{EVENTO_NAO_EXISTE}"></span>
         	<i class="material-icons">close</i>
-       	</div>
-       	<div th:if="${eventoInexistente}" class="chip red darken-1">
-         	<span class="white-text" th:text="#{EVENTO_NAO_EXISTE}"></span>
-         	<i class="material-icons">close</i>
-       	</div>
+      </div>
+      
+      <div class="row" th:switch="${evento != null}">
+      	
       	<div th:case="${true}">
 	        <h2>Detalhes do Evento: <spam th:text="${evento.nome}"></spam></h2>
 	        <p th:text="${evento.descricao}"></p>
