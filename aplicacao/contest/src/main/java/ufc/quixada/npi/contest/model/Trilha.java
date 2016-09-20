@@ -22,7 +22,7 @@ public class Trilha {
 	@NotEmpty
 	@Column(name = "nome")
 	private String nome;
-	
+
 	@ManyToOne
 	private Evento evento;
 
@@ -74,9 +74,10 @@ public class Trilha {
 			return false;
 		return true;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Trilha [id=" + id + ", nome=" + nome + ", evento=" + evento + "]";
 	}
+
 }

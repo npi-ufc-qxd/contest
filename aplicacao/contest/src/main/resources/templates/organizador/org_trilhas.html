@@ -24,58 +24,81 @@
       </div>
     </nav>
     <div class="container page"><br/>
-      <div class="row opcoes">
-        <a th:href="@{/eventoOrganizador/ativos}" class="ativo">Eventos Ativos</a>
-        <a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
-        <a href="org_revisores.html">Revisores</a>
-        <a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
-      </div>
-      
+    	<div class="row opcoes">
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+        	<a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
+		</div>
       <div class="row">
-      	<h2 class="col s12">Eventos Ativos</h2>
-      </div>
-      
-      <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}">
-        <div th:case="${true}">
-         
-         <div th:each="participacaoEventoAtivos : ${eventosAtivos}" class="col m6 s6">
-          <div class="card">
-            <div class="card-content"><span class="card-title" th:text="${participacaoEventoAtivos.evento.nome}" >Nome do Evento</span>
-              <p th:text="|Organizador: ${participacaoEventoAtivos.pessoa.nome}|"></p>
-              <p th:text="|Visibilidade: ${participacaoEventoAtivos.evento.visibilidade.visibilidade}|"></p>
-              
-            </div>
-            <div class="card-action">
-              <a th:href="@{/evento}" >Inativar</a>
-              <a th:href="@{'/eventoOrganizador/trilhas/' + ${participacaoEventoAtivos.evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Ver Trilhas</a>
+        <h2 th:text="'Trilhas do Evento :' + ${evento.nome}"></h2>
+        <div id="error_area" class="row chip red white-text" th:text= "${organizadorError}">"Mensagem de Erro"<i class="material-icons">close</i></div>
+        <form class="col s12">
+          <div class="row"></div>
+          <div class="input-field col m3 offset-m10 s6"> 
+          	<a id="btn-modal" href="#modal1" class="waves-effect waves-light btn white-text modal-trigger">Trilha<i aria-hidden="true" class="fa fa-plus left"> </i></a>
+          </div>
+          <div class="row">
+            <div class="input-field col m12 s6">
+              <table class="striped centered">
+                <thead>
+                  <tr> 
+                    <th>Trilha</th>
+                    <th>Trabalhos Enviados</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody >             
+                  <tr th:each="itemTrilha : ${trilhas}">
+                    <td><p th:text="${itemTrilha.nome}"></p></td>
+                    <td>Numero de Submissoes</td>
+                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} }">Ver Trilha      </a></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-         </div>
-        </div>
-
-        <div class="col m4 s12" th:case="${false}">
-          <p>Não há eventos ativos</p>
-        </div>
-        
-        <div class="center">
-          <ul class="pagination">
-            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li class="waves-effect"><a href="#">2</a></li>
-            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-          </ul>
-        </div>
+          <div id="paginacao">         
+                        <div class="row col s12 center">
+                          <ul class="pagination">
+                            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li class="waves-effect"><a href="#">2</a></li>
+                            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+                          </ul>
+                        </div>
+          </div>
+        </form>
       </div>
+      <form th:action="@{/eventoOrganizador/trilhas}" action="#" th:object="${trilha}" method="post">
+        <div id="modal1" class="modal">
+          <div class="modal-content">
+            <h4>Adicionar Trilha</h4>
+            <div class="input-field col m6 s6">
+            	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
+            	<input id="nome_da_trilha" th:field="*{nome}" name="nome" type="text" />
+            	<label for="nome_da_trilha">Nome da Trilha</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+          	<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+       	  </div>
+        </div>
+      </form>
     </div>
     <footer class="page-footer purple darken-4">
       <div class="footer-copyright">
         <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
       </div>
     </footer>
-    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../../js/materialize.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
+    	//Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();  
+    	 
         //Inicialização dos elementos no JS
         //Parallax BG
         $('.parallax').parallax();
@@ -159,8 +182,7 @@
           configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
         });
         
-        //Inicialização do Modal excluir Evento
-        $('.modal-trigger').leanModal();
+        
         
       });
     </script>
