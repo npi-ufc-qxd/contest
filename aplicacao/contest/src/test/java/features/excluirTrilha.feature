@@ -7,6 +7,7 @@
 
 	Contexto:
 		Dado que o organizador deseja excluir uma trilha de submissão de um evento
+		
 		Cenário: O organizador exclui uma trilha de submissão e não existe um trabalho submetido
 			E não existe nenhum trabalho submetido para essa trilha
 			Quando o organizador seleciona uma trilha
