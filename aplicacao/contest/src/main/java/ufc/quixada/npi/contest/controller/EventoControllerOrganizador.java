@@ -26,7 +26,6 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
-import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
@@ -199,16 +198,15 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/trilha/excluir/{trilhaId}/{eventoId}", method = RequestMethod.GET)
-	public String excluirTrilha(@PathVariable String trilhaId,@PathVariable String eventoId, Model model, RedirectAttributes redirect){
-		try{
-			Long idEvento = Long.valueOf(eventoId);
-			Long idTrilha = Long.valueOf(trilhaId);
+	public String excluirTrilha(@PathVariable String trilhaId, @PathVariable String eventoId, Model model, RedirectAttributes redirect){
+		Long idEvento = Long.valueOf(eventoId);
+		Long idTrilha = Long.valueOf(trilhaId);
+		if (eventoService.existeEvento(idEvento) && !trilhaService.existeTrabalho(idTrilha)) {
 			Trilha trilha = trilhaService.get(idTrilha, idEvento);
 			trilhaService.removerTrilha(trilha);
 			return "redirect:/eventoOrganizador/trilhas/"+ eventoId;
-		}catch(NumberFormatException e){
-			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
+		redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_VAZIO_OU_TEM_TRABALHO"));
 		return "redirect:/eventoOrganizador/trilhas/"+ eventoId;
 	}
 

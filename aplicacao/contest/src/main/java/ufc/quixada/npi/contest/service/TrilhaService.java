@@ -23,9 +23,8 @@ public class TrilhaService {
 		trilhaRepository.save(trilha);
 	}
 
-	public boolean removerTrilha(Trilha trilha) {
+	public void removerTrilha(Trilha trilha) {
 		trilhaRepository.delete(trilha);
-		return false;
 	}
 	
 	public List<Trilha> buscarTrilhas(Long id) {

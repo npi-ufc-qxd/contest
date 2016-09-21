@@ -84,7 +84,7 @@ public class AlterarTrilhasSteps {
 	
 	@E("^a trilha não possuir nenhum trabalho cadastrado$")
 	public void trilhaNaoPossuiCadastro() throws Throwable{
-	//TODO	verficação de trabalhos submetidos
+		when(trilhaService.existeTrabalho(trilha.getId())).thenReturn(false);
 	}
 	
 	@E("^o organizador fornecer um novo nome para a trilha$")
@@ -107,7 +107,7 @@ public class AlterarTrilhasSteps {
 	
 	@Quando("^a trilha não possui nenhum trabalho cadastrado$")
 	public void trilhaNaoPossuiTrabalho() throws Throwable{
-	//TODO	verficação de trabalhos submetidos
+		when(trilhaService.existeTrabalho(trilha.getId())).thenReturn(false);
 	}
 	
 	@E("^não fornece o novo nome da trilha$")
@@ -131,7 +131,7 @@ public class AlterarTrilhasSteps {
 	
 	@Quando("^a trilha possui algum trabalho cadastrado$")
 	public void trilhaPossuiTrabalhoCadastrado() throws Throwable{
-		when(trabalhoService.existeTrabalho(trilha.getId())).thenReturn(true);
+		when(trilhaService.existeTrabalho(trilha.getId())).thenReturn(true);
 	}
 	
 	@E("^o organizador fornece um novo nome para a trilha$")
