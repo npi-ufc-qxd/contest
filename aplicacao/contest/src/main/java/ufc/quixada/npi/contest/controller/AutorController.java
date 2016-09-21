@@ -30,6 +30,7 @@ import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Submissao;
 import ufc.quixada.npi.contest.model.TipoSubmissao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -38,6 +39,7 @@ import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
@@ -87,6 +89,9 @@ public class AutorController {
 	
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
+	
+	@Autowired
+	private TrilhaService trilhaService;
 	
 	@Autowired
 	private StorageService storageService;
@@ -167,23 +172,33 @@ public class AutorController {
 
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
 	public String enviarTrabalhoForm(@PathVariable String id, Model model){
+		List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
+		
 		model.addAttribute("trabalho", new Trabalho());
 		model.addAttribute("eventoId", id);
+		model.addAttribute("trilhas", trilhas);
 		return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 	}
 	
 	@RequestMapping(value = "/enviarTrabalhoForm", method = RequestMethod.POST)
-	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, @RequestParam(value="file",required = true) MultipartFile file, @RequestParam("eventoId") String eventoId,
-			@RequestParam("nomeOrientador") String nomeOrientador, @RequestParam("emailOrientador") String emailOrientador, RedirectAttributes redirect){
+	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, @RequestParam(value="file",required = true) MultipartFile file,
+                                 @RequestParam("eventoId") String eventoId, @RequestParam("nomeOrientador") String nomeOrientador, 
+                                 @RequestParam("emailOrientador") String emailOrientador, @RequestParam(required = false) String trilhaId, RedirectAttributes redirect){
 		Evento evento;
+		Trilha trilha;
 		try{
-			Long id = Long.parseLong(eventoId);
-			evento = eventoService.buscarEventoPorId(id);
+			Long idEvento = Long.parseLong(eventoId);
+			Long idTrilha = Long.parseLong(trilhaId);
+			
+			evento = eventoService.buscarEventoPorId(idEvento);
+			trilha = trilhaService.get(idTrilha);
 			trabalho.setEvento(evento);
+			trabalho.setTrilha(trilha);
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
 		}
+		
 		trabalhoValidator.validate(trabalho, result);
 		if(result.hasErrors()){
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;

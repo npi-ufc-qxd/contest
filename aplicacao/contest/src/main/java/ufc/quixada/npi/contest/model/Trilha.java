@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class Trilha {
 	@Column(name = "nome")
 	private String nome;
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Evento evento;
 
 	public Long getId() {
