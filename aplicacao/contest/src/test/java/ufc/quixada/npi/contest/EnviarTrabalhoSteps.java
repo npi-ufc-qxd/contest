@@ -182,7 +182,7 @@ public class EnviarTrabalhoSteps {
 	public void camposEmBanco() throws Exception{
 		action.andExpect(status().isFound())
 		      .andExpect(redirectedUrl(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM+"/1"))
-		      .andExpect(flash().attribute("camposVazios", messageService.getMessage("CAMPOS_VAZIOS")));;
+		      .andExpect(flash().attribute("camposVazios", messageService.getMessage("CAMPOS_VAZIOS")));
 	}
 	
 	@Quando("^o autor escolhe um arquivo em um formato diferete de .pdf$")
@@ -216,7 +216,7 @@ public class EnviarTrabalhoSteps {
 	public void mensagemDeErroArquivoInvalido() throws Exception{
 		action.andExpect(status().isFound())
 	      .andExpect(redirectedUrl(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM+"/1"))
-	      .andExpect(flash().attribute("erro", messageService.getMessage("FORMATO_ARQUIVO_INVALIDO")));;;
+	      .andExpect(flash().attribute("erro", messageService.getMessage("FORMATO_ARQUIVO_INVALIDO")));
 	}
 	
 	@Quando("^ele muda o id do evento para um inexistente$")
