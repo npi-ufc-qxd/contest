@@ -50,7 +50,7 @@ public class PapelLdap implements GrantedAuthority {
 
 	@Override
 	public String getAuthority() {
-		return this.nome.name();
+		return "ROLE_" + this.nome.name();
 	}
 
 	@Override
