@@ -7,6 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -26,6 +29,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -54,6 +58,7 @@ public class CadastrarEventosSteps {
 	private ResultActions action;
 	private Pessoa pessoa;
 	private Evento evento;
+	private List<Trilha> trilhas;
 	private final String TEMPLATE_ADD_EVENTO = "evento/admin_cadastrar";
 
 	@Before
@@ -61,6 +66,14 @@ public class CadastrarEventosSteps {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoController).build();
 		eventoService.toString();//Para evitar do codacy reclamar
+		trilhas = new ArrayList<>();
+		evento = new Evento();
+		Trilha trilha = new Trilha();
+		
+		trilha.setNome("Principal");
+		trilha.setEvento(evento);
+		
+		trilhas.add(trilha);
 	}
 
 	@Dado("^o administrador deseja cadastrar um evento.$")
@@ -76,10 +89,11 @@ public class CadastrarEventosSteps {
 		pessoa.setCpf("789287454457");
 		pessoa.setEmail("a@a.com");
 
-		evento = new Evento();
+		
 		evento.setNome(nomeEvento);
 		evento.setDescricao(descricaoEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
+		evento.setTrilhas(trilhas);
 		
 		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
 
@@ -107,9 +121,9 @@ public class CadastrarEventosSteps {
 	@Quando("^informar somente o nome do evento (.*)$")
 	public void casoTesteQuando2(String nomeEvento) throws Throwable {
 
-		evento = new Evento();
 		evento.setNome(nomeEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
+		evento.setTrilhas(trilhas);
 		
 		String organizador =  "";
 		
@@ -132,9 +146,9 @@ public class CadastrarEventosSteps {
 	@Quando("^informar o organizador (.*) e o nome evento (.*)")
 	public void casoTesteQuando3(String organizador, String nomeEvento) throws Throwable{
 		
-		evento = new Evento();
 		evento.setNome(nomeEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
+		evento.setTrilhas(trilhas);
 		
 		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(null);
 		when(messageService.getMessage("PESSOA_NAO_ENCONTRADA"))

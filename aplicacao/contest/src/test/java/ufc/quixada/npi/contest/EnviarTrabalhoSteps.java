@@ -2,14 +2,15 @@ package ufc.quixada.npi.contest;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Date;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,16 +33,19 @@ import ufc.quixada.npi.contest.controller.AutorController;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Submissao;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
 public class EnviarTrabalhoSteps {
 	
+	private static final String TRILHA_ID = "trilhaId";
 	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID = "/autor/enviarTrabalhoForm/{id}";
 	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/lucas.vieira/Downloads/certificado.pdf";
@@ -68,13 +72,17 @@ public class EnviarTrabalhoSteps {
 	private MessageService messageService;
 	@Mock
 	private SubmissaoService submissaoService;
+	@Mock
+	private TrilhaService trilhaService;
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
 	private Pessoa pessoa;
 	private Submissao submissao;
+	private Trilha trilha;
 	
+	@SuppressWarnings("deprecation")
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -82,9 +90,14 @@ public class EnviarTrabalhoSteps {
 		evento = new Evento();
 		pessoa = new Pessoa();
 		submissao = new Submissao();
+		trilha = new Trilha();
 		
 		evento.setId(1L);
-
+		evento.setPrazoSubmissaoFinal(new Date("30/09/2016"));
+		evento.setPrazoSubmissaoInicial(new Date("01/09/2016"));
+		
+		trilha.setId(3L);
+		
 		pessoa.setCpf("123");
 		pessoa.setEmail("teste@tes.com");
 	}
@@ -103,6 +116,7 @@ public class EnviarTrabalhoSteps {
 		
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
+		when(trilhaService.get(trilha.getId())).thenReturn(trilha);
 		
 		when(context.getAuthentication()).thenReturn(auth);
 		when(auth.getName()).thenReturn("123");
@@ -119,7 +133,8 @@ public class EnviarTrabalhoSteps {
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Teste")
                         .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(TRILHA_ID, "3"));
 	}
 	@Então("^o autor deve ser redirecionado para a página meusTrabalhos com uma mensagem de sucesso$")
 	public void mensagemDeSucesso() throws Exception{
@@ -139,7 +154,8 @@ public class EnviarTrabalhoSteps {
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "")
                         .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(TRILHA_ID, "3"));
 	}
 	@Então("^deve ser mostrado uma mensagem de erro dizendo que o titulo está em branco$")
 	public void mostrarErroNoCampoTitulo() throws Exception{
@@ -159,13 +175,14 @@ public class EnviarTrabalhoSteps {
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Titulo")
                         .param(NOME_ORIENTADOR, "")
-                        .param(EMAIL_ORIENTADOR , ""));
+                        .param(EMAIL_ORIENTADOR , "")
+                        .param(TRILHA_ID, "3"));
 	}
 	@Então("^deve ser mostrado uma mensagem de erro que há campos em branco$")
 	public void camposEmBanco() throws Exception{
 		action.andExpect(status().isFound())
 		      .andExpect(redirectedUrl(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM+"/1"))
-		      .andExpect(flash().attribute("camposVazios", messageService.getMessage("CAMPOS_VAZIOS")));;
+		      .andExpect(flash().attribute("camposVazios", messageService.getMessage("CAMPOS_VAZIOS")));
 	}
 	
 	@Quando("^o autor escolhe um arquivo em um formato diferete de .pdf$")
@@ -191,14 +208,15 @@ public class EnviarTrabalhoSteps {
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Teste")
                         .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(TRILHA_ID, "3"));
 		
 	}
 	@Então("^deve ser mostrado uma mensagem de erro que o formato do arquivo é invalido$")
 	public void mensagemDeErroArquivoInvalido() throws Exception{
 		action.andExpect(status().isFound())
 	      .andExpect(redirectedUrl(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM+"/1"))
-	      .andExpect(flash().attribute("erro", messageService.getMessage("FORMATO_ARQUIVO_INVALIDO")));;;
+	      .andExpect(flash().attribute("erro", messageService.getMessage("FORMATO_ARQUIVO_INVALIDO")));
 	}
 	
 	@Quando("^ele muda o id do evento para um inexistente$")
@@ -211,10 +229,10 @@ public class EnviarTrabalhoSteps {
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
                         .file(multipartFile)
                         .param(EVENTO_ID, "155")
-                        .param(TITULO, ""
-                        		+ "")
+                        .param(TITULO, "")
                         .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com"));
+                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(TRILHA_ID, "3"));
 		
 	}
 	@Então("^deve ser mostrado uma mensagem de erro de evento não existe$")

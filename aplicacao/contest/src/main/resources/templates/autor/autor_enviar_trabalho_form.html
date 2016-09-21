@@ -71,10 +71,10 @@
             <label for="email_do_orientador">Email do Orientador      </label>
           </div>
           <div class="input-field col m6 s6">
-            <select id="trilhas_select" name="Trilhas">
-              <option value="" disabled="disable" selected="selected">Selecione uma das Trilhas no evento</option>
-              <option value="1">Trilha 1</option>
-              <option value="2">Trilha 2</option>
+            <select id="trilhas_select" name="trilhaId">
+              <div th:each="trilha : ${trilhas}" >
+                <option th:value="${trilha.id}" th:text="${trilha.nome}" selected="selected"></option>
+              </div>
             </select>
             <label for="funcoes_select">Trilha no Evento</label>
           </div>
