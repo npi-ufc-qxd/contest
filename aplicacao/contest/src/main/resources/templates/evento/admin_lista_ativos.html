@@ -1,52 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <!-- CSS -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Constest - Controle de Eventos de Submissão</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
-  	 <!-- Dropdown Structure -->
-	 <ul id='dropdown1' class='dropdown-content collection '>
-	     <div th:each="notificacoes : ${notificacoes}" >
-		     <li class="collection-item dismissable left ">
-			      <span class="title center" th:text="${notificacoes.titulo}"></span>
-			      <p th:text="${notificacoes.descricao}"></p>
-			         
-			      <p th:text="${notificacoes.pessoa.nome}"></p>
-		     </li>
-	    </div>
-	  </ul>
-	  
-    <nav role="navigation" class="purple darken-4">	    
-      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px" /></a>
-        
-	      <!-- Dropdown Trigger -->
-		  <ul class="right hide-on-med-and-down">	
-			  <li><a class='dropdown-button' href='#' data-activates='dropdown1' th:text="|Notificações (${#arrays.length(notificacoes)})|"></a></li>
-	      </ul>
-	      <!-- Mobile -->>
-		  <ul id="nav-mobile" class="side-nav">
-	          
-	          <li><a href="#">Link 02</a></li>
-	      </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>	      
-      </div>
-    </nav>
-    
+	<div th:include="fragments/header :: header"></div>
     <div class="container page">
-      <div class="row opcoes">
-      	<div class="col s12">
-          <a class="ativo" th:href="@{/evento/ativos}">Eventos Ativos</a>
-          <a th:href="@{/evento/inativos}">Eventos Inativos</a>
-          <a th:href="@{/evento/adicionar}">Adicionar Evento</a>
-        </div>
-      </div>
-      
+      <div th:include="fragments/admin_menu_navegacao :: admin_menu_navegacao"></div>
       <div class="row">
       	<h2 class="col s12">Eventos Ativos</h2>
       </div>

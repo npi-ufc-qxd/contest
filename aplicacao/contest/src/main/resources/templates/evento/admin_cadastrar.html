@@ -2,25 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Constest - Controle de Eventos de Submissão</title>
-
-<!-- CSS  -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Constest - Controle de Eventos de Submissão</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 <body>
   <div th:include="fragments/header :: header"></div>
   <div class="container page">
-    <div class="row opcoes">
-      <div class="col s12">
-        <a th:href="@{/evento/ativos}">Eventos Ativos</a>
-        <a th:href="@{/evento/inativos}">Eventos Inativos</a>
-        <a class="ativo" th:href="@{/evento/adicionar}">Adicionar Evento</a>
-      </div>
-    </div>
+    <div th:include="fragments/admin_menu_navegacao :: admin_menu_navegacao"></div>
     <div class="row">
       <h2 class="col s12">Adicionar Evento</h2>
     </div>
