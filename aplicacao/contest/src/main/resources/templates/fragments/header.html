@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+	<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />    
+</head>
+<body>
+	<div th:fragment="header">
+		<nav role="navigation" class="purple darken-4" >
+			<div class="nav-wrapper container">
+				<a href="#"><img th:src="@{/img/logotipo_white.png}"
+					alt="Contest" width="200px" /></a>
+				<ul class="white-text right hide-on-med-and-down">
+					<li><a href="#">Profile</a></li>
+				</ul>
+				<!-- Dropdown Trigger -->
+			  <!-- <div class="right">  
+				<a class='dropdown-button btn' href='#' data-activates='dropdown1' th:text="|Notificações (${#arrays.length(notificacoes)})|"></a>
+				  Dropdown Structure
+				 <ul id='dropdown1' class='dropdown-content collection '>
+				     <div th:each="notificacoes : ${notificacoes}" >
+					     <li class="collection-item dismissable left ">
+						      <span class="title center" th:text="${notificacoes.titulo}"></span>
+						      <p th:text="${notificacoes.descricao}"></p>
+						         
+						      <p th:text="${notificacoes.pessoa.nome}"></p>
+					     </li>
+				    </div>
+				    <li><a href="#!">three</a></li>
+				  </ul>-->
+			      <ul id="nav-mobile" class="side-nav">
+			        <li><a href="#">Link 01</a></li>
+			        <li><a href="#">Link 02</a></li>
+			      </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+		     </div> 
+			
+		</nav>
+	</div>	
+</body>
+</html>

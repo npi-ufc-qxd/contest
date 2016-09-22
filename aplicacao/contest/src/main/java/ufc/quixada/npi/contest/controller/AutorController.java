@@ -70,6 +70,8 @@ public class AutorController {
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 	
+	
+	
 	@RequestMapping(value="/participarEvento", method = RequestMethod.GET)
 	public String eventosAtivos(Model model){
 		Pessoa autorLogado = getAutorLogado();

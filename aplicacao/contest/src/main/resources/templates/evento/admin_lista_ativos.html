@@ -11,18 +11,33 @@
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
-    <nav role="navigation" class="purple darken-4">
+  	 <!-- Dropdown Structure -->
+	 <ul id='dropdown1' class='dropdown-content collection '>
+	     <div th:each="notificacoes : ${notificacoes}" >
+		     <li class="collection-item dismissable left ">
+			      <span class="title center" th:text="${notificacoes.titulo}"></span>
+			      <p th:text="${notificacoes.descricao}"></p>
+			         
+			      <p th:text="${notificacoes.pessoa.nome}"></p>
+		     </li>
+	    </div>
+	  </ul>
+	  
+    <nav role="navigation" class="purple darken-4">	    
       <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px" /></a>
-        <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Link 01</a></li>
-          <li><a href="#">Link 02</a></li>
-        </ul>
-        <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Link 01</a></li>
-          <li><a href="#">Link 02</a></li>
-        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        
+	      <!-- Dropdown Trigger -->
+		  <ul class="right hide-on-med-and-down">	
+			  <li><a class='dropdown-button' href='#' data-activates='dropdown1' th:text="|Notificações (${#arrays.length(notificacoes)})|"></a></li>
+	      </ul>
+	      <!-- Mobile -->>
+		  <ul id="nav-mobile" class="side-nav">
+	          
+	          <li><a href="#">Link 02</a></li>
+	      </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>	      
       </div>
     </nav>
+    
     <div class="container page">
       <div class="row opcoes">
       	<div class="col s12">
@@ -49,6 +64,8 @@
           </div>
          </div>
         </div>
+        
+        
 
         <div class="col m4 s12" th:case="${false}">
           <p>Não há eventos ativos</p>
@@ -63,14 +80,9 @@
           </ul>
         </div>
       </div>
+      
     </div>
-    <footer class="page-footer purple darken-4">
-      <div class="footer-copyright">
-        <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
-      </div>
-    </footer>
-    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript">
       $(document).ready(function(){
         //Inicialização dos elementos no JS
@@ -158,6 +170,18 @@
         
         //Inicialização do Modal excluir Evento
         $('.modal-trigger').leanModal();
+        
+        
+        //Js para o dropdown
+        $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrain_width: false, // Does not change width of dropdown to that of the activator
+            gutter: 0, // Spacing from edge
+            belowOrigin: false, // Displays dropdown below the button
+            alignment: 'left' // Displays dropdown with edge aligned to the left of button
+          }
+        );
         
       });
     </script>
