@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<<<<<<< HEAD
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Constest - Controle de Eventos de Submissão</title>
@@ -11,34 +10,11 @@
 		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
 		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
 		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-=======
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Constest - Controle de Eventos de Submissão</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-<!-- CSS  -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
->>>>>>> refs/heads/master
 </head>
 <body>
 	<div th:include="fragments/header :: header"></div>
 	<div class="container page">
-<<<<<<< HEAD
 		<div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
-		
-=======
-		<br/>
-		<div class="row opcoes">
-			<a th:href="@{/autor/participarEvento}" class="ativo">Eventos Ativos</a>
-			<a th:href="@{/autor/meusTrabalhos}">Meus Trabalhos</a>
-			<a href="#">Meus Eventos </a>
-			<a href="#">Revisores </a>
-		</div>
->>>>>>> refs/heads/master
 		<div>
 			<div th:if="${eventoVazioError}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="#{ID_EVENTO_VAZIO_ERROR}">
 				<i class="material-icons">close</i>
