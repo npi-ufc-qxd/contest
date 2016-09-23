@@ -65,14 +65,10 @@ public class EventoController extends EventoGenericoController{
 	
 	@Autowired
 	private MessageService messageService;
-<<<<<<< HEAD
-
+	
 	@Autowired
 	private NotificacaoService notificacaoService;
 
-=======
-	
->>>>>>> refs/heads/master
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
