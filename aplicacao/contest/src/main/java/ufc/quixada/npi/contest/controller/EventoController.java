@@ -120,6 +120,9 @@ public class EventoController extends EventoGenericoController{
 			if(evento.getId() != null){
 				participacao = participacaoEventoService.findByEventoId(evento.getId());
 				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
+				
+				addEventoEmParticipacao(evento, participacao, pessoa);
+				return "redirect:/evento/inativos";
 			}else{
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
@@ -130,15 +133,8 @@ public class EventoController extends EventoGenericoController{
             trilha.setNome("Principal");
 			trilhas.add(trilha);
             
-            evento.setEstado(EstadoEvento.INATIVO);
-			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 			evento.setTrilhas(trilhas);
-			
-			participacao.setEvento(evento);
-			
-			participacao.setPessoa(pessoa);
-			participacao.setPapel(Papel.ORGANIZADOR);
-			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
+			addEventoEmParticipacao(evento, participacao, pessoa);
 		} else {
 			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(PESSOA_NAO_ENCONTRADA));
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
@@ -169,5 +165,17 @@ public class EventoController extends EventoGenericoController{
 		}
 
 		return "redirect:/evento/inativos";
+	}
+	
+	public void addEventoEmParticipacao(Evento evento, ParticipacaoEvento participacao, Pessoa pessoa){
+        evento.setEstado(EstadoEvento.INATIVO);
+		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
+		
+		
+		participacao.setEvento(evento);
+		
+		participacao.setPessoa(pessoa);
+		participacao.setPapel(Papel.ORGANIZADOR);
+		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 	}
 }

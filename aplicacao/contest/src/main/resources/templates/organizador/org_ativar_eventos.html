@@ -25,7 +25,6 @@
             </div>
           </div>
           <div class="row"> 
-          </div>
           <input type="hidden" th:field="*{id}" />
           <div class="input-field col m8 s12">
             <input id="nome_evento" type="text" th:field="*{nome}" />
@@ -42,22 +41,22 @@
             <textarea id="descricao_evento" class="materialize-textarea" th:field="*{descricao}"></textarea>
           </div>
           <div class="input-field col s12">
-            <div class="col s3">
+            <div class="col m3 s3">
               <div class="card-content"><span class="card-title"> Prazo de Submissão - Inicial</span>
                 <input type="date" th:field="*{prazoSubmissaoInicial}" id="prazo_submissao_inicial" class="datepicker"/>
               </div>
             </div>
-            <div class="col s3">
+            <div class="col m3 s3">
               <div class="card-content"><span class="card-title"> Prazo de Revisão - Inicial</span>
                 <input type="date" th:field="*{prazoRevisaoInicial}" id="prazo_revisao_inicial" disabled="disabled" class="datepicker"/>
               </div>
             </div>
-            <div class="col s3">
+            <div class="col m3 s3">
               <div class="card-content"><span class="card-title"> Prazo de Revisão  - Final</span>
                 <input type="date" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final" disabled="disabled"  class="datepicker"/>
               </div>
             </div>
-            <div class="col s3">
+            <div class="col m3 s3">
               <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
                 <input type="date" th:field="*{prazoSubmissaoFinal}" id="prazo_submissao_final" disabled="disabled" class="datepicker"/>
               </div>
@@ -68,10 +67,9 @@
             Salvar Detalhes e Ativar<i aria-hidden="true" class="fa fa-floppy-o left"></i>
             </button>
           </div>
-        
+                  </div>
         </form>
       </div>
-    </div>
    <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript">
       $(document).ready(function(){
