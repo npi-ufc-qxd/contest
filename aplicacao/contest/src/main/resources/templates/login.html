@@ -35,6 +35,10 @@
           <form name="loginForm" th:action="@{/login}" class="valign" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
+			<div th:if="${secaoExpiradaError}" class="chip amber darken-3">
+              <span class="white-text" th:text="#{SESSAO_EXPIRADA}"></span>
+              <i class="material-icons">close</i>
+            </div>
             <div th:if="${loginError}" class="chip red darken-1">
               <span class="white-text" th:text="#{LOGIN_INVALIDO}"></span>
               <i class="material-icons">close</i>

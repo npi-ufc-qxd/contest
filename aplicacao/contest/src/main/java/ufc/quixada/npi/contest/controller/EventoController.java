@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import ufc.quixada.npi.contest.model.Notificacao;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
@@ -63,7 +65,7 @@ public class EventoController extends EventoGenericoController{
 	
 	@Autowired
 	private MessageService messageService;
-	
+
 	@Autowired
 	private NotificacaoService notificacaoService;
 
@@ -121,11 +123,19 @@ public class EventoController extends EventoGenericoController{
 			}else{
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
-
-			evento.setEstado(EstadoEvento.INATIVO);
+			List<Trilha> trilhas = new ArrayList<>();
+			
+            Trilha trilha = new Trilha();
+            trilha.setEvento(evento);
+            trilha.setNome("Principal");
+			trilhas.add(trilha);
+            
+            evento.setEstado(EstadoEvento.INATIVO);
 			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
-
+			evento.setTrilhas(trilhas);
+			
 			participacao.setEvento(evento);
+			
 			participacao.setPessoa(pessoa);
 			participacao.setPapel(Papel.ORGANIZADOR);
 			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
