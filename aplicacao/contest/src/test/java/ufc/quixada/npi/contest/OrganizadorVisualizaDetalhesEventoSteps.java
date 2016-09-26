@@ -3,17 +3,12 @@ package ufc.quixada.npi.contest;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.util.ArrayList;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,15 +19,12 @@ import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
-import ufc.quixada.npi.contest.controller.RevisorController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
-import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 
@@ -63,8 +55,10 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	private Pessoa organizador;
 	
 	private static final String EVENTO_INATIVO = "eventoInativo";
+	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
 	
 	private static final String PAGINA_DETALHES_EVENTO_INATIVO = "/eventoOrganizador/detalhes-evento/3";
+	private static final String PAGINA_DETALHES_EVENTO_INEXISTENTE = "/eventoOrganizador/detalhes-evento/2";
 	private static final String PAGINA_DETALHES_EVENTO_ID_1 = "/eventoOrganizador/detalhes-evento/1";
 	private static final String PAGINA_DETALHES_EVENTO = "/eventoOrganizador/detalhes-evento/{id}";
 	private static final String ID_PESSOA = "2";
@@ -133,7 +127,7 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 				.andExpect(view().name(PAGINA_DETALHES_EVENTO_INATIVO));
 	}
 	
-	@Entao("^Deve ser mostrado uma mensagem de feedback$")
+	@Entao("^Então Deve ser mostrado uma mensagem informando que o evento está inátivo$")
 	public void informarQueOEventoEstaInativo() throws Exception{
 		action.andExpect(model().attribute("EVENTO_INATIVO", EVENTO_INATIVO));
 	}
@@ -145,13 +139,13 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	//TODO mudar para evento inexistente
 	@Quando("^Escolho visualizar os detalhes de um evento inexistente com id (.*)$")
 	public void visualizarDetalhesDeEventoInexistente() throws Exception{
-		action = mockMvc.perform(get(PAGINA_DETALHES_EVENTO, EVENTO_ID_INATIVO))
-				.andExpect(view().name(PAGINA_DETALHES_EVENTO_INATIVO));
+		action = mockMvc.perform(get(PAGINA_DETALHES_EVENTO, EVENTO_ID_INEXISTENTE))
+				.andExpect(view().name(PAGINA_DETALHES_EVENTO_INEXISTENTE));
 	}
 	
-	@Entao("^Deve ser mostrado uma mensagem de feedback$")
+	@Entao("^Então Deve ser mostrado uma mensagem informando que o evento não existe$")
 	public void informarQueOEventoNaoExiste() throws Exception{
-		action.andExpect(model().attribute("EVENTO_INATIVO", EVENTO_INATIVO));
+		action.andExpect(model().attribute(EVENTO_INEXISTENTE, EVENTO_ID_INEXISTENTE));
 	}
 	
 }

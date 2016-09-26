@@ -20,8 +20,8 @@ Funcionalidade: O organizador decide visualizar os detalhes de um evento
 			
 	  Cenário: Organizador visualiza os detalhes de um evento que está inativo 
 		Quando Escolho visualizar os detalhes de um evento inativo com id 2
-		Então Deve ser mostrado uma mensagem de feedback
+		Então Deve ser mostrado uma mensagem informando que o evento está inátivo
 		
 	  Cenário: Organizador visualiza os detalhes de um evento inexistente 
 		Quando Escolho visualizar os detalhes de um evento inexistente com id 2
-		Então Deve ser mostrado uma mensagem de feedback
+		Então Deve ser mostrado uma mensagem informando que o evento não existe
