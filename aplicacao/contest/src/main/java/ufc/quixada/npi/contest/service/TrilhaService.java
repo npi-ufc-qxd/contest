@@ -45,4 +45,9 @@ public class TrilhaService {
 		return trabalhoRepository.existsTrilhaId(id);
 	}
 	
+	public int buscarQtdTrilhasPorEvento(Long eventoId){
+		int qtdTrilhas = trilhaRepository.findAllByEventoId(eventoId).size();
+		return qtdTrilhas;
+	}
+	
 }

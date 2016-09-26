@@ -24,11 +24,15 @@
       </div>
     </nav>
     <div class="container page"><br/>
-      <div class="row opcoes"><a href="org_eventos_ativos.html">Eventos Ativos</a><a href="org_eventos_inativos.html">Eventos Inativos</a><a href="org_revisores.html">Revisores</a><a href="org_trilhas.html">Trilhas</a></div>
+      <div class="row opcoes">
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+	</div>
       <div class="row">
         <h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
       </div>
-      <div id="error_area" class="row chip red white-text" th:text= "${organizadorError}">"Mensagem de Erro"<i class="material-icons">close</i></div>
+      <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
       <div class="row">
         <div class="input-field col m4 s5">  <a href="#modalTrilha" class="waves-effect waves-light btn white-text modal-trigger">Alterar nome da Trilha<i aria-hidden="true" class="fa fa-pencil left"></i></a></div>
         <div class="input-field col m5 s5"> <a href="#modalExcluir" class="waves-effect waves-light btn white-text modal-trigger">Excluir Trilha<i aria-hidden="true" class="fa fa-trash left">        </i></a></div>
@@ -47,22 +51,8 @@
               </tr>
             </thead>
             <tbody>             
-              <tr>
-                <td>Um middleware para cidades inteligentes baseados em nuvem</td>
-                <td>Thiago Nogueira</td>
-                <td>Não</td>
-                <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
-                <td> <a href="org_trabalho_detalhes.html">Ver detalhes</a></td>
-              </tr>
-              <tr>
-                <td>Automação Residencial com AWS IoT </td>
-                <td>Zarathon Maia</td>
-                <td>Sim</td>
-                <td> <a href="#modalRevisor" class="modal-trigger">José Sarney</a></td>
-                <td> <a href="org_trabalho_detalhes.html">Ver detalhes    </a></td>
-              </tr>
-              <tr>
-                <td>Uma proposta para testes automatizados em ambientes IoT</td>
+              <tr th:each="trabalho : ${trabalho}">
+                <td><p th:text="${trabalho.nome}"></p></td>
                 <td>Dilma Roussef</td>
                 <td>Não</td>
                 <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>

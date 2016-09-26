@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.Trilha;
 
 @Repository
 @Transactional
@@ -20,4 +21,6 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	@Query("select case when count(*) > 0 then true else false end "
 			+ "FROM Trabalho as t  WHERE t.trilha.id = :trilhaId")
 	public boolean existsTrilhaId(@Param("trilhaId") Long trilhaId);
+	
+	public List<Trabalho> findByTrilha(Trilha trilha);
 }

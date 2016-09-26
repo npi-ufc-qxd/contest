@@ -26,6 +26,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
@@ -56,6 +57,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private TrilhaService trilhaService;
 	
 	@Autowired
+	private TrabalhoService trabalhoService;
+	
+	@Autowired
 	private RevisaoService revisaoService;
 	
 	@Autowired
@@ -64,6 +68,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
+	}
+	
+	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
+	public String detalhesEvento(@PathVariable String id, Model model) {
+		Long eventoId = Long.parseLong(id);
+		model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId) );
+		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
+		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
@@ -143,6 +155,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			Long eventoId = Long.valueOf(idEvento);
 			Trilha trilha = trilhaService.get(trilhaId, eventoId);
 			model.addAttribute("trilha", trilha);
+			model.addAttribute("trabalhos", trabalhoService.getTrabalhosTrilha(trilha));
 			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));

@@ -23,4 +23,6 @@ public interface TrilhaRepository extends CrudRepository<Trilha, Long>{
 	@Query("select t FROM Trilha t  WHERE t.id = :trilhaId and t.evento.id = :eventoId")
 	public Trilha findByTrilhaIdAndEventoId(@Param("trilhaId") Long trilhaId, @Param("eventoId") Long eventoId);
 	
+	
+	
 }
