@@ -8,6 +8,7 @@
     <!-- CSS-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
@@ -26,57 +27,71 @@
     <div class="container page"><br/>
       <div class="row opcoes">
         <a th:href="@{/autor/participarEvento}">Eventos Ativos</a>
-        <a th:href="@{/autor/meusTrabalhos}" class="ativo">Meus Trabalhos</a>
+	    <a th:href="@{/autor/meusTrabalhos}">Meus Trabalhos</a>
         <a href="#">Meus Eventos </a>
-	    <a href="#">Revisores </a>
+        <a href="#">Revisores </a>
       </div>
-      <div>
-        <div th:if="${naoHaTrabalhos}" id="error_area" class="row chip red white-text" th:text="#{NAO_HA_TRABALHOS}">
-          <i class="material-icons">close</i>
-        </div>
-        <div th:if="${eventoVazioError}" id="error_area" class="row chip red white-text" th:text="#{ID_EVENTO_VAZIO_ERROR}">
-          <i class="material-icons">close</i>
-        </div>
-        <div th:if="${erroAoCadastrar}" id="error_area" class="row chip red white-text" th:text="#{ERRO_CADASTRO_TRABALHO}">
-          <i class="material-icons">close</i>
-        </div>
-        <div th:if="${sucessoEnviarTrabalho}" id="success_area" class="row chip green white-text" th:text="#{TRABALHO_ENVIADO}">
-          <i class="material-icons">close</i>
-        </div>
-      </div>
-      <div class="col s12" th:if="${not #lists.isEmpty(eventos)}">
+      
+      <div class="row">
+        <h2>Enviar Trabalho - Nome do Evento</h2>
         
-        <div class="col s12 m7" th:each="evento,iter : ${eventos}">
-          <div class="card horizontal">
-            <div class="card-stacked">
-              <div class="card-content">
-                <h5 th:text="${evento.nome}"></h5>
-                <p th:text="${evento.descricao}"></p>
-                <p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
-                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'ENVIARTRABALHO'">
-                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
-                </div>
-                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'SUBMISSAO'">
-                  <a href="#" class="waves-effect waves-light btn yellow">Reenviar Trabalho</a>
-                </div>
-                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'REVISAO'">
-                  <a href="#" class="waves-effect waves-light btn blue">Ver Revisao</a>
-                </div>
-              </div>
+        
+        <form class="col s12" th:action="@{/autor/enviarTrabalhoForm}"  th:object="${trabalho}" method="POST" enctype="multipart/form-data">
+          <div class="chip row red left" id="error_area" th:if="${erro}">
+             <span class="white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}"></span>
+             <i class="material-icons">close</i>
+          </div>
+          <div class="chip row red left" id="error_area" th:if="${foraDoPrazoDeSubmissao}">
+             <span class="white-text" th:text="#{FORA_DA_DATA_DE_SUBMISSAO}"></span>
+             <i class="material-icons">close</i>
+          </div>
+          <div class="chip row red left" id="error_area" th:if="${camposVazios}">
+             <span class="white-text" th:text="#{CAMPOS_VAZIOS}"></span>
+             <i class="material-icons">close</i>
+          </div>
+          
+          <div class="error_area col s12" th:if="${#fields.hasErrors('*')}">
+            <div class="chip row red left" th:each="err : ${#fields.errors('*')}">
+              <span class="white-text" th:text="${err}"></span>
+              <i class="material-icons">close</i>
             </div>
           </div>
-        </div>
-        
-      </div>
-            <div class="row col s12 center">
-              <ul class="pagination">
-                <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li class="waves-effect"><a href="#">2</a></li>
-                <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-              </ul>
+          
+          <input type="hidden" th:value="${eventoId}" name="eventoId"/>
+          <div class="input-field col m12 s12">
+            <input id="titulo_do_trabalho" type="text" th:field="*{titulo}"/>
+            <label for="titulo_do_trabalho">Titulo do Trabalho</label>
+          </div>
+          <div class="input-field col m6 s6">
+            <input id="nome_do_orientador" type="text" name="nomeOrientador"/>
+            <label for="nome_do_orientador">Nome do Orientador</label>
+          </div>
+          <div class="input-field col m6 s6">
+            <input id="email_do_orientador" type="text" name="emailOrientador"/>
+            <label for="email_do_orientador">Email do Orientador      </label>
+          </div>
+          <div class="input-field col m6 s6">
+            <select id="trilhas_select" name="trilhaId">
+              <div th:each="trilha : ${trilhas}" >
+                <option th:value="${trilha.id}" th:text="${trilha.nome}" selected="selected"></option>
+              </div>
+            </select>
+            <label for="funcoes_select">Trilha no Evento</label>
+          </div>
+          <div class="file-field input-field col m6 s6">
+            <div class="btn right"><span>Escolher...</span>
+              <input type="file" name="file" class="multiple"/>
             </div>
+            <div class="file-path-wrapper">
+              <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
+            </div>
+          </div>
+          <div class="input-field col s4"><button type="submit" class="waves-effect waves-light btn white-text">Salvar Alterações<i aria-hidden="true" class="fa fa-floppy-o left">        </i></button></div>
+        </form>
+      </div>
+      
+      
+      
     </div>
     <footer class="page-footer purple darken-4">
       <div class="footer-copyright">

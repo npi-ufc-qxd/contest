@@ -1,4 +1,4 @@
-package ufc.quixada.npi.contest.repository;
+	package ufc.quixada.npi.contest.repository;
 
 import java.util.List;
 
@@ -16,6 +16,7 @@ import ufc.quixada.npi.contest.model.Pessoa;
 @Transactional
 public interface PessoaRepository extends CrudRepository<Pessoa, Long>{
 	public Pessoa findByCpf(String cpf);
+	public Pessoa findByEmail(String email);
 	public Pessoa findByCpfAndPassword(String cpf, String password);
 	
 	@Query("select p from Pessoa p where p.papelLdap = ufc.quixada.npi.contest.model.PapelLdap$Tipo.DOCENTE or "

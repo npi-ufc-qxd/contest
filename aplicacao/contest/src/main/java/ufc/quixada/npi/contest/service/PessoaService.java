@@ -43,7 +43,9 @@ public class PessoaService {
 	public Pessoa getByCpf(String cpf) {
 		return pessoaRepository.findByCpf(cpf);
 	}
-
+	public Pessoa getByEmail(String email){
+		return pessoaRepository.findByEmail(email);
+	}
 	public String encodePassword(String password) {
 		return passwordEncoder.encode(password);
 	}

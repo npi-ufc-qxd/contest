@@ -22,4 +22,8 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosEvento(Evento evento){
 		return trabalhoRepository.findByEvento(evento);
 	} 
+	
+	public void adicionarTrabalho(Trabalho trabalho){
+		trabalhoRepository.save(trabalho);
+	}
 }
