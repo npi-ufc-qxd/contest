@@ -73,6 +73,8 @@ public class EventoController extends EventoGenericoController{
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
+	
+	
 
 	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
