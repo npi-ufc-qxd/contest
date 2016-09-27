@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ufc.quixada.npi.contest.model.Email;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.service.ConvidaPessoaEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -30,6 +33,7 @@ import ufc.quixada.npi.contest.util.Constants;
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController{
 
+	private static final String ERRO_ENVIO_EMAIL = "ERRO_ENVIO_EMAIL";
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
@@ -120,5 +124,23 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
 		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
-
+	@RequestMapping(value = "/convidar/{nome}", method = RequestMethod.GET)
+	public String convidarPessoasPorEmail(@PathVariable String nome, Model model) {
+	        model.addAttribute("email", new Email());
+	        model.addAttribute("nomeEvento", nome);
+	        return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG; 
+    }
+	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
+	public String convidarPorEmail(@RequestParam String nomeEvento,@Valid Email email, BindingResult result, Model model, RedirectAttributes redirect) {
+		if (!result.hasErrors()) {
+			 email.setNomeEvento(nomeEvento);
+			 ConvidaPessoaEmailService serviceEmail = new ConvidaPessoaEmailService(email);
+			 if(!serviceEmail.send()){
+				 model.addAttribute("erro", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+			 }
+		 }else{
+			 model.addAttribute("erro", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+		 }
+		return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG;
+	}
 }

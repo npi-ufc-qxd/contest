@@ -23,4 +23,7 @@ public class Constants {
 	
 	public static final String TEMPLATE_INDEX_AUTOR = "autor/autor_index";
 	public static final String TEMPLATE_MEUS_TRABALHOS_AUTOR = "autor/autor_meus_trabalhos";
+	
+	public static final String TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG = "organizador/org_convidar_pessoas";
+	
 }
