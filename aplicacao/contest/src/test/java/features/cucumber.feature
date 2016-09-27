@@ -1,5 +1,5 @@
 # language: pt
-	Funcionalidade: DEfinição da funcionalidade
+	Funcionalidade: Definição da funcionalidade
 
 	  Cenário: Descrição do cenário
 	    Dado Escreva aqui a definição de Dado
