@@ -1,24 +1,33 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.util.List;
+import java.util.Vector;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 
 @Controller
 @RequestMapping("/revisor")
@@ -36,8 +45,14 @@ public class RevisorController {
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
 	
+	@Autowired
+	private TrabalhoService trabalhoService;
+	
 	private static final String REVISOR_INDEX = "revisor/revisor_index";
 	private static final String REVISOR_MEUS_EVENTOS = "revisor/revisor_meus_eventos";
+	private static final String REVISOR_TRABALHOS_REVISAO = "revisor/revisor_trabalhos";
+	private static final String REVISOR_AVALIAR_TRABALHO = "revisor/revisor_avaliar_trabalho";
+	
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
@@ -60,6 +75,40 @@ public class RevisorController {
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("eventos", eventoService.buscarEventosParticapacaoRevisor(revisor.getId()));
 		return REVISOR_MEUS_EVENTOS;
+	}
+	
+	@RequestMapping(value="/{idEvento}/trabalhosRevisao")
+	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento){
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(evento == null)
+			return "";
+		
+		Pessoa revisor = getRevisorLogado();
+		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
+		model.addAttribute("evento", evento);
+		return REVISOR_TRABALHOS_REVISAO;
+	}
+	
+	@RequestMapping(value="/{idEvento}/{idTrabalho}/revisar", method=RequestMethod.GET)
+	public String revisarTrabalho(Model model, @PathVariable("idTrabalho") Long idTrabalho,
+			@PathVariable("idEvento") Long idEvento){
+		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(trabalho == null || evento == null)
+			return "";
+		
+		model.addAttribute("nomeEvento", evento.getNome());
+		model.addAttribute("trabalho", trabalho);
+		model.addAttribute("autores", getAutoresDoTrabalho(trabalho));
+		model.addAttribute("coAutores", getCoAutoresDoTrabalho(trabalho));
+		return REVISOR_AVALIAR_TRABALHO;
+	}
+	
+	@RequestMapping(value = "/trabalho/{titulo}", method = RequestMethod.GET)
+	@ResponseBody
+	public FileSystemResource downloadArquivo(@PathVariable("titulo") String fileName) {
+		return null;
+	    //return new FileSystemResource(myService.getFileFor(fileName)); 
 	}
 	
 	@RequestMapping(value = "/participarevento", method = RequestMethod.POST)
@@ -98,6 +147,26 @@ public class RevisorController {
 		String cpf = auth.getName();
 		Pessoa autorLogado = pessoaService.getByCpf(cpf);
 		return autorLogado;
+	}
+	
+	public List<Pessoa> getAutoresDoTrabalho(Trabalho trabalho){
+		List<Pessoa> autores = new Vector<Pessoa>();
+		for(ParticipacaoTrabalho p : trabalho.getParticipacoes()){
+			if(p.getPapel() == Papel.AUTOR)
+				autores.add(p.getPessoa());
+		}
+		
+		return autores;
+	}
+	
+	public List<Pessoa> getCoAutoresDoTrabalho(Trabalho trabalho){
+		List<Pessoa> coAutores = new Vector<Pessoa>();
+		for(ParticipacaoTrabalho p : trabalho.getParticipacoes()){
+			if(p.getPapel() == Papel.COAUTOR)
+				coAutores.add(p.getPessoa());
+		}
+		
+		return coAutores;
 	}
 	
 }
