@@ -24,7 +24,11 @@
       </div>
     </nav>
     <div class="container page"><br/>
-      <div class="row opcoes"><a href="org_eventos_ativos.html">Eventos Ativos</a><a href="org_eventos_inativos.html">Eventos Inativos</a><a href="org_revisores.html">Revisores</a><a href="org_trilhas.html">Trilhas</a></div>
+      <div class="row opcoes">
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+	</div>
       <div class="row">
         <h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
       </div>
@@ -47,22 +51,8 @@
               </tr>
             </thead>
             <tbody>             
-              <tr>
-                <td>Um middleware para cidades inteligentes baseados em nuvem</td>
-                <td>Thiago Nogueira</td>
-                <td>Não</td>
-                <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
-                <td> <a href="org_trabalho_detalhes.html">Ver detalhes</a></td>
-              </tr>
-              <tr>
-                <td>Automação Residencial com AWS IoT </td>
-                <td>Zarathon Maia</td>
-                <td>Sim</td>
-                <td> <a href="#modalRevisor" class="modal-trigger">José Sarney</a></td>
-                <td> <a href="org_trabalho_detalhes.html">Ver detalhes    </a></td>
-              </tr>
-              <tr>
-                <td>Uma proposta para testes automatizados em ambientes IoT</td>
+              <tr th:each="trabalho : ${trabalho}">
+                <td><p th:text="${trabalho.nome}"></p></td>
                 <td>Dilma Roussef</td>
                 <td>Não</td>
                 <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
@@ -87,8 +77,8 @@
           <h4>Selecione o Revisor desejado</h4>
           <form>
             <div class="input-field col m6 s6">
-              <input id="nome_do_revisor" type="text"/>
-              <label for="nome_do_revisor">Nome do Revisor</label>
+              	<input id="nome_do_revisor" type="text"/>
+              	<label for="nome_do_revisor">Nome do Revisor</label>
             </div>
           </form>
         </div>
@@ -99,19 +89,25 @@
           <h4>Excluir Trilha</h4>
           <p>Tem certeza que quer excluir essa Trilha?</p>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar </a></div>
+        <div class="modal-footer"><a th:href="@{'/eventoOrganizador/trilha/excluir/' + ${trilha.id} +'/'+ ${trilha.evento.id} }" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar </a></div>
       </div>
       <div id="modalTrilha" class="modal">
         <div class="modal-content">
           <h4>Alterar nome da Trilha</h4>
-          <form>
+          <form th:action="@{/eventoOrganizador/trilha/editar}" th:object="${trilha}" method="POST">
             <div class="input-field col m6 s6">
-              <input id="nome_do_revisor" type="text"/>
+				<input id="nome_da_trilha" th:field="*{nome}" th:value="${trilha.nome}" name="nome" type="text" />
+	           	<input type="hidden" th:value="${trilha.id}" name = "id"/>
+	           	<input type="hidden" th:value="${trilha.evento.id}" name = "eventoId"/>
               <label for="nome_do_revisor">Nome da Trilha</label>
             </div>
-          </form>
+          	 <div class="modal-footer">
+	        <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Alterar</button> 
+	        <a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+	    </div>
+	    </form>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Alterar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a></div>
+       
       </div>
     </div>
     <footer class="page-footer purple darken-4">

@@ -116,7 +116,7 @@ public class EnviarTrabalhoSteps {
 		
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
-		when(trilhaService.get(trilha.getId())).thenReturn(trilha);
+		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
 		
 		when(context.getAuthentication()).thenReturn(auth);
 		when(auth.getName()).thenReturn("123");

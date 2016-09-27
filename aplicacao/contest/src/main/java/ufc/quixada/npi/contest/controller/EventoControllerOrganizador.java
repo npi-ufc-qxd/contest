@@ -24,9 +24,10 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
-import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
@@ -54,6 +55,10 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@Autowired
 	private TrilhaService trilhaService;
+	
+	@Autowired
+	private TrabalhoService trabalhoService;
+	
 	@Autowired
 	private RevisaoService revisaoService;
 	
@@ -63,6 +68,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
+	}
+	
+	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
+	public String detalhesEvento(@PathVariable String id, Model model) {
+		Long eventoId = Long.parseLong(id);
+		model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId) );
+		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
+		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
@@ -135,11 +148,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 	}
 	
-	@RequestMapping(value = "/trilha/{id}", method = RequestMethod.GET)
-	public String detalhesTrilha(@PathVariable String id, Model model, RedirectAttributes redirect) {
+	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
+	public String detalhesTrilha(@PathVariable String idTrilha,@PathVariable String idEvento, Model model, RedirectAttributes redirect) {
 		try{
-			Long trilhaId = Long.valueOf(id);
-			model.addAttribute("trilha", trilhaService.get(trilhaId));
+			Long trilhaId = Long.valueOf(idTrilha);
+			Long eventoId = Long.valueOf(idEvento);
+			Trilha trilha = trilhaService.get(trilhaId, eventoId);
+			model.addAttribute("trilha", trilha);
+			model.addAttribute("trabalhos", trabalhoService.getTrabalhosTrilha(trilha));
 			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
@@ -153,7 +169,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
-	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, RedirectAttributes redirect){
+	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){
 		long id = Long.parseLong(eventoId);
 		if (trilhaService.exists(trilha.getNome(), id)) {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
@@ -162,11 +178,49 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if (eventoService.existeEvento(id)) {
 			trilha.setEvento(eventoService.buscarEventoPorId(id));
 			trilhaService.adicionarOuAtualizarTrilha(trilha);
+			model.addAttribute("evento", trilha.getEvento());
 			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		}else{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}
+	}
+	
+	@RequestMapping(value = "/trilha/editar", method = RequestMethod.POST)
+	public String atualizarTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, BindingResult result, RedirectAttributes redirect){
+		long idEvento = Long.parseLong(eventoId);
+		model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
+		if (trilha.getNome().isEmpty()) {
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
+		}else{
+			if (eventoService.existeEvento(idEvento)) {
+				if (trilhaService.exists(trilha.getNome(), idEvento)) {
+					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
+				}else if (trilhaService.existeTrabalho(trilha.getId()) ) {
+					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
+				}else{
+					trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
+					trilhaService.adicionarOuAtualizarTrilha(trilha);
+					model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
+				}
+			}else{
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
+			}
+		}
+		return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+	}
+	
+	@RequestMapping(value = "/trilha/excluir/{trilhaId}/{eventoId}", method = RequestMethod.GET)
+	public String excluirTrilha(@PathVariable String trilhaId, @PathVariable String eventoId, Model model, RedirectAttributes redirect){
+		Long idEvento = Long.valueOf(eventoId);
+		Long idTrilha = Long.valueOf(trilhaId);
+		if (eventoService.existeEvento(idEvento) && !trilhaService.existeTrabalho(idTrilha)) {
+			Trilha trilha = trilhaService.get(idTrilha, idEvento);
+			trilhaService.removerTrilha(trilha);
+			return "redirect:/eventoOrganizador/trilhas/"+ eventoId;
+		}
+		redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_VAZIO_OU_TEM_TRABALHO"));
+		return "redirect:/eventoOrganizador/trilhas/"+ eventoId;
 	}
 
 }
