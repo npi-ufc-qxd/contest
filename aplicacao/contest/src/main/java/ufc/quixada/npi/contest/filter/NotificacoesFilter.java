@@ -13,7 +13,6 @@ import javax.servlet.ServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import ufc.quixada.npi.contest.model.Notificacao;
 import ufc.quixada.npi.contest.model.Pessoa;
@@ -21,8 +20,6 @@ import ufc.quixada.npi.contest.service.NotificacaoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 
 public class NotificacoesFilter implements Filter {
-	
-	private static final String NOTIFICACOES = "notificacoes";
 	
 	@Autowired
 	private NotificacaoService notificacaoService;
@@ -49,6 +46,7 @@ public class NotificacoesFilter implements Filter {
 		List<Notificacao> listaNotificacao = notificacaoService.listaNotificacaoDePessoa(autorLogado);
 		
 		arg0.setAttribute("notificacoes", listaNotificacao);
+		arg0.setAttribute("pessoa", autorLogado);
 		 arg2.doFilter(arg0, arg1);
 	}
 
