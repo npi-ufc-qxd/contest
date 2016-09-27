@@ -73,20 +73,12 @@ public class EventoController extends EventoGenericoController{
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
-	
-	
 
 	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
 		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String cpf = auth.getName();
-		Pessoa autorLogado = pessoaService.getByCpf(cpf);
-
-		List<Notificacao> listaNotificacao = notificacaoService.listaNotificacaoDePessoa(autorLogado);
-		model.addAttribute(NOTIFICACOES,listaNotificacao);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ADMIN;
 	}
 

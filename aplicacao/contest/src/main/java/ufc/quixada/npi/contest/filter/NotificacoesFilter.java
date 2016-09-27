@@ -1,4 +1,4 @@
-package ufc.quixada.npi.contest.filters;
+package ufc.quixada.npi.contest.filter;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +9,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,53 +20,42 @@ import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.NotificacaoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 
-
-
-@WebFilter("/*")
 public class NotificacoesFilter implements Filter {
-
+	
 	private static final String NOTIFICACOES = "notificacoes";
-
-	@Autowired
-	private PessoaService pessoaService;
 	
 	@Autowired
 	private NotificacaoService notificacaoService;
 	
-	@ModelAttribute("pessoas")
-	public List<Pessoa> listaPossiveisOrganizadores() {
-		return pessoaService.getPossiveisOrganizadores();
-	}
-	
-	
-	
+
+	@Autowired
+	private PessoaService pessoaService;
+
+
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2)
+			throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String cpf = auth.getName();
+		Pessoa autorLogado = pessoaService.getByCpf(cpf);
+
+		List<Notificacao> listaNotificacao = notificacaoService.listaNotificacaoDePessoa(autorLogado);
+		
+		arg0.setAttribute("notificacoes", listaNotificacao);
+		 arg2.doFilter(arg0, arg1);
 	}
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
+		// TODO Auto-generated method stub
 		
-	}
-	
-
-	@Override
-	public void doFilter(ServletRequest request, 
-	        ServletResponse response, FilterChain chain)
-	        throws IOException, ServletException {
-	                
-	    try {
-	    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String cpf = auth.getName();
-			Pessoa autorLogado = pessoaService.getByCpf(cpf);
-
-			List<Notificacao> listaNotificacao = notificacaoService.listaNotificacaoDePessoa(autorLogado);
-			//model.addAttribute(NOTIFICACOES,listaNotificacao);
-	    	
-	    } catch (Exception e) {
-	    	//
-	    }
 	}
 
 }
