@@ -15,13 +15,15 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import ufc.quixada.npi.contest.model.StorageProperties;
+import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.StorageException;
 import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
 
 @Service
 public class FileSystemStorageService implements StorageService{
 	private final Path rootLocation;
-
+	
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
@@ -36,12 +38,13 @@ public class FileSystemStorageService implements StorageService{
 	}
 
 	@Override
-	public void store(MultipartFile file) {
+	public void store(MultipartFile file, Long idAutor) {
 		 try {
+			 	String caminho = Constants.CAMINHO_TRABALHOS;
 	            if (file.isEmpty()) {
 	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
-	            Files.copy(file.getInputStream(), Paths.get("src/main/resources/static/arquivos", file.getOriginalFilename()));
+	            Files.copy(file.getInputStream(), Paths.get(caminho, idAutor + file.getOriginalFilename()));
 	        } catch (IOException e) {
 	        }
 	}

@@ -104,13 +104,6 @@ public class RevisorController {
 		return REVISOR_AVALIAR_TRABALHO;
 	}
 	
-	@RequestMapping(value = "/trabalho/{titulo}", method = RequestMethod.GET)
-	@ResponseBody
-	public FileSystemResource downloadArquivo(@PathVariable("titulo") String fileName) {
-		return null;
-	    //return new FileSystemResource(myService.getFileFor(fileName)); 
-	}
-	
 	@RequestMapping(value = "/participarevento", method = RequestMethod.POST)
 	public String professorParticipa(@RequestParam String idEvento, Model model, RedirectAttributes redirect) {
 		if (!eventoService.existeEvento(Long.parseLong(idEvento))) {
