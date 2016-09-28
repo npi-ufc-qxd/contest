@@ -1,12 +1,10 @@
 package ufc.quixada.npi.contest.service;
 
-import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
-
-import ufc.quixada.npi.contest.model.Trabalho;
-
 import java.nio.file.Path;
 import java.util.stream.Stream;
+
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface StorageService {
 

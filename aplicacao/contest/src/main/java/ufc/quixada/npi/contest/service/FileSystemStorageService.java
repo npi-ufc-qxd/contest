@@ -15,7 +15,6 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import ufc.quixada.npi.contest.model.StorageProperties;
-import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.StorageException;
 import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
