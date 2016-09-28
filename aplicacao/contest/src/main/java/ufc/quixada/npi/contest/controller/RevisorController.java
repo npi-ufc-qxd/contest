@@ -102,6 +102,7 @@ public class RevisorController {
 		return REVISOR_AVALIAR_TRABALHO;
 	}
 	
+	
 	@RequestMapping(value = "/participarevento", method = RequestMethod.POST)
 	public String professorParticipa(@RequestParam String idEvento, Model model, RedirectAttributes redirect) {
 		if (!eventoService.existeEvento(Long.parseLong(idEvento))) {
