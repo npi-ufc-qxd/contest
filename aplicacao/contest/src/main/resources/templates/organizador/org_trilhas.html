@@ -28,11 +28,14 @@
         	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
 	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
         	<a href="org_revisores.html">Revisores</a>
-        	<a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
 		</div>
       <div class="row">
         <h2 th:text="'Trilhas do Evento :' + ${evento.nome}"></h2>
-        <div id="error_area" class="row chip red white-text" th:text= "${organizadorError}">"Mensagem de Erro"<i class="material-icons">close</i></div>
+        <div th:if="${organizadorError}" class="chip red darken-1">
+        	<span class="white-text" th:text= "${organizadorError}"></span>
+        	<i class="material-icons">close</i>
+        </div>
+        
         <form class="col s12">
           <div class="row"></div>
           <div class="input-field col m3 offset-m10 s6"> 
@@ -52,7 +55,7 @@
                   <tr th:each="itemTrilha : ${trilhas}">
                     <td><p th:text="${itemTrilha.nome}"></p></td>
                     <td>Numero de Submissoes</td>
-                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} }">Ver Trilha      </a></td>
+                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} +'/'+ ${evento.id}}">Ver Trilha      </a></td>
                   </tr>
                 </tbody>
               </table>

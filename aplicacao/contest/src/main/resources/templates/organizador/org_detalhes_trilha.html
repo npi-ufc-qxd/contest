@@ -14,70 +14,54 @@
     <nav role="navigation" class="purple darken-4">
       <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}"  alt="Contest" width="200px"/></a>
         <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
         </ul>
         <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
         </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
     </nav>
     <div class="container page"><br/>
       <div class="row opcoes">
-        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
-        <a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
-        <a href="org_revisores.html">Revisores</a>
-        <a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+	</div>
+      <div class="row">
+        <h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
       </div>
-      
-      <div th:if="${trilhaInexistente}" class="chip red darken-1">
-      	<span class="white-text" th:text="#{TRILHA_INEXISTENTE}"></span>
-      		<i class="material-icons">close</i>
+      <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+      <div class="row">
+        <div class="input-field col m4 s5">  <a href="#modalTrilha" class="waves-effect waves-light btn white-text modal-trigger">Alterar nome da Trilha<i aria-hidden="true" class="fa fa-pencil left"></i></a></div>
+        <div class="input-field col m5 s5"> <a href="#modalExcluir" class="waves-effect waves-light btn white-text modal-trigger">Excluir Trilha<i aria-hidden="true" class="fa fa-trash left">        </i></a></div>
       </div>
-      
-      <div class="row" th:if="${trilha != null}">
-      	<h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
-      	
-      	<div class="row">
-	        <div class="input-field col m4 s5">  <a href="#modalTrilha" class="waves-effect waves-light btn white-text modal-trigger">Alterar nome da Trilha<i aria-hidden="true" class="fa fa-pencil left"></i></a></div>
-	        <div class="input-field col m5 s5"> <a href="#modalExcluir" class="waves-effect waves-light btn white-text modal-trigger">Excluir Trilha<i aria-hidden="true" class="fa fa-trash left">        </i></a></div>
-	    </div>
-	    
-	    <div th:if="${#lists.isEmpty(trabalhos)}">
-	    	<h4 class="center">Não há Trabalhos inscritos nessa Trilha</h4>
-	    </div>
-      	
-      	<div th:unless="${#lists.isEmpty(trabalhos)}">
-      		<h4 th:text="${'Trabalhos inscritos nessa Trilha: ' + #lists.size(trabalhos)}"></h4>
-      	
-      		<div class="row">
-		    	<div class="input-field col m12 s6">
-		    		<table class="striped centered">
-		    			<thead>
-		    				<tr>
-		    					<th>Trabalho</th>
-		    					<th>Autor</th>
-				                <th>Revisado</th>
-				                <th>Revisor</th>
-				                <th>Detalhes</th>
-		    				</tr>
-		    			</thead>
-		    			<tbody>
-		    				<tr th:each="trabalho : ${trabalhos}">
-		    					<td th:text="${trabalho.titulo}"></td>
-		    					<td th:text="${trabalho.participacoes[0].pessoa.nome}"></td>
-		    					<td>Não</td>
-		    					<td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
-                    			<td> <a th:href="@{'/eventoOrganizador/trilha/' + ${trilha.id} }">Ver Trilha</a></td>
-		    				</tr>
-		    			</tbody>
-			    	</table>
-			    </div>
-			</div>
-	    </div>
+      <h4>Trabalhos inscritos nessa Trilha (3)</h4>
+      <div class="row">
+        <div class="input-field col m12 s6">
+          <table class="striped centered">
+            <thead>
+              <tr> 
+                <th>Trilha</th>
+                <th>Aluno</th>
+                <th>Revisado</th>
+                <th>Revisor</th>
+                <th>Detalhes</th>
+              </tr>
+            </thead>
+            <tbody>             
+              <tr th:each="trabalho : ${trabalho}">
+                <td><p th:text="${trabalho.nome}"></p></td>
+                <td>Dilma Roussef</td>
+                <td>Não</td>
+                <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
+                <td> <a href="org_trabalho_detalhes.html">Ver detalhes    </a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      
       <div id="paginacao">         
                 <div class="row col s12 center">
                   <ul class="pagination">
@@ -88,26 +72,18 @@
                   </ul>
                 </div>
       </div>
-      
-      <div id="addRevisor">
-      	<form action="#" th:action="@{/eventoOrganizador/atribuir-revisor}" method="post">
-      		<div id="modalRevisor" class="modal">
-	      		<div class="modal-content">
-	      			<h4>Selecione o Revisor desejado</h4>
-	      			<div class="input-field col m6 s6">
-		            	<input id="nome_do_revisor" type="text"/>
-		              	<label for="nome_do_revisor">Nome do Revisor</label>
-		            </div>
-	      		</div>
-	      		<div class="modal-footer">
-	      			<a href="#" class="modal-action modal-close waves-effect btn-flat">Atribuir</a>
-        			<a href="#" class="modal-action modal-close waves-effect btn-flat">Remover Revisor</a>
-        			<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar  </a>
-	      		</div>
-	      	</div>
-      	</form>
+      <div id="modalRevisor" class="modal">
+        <div class="modal-content">
+          <h4>Selecione o Revisor desejado</h4>
+          <form>
+            <div class="input-field col m6 s6">
+              	<input id="nome_do_revisor" type="text"/>
+              	<label for="nome_do_revisor">Nome do Revisor</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Atribuir</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Remover Revisor</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar  </a></div>
       </div>
-           
       <div id="modalExcluir" class="modal">
         <div class="modal-content">
           <h4>Excluir Trilha</h4>
@@ -118,14 +94,20 @@
       <div id="modalTrilha" class="modal">
         <div class="modal-content">
           <h4>Alterar nome da Trilha</h4>
-          <form>
+          <form th:action="@{/eventoOrganizador/trilha/editar}" th:object="${trilha}" method="POST">
             <div class="input-field col m6 s6">
-              <input id="nome_do_revisor" type="text"/>
+				<input id="nome_da_trilha" th:field="*{nome}" th:value="${trilha.nome}" name="nome" type="text" />
+	           	<input type="hidden" th:value="${trilha.id}" name = "id"/>
+	           	<input type="hidden" th:value="${trilha.evento.id}" name = "eventoId"/>
               <label for="nome_do_revisor">Nome da Trilha</label>
             </div>
-          </form>
+          	 <div class="modal-footer">
+	        <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Alterar</button> 
+	        <a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+	    </div>
+	    </form>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Alterar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a></div>
+       
       </div>
     </div>
     <footer class="page-footer purple darken-4">

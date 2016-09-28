@@ -191,7 +191,7 @@ public class AutorController {
 			Long idTrilha = Long.parseLong(trilhaId);
 			
 			evento = eventoService.buscarEventoPorId(idEvento);
-			trilha = trilhaService.get(idTrilha);
+			trilha = trilhaService.get(idTrilha, idEvento);
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
 		}catch(NumberFormatException e){

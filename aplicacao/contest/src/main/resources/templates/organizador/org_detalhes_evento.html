@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Constest - Controle de Eventos de Submissão</title>
- 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <!-- CSS-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
@@ -14,103 +14,91 @@
     <nav role="navigation" class="purple darken-4">
       <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}"  alt="Contest" width="200px"/></a>
         <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
         </ul>
         <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
         </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
     </nav>
-    <div class="container page"><br />
+    <div class="container page"><br/>
       <div class="row opcoes">
-        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
-        <a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
-        <a href="org_revisores.html">Revisores</a>
-        <a th:href="@{/eventoOrganizador/trilhas}">Trilhas</a>
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+		</div>
+      <div class="row">
+        <h2>Detalhes do Evento: 
+        	<span class="card-title" th:text="${evento.nome}" >Nome do Evento</span>
+        </h2>
+        <p th:text="${evento.descricao}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet nulla sem. Etiam finibus lorem vel ex interdum, id egestas arcu cursus. Pellentesque tempus, sapien sed laoreet dapibus, massa dolor eleifend nibh, nec eleifend ex eros ac lectus. Suspendisse mattis facilisis malesuada. Sed fermentum varius purus sed pellentesque. Curabitur semper vestibulum gravida. Nunc pellentesque semper viverra.</p>
+        <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+        <div>
+          <div class="col s12">
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div class="card-content">
+                  <div class="row"><span class="card-title">Datas do Evento</span></div>
+                  <div class="row">
+                    <div class="col s3">
+                      <p>Prazo de Submissão - Inicio</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Submissão - Final</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Revisão - Inicio</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Revisão - Final</p>
+                      <p>00/00/0000</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Trilhas do Evento</span>
+                  <p th:text="'Número de trilhas:'+ ${qtdTrilhas}"></p>
+                </div>
+                <div class="card-action"><a th:href="@{'/eventoOrganizador/trilhas/' + ${evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trilhas</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Revisores do Evento</span>
+                  <p>Número de trilhas:</p>
+                </div>
+                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Trabalhos do Evento</span>
+                  <p>Número de trilhas: 0</p>
+                  <p>Número de trilhas: 0</p>
+                  <p>Número de trilhas: 0</p>
+                </div>
+                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div th:if="${eventoInativo}" class="chip red darken-1">
-      	<span class="white-text" th:text="#{EVENTO_INATIVO}"></span>
-      		<i class="material-icons">close</i>
-      </div>
-      <div th:if="${eventoInexistente}" class="chip red darken-1">
-      	<span class="white-text" th:text="#{EVENTO_NAO_EXISTE}"></span>
-        	<i class="material-icons">close</i>
-      </div>
-      
-      <div class="row" th:switch="${evento != null}">
-      	
-      	<div th:case="${true}">
-	        <h2>Detalhes do Evento: <spam th:text="${evento.nome}"></spam></h2>
-	        <p th:text="${evento.descricao}"></p>
-	        <div>
-	          <div class="col s12">
-	            <div class="card horizontal">
-	              <div class="card-stacked">
-	                <div class="card-content">
-	                  <div class="row"><span class="card-title">Datas do Evento</span></div>
-	                  <div class="row">
-	                    <div class="col s3">
-	                      <p>Prazo de Submissão - Inicio</p>
-	                      <p th:text="${evento.prazoSubmissaoInicial}"></p>
-	                    </div>
-	                    <div class="col s3">
-	                      <p>Prazo de Submissão - Final</p>
-	                      <p th:text="${evento.prazoSubmissaoFinal}"></p>
-	                    </div>
-	                    <div class="col s3">
-	                      <p>Prazo de Revisão - Inicio</p>
-	                      <p th:text="${evento.prazoRevisaoInicial}"></p>
-	                    </div>
-	                    <div class="col s3">
-	                      <p>Prazo de Revisão - Final</p>
-	                      <p th:text="${evento.prazoRevisaoFinal}"></p>
-	                    </div>
-	                  </div>
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	        </div>
-	        <div>
-	          <div class="col s4">
-	            <div class="card horizontal small">
-	              <div class="card-stacked">
-	                <div class="card-content"><span class="card-title">Trilhas do Evento</span>
-	                  <p>Número de trilhas: <spam th:text="${qtdTrilhas}"></spam> </p>
-	                </div>
-	                <div class="card-action"><a th:href="@{'/eventoOrganizador/trilhas/' + ${evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trilhas</a></div>
-	              </div>
-	            </div>
-	          </div>
-	          <div class="col s4">
-	            <div class="card horizontal small">
-	              <div class="card-stacked">
-	                <div class="card-content"><span class="card-title">Revisores do Evento</span>
-	                  <p>Número de revisores: <spam th:text="${revisores}"></spam> </p> 
-	                </div>
-	                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a></div>
-	              </div>
-	            </div>
-	          </div>
-	          <div class="col s4">
-	            <div class="card horizontal small">
-	              <div class="card-stacked">
-	                <div class="card-content"><span class="card-title">Trabalhos do Evento</span>
-	                  <p>Submetidos: <spam th:text="${qtdTrabalhos}"></spam> </p>
-	                  <p>Revisados: <spam th:text="${qtdTrabalhos}"></spam> </p>
-	                  <p>Aguardando revisão: <spam th:text="${qtdTrabalhos}"></spam> </p>
-	                </div>
-	                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a></div>
-	              </div>
-	            </div>
-	          </div>
-	        </div>
-      	</div>
-      </div>
-    
     </div>
     <footer class="page-footer purple darken-4">
       <div class="footer-copyright">
