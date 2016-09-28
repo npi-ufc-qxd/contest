@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.service;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -19,5 +20,7 @@ public interface StorageService {
     Resource loadAsResource(String filename);
 
     void deleteAll();
+    
+    File getFile(String path);
 
 }

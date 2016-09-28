@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -85,6 +86,12 @@ public class FileSystemStorageService implements StorageService{
 	public void deleteAll() {
 		FileSystemUtils.deleteRecursively(rootLocation.toFile());
 		
+	}
+
+	@Override
+	public File getFile(String path) {
+		File file = new File(path);
+		return file;
 	}
 
 }
