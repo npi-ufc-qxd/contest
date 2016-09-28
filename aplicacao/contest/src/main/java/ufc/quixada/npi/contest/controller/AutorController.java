@@ -259,6 +259,10 @@ public class AutorController {
 		ParticipacaoTrabalho participacaoTrabalhoOrientador = new ParticipacaoTrabalho();
 		ParticipacaoTrabalho participacaoTrabalhoAutor = new ParticipacaoTrabalho();
 		
+		Pessoa autor = getAutorLogado();
+		String caminhoTrabalho = Constants.CAMINHO_TRABALHOS + "/";
+		trabalho.setPath(caminhoTrabalho + + autor.getId() + file.getOriginalFilename());
+		
 		participacaoTrabalhoOrientador.setPessoa(pessoaOrientador);
 		participacaoTrabalhoOrientador.setTrabalho(trabalho);
 		participacaoTrabalhoOrientador.setPapel(Papel.ORIENTADOR);
@@ -278,7 +282,7 @@ public class AutorController {
 		submissaoService.adicionarOuEditar(submissao);
 		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalhoOrientador);
 		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalhoAutor);
-		storageService.store(file);
+		storageService.store(file, autor.getId());
 		
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";

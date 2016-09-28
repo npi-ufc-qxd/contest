@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Constest - Controle de Eventos de Submissão</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <!-- CSS-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+  </head>
+  <body>
+    <nav role="navigation" class="purple darken-4">
+      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px"/></a>
+        <ul class="white-text right hide-on-med-and-down">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+        <ul id="nav-mobile" class="side-nav">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      </div>
+    </nav>
+    <div class="container page"><br/>
+      <div class="row opcoes"><a href="revisor_index.html">Eventos Ativos</a></div>
+      <div class="row">
+        <h1 th:text="${nomeEvento}"></h1>
+        <div>
+          <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+        </div>
+        <div>
+          <div class="col s12 card">
+            <div class="card-content"><span class="card-title" th:text="${trabalho.titulo}">Titulo do trabalho</span>
+              <p>Autores: </p>
+              <ul class="collection" th:if="${not #lists.isEmpty(autores)}">
+      			<li th:each="autor : ${autores}" th:text="${autor.nome}" class="collection-item" >Nome Autor</li>
+    		  </ul>
+              <p>Co-Autores: </p>
+              <ul class="collection" th:if="${not #lists.isEmpty(coAutores)}">
+      			<li th:each="coAutor : ${coAutores}" th:text="${coAutor.nome}" class="collection-item" >Nome Co-Autor</li>
+    		  </ul>
+              <p>Orientador: </p>
+              <blockquote>
+      			<p>Bruno Barreto Freitas</p>
+    		  </blockquote>
+            </div>
+            <div class="card-action">
+              <button id="baixar-artigo" th:action="@{}" name="baixar-artigo" class="btn waves-effect waves-light white-text">Fazer Download do Artigo<i aria-hidden="true" class="fa fa-download left"></i></button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2>Revisão</h2>
+          <form class="col s12">
+            <div class="col s12 center">
+              <input id="problema-formato-artigo" type="checkbox"/>
+              <label for="problema-formato-artigo">Há problemas na formatação do artigo?</label>
+            </div>
+            <div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">Originalidade</span>
+                      <p>Tema atual e inovador, contribuição científica clara (quando tiver resultados), abordagem ou solução inovadora.</p>
+                    </div>
+                    <div class="card-action">
+                                            <div class="input-field">
+                                              <select>
+                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                                <option value="RUIM">RUIM</option>
+                                                <option value="FRACO">FRACO</option>
+                                                <option value="MEDIO">MEDIO</option>
+                                                <option value="BOM">BOM</option>
+                                                <option value="OTIMO">OTIMO</option>
+                                              </select>
+                                            </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">Mérito Técnico</span>
+                      <p>Motivação, fundamentação teórica, metodologia. Para trabalhos que apresentam resultados, avaliar a aquisição e conclusões acerca dos resultados encontrados. Para trabalhos em andamento, avaliar os resultados esperados e o alcance dos resultados dado os objetivos de pesquisa e experimentos propostos.</p>
+                    </div>
+                    <div class="card-action">
+                                            <div class="input-field">
+                                              <select>
+                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                                <option value="RUIM">RUIM</option>
+                                                <option value="FRACO">FRACO</option>
+                                                <option value="MEDIO">MEDIO</option>
+                                                <option value="BOM">BOM</option>
+                                                <option value="OTIMO">OTIMO</option>
+                                              </select>
+                                            </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">Clareza</span>
+                      <p>Organização do texto, separação e ordenação das seções para os artigos, fluxo de ideias coerente, conclusões sobre o trabalho claras e possíveis dadas as premissas, bom uso de figuras/tabelas/exemplos.</p>
+                    </div>
+                    <div class="card-action">
+                                            <div class="input-field">
+                                              <select>
+                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                                <option value="RUIM">RUIM</option>
+                                                <option value="FRACO">FRACO</option>
+                                                <option value="MEDIO">MEDIO</option>
+                                                <option value="BOM">BOM</option>
+                                                <option value="OTIMO">OTIMO</option>
+                                              </select>
+                                            </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">Qualidade do Texto</span>
+                      <p>Redação do texto adequada: respeito pelas normas, bibliografia, redação correta em Português/Inglês. Respeito pela formatação especificada pelo edital (tamanho de fonte, espaçamento, tamanho máximo e mínimo).</p>
+                    </div>
+                    <div class="card-action">
+                                            <div class="input-field">
+                                              <select>
+                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                                <option value="RUIM">RUIM</option>
+                                                <option value="FRACO">FRACO</option>
+                                                <option value="MEDIO">MEDIO</option>
+                                                <option value="BOM">BOM</option>
+                                                <option value="OTIMO">OTIMO</option>
+                                              </select>
+                                            </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">Relevancia</span>
+                      <p>Organização do texto, separação e ordenação das seções para os artigos, fluxo de ideias coerente, conclusões sobre o trabalho claras e possíveis dadas as premissas, bom uso de figuras/tabelas/exemplos.</p>
+                    </div>
+                    <div class="card-action">
+                                            <div class="input-field">
+                                              <select>
+                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                                <option value="RUIM">RUIM</option>
+                                                <option value="FRACO">FRACO</option>
+                                                <option value="MEDIO">MEDIO</option>
+                                                <option value="BOM">BOM</option>
+                                                <option value="OTIMO">OTIMO</option>
+                                              </select>
+                                            </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">Auto-Avaliação do Revisor</span>
+                      <p>Avaliação global do artigo. A nota final será obtida a partir dos quesitos: originalidade, mérito técnico, clareza, qualidade e relevância. A avaliação geral, assim como a auto-avaliação, servirá como critério para um eventual desempate.</p>
+                    </div>
+                    <div class="card-action">
+                                            <div class="input-field">
+                                              <select>
+                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                                <option value="Não Conhecedor">Não Conhecedor</option>
+                                                <option value="Conhecedor">Conhecedor</option>
+                                                <option value="Especialista">Especialista</option>
+                                              </select>
+                                            </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">Avaliação Geral</span>
+                      <p>Avaliação global do artigo. A nota final será obtida a partir dos quesitos: originalidade, mérito técnico, clareza, qualidade e relevância. A avaliação geral, assim como a auto-avaliação, servirá como critério para um eventual desempate.</p>
+                    </div>
+                    <div class="card-action">
+                                            <div class="input-field">
+                                              <select>
+                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                                <option value="RUIM">RUIM</option>
+                                                <option value="FRACO">FRACO</option>
+                                                <option value="MEDIO">MEDIO</option>
+                                                <option value="BOM">BOM</option>
+                                                <option value="OTIMO">OTIMO</option>
+                                              </select>
+                                            </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"></div>
+                    <div class="col s12">
+                      <div class="input-field">
+                        <textarea id="comentarios-para-autor" class="materialize-textarea"></textarea>
+                        <label for="comentarios-para-autor">Comentarios para os autores:</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col m6 s12">
+                <input id="indicar-artigo" type="checkbox"/>
+                <label for="indicar-artigo">Você indicaria este trabalho para premiação dos melhores artigos?</label>
+              </div>
+              <div class="col m6 s12">
+                <button id="submit" type="submit" name="action" class="btn waves-effect waves-light white-text btn-large">Enviar Revisão<i class="material-icons right">send</i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <footer class="page-footer purple darken-4">
+      <div class="footer-copyright">
+        <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
+      </div>
+    </footer>
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //Inicialização dos elementos no JS
+        //Parallax BG
+        $('.parallax').parallax();
+        
+        //sideNav
+        $(".button-collapse").sideNav();
+        
+        //Tooltips
+        $('.tooltipped').tooltip({delay: 50});
+        
+        //select_initializer
+        $('select').material_select();
+        
+        //datepicker
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 15, // Creates a dropdown of 15 years to control year
+          //Persnonalizando nomes dos meses do ano
+          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+          //Persnonalizando nomes dos dias da semana
+          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+          today: 'Hoje',
+          clear: 'Limpar',
+          close: 'Fechar'
+        });
+        
+        //Trata as datas na tela org_editar_eventos 
+        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
+        var calendarioSubmissaoFinal = "#prazo_submissao_final";
+        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
+        var calendarioRevisaoFinal = "#prazo_revisao_final";
+        
+        function habilitarCalendario(calendario){
+          $(calendario).removeAttr( "disabled" );
+        }
+        
+        function desabilitarCalendario(calendario){
+          $(calendario).attr( "disabled", true );
+          $(calendario).pickadate("clear");
+        }
+        
+        function definirDataMinimaCalendario(calendario, dataMin){
+          var picker = getPicker(calendario);
+          picker.set("min", dataMin);
+        }
+        
+        function getPicker(idCalendario){
+          var $input = $(idCalendario).pickadate();
+          var picker = $input.pickadate("picker");
+          return picker;
+        }
+        
+        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
+          var picker = getPicker(idCalendarioInicial);
+          var dataAtual = picker.get();
+          var umDia = 1;
+          
+          var dataMinima = new Date(dataAtual);
+          dataMinima.setDate(dataMinima.getDate()+umDia);
+                
+          if (dataAtual.length == 0) {
+            desabilitarCalendario(idCalendarioFinal);
+          } else {
+            habilitarCalendario(idCalendarioFinal);       
+            
+            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
+          }
+        }
+        
+        $(calendarioSubmissaoInicial).on("change",function(){
+          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
+        });
+        
+        $(calendarioSubmissaoFinal).on("change",function(){
+          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
+        });
+        
+        $(calendarioRevisaoInicial).on("change",function(){
+          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
+        });
+        
+        //Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();
+        
+      });
+    </script>
+  </body>
+</html>
