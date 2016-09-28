@@ -22,15 +22,16 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
-import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
@@ -44,6 +45,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	private static final String EVENTOS_ATIVOS = "eventosAtivos";
+	
+	private static final String TRILHA_INEXISTENTE = "trilhaInexistente";
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -176,7 +179,16 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String detalhesTrilha(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
 			Long trilhaId = Long.valueOf(id);
-			model.addAttribute("trilha", trilhaService.get(trilhaId));
+			Trilha trilha = trilhaService.get(trilhaId);
+			if (trilha == null) {
+				model.addAttribute(TRILHA_INEXISTENTE, messageService.getMessage("TRILHA_INEXISTENTE"));
+				model.addAttribute("trilha", null);
+				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			}
+			
+			List<Trabalho> trabalhos = trabalhoService.getTrabalhosPorTrilha(trilha);
+			model.addAttribute("trilha", trilha);
+			model.addAttribute("trabalhos", trabalhos);
 			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
 		} catch (NumberFormatException e) {
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));

@@ -9,9 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.Trilha;
 
 @Repository
 @Transactional
 public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	public List<Trabalho> findByEvento(Evento evento);
+	public List<Trabalho> findByTrilha(Trilha trilha); 
 }
