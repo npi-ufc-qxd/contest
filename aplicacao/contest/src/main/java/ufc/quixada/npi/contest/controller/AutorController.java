@@ -203,6 +203,7 @@ public class AutorController {
 		}
 		trabalhoValidator.validate(trabalho, result);
 		if(result.hasErrors()){
+			//ir para outro lugar ta quebrando
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){

@@ -45,15 +45,18 @@ public class TrabalhoValidator implements Validator{
 		}else{
 			errors.rejectValue(null, TRABALHO_NULL , messageService.getMessage(TRABALHO_INVALIDO));
 		}
-		validadeParticipacaoTrabalho(trabalho, errors);
+		if(validadeParticipacaoTrabalho(trabalho, errors)){
+			errors.rejectValue(null, CAMPOS_VAZIOS, messageService.getMessage(CAMPOS_VAZIOS));
+		}
 	}
 	
-	public void validadeParticipacaoTrabalho(Trabalho trabalho, Errors errors){
+	public boolean validadeParticipacaoTrabalho(Trabalho trabalho, Errors errors){
 		List<ParticipacaoTrabalho> listaParticipacoes = trabalho.getParticipacoes();
 		for(ParticipacaoTrabalho part : listaParticipacoes){
-			if(part.getPessoa().getNome() == null || part.getPessoa().getEmail() == null){
-				errors.rejectValue(null, CAMPOS_VAZIOS, messageService.getMessage(CAMPOS_VAZIOS));
+			if(part.getPessoa().getNome().isEmpty() || part.getPessoa().getEmail().isEmpty()){
+				return true;
 			}
 		}
+		return false;
 	}
 }
