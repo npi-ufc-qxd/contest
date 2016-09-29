@@ -29,7 +29,7 @@ public class ParticipacaoTrabalho {
 	@ManyToOne(cascade=CascadeType.ALL)
 	private Pessoa pessoa;
 	
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne
 	private Trabalho trabalho;
 
 	public Long getId() {

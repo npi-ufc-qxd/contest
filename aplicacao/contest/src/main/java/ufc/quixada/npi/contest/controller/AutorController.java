@@ -263,8 +263,14 @@ public class AutorController {
 	
 	public void definePapelParticipantes(Trabalho trabalho){
 		List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
-		for(ParticipacaoTrabalho p : lista){
-			p.setPapel(Papel.AUTOR);
+		for(int i = 0; i < lista.size(); i++){
+			ParticipacaoTrabalho p = lista.get(i);
+			p.setTrabalho(trabalho);
+			if(i == 0){
+				lista.get(i).setPapel(Papel.AUTOR);
+			}else{
+				lista.get(i).setPapel(Papel.COAUTOR);
+			}
 			Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
 			if(autor != null){
 				p.setPessoa(autor);
