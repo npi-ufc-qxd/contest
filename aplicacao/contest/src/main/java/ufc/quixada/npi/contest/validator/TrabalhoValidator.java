@@ -1,11 +1,14 @@
 package ufc.quixada.npi.contest.validator;
 
+import java.util.List;
+
 import javax.inject.Named;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.MessageService;
 
@@ -13,6 +16,7 @@ import ufc.quixada.npi.contest.service.MessageService;
 public class TrabalhoValidator implements Validator{
 	private static final String EVENTO_NULL = "EVENTO_NULL";
 	private static final String EVENTO = "evento";
+	private static final String CAMPOS_VAZIOS = "CAMPOS_VAZIOS";
 	private static final String TRABALHO_NULL = "TRABALHO_NULL";
 	private static final String TRABALHO_INVALIDO = "TRABALHO_INVALIDO";
 	private static final String NOME_DO_TRABALHO_VAZIO = "NOME_DO_TRABALHO_VAZIO";
@@ -41,6 +45,15 @@ public class TrabalhoValidator implements Validator{
 		}else{
 			errors.rejectValue(null, TRABALHO_NULL , messageService.getMessage(TRABALHO_INVALIDO));
 		}
+		validadeParticipacaoTrabalho(trabalho, errors);
 	}
-
+	
+	public void validadeParticipacaoTrabalho(Trabalho trabalho, Errors errors){
+		List<ParticipacaoTrabalho> listaParticipacoes = trabalho.getParticipacoes();
+		for(ParticipacaoTrabalho part : listaParticipacoes){
+			if(part.getPessoa().getNome() == null || part.getPessoa().getEmail() == null){
+				errors.rejectValue(null, CAMPOS_VAZIOS, messageService.getMessage(CAMPOS_VAZIOS));
+			}
+		}
+	}
 }

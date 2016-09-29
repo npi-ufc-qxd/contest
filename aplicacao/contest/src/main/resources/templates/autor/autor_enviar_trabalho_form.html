@@ -36,7 +36,7 @@
         <h2>Enviar Trabalho - Nome do Evento</h2>
         
         
-        <form class="col s12" th:action="@{/autor/enviarTrabalhoForm}"  th:object="${trabalho}" method="POST" enctype="multipart/form-data">
+        <form id="form" class="col s12" th:action="@{/autor/enviarTrabalhoForm}"  th:object="${trabalho}" method="POST" enctype="multipart/form-data">
           <div class="chip row red left" id="error_area" th:if="${erro}">
              <span class="white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}"></span>
              <i class="material-icons">close</i>
@@ -62,14 +62,24 @@
             <input id="titulo_do_trabalho" type="text" th:field="*{titulo}"/>
             <label for="titulo_do_trabalho">Titulo do Trabalho</label>
           </div>
-          <div class="input-field col m6 s6">
-            <input id="nome_do_orientador" type="text" name="nomeOrientador"/>
-            <label for="nome_do_orientador">Nome do Orientador</label>
+          
+          <div id="coautores" class="coautores" th:each ="pessoa,count : ${participacoes}" >
+	          <div class="input-field col m5 s5">
+	            <input id="nome_do_coautor" type="text" th:name="|participacoes[${count.index}].pessoa.nome|" th:value="${pessoa.getPessoa().getNome()}" />
+	            <label for="nome_do_coautor">Autor</label>
+	          </div>
+	          <div class="input-field col m5 s5">
+	            <input id="email_do_coautor" type="text" th:name="|participacoes[${count.index}].pessoa.email|" th:value="${pessoa.getPessoa().getEmail()}" />
+	            <label for="email_do_coautor" >Email Autor</label>
+	          </div>
           </div>
-          <div class="input-field col m6 s6">
-            <input id="email_do_orientador" type="text" name="emailOrientador"/>
-            <label for="email_do_orientador">Email do Orientador      </label>
+          <div class="col m1 s1  adicionar-coautor">
+            <a class="btn-floating btn-medium waves-effect waves-light "><i class="material-icons">add</i></a>
           </div>
+          <div class="col m1 s1  remover-coautor">
+            <a class="btn-floating btn-medium waves-effect waves-light red"><i class="fa fa-minus"></i></a>
+          </div>
+
           <div class="input-field col m6 s6">
             <select id="trilhas_select" name="trilhaId">
               <div th:each="trilha : ${trilhas}" >
@@ -135,7 +145,6 @@
         var calendarioSubmissaoFinal = "#prazo_submissao_final";
         var calendarioRevisaoInicial = "#prazo_revisao_inicial";
         var calendarioRevisaoFinal = "#prazo_revisao_final";
-        
         function habilitarCalendario(calendario){
           $(calendario).removeAttr( "disabled" );
         }
@@ -187,6 +196,47 @@
         
         //Inicialização do Modal excluir Evento
         $('.modal-trigger').leanModal();
+        
+        var next=1;
+        $('.adicionar-coautor').click(function() {
+        	//add div nome
+        	var divNome = $("<div />");
+        	divNome.attr("id" ,"nomeDiv"+next+"");
+        	divNome.addClass("input-field col m5 s5");
+        	
+        	divNome.append($("<input />").attr({
+        		"type": "text",
+        		"name":"participacoes["+next+"].pessoa.nome",
+        		"id": "nome-coautor"+next+""
+        	}));
+        	divNome.append($("<label />").attr({
+        		"for": "nome-coautor"+next+""
+        	}).html("Coautor"));
+        	$('#coautores').append(divNome);
+        	
+        	//add div email
+        	var divEmail = $("<div />");
+        	divEmail.attr("id" ,"emailDiv"+next+"");
+        	divEmail.addClass("input-field col m5 s5");
+        	divEmail.append($("<input />").attr({
+        		"type": "text",
+        		"name":"participacoes["+next+"].pessoa.email",
+        		"id": "email-coautor"+next+""
+        	}));
+        	divEmail.append($("<label />").attr({
+        		"for": "email-coautor"+next+""
+        	}).html("Email Coautor"));
+        	$('#coautores').append(divEmail);
+
+            next++;
+        });
+        
+        $(".remover-coautor").click(function(){
+        	next--;
+        	$("#nomeDiv"+next+"").remove();
+        	$("#emailDiv"+next+"").remove();
+        	
+        });
         
       });
     </script>
