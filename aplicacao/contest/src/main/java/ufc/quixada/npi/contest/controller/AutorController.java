@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,6 +34,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
@@ -46,6 +49,7 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 public class AutorController {
 
 	private static final String FORA_DA_DATA_DE_SUBMISSAO = "FORA_DA_DATA_DE_SUBMISSAO";
+	private static final String CAMPOS_VAZIOS = "CAMPOS_VAZIOS";
 	private static final String ERRO_CADASTRO_TRABALHO = "ERRO_CADASTRO_TRABALHO";
 	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
 	private static final String FORMATO_ARQUIVO_INVALIDO = "FORMATO_ARQUIVO_INVALIDO";
@@ -82,6 +86,9 @@ public class AutorController {
 	
 	@Autowired
 	private TrabalhoValidator trabalhoValidator;
+	
+	@Autowired
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	@Autowired
 	private TrilhaService trilhaService;
@@ -202,9 +209,9 @@ public class AutorController {
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
 		}
+		
 		trabalhoValidator.validate(trabalho, result);
 		if(result.hasErrors()){
-			//ir para outro lugar ta quebrando
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){

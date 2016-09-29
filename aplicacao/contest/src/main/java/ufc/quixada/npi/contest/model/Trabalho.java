@@ -36,12 +36,23 @@ public class Trabalho {
 	@OneToMany(mappedBy = "trabalho", cascade=CascadeType.ALL)
 	private List<ParticipacaoTrabalho> participacoes;
 
+	@Column(name="path")
+	private String path;
+	
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public String getTitulo() {

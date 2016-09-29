@@ -24,6 +24,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
+				.antMatchers("/autor/**").hasRole("DISCENTE")
+				.antMatchers("/evento/**").hasRole("ADMIN")
+				.antMatchers("/eventoOrganizador/**").hasAnyRole("DOCENTE", "STA")
+				.antMatchers("/revisor/**").hasRole("DOCENTE")	
 				.anyRequest()
 				.fullyAuthenticated()
 			.and()
@@ -40,7 +44,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logoutSuccessUrl("/login")
 				.logoutUrl("/logout")
 				.invalidateHttpSession(true)
-				.permitAll();
+				.permitAll()
+			.and()
+				.exceptionHandling().accessDeniedPage("/403");
 	}
 
 	@Override
@@ -52,4 +58,5 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 	    return new BCryptPasswordEncoder();
 	}
+	
 }
