@@ -124,7 +124,7 @@ public class EnviarTrabalhoSteps {
 	@Quando("^ele preenche os campos corretamente e escolhe um arquivo .pdf$")
 	public void preencherOsCamposSemErro() throws Exception{
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(trilhaService.get(trilha.getId())).thenReturn(trilha);
+		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
 		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);

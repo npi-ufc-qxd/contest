@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +32,6 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
-import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
@@ -49,7 +46,6 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 public class AutorController {
 
 	private static final String FORA_DA_DATA_DE_SUBMISSAO = "FORA_DA_DATA_DE_SUBMISSAO";
-	private static final String CAMPOS_VAZIOS = "CAMPOS_VAZIOS";
 	private static final String ERRO_CADASTRO_TRABALHO = "ERRO_CADASTRO_TRABALHO";
 	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
 	private static final String FORMATO_ARQUIVO_INVALIDO = "FORMATO_ARQUIVO_INVALIDO";
@@ -86,9 +82,6 @@ public class AutorController {
 	
 	@Autowired
 	private TrabalhoValidator trabalhoValidator;
-	
-	@Autowired
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	@Autowired
 	private TrilhaService trilhaService;
@@ -202,7 +195,7 @@ public class AutorController {
 			Long idTrilha = Long.parseLong(trilhaId);
 			
 			evento = eventoService.buscarEventoPorId(idEvento);
-			trilha = trilhaService.get(idTrilha);
+			trilha = trilhaService.get(idTrilha,idEvento);
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
 		}catch(NumberFormatException e){
@@ -259,8 +252,10 @@ public class AutorController {
 		submissao.setTrabalho(trabalho);
 		submissao.setDataSubmissao(data);
 		
+		Long idAutor = trabalho.getParticipacoes().get(0).getPessoa().getId();
+		
 		submissaoService.adicionarOuEditar(submissao);
-		storageService.store(file);
+		storageService.store(file,idAutor);
 		
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";
