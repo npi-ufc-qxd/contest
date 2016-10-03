@@ -82,7 +82,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 
-	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
+	@RequestMapping(value = {"/ativos",""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
 		model.addAttribute(EVENTOS_ATIVOS, listaEventos);

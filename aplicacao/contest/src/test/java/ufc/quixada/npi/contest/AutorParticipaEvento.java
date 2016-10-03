@@ -118,7 +118,7 @@ public class AutorParticipaEvento {
 
 	@E("^retorna uma mensagem de sucesso para o aluno$")
 	public void casoTesteECenario1() throws Exception {
-		action.andExpect(redirectedUrl("/autor"))
+		action.andExpect(redirectedUrl("/autor/enviarTrabalhoForm/"+EVENTO_ID))
 				.andExpect(model().attributeDoesNotExist("eventoVazioError", "eventoInexistenteError"));
 	}
 
