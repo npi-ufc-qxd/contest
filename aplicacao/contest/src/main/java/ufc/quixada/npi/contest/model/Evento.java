@@ -66,7 +66,7 @@ public class Evento {
 	@OneToMany(mappedBy = "evento")
 	private List<ParticipacaoEvento> participacoes;
 	
-	@OneToMany(mappedBy = "evento", cascade=CascadeType.PERSIST)
+	@OneToMany(mappedBy = "evento", cascade=CascadeType.ALL)
 	private List<Trilha> trilhas;
 
 	public Long getId() {
