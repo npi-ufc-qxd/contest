@@ -53,7 +53,9 @@ public class TrabalhoValidator implements Validator{
 	public boolean validadeParticipacaoTrabalho(Trabalho trabalho, Errors errors){
 		List<ParticipacaoTrabalho> listaParticipacoes = trabalho.getParticipacoes();
 		for(ParticipacaoTrabalho part : listaParticipacoes){
-			return part.getPessoa().getNome().isEmpty() || part.getPessoa().getEmail().isEmpty();
+			if(part.getPessoa().getNome().isEmpty() || part.getPessoa().getEmail().isEmpty()){
+				return true;
+			}
 		}
 		return false;
 	}
