@@ -169,25 +169,22 @@ public class AutorController {
 		List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
 
 		Pessoa p = getAutorLogado();
-		Trabalho novoTrabalho = new Trabalho();
+		Trabalho trabalho = new Trabalho();
 		ParticipacaoTrabalho part = new ParticipacaoTrabalho();
 		part.setPessoa(p);
 		List<ParticipacaoTrabalho> partipacoes = new ArrayList<>();
 		partipacoes.add(part);
-		novoTrabalho.setParticipacoes(partipacoes);
+		trabalho.setParticipacoes(partipacoes);
 		
-		model.addAttribute("trabalho", novoTrabalho);
+		model.addAttribute("trabalho", trabalho);
 		model.addAttribute("eventoId", id);
 		model.addAttribute("trilhas", trilhas);
-		model.addAttribute("participacoes", novoTrabalho.getParticipacoes());
 		return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 	}
 	
 	@RequestMapping(value = "/enviarTrabalhoForm", method = RequestMethod.POST)
-	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, @RequestParam(value="file",required = true) MultipartFile file,
+	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model, @RequestParam(value="file",required = true) MultipartFile file,
                                  @RequestParam("eventoId") String eventoId,  @RequestParam(required = false) String trilhaId, RedirectAttributes redirect){
-		
-		
 		Evento evento;
 		Trilha trilha;
 		try{
@@ -205,6 +202,9 @@ public class AutorController {
 		
 		trabalhoValidator.validate(trabalho, result);
 		if(result.hasErrors()){
+			List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(trilhaId));
+			model.addAttribute("eventoId", eventoId);
+			model.addAttribute("trilhas", trilhas);
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
@@ -221,6 +221,12 @@ public class AutorController {
 				return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
 			}
 		}
+	}
+	@RequestMapping(value = "/enviarTrabalho/{id}", method = RequestMethod.GET)
+	public String reenviarTrabalho(@PathVariable String id, Model model){
+		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
+		model.addAttribute("evento",evento);
+		return Constants.TEMPLATE_ENVIAR_TRABALHO_AUTOR;
 	}
 	
 	public Pessoa getAutorLogado(){
