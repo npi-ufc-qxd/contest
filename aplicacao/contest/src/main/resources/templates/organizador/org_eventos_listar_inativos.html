@@ -16,6 +16,7 @@
     <div class="container page">
       <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
       <div class="row">
+      	
       	<div th:if="${sucessoExcluir}" class="chip blue darken-1">
           <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_SUCESSO}"></span>
           <i class="material-icons">close</i>

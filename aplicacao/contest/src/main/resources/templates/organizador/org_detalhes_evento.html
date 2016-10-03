@@ -12,55 +12,91 @@
   </head>
   <body>
     <nav role="navigation" class="purple darken-4">
-      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px"/></a>
+      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}"  alt="Contest" width="200px"/></a>
         <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
         </ul>
         <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
         </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
     </nav>
     <div class="container page"><br/>
       <div class="row opcoes">
-      <a th:href="@{/revisor}">Eventos Ativos</a>
-      <a th:href="@{/revisor/meusEventos}">Meus Eventos</a>
-      </div>
-      
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+		</div>
       <div class="row">
-        <h2>Lista de Eventos</h2>
+        <h2>Detalhes do Evento: 
+        	<span class="card-title" th:text="${evento.nome}" >Nome do Evento</span>
+        </h2>
+        <p th:text="${evento.descricao}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet nulla sem. Etiam finibus lorem vel ex interdum, id egestas arcu cursus. Pellentesque tempus, sapien sed laoreet dapibus, massa dolor eleifend nibh, nec eleifend ex eros ac lectus. Suspendisse mattis facilisis malesuada. Sed fermentum varius purus sed pellentesque. Curabitur semper vestibulum gravida. Nunc pellentesque semper viverra.</p>
+        <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
         <div>
-        </div>
-        <div class="row">
-          <div class="input-field">
-            <input id="pesquisar" type="text" class="col s11"/>
-            <label for="pesquisar">Procurando um evento específico?</label><a class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">search</i></a>
-          </div>
-        </div>
-        <div class="row" th:if="${not #lists.isEmpty(eventos)}">
-          <div class="row" th:each="evento : ${eventos}">
+          <div class="col s12">
             <div class="card horizontal">
               <div class="card-stacked">
-                <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
-                  <p th:text="${evento.descricao}">
-                  </p>
-                  <h5 th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início da Submissão</h5>
-				  <h5 th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></h5>
+                <div class="card-content">
+                  <div class="row"><span class="card-title">Datas do Evento</span></div>
+                  <div class="row">
+                    <div class="col s3">
+                      <p>Prazo de Submissão - Inicio</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Submissão - Final</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Revisão - Inicio</p>
+                      <p>00/00/0000</p>
+                    </div>
+                    <div class="col s3">
+                      <p>Prazo de Revisão - Final</p>
+                      <p>00/00/0000</p>
+                    </div>
+                  </div>
                 </div>
-                <div class="card-action"><a th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
               </div>
             </div>
           </div>
         </div>
-        <div class="row col s12 center">
-        	<ul class="pagination">
-            	<li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-            	<li class="active"><a href="#">1</a></li>
-             	<li class="waves-effect"><a href="#">2</a></li>
-             <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-            </ul>
+        <div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Trilhas do Evento</span>
+                  <p th:text="'Número de trilhas:'+ ${qtdTrilhas}"></p>
+                </div>
+                <div class="card-action"><a th:href="@{'/eventoOrganizador/trilhas/' + ${evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trilhas</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Revisores do Evento</span>
+                  <p>Número de trilhas:</p>
+                </div>
+                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="card horizontal small">
+              <div class="card-stacked">
+                <div class="card-content"><span class="card-title">Trabalhos do Evento</span>
+                  <p>Número de trilhas: 0</p>
+                  <p>Número de trilhas: 0</p>
+                  <p>Número de trilhas: 0</p>
+                </div>
+                <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -69,8 +105,8 @@
         <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
       </div>
     </footer>
-    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../js/materialize.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         //Inicialização dos elementos no JS

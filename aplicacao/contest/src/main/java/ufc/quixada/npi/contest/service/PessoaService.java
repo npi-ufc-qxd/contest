@@ -60,4 +60,5 @@ public class PessoaService {
 	public List<Pessoa> getPossiveisOrganizadores(){
 		return pessoaRepository.getPossiveisOrganizadores();
 	}
+	
 }
