@@ -14,56 +14,54 @@
     <nav role="navigation" class="purple darken-4">
       <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}"  alt="Contest" width="200px"/></a>
         <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Link 01</a></li>
-          <li><a href="#">Link 02</a></li>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Profile</a></li>
         </ul>
         <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Link 01</a></li>
-          <li><a href="#">Link 02</a></li>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Profile</a></li>
         </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
     </nav>
     <div class="container page"><br/>
       <div class="row opcoes">
-        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+        <a th:href="@{/eventoOrganizador/ativos}" class="ativo">Eventos Ativos</a>
         <a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
         <a href="org_revisores.html">Revisores</a>
-        <a href="org_trilhas.html">Trilhas</a>
       </div>
       
       <div class="row">
-      	<h2 class="col s12">Eventos Ativos</h2>
-      </div>
-      
-      <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}">
-        <div th:case="${true}">
-         
-         <div th:each="participacaoEventoAtivos : ${eventosAtivos}" class="col m6 s6">
-          <div class="card">
-            <div class="card-content"><span class="card-title" th:text="${participacaoEventoAtivos.evento.nome}" >Nome do Evento</span>
-              <p th:text="|Organizador: ${participacaoEventoAtivos.pessoa.nome}|"></p>
-              <p th:text="|Visibilidade: ${participacaoEventoAtivos.evento.visibilidade.visibilidade}|"></p>
-            </div>
-            <div class="card-action">
-              <a th:href="@{/evento}" class="btn white-text waves-effect waves-light blue-grey">Inativar</a>
-              <a th:href="@{'/eventoOrganizador/convidar/'+ ${participacaoEventoAtivos.evento.nome}}" class="btn white-text waves-effect waves-light blue-grey">Convidar</a>
+        <h2>Lista de Eventos Ativos</h2>
+           <div th:if="${organizadorError}" class="chip red darken-1">
+        	<span class="white-text" th:text= "${organizadorError}"></span>
+        	<i class="material-icons">close</i>
+        </div>
+        <div> 
+          <div th:each="participacaoEventoAtivos : ${eventosAtivos}" class="col m6 s12">
+            <div class="card">
+              <div class="card-content">
+	              <span class="card-title" th:text="${participacaoEventoAtivos.evento.nome}" >Nome do Evento</span>
+	              <p th:text="|Organizador: ${participacaoEventoAtivos.pessoa.nome}|"></p>
+	              <p th:text="|Visibilidade: ${participacaoEventoAtivos.evento.visibilidade.visibilidade}|"></p>
+              </div>
+              <div class="card-action">
+              	<div class="row">
+	              	<a href="#" class="btn white-text waves-effect waves-light blue-grey">Inativar</a>
+	              	<a th:href="@{'/eventoOrganizador/convidar/'+ ${participacaoEventoAtivos.evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Convidar</a>
+	              	<a th:href="@{'/eventoOrganizador/evento/' + ${participacaoEventoAtivos.evento.id}}" class="btn white-text waves-effect waves-light blue-grey left">Detalhes</a>
+              	</div>
+              </div>
             </div>
           </div>
-         </div>
         </div>
-
-        <div class="col m4 s12" th:case="${false}">
-          <p>Não há eventos ativos</p>
-        </div>
-        
-        <div class="center">
-          <ul class="pagination">
-            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li class="waves-effect"><a href="#">2</a></li>
-            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-          </ul>
-        </div>
+                <div class="row col s12 center">
+                  <ul class="pagination">
+                    <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li class="waves-effect"><a href="#">2</a></li>
+                    <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+                  </ul>
+                </div>
       </div>
     </div>
     <footer class="page-footer purple darken-4">
@@ -71,8 +69,8 @@
         <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
       </div>
     </footer>
-    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../js/materialize.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         //Inicialização dos elementos no JS

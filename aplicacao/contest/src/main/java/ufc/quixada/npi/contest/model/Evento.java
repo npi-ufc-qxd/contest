@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -64,6 +65,9 @@ public class Evento {
 
 	@OneToMany(mappedBy = "evento")
 	private List<ParticipacaoEvento> participacoes;
+	
+	@OneToMany(mappedBy = "evento", cascade=CascadeType.PERSIST)
+	private List<Trilha> trilhas;
 
 	public Long getId() {
 		return id;
@@ -176,5 +180,13 @@ public class Evento {
 				+ ", estado=" + estado + ", prazoSubmissaoInicial=" + prazoSubmissaoInicial + ", prazoSubmissaoFinal="
 				+ prazoSubmissaoFinal + ", prazoRevisaoInicial=" + prazoRevisaoInicial + ", prazoRevisaoFinal="
 				+ prazoRevisaoFinal + ", participacoes=" + participacoes + "]";
+	}
+
+	public List<Trilha> getTrilhas() {
+		return trilhas;
+	}
+
+	public void setTrilhas(List<Trilha> trilhas) {
+		this.trilhas = trilhas;
 	}
 }

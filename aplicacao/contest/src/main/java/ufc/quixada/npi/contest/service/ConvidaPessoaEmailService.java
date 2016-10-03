@@ -1,7 +1,5 @@
 package ufc.quixada.npi.contest.service;
 
-import java.util.Date;
-
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,9 +11,6 @@ import ufc.quixada.npi.contest.model.Email;
 @Service
 public class ConvidaPessoaEmailService {
 
-	
-	private JavaMailSender javaMailSender;
-	private SimpleMailMessage templateMessage;
 	private Email email;
 	
 	public ConvidaPessoaEmailService() {
@@ -33,18 +28,17 @@ public class ConvidaPessoaEmailService {
 	}
 
 	public boolean send() {
-		//TODO change this to Autowired 
-		this.javaMailSender = new JavaMailSenderImpl();
-		this.templateMessage = new SimpleMailMessage();
+		JavaMailSender javaMailSender = new JavaMailSenderImpl();
+		SimpleMailMessage templateMessage = new SimpleMailMessage();
 		
 		editarCorpoEmail();
 
-		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setTo(this.email.getEnderecoDestinatario());
         msg.setText(this.email.getTexto());
         msg.setSubject(this.email.getTitulo());
 		try {
-			this.javaMailSender.send(msg);
+			javaMailSender.send(msg);
 			return true;
 
 		} catch (MailException e) {

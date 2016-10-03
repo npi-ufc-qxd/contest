@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Constest - Controle de Eventos de Submissão</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <!-- CSS-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+  </head>
+  <body>
+    <nav role="navigation" class="purple darken-4">
+      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}"  alt="Contest" width="200px"/></a>
+        <ul class="white-text right hide-on-med-and-down">
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
+        </ul>
+        <ul id="nav-mobile" class="side-nav">
+          <li><a href="#">Link 01</a></li>
+          <li><a href="#">Link 02</a></li>
+        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      </div>
+    </nav>
+    <div class="container page"><br/>
+      <div class="row opcoes">
+        	<a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
+	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+        	<a href="org_revisores.html">Revisores</a>
+	</div>
+      <div class="row">
+        <h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
+      </div>
+      <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+      <div class="row">
+        <div class="input-field col m4 s5">  <a href="#modalTrilha" class="waves-effect waves-light btn white-text modal-trigger">Alterar nome da Trilha<i aria-hidden="true" class="fa fa-pencil left"></i></a></div>
+        <div class="input-field col m5 s5"> <a href="#modalExcluir" class="waves-effect waves-light btn white-text modal-trigger">Excluir Trilha<i aria-hidden="true" class="fa fa-trash left">        </i></a></div>
+      </div>
+      <h4>Trabalhos inscritos nessa Trilha (3)</h4>
+      <div class="row">
+        <div class="input-field col m12 s6">
+          <table class="striped centered">
+            <thead>
+              <tr> 
+                <th>Trilha</th>
+                <th>Aluno</th>
+                <th>Revisado</th>
+                <th>Revisor</th>
+                <th>Detalhes</th>
+              </tr>
+            </thead>
+            <tbody>             
+              <tr th:each="trabalho : ${trabalho}">
+                <td><p th:text="${trabalho.nome}"></p></td>
+                <td>Dilma Roussef</td>
+                <td>Não</td>
+                <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
+                <td> <a href="org_trabalho_detalhes.html">Ver detalhes    </a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="paginacao">         
+                <div class="row col s12 center">
+                  <ul class="pagination">
+                    <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li class="waves-effect"><a href="#">2</a></li>
+                    <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+                  </ul>
+                </div>
+      </div>
+      <div id="modalRevisor" class="modal">
+        <div class="modal-content">
+          <h4>Selecione o Revisor desejado</h4>
+          <form>
+            <div class="input-field col m6 s6">
+              	<input id="nome_do_revisor" type="text"/>
+              	<label for="nome_do_revisor">Nome do Revisor</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Atribuir</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Remover Revisor</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar  </a></div>
+      </div>
+      <div id="modalExcluir" class="modal">
+        <div class="modal-content">
+          <h4>Excluir Trilha</h4>
+          <p>Tem certeza que quer excluir essa Trilha?</p>
+        </div>
+        <div class="modal-footer"><a th:href="@{'/eventoOrganizador/trilha/excluir/' + ${trilha.id} +'/'+ ${trilha.evento.id} }" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar </a></div>
+      </div>
+      <div id="modalTrilha" class="modal">
+        <div class="modal-content">
+          <h4>Alterar nome da Trilha</h4>
+          <form th:action="@{/eventoOrganizador/trilha/editar}" th:object="${trilha}" method="POST">
+            <div class="input-field col m6 s6">
+				<input id="nome_da_trilha" th:field="*{nome}" th:value="${trilha.nome}" name="nome" type="text" />
+	           	<input type="hidden" th:value="${trilha.id}" name = "id"/>
+	           	<input type="hidden" th:value="${trilha.evento.id}" name = "eventoId"/>
+              <label for="nome_do_revisor">Nome da Trilha</label>
+            </div>
+          	 <div class="modal-footer">
+	        <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Alterar</button> 
+	        <a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+	    </div>
+	    </form>
+        </div>
+       
+      </div>
+    </div>
+    <footer class="page-footer purple darken-4">
+      <div class="footer-copyright">
+        <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
+      </div>
+    </footer>
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //Inicialização dos elementos no JS
+        //Parallax BG
+        $('.parallax').parallax();
+        
+        //sideNav
+        $(".button-collapse").sideNav();
+        
+        //Tooltips
+        $('.tooltipped').tooltip({delay: 50});
+        
+        //select_initializer
+        $('select').material_select();
+        
+        //datepicker
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 15, // Creates a dropdown of 15 years to control year
+          //Persnonalizando nomes dos meses do ano
+          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+          //Persnonalizando nomes dos dias da semana
+          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+          today: 'Hoje',
+          clear: 'Limpar',
+          close: 'Fechar'
+        });
+        
+        //Trata as datas na tela org_editar_eventos 
+        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
+        var calendarioSubmissaoFinal = "#prazo_submissao_final";
+        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
+        var calendarioRevisaoFinal = "#prazo_revisao_final";
+        
+        function habilitarCalendario(calendario){
+          $(calendario).removeAttr( "disabled" );
+        }
+        
+        function desabilitarCalendario(calendario){
+          $(calendario).attr( "disabled", true );
+          $(calendario).pickadate("clear");
+        }
+        
+        function definirDataMinimaCalendario(calendario, dataMin){
+          var picker = getPicker(calendario);
+          picker.set("min", dataMin);
+        }
+        
+        function getPicker(idCalendario){
+          var $input = $(idCalendario).pickadate();
+          var picker = $input.pickadate("picker");
+          return picker;
+        }
+        
+        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
+          var picker = getPicker(idCalendarioInicial);
+          var dataAtual = picker.get();
+          var umDia = 1;
+          
+          var dataMinima = new Date(dataAtual);
+          dataMinima.setDate(dataMinima.getDate()+umDia);
+                
+          if (dataAtual.length == 0) {
+            desabilitarCalendario(idCalendarioFinal);
+          } else {
+            habilitarCalendario(idCalendarioFinal);       
+            
+            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
+          }
+        }
+        
+        $(calendarioSubmissaoInicial).on("change",function(){
+          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
+        });
+        
+        $(calendarioSubmissaoFinal).on("change",function(){
+          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
+        });
+        
+        $(calendarioRevisaoInicial).on("change",function(){
+          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
+        });
+        
+        //Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();
+        
+      });
+    </script>
+  </body>
+</html>

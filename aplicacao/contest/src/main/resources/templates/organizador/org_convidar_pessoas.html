@@ -31,6 +31,9 @@
         <div th:if="${erro}" id="error_area" class="row chip red white-text " th:text="#{ERRO_ENVIO_EMAIL}" >
           <i class="material-icons">close</i>
         </div>
+        <div th:if="${sucesso}" id="" class="row chip green white-text " th:text="#{EMAIL_ENVIADO_COM_SUCESSO}" >
+          <i class="material-icons">close</i>
+        </div>
         <form class="col s12"  th:action="@{/eventoOrganizador/convidar}" th:object="${email}" method="post">
           <div class="input-field col m6 s6">
             <input class="validate" placeholder="Exemplo: João" id="nomeConvidado"  th:field="*{nomeConvidado}" type="text" maxlength="25"/>

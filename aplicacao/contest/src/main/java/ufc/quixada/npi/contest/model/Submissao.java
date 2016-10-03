@@ -2,6 +2,7 @@ package ufc.quixada.npi.contest.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,7 +32,7 @@ public class Submissao {
 	@Enumerated(EnumType.STRING)
 	private TipoSubmissao tipoSubmissao;
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Trabalho trabalho;
 
 	public Long getId() {

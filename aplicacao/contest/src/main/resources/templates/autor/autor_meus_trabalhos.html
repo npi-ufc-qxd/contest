@@ -27,11 +27,20 @@
       <div class="row opcoes">
         <a th:href="@{/autor/participarEvento}">Eventos Ativos</a>
         <a th:href="@{/autor/meusTrabalhos}" class="ativo">Meus Trabalhos</a>
-        <a href="#">Revisores </a>
-        <a href="#">Trilhas </a>
+        <a href="#">Meus Eventos </a>
+	    <a href="#">Revisores </a>
       </div>
       <div>
-        <div th:if="${naoHaTrabalhos != null}" id="error_area" class="row chip red white-text" th:text="${naoHaTrabalhos}">
+        <div th:if="${naoHaTrabalhos}" id="error_area" class="row chip red white-text" th:text="#{NAO_HA_TRABALHOS}">
+          <i class="material-icons">close</i>
+        </div>
+        <div th:if="${eventoVazioError}" id="error_area" class="row chip red white-text" th:text="#{ID_EVENTO_VAZIO_ERROR}">
+          <i class="material-icons">close</i>
+        </div>
+        <div th:if="${erroAoCadastrar}" id="error_area" class="row chip red white-text" th:text="#{ERRO_CADASTRO_TRABALHO}">
+          <i class="material-icons">close</i>
+        </div>
+        <div th:if="${sucessoEnviarTrabalho}" id="success_area" class="row chip green white-text" th:text="#{TRABALHO_ENVIADO}">
           <i class="material-icons">close</i>
         </div>
       </div>
@@ -46,13 +55,13 @@
                 <p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
                 <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'ENVIARTRABALHO'">
-                  <a href="../paginas_autor/autor_enviar_trabalho.html" class="waves-effect waves-light btn green">Enviar Trabalho</a>
+                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
                 </div>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'SUBMISSAO'">
-                  <a href="../paginas_autor/autor_enviar_trabalho.html" class="waves-effect waves-light btn yellow">Reenviar Trabalho</a>
+                  <a href="#" class="waves-effect waves-light btn yellow">Reenviar Trabalho</a>
                 </div>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'REVISAO'">
-                  <a href="../paginas_autor/autor_revisao.html" class="waves-effect waves-light btn blue">Ver Revisao</a>
+                  <a href="#" class="waves-effect waves-light btn blue">Ver Revisao</a>
                 </div>
               </div>
             </div>
