@@ -66,38 +66,26 @@ public class EventoValidator implements Validator{
 	}
 	
 	public boolean haErrosPrazoSubmissaoInicial(Evento evento){
-		if(evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoInicial())
+		return evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoInicial())
 				|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoRevisaoFinal())
-				|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoSubmissaoFinal())){
-			return true;
-		}
-		return false;
+				|| evento.getPrazoSubmissaoInicial().after(evento.getPrazoSubmissaoFinal());
 	}
 	private boolean haErrosPrazoRevisaoInicial(Evento evento) {
-		if(evento.getPrazoRevisaoInicial().after(evento.getPrazoRevisaoFinal())
+		return evento.getPrazoRevisaoInicial().after(evento.getPrazoRevisaoFinal())
 				|| evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoFinal())
-				|| evento.getPrazoRevisaoInicial().before(evento.getPrazoSubmissaoInicial())){
-			return true;
-		}
-		return false;
+				|| evento.getPrazoRevisaoInicial().before(evento.getPrazoSubmissaoInicial());
 	}
 	
 
 	private boolean haErrosPrazoSubmissaoFinal(Evento evento) {
-		if(evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoFinal())
+		return evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoFinal())
 				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoRevisaoInicial())
-				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoSubmissaoInicial())){
-			return true;
-		}
-		return false;
+				|| evento.getPrazoSubmissaoFinal().before(evento.getPrazoSubmissaoInicial());
 	}
 
 	private boolean haErrosPrazoRevisaoFinal(Evento evento) {
-		if(evento.getPrazoRevisaoFinal().after(evento.getPrazoSubmissaoFinal())
+		return evento.getPrazoRevisaoFinal().after(evento.getPrazoSubmissaoFinal())
 				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoRevisaoInicial())
-				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoInicial())){
-			return true;
-		}
-		return false;
+				|| evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoInicial());
 	}
 }

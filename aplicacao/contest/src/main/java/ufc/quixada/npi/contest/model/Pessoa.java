@@ -41,7 +41,7 @@ public class Pessoa implements UserDetails {
 	@Column(name = "password")
 	private String password;
 
-	@Column(name = "email")
+	@Column(name = "email", unique = true)
 	@NotEmpty
 	private String email;
 
