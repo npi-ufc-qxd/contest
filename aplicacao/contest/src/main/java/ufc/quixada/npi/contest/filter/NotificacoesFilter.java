@@ -36,22 +36,22 @@ public class NotificacoesFilter implements Filter {
 	}
 	
 	@Override
-	public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2)
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filter)
 			throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String cpf = auth.getName();
 		Pessoa autorLogado = pessoaService.getByCpf(cpf);
-
+		
 		List<Notificacao> listaNotificacao = notificacaoService.listaNotificacaoDePessoa(autorLogado);
 		
-		arg0.setAttribute("notificacoes", listaNotificacao);
-		arg0.setAttribute("pessoa", autorLogado);
-		 arg2.doFilter(arg0, arg1);
+		request.setAttribute("notificacoes", listaNotificacao);
+		request.setAttribute("pessoa", autorLogado);
+		filter.doFilter(request, response);
 	}
 
 	@Override
-	public void init(FilterConfig arg0) throws ServletException {
+	public void init(FilterConfig request) throws ServletException {
 		// TODO Auto-generated method stub
 		
 	}

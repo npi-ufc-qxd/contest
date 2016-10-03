@@ -45,19 +45,19 @@ public class ContestApplication extends SpringBootServletInitializer {
 	}
 	
 	@Bean
-	public FilterRegistrationBean someFilterRegistration() {
+	public FilterRegistrationBean notificacaoFilter() {
 
 	    FilterRegistrationBean registration = new FilterRegistrationBean();
-	    registration.setFilter(someFilter());
+	    registration.setFilter(notificacao());
 	    registration.addUrlPatterns("/*");
 	    registration.addInitParameter("paramName", "paramValue");
-	    registration.setName("someFilter");
+	    registration.setName("notificacaoFiltro");
 	    registration.setOrder(1);
 	    return registration;
 	} 
 
-	@Bean(name = "someFilter")
-	public Filter someFilter() {
+	@Bean(name = "notificacaoFiltro")
+	public Filter notificacao() {
 	    return new NotificacoesFilter();
 	}
 	

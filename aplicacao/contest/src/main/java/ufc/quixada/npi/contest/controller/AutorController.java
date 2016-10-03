@@ -96,7 +96,6 @@ public class AutorController {
 	@Autowired
 	private StorageService storageService;
 
-	
 	@RequestMapping
 	public String index(Model model){
 		Pessoa autorLogado = getAutorLogado();
@@ -104,8 +103,6 @@ public class AutorController {
 		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
-	
-	
 	
 	@RequestMapping(value="/participarEvento", method = RequestMethod.GET)
 	public String eventosAtivos(Model model){

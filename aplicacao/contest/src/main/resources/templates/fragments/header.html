@@ -14,7 +14,9 @@
 					alt="Contest" width="200px" /></a>
 				<ul class="white-text right hide-on-med-and-down">
 					<li><a href="#" th:text="${pessoa.nome}"></a></li>			        
-			        <li><a href="#">Sair&nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
+			        <li><form th:action="@{/logout}" method="POST" id="logout">
+				         <a onclick="document.getElementById('logout').submit(); return false;">Sair</a>
+				    </form></li> 
 				</ul> 
 
 				<!-- Dropdown Trigger -->

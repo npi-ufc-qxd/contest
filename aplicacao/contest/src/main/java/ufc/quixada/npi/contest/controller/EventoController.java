@@ -47,7 +47,6 @@ public class EventoController extends EventoGenericoController{
 	private static final String EVENTO = "evento";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	private static final String EVENTOS_ATIVOS = "eventosAtivos";
-	
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -156,10 +155,7 @@ public class EventoController extends EventoGenericoController{
 	public void addEventoEmParticipacao(Evento evento, ParticipacaoEvento participacao, Pessoa pessoa){
         evento.setEstado(EstadoEvento.INATIVO);
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
-		
-		
 		participacao.setEvento(evento);
-		
 		participacao.setPessoa(pessoa);
 		participacao.setPapel(Papel.ORGANIZADOR);
 		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
