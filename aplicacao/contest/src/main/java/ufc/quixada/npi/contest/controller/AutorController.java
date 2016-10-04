@@ -99,8 +99,6 @@ public class AutorController {
 	@Autowired
 	private StorageService storageService;
 
-    
-	
 	@RequestMapping
 	public String index(Model model){
 		Pessoa autorLogado = getAutorLogado();
