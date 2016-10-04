@@ -10,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,14 +47,14 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
 public class EnviarTrabalhoSteps {
 	
+	private static final String EMAIL_PARTICIPANTES = "participacoes[0].pessoa.email";
+	private static final String NOME_PARTICIPANTES = "participacoes[0].pessoa.nome";
 	private static final String TRILHA_ID = "trilhaId";
 	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID = "/autor/enviarTrabalhoForm/{id}";
 	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/lucas.vieira/Downloads/certificado.pdf";
 	private static final String CAMINHO_ARQUIVO_INVALIDO = "/home/lucas.vieira/Downloads/pgadmin.log";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM = "/autor/enviarTrabalhoForm";
-	private static final String EMAIL_ORIENTADOR = "emailOrientador";
-	private static final String NOME_ORIENTADOR = "nomeOrientador";
 	private static final String TITULO = "titulo";
 	private static final String EVENTO_ID = "eventoId";
 	private static final String TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM = "autor/autor_enviar_trabalho_form";
@@ -104,6 +106,16 @@ public class EnviarTrabalhoSteps {
 	
 	@Dado("^que o autor seleciona um evento que ele participa$")
 	public void autorSelecionaEvento() throws Throwable{
+		List<Trilha> trilhas = new ArrayList<>();
+		trilhas.add(trilha);
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		
+		when(trilhaService.buscarTrilhas(1L)).thenReturn(trilhas);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("123");
+		
+		SecurityContextHolder.setContext(context);
 		action = mockMvc.perform(
 				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"))
 				.andExpect(view().name(TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM));
@@ -111,16 +123,9 @@ public class EnviarTrabalhoSteps {
 	
 	@Quando("^ele preenche os campos corretamente e escolhe um arquivo .pdf$")
 	public void preencherOsCamposSemErro() throws Exception{
-		SecurityContext context = Mockito.mock(SecurityContext.class);
-		Authentication auth = Mockito.mock(Authentication.class);
-		
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
 		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
-		
-		when(context.getAuthentication()).thenReturn(auth);
-		when(auth.getName()).thenReturn("123");
-		SecurityContextHolder.setContext(context);
+		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
 		
@@ -132,8 +137,8 @@ public class EnviarTrabalhoSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Teste")
-                        .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(NOME_PARTICIPANTES, "joao")
+                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
                         .param(TRILHA_ID, "3"));
 	}
 	@Então("^o autor deve ser redirecionado para a página meusTrabalhos com uma mensagem de sucesso$")
@@ -153,8 +158,8 @@ public class EnviarTrabalhoSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "")
-                        .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(NOME_PARTICIPANTES, "joao")
+                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
                         .param(TRILHA_ID, "3"));
 	}
 	@Então("^deve ser mostrado uma mensagem de erro dizendo que o titulo está em branco$")
@@ -174,14 +179,14 @@ public class EnviarTrabalhoSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Titulo")
-                        .param(NOME_ORIENTADOR, "")
-                        .param(EMAIL_ORIENTADOR , "")
+                        .param(NOME_PARTICIPANTES, "")
+                        .param(EMAIL_PARTICIPANTES , "")
                         .param(TRILHA_ID, "3"));
 	}
 	@Então("^deve ser mostrado uma mensagem de erro que há campos em branco$")
 	public void camposEmBanco() throws Exception{
 		action.andExpect(status().isFound())
-		      .andExpect(redirectedUrl(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM+"/1"))
+		      .andExpect(redirectedUrl(PAGINA_AUTOR_MEUS_TRABALHOS))
 		      .andExpect(flash().attribute("camposVazios", messageService.getMessage("CAMPOS_VAZIOS")));
 	}
 	
@@ -207,8 +212,8 @@ public class EnviarTrabalhoSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Teste")
-                        .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(NOME_PARTICIPANTES, "joao")
+                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
                         .param(TRILHA_ID, "3"));
 		
 	}
@@ -230,8 +235,8 @@ public class EnviarTrabalhoSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "155")
                         .param(TITULO, "")
-                        .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(NOME_PARTICIPANTES, "joao")
+                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
                         .param(TRILHA_ID, "3"));
 		
 	}

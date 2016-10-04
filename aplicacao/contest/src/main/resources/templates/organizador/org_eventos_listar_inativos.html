@@ -1,38 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <!-- CSS-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Constest - Controle de Eventos de Submissão</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
-    <nav role="navigation" class="purple darken-4">
-      <div class="nav-wrapper container">
-       <a href="#">
-         <img th:src="@{/img/logotipo_white.png}"  alt="Contest" width="200px"/>
-       </a>
-        <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul>
-        <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-      </div>
-    </nav>
-    <div class="container page"><br/>
-      <div class="row opcoes">
-        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
-        <a th:href="@{/eventoOrganizador/inativos}" class="ativo">Eventos Inativos</a>
-        <a href="org_revisores.html">Revisores</a>
-      </div>
-        
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page">
+      <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
       <div class="row">
       	
       	<div th:if="${sucessoExcluir}" class="chip blue darken-1">
@@ -91,15 +73,7 @@
                 </div>
 
       </div>
-    <footer class="page-footer purple darken-4">
-      <div class="footer-copyright">
-        <div class="container">
-          <a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a>
-        </div>
-      </div>
-    </footer>
-    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript">
       $(document).ready(function(){
         //Inicialização dos elementos no JS

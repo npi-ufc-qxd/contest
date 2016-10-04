@@ -7,6 +7,10 @@ h1, h2, h3 {
   min-height: 650px;
 }
 
+.opcoes{
+	padding-top: 20px;
+}
+
 .page a, .page a:visited {
   color: #6a1b9a;
   margin-right: 20px;

@@ -2,6 +2,7 @@ package ufc.quixada.npi.contest.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,15 +33,26 @@ public class Trabalho {
 	@ManyToOne
 	private Trilha trilha;
 
-	@OneToMany(mappedBy = "trabalho")
+	@OneToMany(mappedBy = "trabalho", cascade=CascadeType.ALL)
 	private List<ParticipacaoTrabalho> participacoes;
 
+	@Column(name="path")
+	private String path;
+	
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public String getTitulo() {
