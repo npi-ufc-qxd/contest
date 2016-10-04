@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.PessoaRepository;
 
@@ -61,4 +62,7 @@ public class PessoaService {
 		return pessoaRepository.getPossiveisOrganizadores();
 	}
 	
+	public List<Pessoa> pessoasPorPapelNoEvento(Papel papel, Long idEvento){
+		return pessoaRepository.pessoasPorPapelNoEvento(papel.getPapel(), idEvento);
+	}
 }
