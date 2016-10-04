@@ -45,4 +45,11 @@ public class TrabalhoService {
 	public List<Pessoa> getAutoresDoTrabalho(Long idTrabalho){
 		return trabalhoRepository.getAutoresDoTrabalho(idTrabalho);
 	}
+	
+	public List<Trabalho> getTrabalhosPorAutor(Pessoa pessoa,Evento evento){
+		return trabalhoRepository.findByParticipacoesPessoaAndEvento(pessoa, evento);
+	}
+	public void remover(Long id){
+		trabalhoRepository.delete(id);
+	}
 }
