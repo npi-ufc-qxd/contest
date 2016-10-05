@@ -109,7 +109,7 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	
 	@E("^Deve ser mostrado a quantidade de Revisores no evento$")
 	public void mostrarQuantidadeDeRevisoresNoEvento(){
-		verify(pessoaService.pessoasPorPapelNoEvento(Papel.REVISOR, EVENTO_ID));
+		verify(pessoaService.getPossiveisOrganizadores());
 	}
 	
 	@E("^Deve ser mostrado a quantidade de Trabalhos submetidos, revisados e não revisados no evento$")

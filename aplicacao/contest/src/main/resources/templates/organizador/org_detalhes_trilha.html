@@ -29,7 +29,7 @@
           <table class="striped centered">
             <thead>
               <tr> 
-                <th>Trilha</th>
+                <th>Título</th>
                 <th>Aluno</th>
                 <th>Revisado</th>
                 <th>Revisor</th>
@@ -37,9 +37,9 @@
               </tr>
             </thead>
             <tbody>             
-              <tr th:each="trabalho : ${trabalho}">
-                <td><p th:text="${trabalho.nome}"></p></td>
-                <td>Dilma Roussef</td>
+              <tr th:each="trabalho : ${trabalhos}">
+                <td th:text="${trabalho.titulo}"></td>
+                <td th:text="${trabalho.participacoes[0].pessoa.nome}">Dilma Roussef</td>
                 <td>Não</td>
                 <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
                 <td> <a href="org_trabalho_detalhes.html">Ver detalhes    </a></td>
