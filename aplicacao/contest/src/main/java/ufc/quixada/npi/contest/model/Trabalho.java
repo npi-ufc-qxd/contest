@@ -32,6 +32,12 @@ public class Trabalho {
 
 	@ManyToOne
 	private Trilha trilha;
+	
+	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
+	private List<Submissao> submissoes;
+	
+	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
+	private List<Revisao> revisoes;
 
 	@OneToMany(mappedBy = "trabalho", cascade=CascadeType.ALL)
 	private List<ParticipacaoTrabalho> participacoes;

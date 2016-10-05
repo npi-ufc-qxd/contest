@@ -244,12 +244,7 @@ public class AutorController {
 	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId, Model model){
 		if(trabalhoService.existeTrabalho(Long.parseLong(trabalhoId))){
 			//trabalhoService.remover(Long.parseLong(trabalhoId));
-			Trabalho t = trabalhoService.getTrabalhoById(Long.parseLong(trabalhoId));
-			List<ParticipacaoTrabalho> listaParticipacaoTrabalho = participacaoTrabalhoService.getParticipacaoTrabalhoByTrabalho(t);
-			
-			for(ParticipacaoTrabalho pt : listaParticipacaoTrabalho){
-				participacaoTrabalhoService.remover(pt);
-			}
+			trabalhoService.remover(Long.parseLong(trabalhoId));
 			
 			model.addAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
 			return Constants.TEMPLATE_REENVIAR_TRABALHO_AUTOR;
