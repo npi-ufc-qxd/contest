@@ -9,10 +9,6 @@
 				Dado que existe um aluno
 				E que possui um trabalho
 
-			Cenário: O aluno realiza submissão após receber a avaliação dos revisores
-				Quando o trabalho foi avaliado pelos revisores
-				Então o trabalho poderá ser reenviado como submissão final
-
 			Cenário: O aluno realiza submissão dentro do prazo de envio
 				Quando está dentro do prazo de submissão de envio do evento
 				Então o trabalho poderá ser reenviado

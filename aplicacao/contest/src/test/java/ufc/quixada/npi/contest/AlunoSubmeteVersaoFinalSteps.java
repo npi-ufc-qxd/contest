@@ -1,24 +1,18 @@
 package ufc.quixada.npi.contest;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,16 +21,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import cucumber.api.java.Before;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.E;
-import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.AutorController;
-import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
-import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Submissao;
-import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
@@ -44,7 +34,6 @@ import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
-import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
@@ -62,6 +51,7 @@ public class AlunoSubmeteVersaoFinalSteps {
 	private static final String TITULO = "titulo";
 	private static final String EVENTO_ID = "eventoId";
 	private static final String TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM = "autor/autor_enviar_trabalho_form";
+	private static final String FORA_DA_DATA_DE_SUBMISSAO = "FORA_DA_DATA_DE_SUBMISSAO";
 
 	@InjectMocks
 	private AutorController autorController;
@@ -110,21 +100,15 @@ public class AlunoSubmeteVersaoFinalSteps {
 	
 	@E("^que possui um trabalho$")
 	public void trabalhoFoiEnviado() throws Throwable{
+		
 		evento.setId(1L);
-		evento.setPrazoSubmissaoFinal(new Date("30/09/2017"));
-		evento.setPrazoSubmissaoInicial(new Date("01/09/2016"));
+//		evento.setPrazoSubmissaoFinal(new Date("30/09/2017"));
+//		evento.setPrazoSubmissaoInicial(new Date("01/09/2016"));
+		
+		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2016, 9, 1).getTime());
+		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2017, 9, 30).getTime());
 		
 		trilha.setId(3L);
-	}
-	
-	@Quando("^o trabalho foi avaliado pelos revisores$")
-	public void trabalhoFoiAvaliado() throws Throwable{
-		//TODO
-	}
-	
-	@Então("^o trabalho poderá ser reenviado como submissão final$")
-	public void trabalhoSubmissaoFinal() throws Throwable{
-		//TODO
 	}
 	
 	@Quando("^está dentro do prazo de submissão de envio do evento$")
@@ -156,12 +140,33 @@ public class AlunoSubmeteVersaoFinalSteps {
 	
 	@Quando("^está fora do prazo de submissão de envio do evento$")
 	public void foraDoPrazoDeSubmissao() throws Throwable{
-		//TODO
+		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2016, 9, 1).getTime());
+		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2016, 9, 2).getTime());
+		
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
+		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
+		
+		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
+		
+		
+		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
+		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+                        .file(multipartFile)
+                        .param(EVENTO_ID, "1")
+                        .param(TITULO, "Teste")
+                        .param(NOME_PARTICIPANTES, "joao")
+                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
+                        .param(TRILHA_ID, "3"));
 	}
 	
 	@Então("^o trabalho não poderá ser reenviado$")
 	public void trabalhoNaoReenviado() throws Throwable{
-		//TODO
+		action.andExpect(status().isFound())
+	      .andExpect(redirectedUrl("/autor/enviarTrabalhoForm/"+ evento.getId()))
+	      .andExpect(flash().attribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO)));
 	}
 
 }
