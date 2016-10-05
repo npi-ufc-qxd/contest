@@ -51,14 +51,14 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
 public class AlunoSubmeteVersaoFinalSteps {
 
+	private static final String EMAIL_PARTICIPANTES = "participacoes[0].pessoa.email";
+	private static final String NOME_PARTICIPANTES = "participacoes[0].pessoa.nome";
 	private static final String TRILHA_ID = "trilhaId";
 	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID = "/autor/enviarTrabalhoForm/{id}";
 	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/allef.lobo/Documentos/certificado.pdf";
 	private static final String CAMINHO_ARQUIVO_INVALIDO = "/home/lucas.vieira/Downloads/pgadmin.log";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM = "/autor/enviarTrabalhoForm";
-	private static final String EMAIL_ORIENTADOR = "emailOrientador";
-	private static final String NOME_ORIENTADOR = "nomeOrientador";
 	private static final String TITULO = "titulo";
 	private static final String EVENTO_ID = "eventoId";
 	private static final String TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM = "autor/autor_enviar_trabalho_form";
@@ -129,16 +129,9 @@ public class AlunoSubmeteVersaoFinalSteps {
 	
 	@Quando("^está dentro do prazo de submissão de envio do evento$")
 	public void dentroDoPrazoDeSubmissao() throws Throwable{
-		SecurityContext context = Mockito.mock(SecurityContext.class);
-		Authentication auth = Mockito.mock(Authentication.class);
-		
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
 		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
-		
-		when(context.getAuthentication()).thenReturn(auth);
-		when(auth.getName()).thenReturn("123");
-		SecurityContextHolder.setContext(context);
+		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
 		
@@ -150,8 +143,8 @@ public class AlunoSubmeteVersaoFinalSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Teste")
-                        .param(NOME_ORIENTADOR, "joao")
-                        .param(EMAIL_ORIENTADOR , "joao@gmail.com")
+                        .param(NOME_PARTICIPANTES, "joao")
+                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
                         .param(TRILHA_ID, "3"));
 	}
 	
