@@ -32,10 +32,12 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
@@ -45,6 +47,8 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String ERRO_EXCLUIR_TRABALHO = "ERRO_EXCLUIR_TRABALHO";
+	private static final String TRABALHO_EXCLUIDO_COM_SUCESSO = "TRABALHO_EXCLUIDO_COM_SUCESSO";
 	private static final String FORA_DA_DATA_DE_SUBMISSAO = "FORA_DA_DATA_DE_SUBMISSAO";
 	private static final String ERRO_CADASTRO_TRABALHO = "ERRO_CADASTRO_TRABALHO";
 	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
@@ -79,6 +83,12 @@ public class AutorController {
 	
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	@Autowired
+	private TrabalhoService trabalhoService;
+	
+	@Autowired
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	@Autowired
 	private TrabalhoValidator trabalhoValidator;
@@ -220,12 +230,34 @@ public class AutorController {
 			}
 		}
 	}
-	@RequestMapping(value = "/enviarTrabalho/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/reenviarTrabalho/{id}", method = RequestMethod.GET)
 	public String reenviarTrabalho(@PathVariable String id, Model model){
 		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-		model.addAttribute("evento",evento);
-		return Constants.TEMPLATE_ENVIAR_TRABALHO_AUTOR;
+		Pessoa pessoa = getAutorLogado();
+		List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosPorAutor(pessoa,evento);
+		model.addAttribute("nomeEvento",evento.getNome());
+		model.addAttribute("listaTrabalhos", listaTrabalho);
+		return Constants.TEMPLATE_REENVIAR_TRABALHO_AUTOR;
 	}
+	
+	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)
+	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId, Model model){
+		if(trabalhoService.existeTrabalho(Long.parseLong(trabalhoId))){
+			//trabalhoService.remover(Long.parseLong(trabalhoId));
+			Trabalho t = trabalhoService.getTrabalhoById(Long.parseLong(trabalhoId));
+			List<ParticipacaoTrabalho> listaParticipacaoTrabalho = participacaoTrabalhoService.getParticipacaoTrabalhoByTrabalho(t);
+			
+			for(ParticipacaoTrabalho pt : listaParticipacaoTrabalho){
+				participacaoTrabalhoService.remover(pt);
+			}
+			
+			model.addAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+			return Constants.TEMPLATE_REENVIAR_TRABALHO_AUTOR;
+		}
+		model.addAttribute("erroExcluir", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
+		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
+	}
+	
 	
 	public Pessoa getAutorLogado(){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
