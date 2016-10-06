@@ -18,14 +18,15 @@
       <h2 th:text="${nomeEvento}"></h2>
       
       <div>
-        <div id="error_area" class="row chip red white-text">
-        "Mensagem de Erro"
-        <i class="material-icons">close</i></div>
+        <div class="row chip red white-text green" id="error_area" th:if="${trabalhoExcluido}">
+          <span class="white-text" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
         
         <br/>
         
-        <div class="row chip red white-text green" id="error_area" th:if="${trabalhoExcluido}">
-          <span class="white-text" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}"></span>
+        <div class="row chip red white-text green" id="error_area" th:if="${erroExcluir}">
+          <span class="white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}"></span>
           <i class="material-icons">close</i>
         </div>
       </div>

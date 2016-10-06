@@ -44,11 +44,11 @@
                 <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
                   <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
-               	  <a th:href="@{'/autor/reenviarTrabalho/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
+               	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                 </div>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'TEM_REVISAO'">
                   <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
-               	  <a th:href="@{'/autor/reenviarTrabalho/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
+               	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                   <a href="#" class="waves-effect waves-light btn blue">Ver Revisao</a>
                 </div>
               </div>
