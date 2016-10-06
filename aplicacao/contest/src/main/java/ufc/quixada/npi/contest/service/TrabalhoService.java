@@ -50,9 +50,6 @@ public class TrabalhoService {
 		return trabalhoRepository.findByParticipacoesPessoaAndEvento(pessoa, evento);
 	}
 	public void remover(Long id){
-		Trabalho trabalho = this.getTrabalhoById(id);
-		trabalho.setTrilha(null);
-		adicionarTrabalho(trabalho);
 		trabalhoRepository.delete(id);
 	}
 }

@@ -26,10 +26,10 @@ public class ParticipacaoTrabalho {
 	@NotNull
 	private Papel papel;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Pessoa pessoa;
 	
-	@ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+	@ManyToOne
 	private Trabalho trabalho;
 
 	public Long getId() {

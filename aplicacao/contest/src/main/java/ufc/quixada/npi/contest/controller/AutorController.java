@@ -32,7 +32,6 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
-import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
@@ -54,9 +53,8 @@ public class AutorController {
 	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
 	private static final String FORMATO_ARQUIVO_INVALIDO = "FORMATO_ARQUIVO_INVALIDO";
 	private static final String NAO_HA_TRABALHOS = "NAO_HA_TRABALHOS";
-	private static final String ENVIARTRABALHO = "ENVIARTRABALHO";
-	private static final String SUBMISSAO = "SUBMISSAO";
-	private static final String REVISAO = "REVISAO";
+	private static final String NAO_TEM_REVISAO = "NAO_TEM_REVISAO";
+	private static final String TEM_REVISAO = "TEM_REVISAO";
 	private static final String PARTICAPAR_EVENTO_SUCESSO = "PARTICAPAR_EVENTO_SUCESSO";
 	private static final String PARTICAPACAO_EVENTO_SUCESSO = "particapacaoEventoSucesso";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
@@ -86,9 +84,6 @@ public class AutorController {
 	
 	@Autowired
 	private TrabalhoService trabalhoService;
-	
-	@Autowired
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	@Autowired
 	private TrabalhoValidator trabalhoValidator;
@@ -155,12 +150,12 @@ public class AutorController {
 			for(Evento evento : eventos){
 				if(submissaoService.existeTrabalhoNesseEvento(evento.getId())){
 					if(revisaoService.existeTrabalhoNesseEvento(evento.getId())){
-						trabalhosEventos.add(REVISAO);
+						trabalhosEventos.add(TEM_REVISAO);
 					}else{
-						trabalhosEventos.add(SUBMISSAO);
+						trabalhosEventos.add(NAO_TEM_REVISAO);
 					}
 				}else{
-					trabalhosEventos.add(ENVIARTRABALHO);
+					trabalhosEventos.add(NAO_TEM_REVISAO);
 				}
 			}
 			
@@ -236,18 +231,19 @@ public class AutorController {
 		Pessoa pessoa = getAutorLogado();
 		List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosPorAutor(pessoa,evento);
 		model.addAttribute("nomeEvento",evento.getNome());
+		model.addAttribute("eventoId", evento.getId());
 		model.addAttribute("listaTrabalhos", listaTrabalho);
 		return Constants.TEMPLATE_REENVIAR_TRABALHO_AUTOR;
 	}
 	
 	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)
-	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId, Model model){
+	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId, @RequestParam("eventoId") String eventoId,
+								  Model model, RedirectAttributes redirect){
 		if(trabalhoService.existeTrabalho(Long.parseLong(trabalhoId))){
-			//trabalhoService.remover(Long.parseLong(trabalhoId));
 			trabalhoService.remover(Long.parseLong(trabalhoId));
 			
-			model.addAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
-			return Constants.TEMPLATE_REENVIAR_TRABALHO_AUTOR;
+			redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+			return "redirect:/autor/reenviarTrabalho/"+eventoId;
 		}
 		model.addAttribute("erroExcluir", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;

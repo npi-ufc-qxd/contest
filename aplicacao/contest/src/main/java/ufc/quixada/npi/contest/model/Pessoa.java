@@ -46,7 +46,7 @@ public class Pessoa implements UserDetails {
 	@NotEmpty
 	private String email;
 
-	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE,CascadeType.REFRESH})
+	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE})
 	private List<ParticipacaoEvento> participacoesEvento;
 
 	@OneToMany(mappedBy = "pessoa")
