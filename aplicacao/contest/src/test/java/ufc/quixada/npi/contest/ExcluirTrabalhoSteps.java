@@ -13,6 +13,7 @@ import java.util.Calendar;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -89,11 +90,12 @@ public class ExcluirTrabalhoSteps {
 		action.andExpect(status().isFound())
 		      .andExpect(redirectedUrl("/autor/listarTrabalhos/"+EVENTO_ID))
 		      .andExpect(model().hasNoErrors());
+		      
 		verify(trabalhoService).remover(TRABALHO_ID);
 	}
 	@E("^uma mensagem de sucesso deve ser informada$")
-	public void mensagemDeSucesso(){
-		
+	public void mensagemDeSucesso() throws NoSuchMessageException, Exception{
+		action.andExpect(flash().attribute("trabalhoExcluido", messagesService.getMessage("FORA_DO_PRAZO_SUBMISSAO")));
 	}
 	
 	
@@ -118,11 +120,11 @@ public class ExcluirTrabalhoSteps {
 	@Então("^o trabalho não deve ser excluído$")
 	public void trabalhoNaoDeveSerExcluido() throws Throwable {
 		action.andExpect(status().isFound())
-	      .andExpect(redirectedUrl("/autor/listarTrabalhos/"+EVENTO_ID))
-	      .andExpect(flash().attributeExists("erroExcluir"));
+	      .andExpect(redirectedUrl("/autor/listarTrabalhos/"+EVENTO_ID));
+	      
 	}
 	@E("^uma mensagem deve ser mostrada ao usuário$")
-	public void mensagemDeErroMostrada(){
-		
+	public void mensagemDeErroMostrada() throws NoSuchMessageException, Exception{
+		action.andExpect(flash().attribute("erroExcluir", messagesService.getMessage("FORA_DO_PRAZO_SUBMISSAO")));
 	}
 }

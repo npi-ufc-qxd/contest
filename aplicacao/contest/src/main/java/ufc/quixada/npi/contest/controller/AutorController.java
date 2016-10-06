@@ -259,22 +259,29 @@ public class AutorController {
 	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)
 	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId, @RequestParam("eventoId") String eventoId,
 								  Model model, RedirectAttributes redirect){
-		if(trabalhoService.existeTrabalho(Long.parseLong(trabalhoId)) && eventoService.existeEvento(Long.parseLong(eventoId))){
-			
-			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
-			Date dataDeEnvio = new Date(System.currentTimeMillis());
-			
-			if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
-				trabalhoService.remover(Long.parseLong(trabalhoId));
-				redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
-				return "redirect:/autor/listarTrabalhos/"+eventoId;
-			}else{
-				redirect.addFlashAttribute("erroExcluir", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
-				return "redirect:/autor/listarTrabalhos/"+evento.getId();
+		try{
+			Long idEvento = Long.parseLong(eventoId);
+			Long idTrabalho = Long.parseLong(trabalhoId);
+			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
+				
+				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
+				Date dataDeEnvio = new Date(System.currentTimeMillis());
+				
+				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+					trabalhoService.remover(Long.parseLong(trabalhoId));
+					redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+					return "redirect:/autor/listarTrabalhos/"+eventoId;
+				}else{
+					redirect.addFlashAttribute("erroExcluir", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
+					return "redirect:/autor/listarTrabalhos/"+evento.getId();
+				}
 			}
+			model.addAttribute("erroExcluir", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
+			return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
+		}catch(NumberFormatException e){
+			model.addAttribute("erroExcluir", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
+			return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 		}
-		model.addAttribute("erroExcluir", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
-		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
 	
 	
