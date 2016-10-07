@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+	<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+	<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+	<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+<body>
+	<div th:fragment="header">
+		<nav role="navigation" class="purple darken-4" >
+			<div class="nav-wrapper container">
+				<a href="#"><img th:src="@{/img/logotipo_white.png}"
+					alt="Contest" width="200px" /></a>
+				<ul class="white-text right hide-on-med-and-down">
+			        <li><form th:action="@{/logout}" method="POST" id="logout">
+				         <a onclick="document.getElementById('logout').submit(); return false;">Sair</a>
+				    </form></li> 
+				</ul> 
+
+				<!-- Dropdown Trigger -->
+				   <div class="right">  
+					 <ul id='dropdown1' class='dropdown-content collection '>
+					     <div th:each="notificacoes : ${notificacoes}" >
+						     <li class="collection-item dismissable left ">
+							      <span class="title center" th:text="${notificacoes.titulo}"></span>
+							      <p th:text="${notificacoes.descricao}"></p>
+						     </li>
+					    </div>
+					  </ul>
+			      <ul id="nav-mobile" class="side-nav">
+					<li><a href="#">Nome</a></li>			     
+					<li><a href="#">Sair&nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i></a></li>   
+			      </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+		     	</div>  
+			</div>
+		</nav>
+	</div>	
+</body>
+</html>
