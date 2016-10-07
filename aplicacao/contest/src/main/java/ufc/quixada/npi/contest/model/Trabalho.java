@@ -36,21 +36,6 @@ public class Trabalho {
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
 	private List<Submissao> submissoes;
 	
-	public List<Submissao> getSubmissoes() {
-		return submissoes;
-	}
-
-	public void setSubmissoes(List<Submissao> submissoes) {
-		this.submissoes = submissoes;
-	}
-
-	public List<Revisao> getRevisoes() {
-		return revisoes;
-	}
-
-	public void setRevisoes(List<Revisao> revisoes) {
-		this.revisoes = revisoes;
-	}
 
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
 	private List<Revisao> revisoes;
@@ -69,6 +54,22 @@ public class Trabalho {
 		this.id = id;
 	}
 
+	public List<Submissao> getSubmissoes() {
+		return submissoes;
+	}
+	
+	public void setSubmissoes(List<Submissao> submissoes) {
+		this.submissoes = submissoes;
+	}
+	
+	public List<Revisao> getRevisoes() {
+		return revisoes;
+	}
+	
+	public void setRevisoes(List<Revisao> revisoes) {
+		this.revisoes = revisoes;
+	}
+	
 	public String getPath() {
 		return path;
 	}
