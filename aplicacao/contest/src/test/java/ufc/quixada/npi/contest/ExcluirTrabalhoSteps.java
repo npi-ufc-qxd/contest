@@ -49,7 +49,6 @@ public class ExcluirTrabalhoSteps {
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
-	private Trabalho trabalho;
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -58,7 +57,7 @@ public class ExcluirTrabalhoSteps {
 		evento = new Evento();
 		evento.setId(EVENTO_ID);
 		
-		trabalho = new Trabalho();
+		Trabalho trabalho = new Trabalho();
 		trabalho.setId(TRABALHO_ID);
 		trabalho.setEvento(evento);
 		

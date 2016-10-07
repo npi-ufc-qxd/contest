@@ -30,6 +30,14 @@ public class Trilha {
 	@OneToMany(mappedBy="trilha", cascade=CascadeType.REMOVE)
 	private List<Trabalho> trabalhos;
 
+	public List<Trabalho> getTrabalhos() {
+		return trabalhos;
+	}
+
+	public void setTrabalhos(List<Trabalho> trabalhos) {
+		this.trabalhos = trabalhos;
+	}
+
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Evento evento;
 
