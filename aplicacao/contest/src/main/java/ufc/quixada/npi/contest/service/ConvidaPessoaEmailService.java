@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -36,7 +35,9 @@ public class ConvidaPessoaEmailService {
 	private boolean validadorFormato(String formato){
 		if(Constants.FORMATO_EMAIL_ORGANIZADOR.equals(formato))
 			return true;
+		else{
 		return false;
+		}
 	}
 	private boolean editarCorpoEmail(String formato) {
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
@@ -49,7 +50,8 @@ public class ConvidaPessoaEmailService {
 		        msg.setSubject(email.getTitulo());
 		        msg.setFrom(emailCONTEST);
 			break;
-	
+		default:
+			break;
 		}
 		try {
 			javaMailSender.send(msg);
@@ -59,5 +61,6 @@ public class ConvidaPessoaEmailService {
 			e.printStackTrace();
 			return false;
 		}
+		
 	}
 }

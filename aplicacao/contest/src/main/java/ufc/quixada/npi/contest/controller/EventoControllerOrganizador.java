@@ -40,7 +40,6 @@ import ufc.quixada.npi.contest.util.Constants;
 public class EventoControllerOrganizador extends EventoGenericoController{
 
 	private static final String ERRO_ENVIO_EMAIL = "ERRO_ENVIO_EMAIL";
-	private static final String EMAIL_ENVIADO_COM_SUCESSO = "EMAIL_ENVIADO_COM_SUCESSO";
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
