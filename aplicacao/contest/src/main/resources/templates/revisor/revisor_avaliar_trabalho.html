@@ -28,7 +28,8 @@
       <div class="row">
         <h1 th:text="${nomeEvento}"></h1>
         <div>
-          <div id="error_area" class="row chip red white-text">"Mensagem de Erro"<i class="material-icons">close</i></div>
+          <div id="error_area" class="row chip red white-text" th:if="${criterioRevisaoVazioError}">
+          <span th:text="${criterioRevisaoVazioError}"></span><i class="material-icons">close</i></div>
         </div>
         <div>
           <div class="col s12 card">
@@ -41,21 +42,18 @@
               <ul class="collection" th:if="${not #lists.isEmpty(coAutores)}">
       			<li th:each="coAutor : ${coAutores}" th:text="${coAutor.nome}" class="collection-item" >Nome Co-Autor</li>
     		  </ul>
-              <p>Orientador: </p>
-              <blockquote>
-      			<p>Bruno Barreto Freitas</p>
-    		  </blockquote>
             </div>
             <div class="card-action">
-              <button id="baixar-artigo" th:action="@{}" name="baixar-artigo" class="btn waves-effect waves-light white-text">Fazer Download do Artigo<i aria-hidden="true" class="fa fa-download left"></i></button>
+              <a id="baixar-artigo" th:href="@{'/revisor/trabalho/' + ${trabalho.id}}" name="baixar-artigo" class="btn waves-effect waves-light white-text">Fazer Download do Artigo<i aria-hidden="true" class="fa fa-download left"></i></a>
             </div>
           </div>
         </div>
         <div>
           <h2>Revisão</h2>
-          <form class="col s12">
+          <form class="col s12" method="post" th:action="@{/revisor/avaliar}">
+            <input type="hidden" name="idTrabalho" th:value="${trabalho.id}"/>
             <div class="col s12 center">
-              <input id="problema-formato-artigo" type="checkbox"/>
+              <input id="problema-formato-artigo" type="checkbox" name="formatacao"/>
               <label for="problema-formato-artigo">Há problemas na formatação do artigo?</label>
             </div>
             <div>
@@ -67,7 +65,7 @@
                     </div>
                     <div class="card-action">
                                             <div class="input-field">
-                                              <select>
+                                              <select name="originalidade">
                                                 <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
                                                 <option value="RUIM">RUIM</option>
                                                 <option value="FRACO">FRACO</option>
@@ -88,7 +86,7 @@
                     </div>
                     <div class="card-action">
                                             <div class="input-field">
-                                              <select>
+                                              <select name="merito">
                                                 <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
                                                 <option value="RUIM">RUIM</option>
                                                 <option value="FRACO">FRACO</option>
@@ -109,7 +107,7 @@
                     </div>
                     <div class="card-action">
                                             <div class="input-field">
-                                              <select>
+                                              <select name="clareza">
                                                 <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
                                                 <option value="RUIM">RUIM</option>
                                                 <option value="FRACO">FRACO</option>
@@ -130,7 +128,7 @@
                     </div>
                     <div class="card-action">
                                             <div class="input-field">
-                                              <select>
+                                              <select name="qualidade">
                                                 <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
                                                 <option value="RUIM">RUIM</option>
                                                 <option value="FRACO">FRACO</option>
@@ -151,7 +149,7 @@
                     </div>
                     <div class="card-action">
                                             <div class="input-field">
-                                              <select>
+                                              <select name="relevancia">
                                                 <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
                                                 <option value="RUIM">RUIM</option>
                                                 <option value="FRACO">FRACO</option>
@@ -172,7 +170,7 @@
                     </div>
                     <div class="card-action">
                                             <div class="input-field">
-                                              <select>
+                                              <select name="auto-avaliacao">
                                                 <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
                                                 <option value="Não Conhecedor">Não Conhecedor</option>
                                                 <option value="Conhecedor">Conhecedor</option>
@@ -191,7 +189,7 @@
                     </div>
                     <div class="card-action">
                                             <div class="input-field">
-                                              <select>
+                                              <select name="avaliacao-geral">
                                                 <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
                                                 <option value="RUIM">RUIM</option>
                                                 <option value="FRACO">FRACO</option>
@@ -210,7 +208,7 @@
                     <div class="card-content"></div>
                     <div class="col s12">
                       <div class="input-field">
-                        <textarea id="comentarios-para-autor" class="materialize-textarea"></textarea>
+                        <textarea id="comentarios-para-autor" class="materialize-textarea" name="comentarios"></textarea>
                         <label for="comentarios-para-autor">Comentarios para os autores:</label>
                       </div>
                     </div>
@@ -218,7 +216,7 @@
                 </div>
               </div>
               <div class="col m6 s12">
-                <input id="indicar-artigo" type="checkbox"/>
+                <input id="indicar-artigo" type="checkbox" name="indicar"/>
                 <label for="indicar-artigo">Você indicaria este trabalho para premiação dos melhores artigos?</label>
               </div>
               <div class="col m6 s12">

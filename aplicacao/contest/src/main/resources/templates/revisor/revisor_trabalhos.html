@@ -19,7 +19,7 @@
 <body>
 	<nav role="navigation" class="purple darken-4">
 		<div class="nav-wrapper container">
-			<a href="#"><img src="../imgs/logotipo_white.png" alt="Contest"
+			<a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest"
 				width="200px" /></a>
 			<ul class="white-text right hide-on-med-and-down">
 				<li><a href="#">Link 01</a></li>
@@ -42,8 +42,14 @@
 			<h1 th:text="${evento.nome}"></h1>
 			<h2>Lista de Artigos para Revisão</h2>
 			<div>
-				<div id="error_area" class="row chip red white-text">
-					"Mensagem de Erro"<i class="material-icons">close</i>
+				<div id="success_area" class="row chip green white-text" th:if="${trabalhoRevisado}">
+				<span th:text="${trabalhoRevisado}"></span><i class="material-icons">close</i>
+				</div>
+				<div id="error_area" class="row chip red white-text" th:if="${trabalhoInexistenteError}">
+				<span th:text="${trabalhoInexistenteError}"></span><i class="material-icons">close</i>
+				</div>
+				<div id="error_area" class="row chip red white-text" th:if="${eventoInexistenteError}">
+				<span th:text="${eventoInexistenteError}"></span><i class="material-icons">close</i>
 				</div>
 			</div>
 			<div class="row" th:if="${not #lists.isEmpty(trabalhos)}">
