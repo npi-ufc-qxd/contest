@@ -12,35 +12,25 @@
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
-    <nav role="navigation" class="purple darken-4">
-      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px"/></a>
-        <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul>
-        <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-      </div>
-    </nav>
+    <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
-      <div class="row opcoes">
-        <a th:href="@{/autor/participarEvento}">Eventos Ativos</a>
-        <a th:href="@{/autor/meusTrabalhos}">Meus Trabalhos</a>
-        <a href="#">Meus Eventos </a>
-        <a href="#">Revisores </a></div>
+      <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
       <h2 th:text="${nomeEvento}"></h2>
       
       <div>
-        <div id="error_area" class="row chip red white-text">
-        "Mensagem de Erro"
-        <i class="material-icons">close</i></div>
+        <div class="row chip red white-text green" id="error_area" th:if="${trabalhoExcluido}">
+          <span class="white-text" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <br/>
+        
+        <div class="row chip red white-text green" id="error_area" th:if="${erroExcluir}">
+          <span class="white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}"></span>
+          <i class="material-icons">close</i>
+        </div>
       </div>
-      <div class="chip row green left col m12 s12" id="error_area" th:if="${trabalhoExcluido}">
-        <span class="white-text" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}"></span>
-        <i class="material-icons">close</i>
-      </div>
+      
       
       <div class="col s12">
         
@@ -83,7 +73,8 @@
 			  <form th:action="@{/autor/excluirTrabalho}" method="post">
 				
 				<div class="modal-footer">
-					<input type="hidden" name="trabalhoId" th:value="${trabalho.id}"/>
+				    <input type="hidden" name="trabalhoId" th:value="${trabalho.id}"/>
+					<input type="hidden" name="eventoId" th:value="${eventoId}"/>
 					<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button><a
 					href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
 				</div>
@@ -114,13 +105,7 @@
         </div>
       </div>
     </div>
-    <footer class="page-footer purple darken-4">
-      <div class="footer-copyright">
-        <div class="container"><a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido por NPI - Núcleo de Práticas em Informática</a></div>
-      </div>
-    </footer>
-    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript">
       $(document).ready(function(){
         //Inicialização dos elementos no JS

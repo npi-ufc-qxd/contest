@@ -30,7 +30,7 @@ public class Constants {
 	public static final String TEMPLATE_MEUS_TRABALHOS_AUTOR = "autor/autor_meus_trabalhos";
 	public static final String TEMPLATE_ENVIAR_TRABALHO_AUTOR = "autor/autor_enviar_trabalho";
 	public static final String TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR = "autor/autor_enviar_trabalho_form";
-	public static final String TEMPLATE_REENVIAR_TRABALHO_AUTOR = "autor/autor_reenviar_trabalho";
+	public static final String TEMPLATE_LISTAR_TRABALHO_AUTOR = "autor/autor_listar_trabalhos";
 	
 	public static final String CAMINHO_TRABALHOS = "src/main/resources/static/arquivos";
 }
