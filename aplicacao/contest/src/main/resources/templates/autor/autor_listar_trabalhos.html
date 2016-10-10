@@ -45,12 +45,13 @@
                 <p th:text="'Trilha: ' + ${trabalho.trilha.nome}"></p>
                 <p th:text="'Data de envio: ' + ${trabalho.submissoes.get(0).dataSubmissao}"></p> 
               </div>
-              <form id="form" class="col s12" th:action="@{/autor/enviarTrabalhoForm}"  th:object="${trabalho}" method="POST" enctype="multipart/form-data">
+              
+           	<form th:action="@{/autor/reenviarTrabalho}" method="POST">
 	              <div class="card-action">
 	                <div class="row">
 	                  <div class="file-field input-field col m6 s6">
 	                    <div class="btn right"><span>Escolher...</span>
-	                      <input type="file" class="multiple"/>
+	                      <input type="file" name="file" class="multiple"/>
 	                    </div>
 	                    <div class="file-path-wrapper">
 	                      <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
@@ -62,7 +63,22 @@
 	                  </div>
 	                </div>
 	              </div>
-              </form>
+	              
+	            <div th:attr="id='reenviar' + ${trabalho.id}" class="modal">
+			        <div class="modal-content">
+			          <h4>Reenviar Trabalho</h4>
+			          <p>Tem certeza que quer reenviar este trabalho?</p>
+			        </div>
+		       
+		        	<input type="hidden" name="trabalhoId" th:value="${trabalho.id}"/>
+					<input type="hidden" name="eventoId" th:value="${eventoId}"/>
+			        <div class="modal-footer">
+			          <button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+			          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+			        </div>
+      			</div>
+	         </form>
+              
         	  
         	</div>
         	
@@ -84,16 +100,7 @@
 			  </form>
 		    </div>
 		    
-		    <div th:attr="id='reenviar' + ${trabalho.id}" class="modal">
-		        <div class="modal-content">
-		          <h4>Reenviar Trabalho</h4>
-		          <p>Tem certeza que quer reenviar este trabalho?</p>
-		        </div>
-		        <div class="modal-footer">
-		          <button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-		          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-		        </div>
-      		</div>
+		   
         	
           </div>
         </div>

@@ -235,6 +235,39 @@ public class AutorController {
 			}
 		}
 	}
+	
+	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
+	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId, @RequestParam("eventoId") String eventoId, @RequestParam(value="file",required = true) MultipartFile file, RedirectAttributes redirect){
+		try{
+			Long idEvento = Long.parseLong(eventoId);
+			Long idTrabalho = Long.parseLong(trabalhoId);
+			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
+				
+				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
+				
+				if(validarArquivo(file)){
+					Date dataDeEnvio = new Date(System.currentTimeMillis());
+					if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
+					   evento.getPrazoSubmissaoInicial().before(dataDeEnvio)){
+						Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+						return adicionarTrabalho(trabalho, eventoId, file, redirect);
+					}else{
+						redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
+						return "redirect:/autor/meusTrabalhos";
+					}
+				}else{
+					redirect.addFlashAttribute("erro", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
+					return "redirect:/autor/meusTrabalhos";
+				}
+			}
+			redirect.addAttribute("erroReenviar", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
+			return "redirect:/autor/meusTrabalhos";
+		}catch(NumberFormatException e){
+			redirect.addAttribute("erroReenviar", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
+			return "redirect:/autor/meusTrabalhos";
+		}
+	}
+	
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
