@@ -225,13 +225,12 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			 email.setNomeEvento(nomeEvento);
 			 ConvidaPessoaEmailService serviceEmail = new ConvidaPessoaEmailService(email);
 			 if(!serviceEmail.send(Constants.FORMATO_EMAIL_ORGANIZADOR)){
-				 model.addAttribute("erro", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+				 model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
 			 }
 		 }else{
-			 model.addAttribute("erro", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+			 model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
 		 }
-		model.addAttribute("sucesso", messageService.getMessage(EMAIL_ENVIADO_COM_SUCESSO));
-		return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG;
+		return "redirect:/eventoOrganizador/ativos";	
 	}
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){

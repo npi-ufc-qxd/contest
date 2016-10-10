@@ -117,8 +117,7 @@ public class EnviarTrabalhoSteps {
 		
 		SecurityContextHolder.setContext(context);
 		action = mockMvc.perform(
-				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"))
-				.andExpect(view().name(TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM));
+				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"));
 	}
 	
 	@Quando("^ele preenche os campos corretamente e escolhe um arquivo .pdf$")

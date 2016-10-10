@@ -15,8 +15,8 @@ public class ConvidaPessoaEmailService {
 
 	private Email email;
 	private String emailCONTEST = "naoresponda@gmail.com";
-	private static final String TITULO_EMAIL_ORGANIZADOR="Não Responder este email - Convite CONTEST para evento";
-	private static final String CORPO_EMAIL_ORGANIZADOR=",você foi convidado para participar do evento";
+	private static final String TITULO_EMAIL_ORGANIZADOR="Não Responder este email - Convite CONTEST para evento ";
+	private static final String CORPO_EMAIL_ORGANIZADOR=", você foi convidado para participar do evento";
 	private SimpleMailMessage templateMessage;
 	private JavaMailSender javaMailSender;
 	
