@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Constest - Controle de Eventos de Submissão</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+<!-- CSS  -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+<body>
+  <div th:include="fragments/headerError :: header"></div>
+  <div class="container page">
+    <h1 class="center">Página não encontrada</h1>
+    <h5 class="center">Deixe de ser gaiato :p</h5>
+    <div class="row ">
+      <center>
+    	<a th:href="@{/}" class="waves-effect waves-light btn white-text ">Voltar</a>
+      </center>
+    </div>
+  </div>
+   <div th:include="fragments/footer :: footer"></div>
+</body>
+</html>
