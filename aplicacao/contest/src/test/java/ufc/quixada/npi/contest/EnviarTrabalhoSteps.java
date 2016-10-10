@@ -52,8 +52,8 @@ public class EnviarTrabalhoSteps {
 	private static final String TRILHA_ID = "trilhaId";
 	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID = "/autor/enviarTrabalhoForm/{id}";
-	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/robson.negreiros/Downloads/certificado.pdf";
-	private static final String CAMINHO_ARQUIVO_INVALIDO = "/home/robson.negreiros/Downloads/pgadmin.log";
+	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/lucas.vieira/Downloads/certificado.pdf";
+	private static final String CAMINHO_ARQUIVO_INVALIDO = "/home/lucas.vieira/Downloads/pgadmin.log";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM = "/autor/enviarTrabalhoForm";
 	private static final String TITULO = "titulo";
 	private static final String EVENTO_ID = "eventoId";
@@ -117,7 +117,8 @@ public class EnviarTrabalhoSteps {
 		
 		SecurityContextHolder.setContext(context);
 		action = mockMvc.perform(
-				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"));
+				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"))
+				.andExpect(view().name(TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM));
 	}
 	
 	@Quando("^ele preenche os campos corretamente e escolhe um arquivo .pdf$")

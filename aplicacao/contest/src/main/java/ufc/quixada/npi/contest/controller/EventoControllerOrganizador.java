@@ -23,8 +23,8 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
-import ufc.quixada.npi.contest.service.ConvidaPessoaEmailService;
 import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -46,6 +46,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	private static final String EVENTOS_ATIVOS = "eventosAtivos";
+	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	
 	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
 
@@ -222,8 +224,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String convidarPorEmail(@RequestParam String nomeEvento,@Valid Email email, BindingResult result, Model model, RedirectAttributes redirect) {
 		if (!result.hasErrors()) {
 			 email.setNomeEvento(nomeEvento);
-			 ConvidaPessoaEmailService serviceEmail = new ConvidaPessoaEmailService(email);
-			 if(!serviceEmail.send(Constants.FORMATO_EMAIL_ORGANIZADOR)){
+			 EnviarEmailService serviceEmail = new EnviarEmailService(email);
+			 if(!serviceEmail.enviarEmail(messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + email.getNomeEvento(), email.getNomeConvidado()
+					  + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR))){
 				 model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
 			 }
 		 }else{

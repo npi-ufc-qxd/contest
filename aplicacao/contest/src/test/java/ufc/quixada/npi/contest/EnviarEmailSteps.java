@@ -23,11 +23,10 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
-import ufc.quixada.npi.contest.service.ConvidaPessoaEmailService;
+import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
-import ufc.quixada.npi.contest.util.Constants;
 
 public class EnviarEmailSteps {
 	
@@ -36,7 +35,7 @@ public class EnviarEmailSteps {
 	@Mock
 	private EventoService eventoService;
 	@Mock
-	private ConvidaPessoaEmailService emailService;
+	private EnviarEmailService emailService;
 	@Mock
 	private MessageService messageService;
 	@Mock
@@ -50,6 +49,8 @@ public class EnviarEmailSteps {
 	private static Long PESSOA_ID = (long) 1;
 	private Pessoa pessoa;
 	private String papelConvidado;
+	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 
 	
 
@@ -91,7 +92,7 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador convida a pessoa com nome (.*) e email (.*) para participar do evento$")
     public void casoTesteQuandoCenario1(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.send(Constants.FORMATO_EMAIL_ORGANIZADOR)).thenReturn(true);
+		when(emailService.enviarEmail(TITULO_EMAIL_ORGANIZADOR, TEXTO_EMAIL_ORGANIZADOR)).thenReturn(true);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("nomeEvento", evento.getNome())
@@ -124,7 +125,7 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador tenta convidar uma pessoa com nome (.*) o email invalido (.*)$")
     public void casoTesteQuando(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.send(Constants.FORMATO_EMAIL_ORGANIZADOR)).thenReturn(false);
+		when(emailService.enviarEmail(TITULO_EMAIL_ORGANIZADOR, TEXTO_EMAIL_ORGANIZADOR)).thenReturn(false);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("nomeEvento", evento.getNome())
