@@ -27,6 +27,7 @@ import ufc.quixada.npi.contest.service.ConvidaPessoaEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.util.Constants;
 
 public class EnviarEmailSteps {
 	
@@ -90,7 +91,7 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador convida a pessoa com nome (.*) e email (.*) para participar do evento$")
     public void casoTesteQuandoCenario1(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.send()).thenReturn(true);
+		when(emailService.send(Constants.FORMATO_EMAIL_ORGANIZADOR)).thenReturn(true);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("nomeEvento", evento.getNome())
@@ -123,14 +124,14 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador tenta convidar uma pessoa com nome (.*) o email invalido (.*)$")
     public void casoTesteQuando(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.send()).thenReturn(false);
+		when(emailService.send(Constants.FORMATO_EMAIL_ORGANIZADOR)).thenReturn(false);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("nomeEvento", evento.getNome())
 				.param("nomeConvidado", nomeConvidado)
 				.param("funcao", papelConvidado)
-				.param("enderecoDestinatario", enderecoEmail));
-		
+				.param("enderecoDestinatario", enderecoEmail)
+				);
     }
 	@Então("^uma mensagem de erro (.*) de impedimento é retornada$")
     public void casoTesteEntao1Cenario2(String mensagemErro) throws Throwable {

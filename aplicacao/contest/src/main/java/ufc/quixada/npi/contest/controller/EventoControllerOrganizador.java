@@ -194,7 +194,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if (!result.hasErrors()) {
 			 email.setNomeEvento(nomeEvento);
 			 ConvidaPessoaEmailService serviceEmail = new ConvidaPessoaEmailService(email);
-			 if(!serviceEmail.send()){
+			 if(!serviceEmail.send(Constants.FORMATO_EMAIL_ORGANIZADOR)){
 				 model.addAttribute("erro", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
 			 }
 		 }else{

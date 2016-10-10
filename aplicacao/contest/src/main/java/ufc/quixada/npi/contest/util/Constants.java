@@ -35,4 +35,7 @@ public class Constants {
 	public static final String TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR = "autor/autor_enviar_trabalho_form";
 	
 	public static final String CAMINHO_TRABALHOS = "src/main/resources/static/arquivos";
+	
+	public static final String FORMATO_EMAIL_ORGANIZADOR = "FORMATO_EMAIL_ORGANIZADOR";
+	
 }
