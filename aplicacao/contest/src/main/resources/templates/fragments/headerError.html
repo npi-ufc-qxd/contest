@@ -13,7 +13,6 @@
 				<a th:href="@{/}"><img th:src="@{/img/logotipo_white.png}"
 					alt="Contest" width="200px" /></a>
 				<ul class="white-text right hide-on-med-and-down">
-					<li><a href="#" th:text="${pessoa.nome}"></a></li>			        
 			        <li><form th:action="@{/logout}" method="POST" id="logout">
 				         <a onclick="document.getElementById('logout').submit(); return false;">Sair</a>
 				    </form></li> 
@@ -21,7 +20,6 @@
 
 				<!-- Dropdown Trigger -->
 				   <div class="right">  
-					<a class='dropdown-button btn' href='#' data-activates='dropdown1' th:text="|Notificações (${#arrays.length(notificacoes)})|"></a>
 					 <ul id='dropdown1' class='dropdown-content collection '>
 					     <div th:each="notificacoes : ${notificacoes}" >
 						     <li class="collection-item dismissable left ">
