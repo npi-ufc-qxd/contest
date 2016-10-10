@@ -63,13 +63,7 @@ public class EnviarTrabalhoSteps {
 	@Mock
 	private EventoService eventoService;
 	@Mock
-	private TrabalhoValidator trabalhoValidator;
-	@Mock
 	private PessoaService pessoaService;
-	@Mock
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
-	@Mock
-	private StorageService storageService;
 	@Mock
 	private MessageService messageService;
 	@Mock

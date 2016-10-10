@@ -15,7 +15,7 @@
     <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
       <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
-      <h2 th:text="${nomeEvento}"></h2>
+      <h2 th:text="'Evento:' + ${nomeEvento}"></h2>
       
       <div>
         <div class="row chip red white-text green" id="error_area" th:if="${trabalhoExcluido}">
@@ -38,28 +38,31 @@
           <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal small">
         	<div class="card-stacked">
         	  
-        	  <div class="card-content"><span class="card-title" th:text="${trabalho.titulo}"></span>
-                <p>Nome do Orientador</p>
-                <p>Email do Orientador</p>
-                <p>Trilha do Evento</p>
-                <p>Data de envio</p>
-              </div>
-              <div class="card-action">
-                <div class="row">
-                  <div class="file-field input-field col m6 s6">
-                    <div class="btn right"><span>Escolher...</span>
-                      <input type="file" class="multiple"/>
-                    </div>
-                    <div class="file-path-wrapper">
-                      <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
-                    </div>
-                  </div>
-                  <div class="input-field col m6 s6">
-                    <a th:attr="href='#modal' + ${trabalho.id}" class="btn right white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
-                    <a href="#modal" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Reenviar</a>
-                  </div>
+        	  <div class="card-content"><span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span>
+                <div th:each="participacao : ${trabalho.participacoes}">
+                	<p th:text=" ${participacao.papel} + ': ' + ${participacao.pessoa.nome} + ' | ' + 'Email: ' + ${participacao.pessoa.email}"></p>
                 </div>
+                <p th:text="'Trilha: ' + ${trabalho.trilha.nome}"></p>
+                <p th:text="'Data de envio: ' + ${trabalho.submissoes.get(0).dataSubmissao}"></p> 
               </div>
+              <form id="form" class="col s12" th:action="@{/autor/enviarTrabalhoForm}"  th:object="${trabalho}" method="POST" enctype="multipart/form-data">
+	              <div class="card-action">
+	                <div class="row">
+	                  <div class="file-field input-field col m6 s6">
+	                    <div class="btn right"><span>Escolher...</span>
+	                      <input type="file" class="multiple"/>
+	                    </div>
+	                    <div class="file-path-wrapper">
+	                      <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
+	                    </div>
+	                  </div>
+	                  <div class="input-field col m6 s6">
+	                    <a th:attr="href='#modal' + ${trabalho.id}" class="btn right white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
+	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Reenviar</a>
+	                  </div>
+	                </div>
+	              </div>
+              </form>
         	  
         	</div>
         	
@@ -80,6 +83,17 @@
 				</div>
 			  </form>
 		    </div>
+		    
+		    <div th:attr="id='reenviar' + ${trabalho.id}" class="modal">
+		        <div class="modal-content">
+		          <h4>Reenviar Trabalho</h4>
+		          <p>Tem certeza que quer reenviar este trabalho?</p>
+		        </div>
+		        <div class="modal-footer">
+		          <button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+		          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+		        </div>
+      		</div>
         	
           </div>
         </div>
@@ -93,17 +107,7 @@
                 <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
               </ul>
             </div>
-      <div id="modal" class="modal">
-        <div class="modal-content">
-          <h4>Reenviar Trabalho</h4>
-          <h5>"Nome do trabalho".</h5>
-          <p>Tem certeza que quer participar reenviar este trabalho?</p>
-        </div>
-        <div class="modal-footer">
-          <a href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a>
-          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-        </div>
-      </div>
+
     </div>
     <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript">

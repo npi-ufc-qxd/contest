@@ -44,8 +44,6 @@ public class AtivarEventoSteps {
 	@Mock
 	private MessageService messageService;
 	@Mock
-	private EventoValidator eventoValidator;
-	@Mock
 	private RevisaoService revisaoService;
 	@Mock
 	private SubmissaoService submissaoService;

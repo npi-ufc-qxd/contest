@@ -42,9 +42,6 @@ public class AlterarTrilhasSteps {
 	
 	@Mock
 	private TrilhaService trilhaService;
-	
-	@Mock
-	private TrabalhoService trabalhoService;
 
 	@Mock
 	private MessageService messageService;

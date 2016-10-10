@@ -38,21 +38,16 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 
 	@Mock
 	private PessoaService pessoaService;
-
-	@Mock
-	private MessageService messageService;
 	
 	@Mock
 	private TrabalhoService trabalhoService;
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
-	private Pessoa organizadorLogado;
 	private Long EVENTO_ID = 1L;
 	private Long EVENTO_ID_INEXISTENTE = 2L;
 	private Long EVENTO_ID_INATIVO = 3L;
-	private Evento eventoAtivo;
-	private Pessoa organizador;
+	private Evento eventoAtivo; 
 	
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
@@ -70,12 +65,7 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 		eventoAtivo = new Evento();
 		eventoAtivo.setId(EVENTO_ID);
 		eventoAtivo.setEstado(EstadoEvento.ATIVO);
-		organizador = new Pessoa();
 		
-		organizador.setCpf("123");
-		organizador.setEmail("a@a");
-		organizador.setId(Long.valueOf(ID_PESSOA));
-		organizador.setNome("Joao");
 	}
 
 	/**
@@ -83,6 +73,7 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	 */
 	@Dado("^Dado Estou logado no sistema como organizador$")
 	public void logadoComoOrganizador() {
+		Pessoa organizadorLogado;
 		organizadorLogado = new Pessoa();
 		organizadorLogado.setPapelLdap("DOCENTE");
 		organizadorLogado.setId(Long.valueOf(5));

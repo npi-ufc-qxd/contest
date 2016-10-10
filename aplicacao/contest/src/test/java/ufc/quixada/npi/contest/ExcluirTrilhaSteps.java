@@ -40,9 +40,6 @@ public class ExcluirTrilhaSteps {
 	
 	@Mock
 	private TrilhaService trilhaService;
-	
-	@Mock
-	private TrabalhoService trabalhoService;
 
 	@Mock
 	private MessageService messageService;
