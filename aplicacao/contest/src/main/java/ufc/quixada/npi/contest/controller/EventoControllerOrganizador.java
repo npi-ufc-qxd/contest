@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ufc.quixada.npi.contest.model.Email;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.ConvidaPessoaEmailService;
@@ -44,6 +47,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	private static final String EVENTOS_ATIVOS = "eventosAtivos";
+	
+	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -137,7 +142,32 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 		return "redirect:/eventoOrganizador/inativos";
 	}
-	
+
+	@RequestMapping(value = "/detalhes-evento/{id}", method = RequestMethod.GET)
+	public String detalhesEvento(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		try {
+			Long eventoId = Long.valueOf(id);
+			
+			if (eventoService.existeEvento(eventoId)) {
+				Evento evento = eventoService.buscarEventoPorId(eventoId);
+				if (evento.getEstado().equals(EstadoEvento.ATIVO)) {
+					model.addAttribute("evento", evento);
+					model.addAttribute("qtdTrilhas", evento.getTrilhas().size());
+					model.addAttribute("revisores", pessoaService.pessoasPorPapelNoEvento(Papel.REVISOR, eventoId).size());
+					model.addAttribute("qtdTrabalhos", trabalhoService.getTrabalhosEvento(evento).size());
+					return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+				} else {
+					model.addAttribute(EVENTO_INATIVO, messageService.getMessage("EVENTO_INATIVO"));
+				}
+			}else {
+				model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
+			}
+		} catch (NumberFormatException e) {
+			model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
+		}
+		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+	}
+
 	@RequestMapping(value = "/trilhas/{id}", method = RequestMethod.GET)
 	public String listaTrilhas(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try{
@@ -256,6 +286,12 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 		redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_VAZIO_OU_TEM_TRABALHO"));
 		return "redirect:/eventoOrganizador/trilhas/"+ eventoId;
+	}
+	
+	public Pessoa getOrganizadorLogado() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String cpf = auth.getName();
+		return pessoaService.getByCpf(cpf);
 	}
 
 }

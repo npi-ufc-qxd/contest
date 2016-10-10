@@ -33,4 +33,6 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	public boolean existsTrilhaId(@Param("trilhaId") Long trilhaId);
 	
 	public List<Trabalho> findByTrilha(Trilha trilha);
+	
+	public List<Trabalho> findByParticipacoesPessoaAndEvento(Pessoa pessoa,Evento evento);
 }
