@@ -296,10 +296,7 @@ public class AutorController {
 		String fileName = file.getOriginalFilename();
 		int lastIndex = fileName.lastIndexOf('.');
 		String substring = fileName.substring(lastIndex, fileName.length());
-		if(fileExtentions.contains(substring)){
-			return true;
-		}
-		return false;
+		return fileExtentions.contains(substring);
 	}
 	
 	
