@@ -216,7 +216,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
 		}else{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
-			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
 		}
 	}
 	
