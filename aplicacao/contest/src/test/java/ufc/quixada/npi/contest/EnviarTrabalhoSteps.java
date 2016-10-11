@@ -55,7 +55,7 @@ public class EnviarTrabalhoSteps {
 	private static final String TITULO = "titulo";
 	private static final String EVENTO_ID = "eventoId";
 	private static final String TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM = "autor/autor_enviar_trabalho_form";
-	private static final byte[] CONTEUDO = "Hello World".getBytes();
+	private static final byte[] CONTEUDO = "Ola Mundo".getBytes();
 	
 	@InjectMocks
 	private AutorController autorController;
