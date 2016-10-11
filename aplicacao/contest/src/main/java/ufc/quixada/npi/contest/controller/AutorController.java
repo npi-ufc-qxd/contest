@@ -309,7 +309,7 @@ public class AutorController {
 
 		submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
 		submissao.setTrabalho(trabalho);
-		submissao.setDataSubmissao(data);
+		submissao.setDataSubmissao(data); 
 		
 		Long idAutor = trabalho.getParticipacoes().get(0).getPessoa().getId();
 		
