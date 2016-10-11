@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
@@ -79,9 +78,22 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
-		model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId) );
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		model.addAttribute("evento", evento );
 		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
+		model.addAttribute("qtdTrabalhos", trabalhoService.getTrabalhosEvento(evento).size());
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+	}
+	
+	@RequestMapping(value = "/evento/{id}/revisores", method = RequestMethod.GET)
+	public String atribuirRevisor(@PathVariable String id, Model model) {
+		Long eventoId = Long.parseLong(id);
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
+		model.addAttribute("evento", evento );
+		
+		model.addAttribute("trabalhos", trabalhos);
+		return Constants.TEMPLATE_ATRIBUIR_REVISOR_ORG;
 	}
 
 	@RequestMapping(value = {"/ativos",""}, method = RequestMethod.GET)
@@ -138,31 +150,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
 		return "redirect:/eventoOrganizador/inativos";
-	}
-
-	@RequestMapping(value = "/detalhes-evento/{id}", method = RequestMethod.GET)
-	public String detalhesEvento(@PathVariable String id, Model model, RedirectAttributes redirect) {
-		try {
-			Long eventoId = Long.valueOf(id);
-			
-			if (eventoService.existeEvento(eventoId)) {
-				Evento evento = eventoService.buscarEventoPorId(eventoId);
-				if (evento.getEstado().equals(EstadoEvento.ATIVO)) {
-					model.addAttribute("evento", evento);
-					model.addAttribute("qtdTrilhas", evento.getTrilhas().size());
-					model.addAttribute("revisores", pessoaService.getPossiveisOrganizadores());
-					model.addAttribute("qtdTrabalhos", trabalhoService.getTrabalhosEvento(evento).size());
-					return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
-				} else {
-					model.addAttribute(EVENTO_INATIVO, messageService.getMessage("EVENTO_INATIVO"));
-				}
-			}else {
-				model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
-			}
-		} catch (NumberFormatException e) {
-			model.addAttribute(EVENTO_INEXISTENTE, messageService.getMessage("EVENTO_NAO_EXISTE"));
-		}
-		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 
 	@RequestMapping(value = "/trilhas/{id}", method = RequestMethod.GET)

@@ -1,0 +1,43 @@
+LOGIN_INVALIDO=Usuário e/ou senha inválidos
+LOGOUT_SUCESSO=Sua sessão foi finalizada
+ORGANIZADOR_VAZIO_ERROR=O organizador do evento deve ser informado
+PESSOA_NAO_ENCONTRADA=Pessoa não encontrada
+ID_EVENTO_VAZIO_ERROR=O Evento não existe
+NOME_EVENTO_VAZIO_ERROR=O nome do evento deve ser informado
+EVENTO_INATIVO_EXCLUIDO_SUCESSO=Evento inativo excluído com sucesso
+EVENTO_INATIVO_EXCLUIDO_ERRO=Evento não encontrado
+EVENTO_NAO_EXISTE=Evento não existe
+EVENTO_CADASTRADO_COM_SUCESSO=Evento cadastrado com sucesso
+EVENTO_EDITADO_COM_SUCESSO=Evento editado com sucesso
+ERRO_NAS_DATAS=Datas informadas com erro
+EVENTO_DESCRICAO_ERRO=Campos Descricao é obrigatório
+TRILHA_NOME_JA_EXISTE="Essa trilha já existe"
+PARTICIPAR_EVENTO_INATIVO=Nao e permitido participar de um evento inativo
+EVENTO_DESCRICAO_ERRO=Campos Descricao é obrigatório
+PARTICIPAR_EVENTO_INATIVO=Nao e permitido participar de um evento inativo
+PARTICAPAR_EVENTO_SUCESSO=Sua participacao foi efetivada
+ERRO_DATA_SUBMISSAO_INICIAL=Data de submissão inicial foi informada errada
+ERRO_DATA_SUBMISSAO_FINAL=Data de submissão final foi informada errada
+ERRO_DATA_REVISAO_INICIAL=Data de revisão inicial foi informada errada
+ERRO_DATA_REVISAO_FINAL=Data de revisão final foi informada errada
+ERRO_CAMPOS_EVENTO_NULL=Foram deixados campos em branco
+NAO_HA_TRABALHOS=Não há trabalhos submetidos em nenhum evento
+<<<<<<< HEAD
+SESSAO_EXPIRADA=Desculpe, sua sess�o expirou
+EVENTO_INATIVO="Evento In�tivo"
+=======
+NOME_DO_TRABALHO_VAZIO=O titulo do trabalho está em branco
+TRABALHO_INVALIDO= O trabalho enviado está inválido
+ARQUIVO_VAZIO= Não há nada no armazenamento
+FALHA_AO_LER_ARQUIVO = Houve falha na leitura do arquivo
+FORMATO_ARQUIVO_INVALIDO = O arquivo enviado deve ser .pdf
+TRABALHO_ENVIADO = Trabalho cadastrado com sucesso no sistema
+PESSOA_INVALIDA = Pessoa não cadastrada no sistema
+CAMPOS_VAZIOS = Há campos referente ao orientador vazio
+EMAIL_NULL = O campo email não foi preenchido
+PESSOA_NULL = O campo nome não foi preenchido
+ERRO_CADASTRO_TRABALHO = Não foi possível cadastrar o trabalho tente novamente
+FORA_DA_DATA_DE_SUBMISSAO = Voce está enviando um arquivo fora do prazo de submissao
+NAO_HA_TRABALHOS=Não há trabalhos submetidos em nenhum evento
+SESSAO_EXPIRADA=Desculpe, sua sessão expirou
+>>>>>>> refs/heads/master
