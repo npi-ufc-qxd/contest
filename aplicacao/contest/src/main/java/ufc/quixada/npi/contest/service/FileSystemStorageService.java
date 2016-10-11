@@ -40,11 +40,15 @@ public class FileSystemStorageService implements StorageService{
 	@Override
 	public void store(MultipartFile file, Long idAutor) {
 		 try {
-			 	String caminho = Constants.CAMINHO_TRABALHOS;
+			 	String caminho = Constants.CAMINHO_TRABALHOS + "/" + idAutor;
+	            File diretorio = new File(caminho);
+	            if(!diretorio.exists()) diretorio.mkdir();
+			 	
 	            if (file.isEmpty()) {
 	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
-	            Files.copy(file.getInputStream(), Paths.get(caminho, idAutor + file.getOriginalFilename()));
+	            
+	            Files.copy(file.getInputStream(), Paths.get(caminho, file.getOriginalFilename()));
 	        } catch (IOException e) {
 	        }
 	}

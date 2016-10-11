@@ -226,7 +226,6 @@ public class AutorController {
 		}else{
 			if(validarArquivo(file)){
 				Date dataDeEnvio = new Date(System.currentTimeMillis());
-				submissao.setTrabalho(trabalho);
 				submissao.setDataSubmissao(dataDeEnvio);
 				if(evento.getPrazoSubmissaoInicial().before(dataDeEnvio) &&
 				   evento.getPrazoRevisaoInicial().after(dataDeEnvio)){
@@ -361,6 +360,12 @@ public class AutorController {
 	public String adicionarTrabalho(Trabalho trabalho, Evento evento, Submissao submissao, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);	
 		Long idAutor = trabalho.getParticipacoes().get(0).getPessoa().getId();
+		
+		Pessoa autor = getAutorLogado();
+		String caminhoTrabalho = Constants.CAMINHO_TRABALHOS + "/" + idAutor;
+		trabalho.setPath(caminhoTrabalho + "/" + file.getOriginalFilename());
+		
+		submissao.setTrabalho(trabalho);
 		
 		submissaoService.adicionarOuEditar(submissao);
 		storageService.store(file,idAutor);
