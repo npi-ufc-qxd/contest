@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -41,11 +42,11 @@ public class Pessoa implements UserDetails {
 	@Column(name = "password")
 	private String password;
 
-	@Column(name = "email")
+	@Column(name = "email", unique = true)
 	@NotEmpty
 	private String email;
 
-	@OneToMany(mappedBy = "pessoa")
+	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE})
 	private List<ParticipacaoEvento> participacoesEvento;
 
 	@OneToMany(mappedBy = "pessoa")

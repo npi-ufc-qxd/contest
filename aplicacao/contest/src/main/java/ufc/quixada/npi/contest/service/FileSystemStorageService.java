@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -21,21 +22,18 @@ import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
 
 @Service
 public class FileSystemStorageService implements StorageService{
+	
 	private final Path rootLocation;
+	
+	@Autowired
+	private MessageService messsagemService;
 	
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
     
-    @Autowired
-    private MessageService messsagemService;
-    
-	@Override
-	public void init() {
-		
-	}
-
+   
 	@Override
 	public void store(MultipartFile file, Long idAutor) {
 		 try {
@@ -85,6 +83,12 @@ public class FileSystemStorageService implements StorageService{
 	public void deleteAll() {
 		FileSystemUtils.deleteRecursively(rootLocation.toFile());
 		
+	}
+
+	@Override
+	public File getFile(String path) {
+		File file = new File(path);
+		return file;
 	}
 
 }

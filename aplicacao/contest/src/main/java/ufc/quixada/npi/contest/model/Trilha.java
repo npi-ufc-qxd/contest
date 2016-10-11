@@ -1,5 +1,7 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -23,6 +26,17 @@ public class Trilha {
 	@NotEmpty
 	@Column(name = "nome")
 	private String nome;
+	
+	@OneToMany(mappedBy="trilha", cascade=CascadeType.REMOVE)
+	private List<Trabalho> trabalhos;
+
+	public List<Trabalho> getTrabalhos() {
+		return trabalhos;
+	}
+
+	public void setTrabalhos(List<Trabalho> trabalhos) {
+		this.trabalhos = trabalhos;
+	}
 
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Evento evento;
