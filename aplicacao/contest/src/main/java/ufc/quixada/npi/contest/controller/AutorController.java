@@ -200,6 +200,7 @@ public class AutorController {
                                  @RequestParam("eventoId") String eventoId,  @RequestParam(required = false) String trilhaId, RedirectAttributes redirect){
 		Evento evento;
 		Trilha trilha;
+		Submissao submissao;
 		try{
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
@@ -208,6 +209,9 @@ public class AutorController {
 			trilha = trilhaService.get(idTrilha,idEvento);
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
+			
+			submissao = new Submissao();		
+
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
@@ -224,7 +228,16 @@ public class AutorController {
 				Date dataDeEnvio = new Date(System.currentTimeMillis());
 				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
 				   evento.getPrazoSubmissaoInicial().before(dataDeEnvio)){
-					return adicionarTrabalho(trabalho, eventoId, file, redirect);
+					submissao.setTrabalho(trabalho);
+					submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
+					submissao.setDataSubmissao(dataDeEnvio);
+					return adicionarTrabalho(trabalho, evento, file, redirect);
+				}else if(evento.getPrazoRevisaoFinal().before(dataDeEnvio)){
+					// TODO teste para prazo de submissao final
+							submissao.setTrabalho(trabalho);
+							submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
+							submissao.setDataSubmissao(dataDeEnvio);
+							return adicionarTrabalho(trabalho, evento, file, redirect);
 				}else{
 					redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
 					return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
@@ -250,7 +263,7 @@ public class AutorController {
 					if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
 					   evento.getPrazoSubmissaoInicial().before(dataDeEnvio)){
 						Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-						return adicionarTrabalho(trabalho, eventoId, file, redirect);
+						return adicionarTrabalho(trabalho, evento, file, redirect);
 					}else{
 						redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
 						return "redirect:/autor/meusTrabalhos";
@@ -336,14 +349,20 @@ public class AutorController {
 	}
 	
 	
-	public String adicionarTrabalho(Trabalho trabalho, String eventoId, MultipartFile file, RedirectAttributes redirect) {
+	public String adicionarTrabalho(Trabalho trabalho, Evento evento, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);
 		
 		Submissao submissao = new Submissao();
 		
 		Date data = new Date(System.currentTimeMillis());  
-
+		
 		submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
+		
+		if ((evento.getPrazoRevisaoFinal().before(data))){
+			submissao.setTipoSubmissao(TipoSubmissao.FINAL);
+		}
+
+	
 		submissao.setTrabalho(trabalho);
 		submissao.setDataSubmissao(data);
 		

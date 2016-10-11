@@ -62,6 +62,11 @@ public class Evento {
 	@Column(name = "prazo_revisao_final")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoRevisaoFinal;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "prazo_encerramento")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private Date prazoEncerramento;
 
 	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
 	private List<ParticipacaoEvento> participacoes;
@@ -140,6 +145,14 @@ public class Evento {
 	public void setPrazoRevisaoFinal(Date prazoRevisaoFinal) {
 		this.prazoRevisaoFinal = prazoRevisaoFinal;
 	}
+	
+	public Date getPrazoEncerramento() {
+		return prazoEncerramento;
+	}
+
+	public void setPrazoEncerramento(Date prazoEncerramento) {
+		this.prazoEncerramento = prazoEncerramento;
+	}
 
 	public List<ParticipacaoEvento> getParticipacoes() {
 		return participacoes;
@@ -189,4 +202,5 @@ public class Evento {
 	public void setTrilhas(List<Trilha> trilhas) {
 		this.trilhas = trilhas;
 	}
+
 }
