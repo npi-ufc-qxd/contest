@@ -27,7 +27,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/autor/**").hasRole("DISCENTE")
 				.antMatchers("/evento/**").hasRole("ADMIN")
 				.antMatchers("/eventoOrganizador/**").hasAnyRole("DOCENTE", "STA")
-				.antMatchers("/revisor/**").hasRole("DOCENTE")	
+				.antMatchers("/revisor/**").hasRole("DOCENTE")
 				.anyRequest()
 				.fullyAuthenticated()
 			.and()
@@ -44,9 +44,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logoutSuccessUrl("/login")
 				.logoutUrl("/logout")
 				.invalidateHttpSession(true)
-				.permitAll()
-			.and()
-				.exceptionHandling().accessDeniedPage("/403");
+				.permitAll();
 	}
 
 	@Override

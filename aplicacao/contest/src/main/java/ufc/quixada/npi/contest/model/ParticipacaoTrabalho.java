@@ -26,7 +26,7 @@ public class ParticipacaoTrabalho {
 	@NotNull
 	private Papel papel;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Pessoa pessoa;
 	
 	@ManyToOne
