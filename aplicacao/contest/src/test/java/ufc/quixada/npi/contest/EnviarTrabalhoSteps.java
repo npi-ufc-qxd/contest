@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import org.mockito.InjectMocks;
@@ -84,7 +84,6 @@ public class EnviarTrabalhoSteps {
 	private Submissao submissao;
 	private Trilha trilha;
 	
-	@SuppressWarnings("deprecation")
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -95,8 +94,14 @@ public class EnviarTrabalhoSteps {
 		trilha = new Trilha();
 		
 		evento.setId(1L);
-		evento.setPrazoSubmissaoFinal(new Date("30/09/2016"));
-		evento.setPrazoSubmissaoInicial(new Date("01/09/2016"));
+		Calendar data1 = Calendar.getInstance();
+		data1.set(2016, Calendar.SEPTEMBER, 30);
+		
+		Calendar data2 = Calendar.getInstance();
+		data2.set(2016, Calendar.SEPTEMBER, 1);
+		
+		evento.setPrazoSubmissaoFinal(data1.getTime());
+		evento.setPrazoSubmissaoInicial(data2.getTime());
 		
 		trilha.setId(3L);
 		

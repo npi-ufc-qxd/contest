@@ -1,58 +1,86 @@
 <!DOCTYPE html>
 <html>
   <head>
-   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Constest - Controle de Eventos de Submissão</title>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-		<!-- CSS  -->
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Constest - Controle de Eventos de Submissão</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <!-- CSS-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
-    <div class="container page">
+    <div class="container page"><br/>
       <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
+      <h2 th:text="${nomeEvento}"></h2>
+      
       <div>
-        <div th:if="${naoHaTrabalhos}" id="error_area" class="row chip red white-text" th:text="#{NAO_HA_TRABALHOS}">
+        <div class="row chip red white-text green" id="error_area" th:if="${trabalhoExcluido}">
+          <span class="white-text" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}"></span>
           <i class="material-icons">close</i>
         </div>
-        <div th:if="${eventoVazioError}" id="error_area" class="row chip red white-text" th:text="#{ID_EVENTO_VAZIO_ERROR}">
-          <i class="material-icons">close</i>
-        </div>
-        <div th:if="${erroAoCadastrar}" id="error_area" class="row chip red white-text" th:text="#{ERRO_CADASTRO_TRABALHO}">
-          <i class="material-icons">close</i>
-        </div>
-        <div th:if="${sucessoEnviarTrabalho}" id="success_area" class="row chip green white-text" th:text="#{TRABALHO_ENVIADO}">
-          <i class="material-icons">close</i>
-        </div>
-        <div th:if="${erroExcluir}" id="success_area" class="row chip green white-text" th:text="#{ERRO_EXCLUIR_TRABALHO}">
+        
+        <br/>
+        
+        <div class="row chip red white-text green" id="error_area" th:if="${erroExcluir}">
+          <span class="white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}"></span>
           <i class="material-icons">close</i>
         </div>
       </div>
-      <div class="col s12" th:if="${not #lists.isEmpty(eventos)}">
+      
+      
+      <div class="col s12">
         
-        <div class="col s12 m7" th:each="evento,iter : ${eventos}">
-          <div class="card horizontal">
-            <div class="card-stacked">
-              <div class="card-content">
-                <h5 th:text="${evento.nome}"></h5>
-                <p th:text="${evento.descricao}"></p>
-                <p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
-                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
-                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
-               	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
-                </div>
-                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'TEM_REVISAO'">
-                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Trabalho</a>
-               	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
-                  <a href="#" class="waves-effect waves-light btn blue">Ver Revisao</a>
+        <div th:if="${not #lists.isEmpty(listaTrabalhos)}" class="col s4">
+          <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal small">
+        	<div class="card-stacked">
+        	  
+        	  <div class="card-content"><span class="card-title" th:text="${trabalho.titulo}"></span>
+                <p>Nome do Orientador</p>
+                <p>Email do Orientador</p>
+                <p>Trilha do Evento</p>
+                <p>Data de envio</p>
+              </div>
+              <div class="card-action">
+                <div class="row">
+                  <div class="file-field input-field col m6 s6">
+                    <div class="btn right"><span>Escolher...</span>
+                      <input type="file" class="multiple"/>
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
+                    </div>
+                  </div>
+                  <div class="input-field col m6 s6">
+                    <a th:attr="href='#modal' + ${trabalho.id}" class="btn right white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
+                    <a href="#modal" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Reenviar</a>
+                  </div>
                 </div>
               </div>
-            </div>
+        	  
+        	</div>
+        	
+        	      	
+        	<div th:attr="id='modal' + ${trabalho.id}" class="modal">
+			  <div class="modal-content">
+				<h4>Excluir Trabalho</h4>
+				<h5 th:text="${trabalho.evento.nome}"></h5>
+				<p>Você está excluindo o trabalho deste evento</p>
+			  </div>
+			  <form th:action="@{/autor/excluirTrabalho}" method="post">
+				
+				<div class="modal-footer">
+				    <input type="hidden" name="trabalhoId" th:value="${trabalho.id}"/>
+					<input type="hidden" name="eventoId" th:value="${eventoId}"/>
+					<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button><a
+					href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+				</div>
+			  </form>
+		    </div>
+        	
           </div>
         </div>
         
@@ -65,8 +93,19 @@
                 <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
               </ul>
             </div>
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <h4>Reenviar Trabalho</h4>
+          <h5>"Nome do trabalho".</h5>
+          <p>Tem certeza que quer participar reenviar este trabalho?</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a>
+          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+        </div>
+      </div>
     </div>
-   	<div th:include="fragments/footer :: footer"></div>
+    <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript">
       $(document).ready(function(){
         //Inicialização dos elementos no JS

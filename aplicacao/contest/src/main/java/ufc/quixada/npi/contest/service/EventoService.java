@@ -51,7 +51,7 @@ public class EventoService {
 	}
 
 	public Boolean existeEvento(Long id){
-		if(id.toString().isEmpty() || id == null){
+		if(id == null || id.toString().isEmpty()){
 			return false;
 		}else{
 			return eventoRepository.exists(id);

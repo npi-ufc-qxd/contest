@@ -49,5 +49,8 @@ public class TrilhaService {
 		int qtdTrilhas = trilhaRepository.findAllByEventoId(eventoId).size();
 		return qtdTrilhas;
 	}
+	public boolean existeTrilha(Long id){
+		return trilhaRepository.exists(id);
+	}
 	
 }

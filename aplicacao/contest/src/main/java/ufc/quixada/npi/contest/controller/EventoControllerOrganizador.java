@@ -32,7 +32,6 @@ import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
-import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
@@ -176,8 +175,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+			return "redirect:/eventoOrganizador/evento" + id;
 		}
-		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 	}
 	
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
@@ -213,8 +212,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if (eventoService.existeEvento(id)) {
 			trilha.setEvento(eventoService.buscarEventoPorId(id));
 			trilhaService.adicionarOuAtualizarTrilha(trilha);
-			model.addAttribute("evento", trilha.getEvento());
-			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			redirect.addFlashAttribute("trilhaAdd", messageService.getMessage("TRILHA_ADD_COM_SUCESSO"));
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
 		}else{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
@@ -226,20 +225,20 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		long idEvento = Long.parseLong(eventoId);
 		model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
 		if (trilha.getNome().isEmpty()) {
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
+			model.addAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
 		}else{
 			if (eventoService.existeEvento(idEvento)) {
 				if (trilhaService.exists(trilha.getNome(), idEvento)) {
-					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
+					model.addAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
 				}else if (trilhaService.existeTrabalho(trilha.getId()) ) {
-					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
+					model.addAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
 				}else{
 					trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
 					trilhaService.adicionarOuAtualizarTrilha(trilha);
 					model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
 				}
 			}else{
-				redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
+				model.addAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
 			}
 		}
 		return Constants.TEMPLATE_DETALHES_TRILHA_ORG;

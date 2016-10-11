@@ -22,21 +22,18 @@ import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
 
 @Service
 public class FileSystemStorageService implements StorageService{
+	
 	private final Path rootLocation;
+	
+	@Autowired
+	private MessageService messsagemService;
 	
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
     
-    @Autowired
-    private MessageService messsagemService;
-    
-	@Override
-	public void init() {
-		
-	}
-
+   
 	@Override
 	public void store(MultipartFile file, Long idAutor) {
 		 try {
