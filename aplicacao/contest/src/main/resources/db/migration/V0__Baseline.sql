@@ -43,7 +43,6 @@ CREATE TABLE evento (
     nome character varying(255) NOT NULL,
     prazo_revisao date,
     prazo_submissao date,
-    prazo_encerramento date,
     visibilidade character varying(255)
 );
 

@@ -226,18 +226,16 @@ public class AutorController {
 		}else{
 			if(validarArquivo(file)){
 				Date dataDeEnvio = new Date(System.currentTimeMillis());
-				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
-				   evento.getPrazoSubmissaoInicial().before(dataDeEnvio)){
-					submissao.setTrabalho(trabalho);
+				submissao.setTrabalho(trabalho);
+				submissao.setDataSubmissao(dataDeEnvio);
+				if(evento.getPrazoSubmissaoInicial().before(dataDeEnvio) &&
+				   evento.getPrazoRevisaoInicial().after(dataDeEnvio)){
 					submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
-					submissao.setDataSubmissao(dataDeEnvio);
-					return adicionarTrabalho(trabalho, evento, file, redirect);
-				}else if(evento.getPrazoRevisaoFinal().before(dataDeEnvio)){
-					// TODO teste para prazo de submissao final
-							submissao.setTrabalho(trabalho);
-							submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
-							submissao.setDataSubmissao(dataDeEnvio);
-							return adicionarTrabalho(trabalho, evento, file, redirect);
+					return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
+				}else if(evento.getPrazoRevisaoFinal().before(dataDeEnvio) &&
+						evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+					submissao.setTipoSubmissao(TipoSubmissao.FINAL);
+					return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 				}else{
 					redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
 					return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
@@ -254,24 +252,35 @@ public class AutorController {
 		try{
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrabalho = Long.parseLong(trabalhoId);
+			
+			
 			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
 				
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
+				Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+				Submissao submissao = submissaoService.getSubmissaoByTrabalho(trabalho);
 				
 				if(validarArquivo(file)){
 					Date dataDeEnvio = new Date(System.currentTimeMillis());
-					if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
-					   evento.getPrazoSubmissaoInicial().before(dataDeEnvio)){
-						Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-						return adicionarTrabalho(trabalho, evento, file, redirect);
+					submissao.setTrabalho(trabalho);
+					submissao.setDataSubmissao(dataDeEnvio);
+					if(evento.getPrazoSubmissaoInicial().before(dataDeEnvio) &&
+					   evento.getPrazoRevisaoInicial().after(dataDeEnvio)){
+						submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
+						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
+					}else if(evento.getPrazoRevisaoFinal().before(dataDeEnvio) &&
+							evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+						submissao.setTipoSubmissao(TipoSubmissao.FINAL);
+						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 					}else{
 						redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
-						return "redirect:/autor/meusTrabalhos";
+						return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
 					}
 				}else{
 					redirect.addFlashAttribute("erro", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
-					return "redirect:/autor/meusTrabalhos";
+					return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
 				}
+
 			}
 			redirect.addAttribute("erroReenviar", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
@@ -349,23 +358,8 @@ public class AutorController {
 	}
 	
 	
-	public String adicionarTrabalho(Trabalho trabalho, Evento evento, MultipartFile file, RedirectAttributes redirect) {
-		definePapelParticipantes(trabalho);
-		
-		Submissao submissao = new Submissao();
-		
-		Date data = new Date(System.currentTimeMillis());  
-		
-		submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
-		
-		if ((evento.getPrazoRevisaoFinal().before(data))){
-			submissao.setTipoSubmissao(TipoSubmissao.FINAL);
-		}
-
-	
-		submissao.setTrabalho(trabalho);
-		submissao.setDataSubmissao(data);
-		
+	public String adicionarTrabalho(Trabalho trabalho, Evento evento, Submissao submissao, MultipartFile file, RedirectAttributes redirect) {
+		definePapelParticipantes(trabalho);	
 		Long idAutor = trabalho.getParticipacoes().get(0).getPessoa().getId();
 		
 		submissaoService.adicionarOuEditar(submissao);

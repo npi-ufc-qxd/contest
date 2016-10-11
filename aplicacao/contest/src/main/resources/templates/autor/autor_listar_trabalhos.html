@@ -46,7 +46,7 @@
                 <p th:text="'Data de envio: ' + ${trabalho.submissoes.get(0).dataSubmissao}"></p> 
               </div>
               
-           	<form th:action="@{/autor/reenviarTrabalho}" method="POST">
+           	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
 	              <div class="card-action">
 	                <div class="row">
 	                  <div class="file-field input-field col m6 s6">
