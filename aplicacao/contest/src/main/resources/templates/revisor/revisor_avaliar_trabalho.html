@@ -32,6 +32,10 @@
           <span th:text="${criterioRevisaoVazioError}"></span><i class="material-icons">close</i></div>
         </div>
         <div>
+          <div id="error_area" class="row chip red white-text" th:if="${trabalhoNaoExisteError}">
+          <span th:text="${trabalhoNaoExisteError}"></span><i class="material-icons">close</i></div>
+        </div>
+        <div>
           <div class="col s12 card">
             <div class="card-content"><span class="card-title" th:text="${trabalho.titulo}">Titulo do trabalho</span>
               <p>Autores: </p>

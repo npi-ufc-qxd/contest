@@ -1,10 +1,8 @@
 package ufc.quixada.npi.contest.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Vector;
 
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -80,8 +77,8 @@ public class RevisorController {
 	private static final String TRABALHO_NAO_EXISTE = "TRABALHO_NAO_EXISTE";
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
 	
-	static Evento evento;
-	static Trabalho trabalho;
+	private static Evento evento;
+	private static Trabalho trabalho;
 	
 	@RequestMapping
 	public String index(Model model){
@@ -113,23 +110,7 @@ public class RevisorController {
 		return REVISOR_TRABALHOS_REVISAO;
 	}
 	
-	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
-    @ResponseBody
-	public void baixarTrabalho(
-        @PathVariable("trabalhoID") String idTrabalho, 
-        HttpServletResponse response) throws IOException {
-            Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-            String titulo = trabalho.getTitulo();
-            titulo = titulo.replaceAll("\\s", "_");
-            if(trabalho == null) return;
-            String src = trabalho.getPath();
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename = " + titulo + ".pdf"); 
-            System.out.println(titulo);
-            InputStream is = new FileInputStream(src);
-            IOUtils.copy(is, response.getOutputStream());
-            response.flushBuffer();
-    }
+	
 	
 	@RequestMapping(value="/{idEvento}/{idTrabalho}/revisar", method=RequestMethod.GET)
 	public String revisarTrabalho(Model model, @PathVariable("idTrabalho") Long idTrabalho,
@@ -151,6 +132,7 @@ public class RevisorController {
 			
 		RevisorController.evento = evento;
 		RevisorController.trabalho = trabalho;
+		
 		model.addAttribute("nomeEvento", evento.getNome());
 		model.addAttribute("trabalho", trabalho);
 		model.addAttribute("autores", getAutoresDoTrabalho(trabalho));
@@ -204,6 +186,33 @@ public class RevisorController {
 			redirect.addFlashAttribute("trabalhoRevisado", messageService.getMessage(TRABALHO_REVISADO));
 			return "redirect:/revisor/"+eventoId+"/trabalhosRevisao";
 	}
+	
+	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
+    @ResponseBody
+	public String baixarTrabalho(
+        @PathVariable("trabalhoID") String idTrabalho, 
+        HttpServletResponse response, RedirectAttributes redirect) throws IOException {
+            Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
+            Long eventoId = RevisorController.evento.getId();
+            Long trabalhoId = RevisorController.trabalho.getId();
+            
+            if(trabalho != null) {
+            	String titulo = trabalho.getTitulo();
+                titulo = titulo.replaceAll("\\s", "_");
+	            String src = trabalho.getPath();
+	            response.setContentType("application/pdf");
+	            response.setHeader("Content-Disposition", "attachment; filename = " + titulo + ".pdf"); 
+	            System.out.println(titulo);
+	            InputStream is = new FileInputStream(src);
+	            IOUtils.copy(is, response.getOutputStream());
+	            response.flushBuffer();
+	            
+	            return "redirect:/revisor/"+eventoId+"/"+trabalhoId+"/revisar";
+            }
+        
+            redirect.addFlashAttribute("trabalhoNaoExisteError", messageService.getMessage(TRABALHO_NAO_EXISTE));
+            return "redirect:/revisor/"+eventoId+"/"+trabalhoId+"/revisar";
+    }
 	
 	@RequestMapping(value = "/participarevento", method = RequestMethod.POST)
 	public String professorParticipa(@RequestParam String idEvento, Model model, RedirectAttributes redirect) {
