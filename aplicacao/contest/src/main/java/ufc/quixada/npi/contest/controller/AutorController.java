@@ -291,10 +291,10 @@ public class AutorController {
 		String cpf = auth.getName();		
 		return pessoaService.getByCpf(cpf);
 	}
+	
 	public boolean validarArquivo(MultipartFile file){
 		return file.getOriginalFilename().endsWith(EXTENSAO_PDF);
 	}
-	
 	
 	public String adicionarTrabalho(Trabalho trabalho, String eventoId, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);

@@ -261,19 +261,22 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@RequestMapping(value = "/addOrganizadores", method = RequestMethod.POST)
 	public String addOrganizadores(@RequestParam(required = false) String idOrganizadores, @RequestParam String idEvento, Model model){
-		String ids[] = idOrganizadores.split(Pattern.quote(","));
-		List<Pessoa> organizadores = new ArrayList<>();
-		for(String id : ids){
-			organizadores.add(pessoaService.get(Long.parseLong(id)));
-		}
-		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
-		ParticipacaoEvento participacao = new ParticipacaoEvento();
-		
-		for(Pessoa p : organizadores){
-			participacao.setEvento(evento);
-			participacao.setPessoa(p);
-			participacao.setPapel(Papel.ORGANIZADOR);
-			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
+		if(idOrganizadores != null){
+			String ids[] = idOrganizadores.split(Pattern.quote(","));
+			List<Pessoa> organizadores = new ArrayList<>();
+			for(String id : ids){
+				organizadores.add(pessoaService.get(Long.parseLong(id)));
+			}
+			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
+			ParticipacaoEvento participacao = new ParticipacaoEvento();
+			
+			for(Pessoa p : organizadores){
+				participacao.setEvento(evento);
+				participacao.setPessoa(p);
+				participacao.setPapel(Papel.ORGANIZADOR);
+				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
+			}
+			return "redirect:/eventoOrganizador/evento/"+idEvento;
 		}
 		return "redirect:/eventoOrganizador/evento/"+idEvento;
 	}
