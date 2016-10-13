@@ -25,6 +25,7 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrilhaService;
+import ufc.quixada.npi.contest.util.Constants;
 
 public class CadastrarTrilhasSteps {
 
@@ -48,8 +49,7 @@ public class CadastrarTrilhasSteps {
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
-	private Trilha trilha; 
-
+	private Trilha trilha;
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -57,6 +57,7 @@ public class CadastrarTrilhasSteps {
 		pessoaService.toString(); //Para evitar do codacy reclamar
 		trilha = new Trilha();
 		trilha.setId(3L);
+		trilha.setEvento(evento);
 	}
 
 	@Dado("que o organizador criou um evento (.*) e (.*)")
@@ -72,8 +73,9 @@ public class CadastrarTrilhasSteps {
 	public void cadastraSubmissao(String nomeTrilha) throws Throwable {
 		trilha.setNome(nomeTrilha);
 		
+		when(trilhaService.exists(trilha.getNome(), evento.getId())).thenReturn(false);
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
-		when(trilhaService.exists(trilha.getNome(),evento.getId())).thenReturn(false);
+		
 		action = mockMvc
 				.perform(post("/eventoOrganizador/trilhas")
 					.param("eventoId", evento.getId().toString())
