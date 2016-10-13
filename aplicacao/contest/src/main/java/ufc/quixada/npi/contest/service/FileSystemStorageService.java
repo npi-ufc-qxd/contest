@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.service;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,14 +36,25 @@ public class FileSystemStorageService implements StorageService{
     
    
 	@Override
-	public void store(MultipartFile file, Long idAutor) {
+	public void store(MultipartFile arquivoUpload, String filepath) {
 		 try {
 			 	String caminho = Constants.CAMINHO_TRABALHOS;
-	            if (file.isEmpty()) {
+	            if (arquivoUpload.isEmpty()) {
 	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
-	            Files.copy(file.getInputStream(), Paths.get(caminho, idAutor + file.getOriginalFilename()));
+	            String pastaDeDestino = new StringBuilder(caminho)
+	            		.append(filepath.substring(0, filepath.lastIndexOf('.'))).append("/").toString();
+	            
+	            File pasta = new File(pastaDeDestino);
+	            if(!pasta.exists()){
+	            	if(!pasta.mkdirs()){
+	            		throw new RuntimeException("Não foi possível criar pasta de destino");
+	            	};	            	
+	            }
+	            String string = pastaDeDestino+filepath;
+				Files.copy(arquivoUpload.getInputStream(), Paths.get(string));
 	        } catch (IOException e) {
+	        	e.printStackTrace();
 	        }
 	}
 
