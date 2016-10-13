@@ -46,16 +46,14 @@ public class FileSystemStorageService implements StorageService{
 	            
 	            File pasta = new File(pastaDeDestino);
 	            if(!pasta.exists()){
-	            	try{
-	            		pasta.mkdirs();
-	            	} catch(Exception e){
-	            		throw new RuntimeException(e);
+	            	if(!pasta.mkdirs()){
+	            		throw new RuntimeException("Não foi possível criar pasta de destino");
 	            	}	            	
 	            }
 	            String string = pastaDeDestino+filepath;
 				Files.copy(arquivoUpload.getInputStream(), Paths.get(string));
 	        } catch (IOException e) {
-	        	e.printStackTrace();
+	        	throw new RuntimeException(e) ;
 	        }
 	}
 
