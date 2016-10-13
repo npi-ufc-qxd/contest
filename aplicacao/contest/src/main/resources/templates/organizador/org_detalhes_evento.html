@@ -8,7 +8,8 @@
     <!-- CSS-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+	<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -19,6 +20,24 @@
         	<span class="card-title" th:text="${evento.nome}" ></span>
         </h2>
         <p th:text="${evento.descricao}"></p>
+       	<form th:action="@{/eventoOrganizador/addOrganizadores}"  method="post">
+       	  <div class="input-field col s10">
+       	    <input type="hidden" th:value="${evento.id}" name="idEvento"/>
+		    <select multiple="multiple" name="idOrganizadores">
+		      <option value="" disabled="disabled" selected="selected">Selecione os Organizadores</option>
+		      <div th:each="pessoa : ${pessoas}">
+		        <option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
+                <option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" ></option>   
+		      </div>
+		    </select>
+            <label>organizadores</label>
+          </div>
+          <div class="col s2">
+			<button class="btn waves-effect waves-light" type="submit" name="action">Add
+			  <i class="material-icons right"></i>
+			</button>
+          </div>
+       	</form>
         <div>
           <div class="col s12">
             <div class="card horizontal">
@@ -85,6 +104,13 @@
       </div>
     </div>
 	<div th:include="fragments/footer :: footer"></div>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+    	$('select').material_select();
+
+      //Inicialização do Modal excluir Evento
+      $('.modal-trigger').leanModal();
+    });
+  </script>
   </body>
 </html>

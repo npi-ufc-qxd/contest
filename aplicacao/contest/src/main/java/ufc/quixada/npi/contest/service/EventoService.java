@@ -78,4 +78,8 @@ public class EventoService {
 		return eventoRepository.findEventosDoAutor(idRevisor);
 	}
 	
+	public List<Evento> getEventosByEstado(EstadoEvento estado){
+		return eventoRepository.findEventoByEstado(estado);
+	}
+	
 }
