@@ -6,7 +6,7 @@
 	<groupId>ufc.quixada.npi</groupId>
 	<artifactId>contest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>contest</name>
 	<description>Sistema de controle de eventos de submissão</description>
@@ -36,7 +36,7 @@
 		<jquery.version>2.2.4</jquery.version>
 
 		<!-- LDAP -->
-		<npi.ldap.version>0.1.2</npi.ldap.version>
+		<npi.ldap.version>0.3</npi.ldap.version>
 	</properties>
 
 	<repositories>
