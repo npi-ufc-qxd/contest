@@ -1,6 +1,8 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
@@ -78,21 +80,25 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
-		model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId) );
+		List<Pessoa> pessoas = pessoaService.getPossiveisOrganizadoresDoEvento(eventoId);
+		model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
+		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 
 	@RequestMapping(value = {"/ativos",""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
+		Pessoa p = getOrganizadorLogado();
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO,p.getId());
 		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
+		Pessoa p = getOrganizadorLogado();
+		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.INATIVO,p.getId());
 		model.addAttribute(EVENTOS_INATIVOS, listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
@@ -174,8 +180,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+			return "redirect:/eventoOrganizador/evento" + id;
 		}
-		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 	}
 	
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
@@ -208,11 +214,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if (eventoService.existeEvento(id)) {
 			trilha.setEvento(eventoService.buscarEventoPorId(id));
 			trilhaService.adicionarOuAtualizarTrilha(trilha);
-			model.addAttribute("evento", trilha.getEvento());
-			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			redirect.addFlashAttribute("trilhaAdd", messageService.getMessage("TRILHA_ADD_COM_SUCESSO"));
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
 		}else{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
-			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
 		}
 	}
 	
@@ -221,20 +227,20 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		long idEvento = Long.parseLong(eventoId);
 		model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
 		if (trilha.getNome().isEmpty()) {
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
+			model.addAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
 		}else{
 			if (eventoService.existeEvento(idEvento)) {
 				if (trilhaService.exists(trilha.getNome(), idEvento)) {
-					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
+					model.addAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
 				}else if (trilhaService.existeTrabalho(trilha.getId()) ) {
-					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
+					model.addAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
 				}else{
 					trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
 					trilhaService.adicionarOuAtualizarTrilha(trilha);
 					model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
 				}
 			}else{
-				redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
+				model.addAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
 			}
 		}
 		return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
@@ -251,6 +257,28 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 		redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_VAZIO_OU_TEM_TRABALHO"));
 		return "redirect:/eventoOrganizador/trilhas/"+ eventoId;
+	}
+	
+	@RequestMapping(value = "/addOrganizadores", method = RequestMethod.POST)
+	public String addOrganizadores(@RequestParam(required = false) String idOrganizadores, @RequestParam String idEvento, Model model){
+		if(idOrganizadores != null){
+			String ids[] = idOrganizadores.split(Pattern.quote(","));
+			List<Pessoa> organizadores = new ArrayList<>();
+			for(String id : ids){
+				organizadores.add(pessoaService.get(Long.parseLong(id)));
+			}
+			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
+			ParticipacaoEvento participacao = new ParticipacaoEvento();
+			
+			for(Pessoa p : organizadores){
+				participacao.setEvento(evento);
+				participacao.setPessoa(p);
+				participacao.setPapel(Papel.ORGANIZADOR);
+				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
+			}
+			return "redirect:/eventoOrganizador/evento/"+idEvento;
+		}
+		return "redirect:/eventoOrganizador/evento/"+idEvento;
 	}
 	
 	public Pessoa getOrganizadorLogado() {

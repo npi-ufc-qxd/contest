@@ -51,7 +51,7 @@ public class EventoService {
 	}
 
 	public Boolean existeEvento(Long id){
-		if(id.toString().isEmpty() || id == null){
+		if(id == null || id.toString().isEmpty()){
 			return false;
 		}else{
 			return eventoRepository.exists(id);
@@ -76,6 +76,10 @@ public class EventoService {
 	
 	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor){
 		return eventoRepository.findEventosDoAutor(idRevisor);
+	}
+	
+	public List<Evento> getEventosByEstado(EstadoEvento estado){
+		return eventoRepository.findEventoByEstado(estado);
 	}
 	
 }

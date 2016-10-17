@@ -46,6 +46,7 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String EXTENSAO_PDF = ".pdf";
 	private static final String FORA_DO_PRAZO_SUBMISSAO = "FORA_DO_PRAZO_SUBMISSAO";
 	private static final String ERRO_EXCLUIR_TRABALHO = "ERRO_EXCLUIR_TRABALHO";
 	private static final String TRABALHO_EXCLUIDO_COM_SUCESSO = "TRABALHO_EXCLUIDO_COM_SUCESSO";
@@ -252,12 +253,12 @@ public class AutorController {
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrabalho = Long.parseLong(trabalhoId);
 			
-			
 			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
 				
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
 				Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 				Submissao submissao = submissaoService.getSubmissaoByTrabalho(trabalho);
+				Pessoa autor = getAutorLogado();
 				
 				if(validarArquivo(file)){
 					Date dataDeEnvio = new Date(System.currentTimeMillis());
@@ -273,19 +274,19 @@ public class AutorController {
 						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 					}else{
 						redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
-						return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
+						return "redirect:/autor/listarTrabalhos/" + idEvento;
 					}
 				}else{
-					redirect.addFlashAttribute("erro", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
-					return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
+					redirect.addFlashAttribute("arquivoInvalido", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
+					return "redirect:/autor/listarTrabalhos/" + idEvento;
 				}
 
 			}
 			redirect.addAttribute("erroReenviar", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
-			return "redirect:/autor/meusTrabalhos";
+			return "redirect:/autor/meusTrabalhos/";
 		}catch(NumberFormatException e){
 			redirect.addAttribute("erroReenviar", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
-			return "redirect:/autor/meusTrabalhos";
+			return "redirect:/autor/meusTrabalhos/";
 		}
 	}
 	
@@ -341,35 +342,24 @@ public class AutorController {
 	
 	public Pessoa getAutorLogado(){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String cpf = auth.getName();
-		Pessoa autorLogado = pessoaService.getByCpf(cpf);
-		return autorLogado;
-	}
-	public boolean validarArquivo(MultipartFile file){
-		String fileExtentions = ".pdf";
-		String fileName = file.getOriginalFilename();
-		int lastIndex = fileName.lastIndexOf('.');
-		String substring = fileName.substring(lastIndex, fileName.length());
-		if(fileExtentions.contains(substring)){
-			return true;
-		}
-		return false;
+		String cpf = auth.getName();		
+		return pessoaService.getByCpf(cpf);
 	}
 	
+	public boolean validarArquivo(MultipartFile file){
+		return file.getOriginalFilename().endsWith(EXTENSAO_PDF) && !file.isEmpty();
+	}
 	
 	public String adicionarTrabalho(Trabalho trabalho, Evento evento, Submissao submissao, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);	
-		Long idAutor = trabalho.getParticipacoes().get(0).getPessoa().getId();
-		
-		Pessoa autor = getAutorLogado();
-		String caminhoTrabalho = Constants.CAMINHO_TRABALHOS + "/" + idAutor;
-		trabalho.setPath(caminhoTrabalho + "/" + file.getOriginalFilename());
-		
 		submissao.setTrabalho(trabalho);
-		
+
 		submissaoService.adicionarOuEditar(submissao);
-		storageService.store(file,idAutor);
-		
+		String path = new StringBuilder().append("CONT-").append(trabalho.getId()).append(".pdf").toString();		
+		storageService.store(file, path);
+
+		trabalho.setPath(path);
+
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";
 	}

@@ -18,20 +18,23 @@
       <h2 th:text="'Evento:' + ${nomeEvento}"></h2>
       
       <div>
-        <div class="row chip red white-text green" id="error_area" th:if="${trabalhoExcluido}">
-          <span class="white-text" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}"></span>
+		<div th:if="${trabalhoExcluido}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}">
           <i class="material-icons">close</i>
         </div>
         
-        <br/>
+        <div th:if="${sucessoEnviarTrabalho}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_ENVIADO}">
+          <i class="material-icons">close</i>
+        </div>
         
-        <div class="row chip red white-text green" id="error_area" th:if="${erroExcluir}">
-          <span class="white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}"></span>
+        <div th:if="${foraDoPrazoDeSubmissao}" id="error_area" class="row chip red white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}">
+	          <i class="material-icons">close</i>
+	    </div>
+        
+        <div th:if="${arquivoInvalido}" id="error_area" class="row chip red white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}">
           <i class="material-icons">close</i>
         </div>
       </div>
       
-      <!-- Falta terminar a integração com a interface da submissao final -->
       <div class="col s12">
         
         <div th:if="${not #lists.isEmpty(listaTrabalhos)}" class="col s4">
@@ -43,7 +46,7 @@
                 	<p th:text=" ${participacao.papel} + ': ' + ${participacao.pessoa.nome} + ' | ' + 'Email: ' + ${participacao.pessoa.email}"></p>
                 </div>
                 <p th:text="'Trilha: ' + ${trabalho.trilha.nome}"></p>
-                <p th:text="'Data de envio: ' + ${trabalho.submissoes.get(0).dataSubmissao}"></p> 
+                <p th:text="'Data de envio: ' + ${#dates.format(trabalho.submissoes.get(0).dataSubmissao,'dd/MM/yyyy')} "></p> 
               </div>
               
            	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
@@ -104,7 +107,9 @@
         	
           </div>
         </div>
-        
+        <div th:if="${#lists.isEmpty(listaTrabalhos)}" class="col s4">
+        	<p>Você não enviou trabalhos para esse evento</p>
+        </div>
       </div>
             <div class="row col s12 center">
               <ul class="pagination">

@@ -44,15 +44,15 @@
 
         <div th:case="${true}">
       
-         <div th:each="participacaoEventoInativos : ${eventosInativos}" class="col m6 s12">
+         <div th:each="evento : ${eventosInativos}" class="col m6 s12">
           <div class="card">
-            <div class="card-content"><span class="card-title" th:text="${participacaoEventoInativos.evento.nome}"></span>
-              <p th:text="|Organizador: ${participacaoEventoInativos.pessoa.nome}|"></p>
-              <p th:text="|Visibilidade: ${participacaoEventoInativos.evento.visibilidade.visibilidade}|"></p>
+            <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
+              <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
             </div>
             <div class="card-action">
-              <a th:href="@{'/evento/editar/' + ${participacaoEventoInativos.evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
-              <a id="excluir" th:attr="id_evento=${participacaoEventoInativos.evento.id}, nome_evento=${participacaoEventoInativos.evento.nome}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a>
+              <a th:href="@{'/evento/editar/' + ${evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
+              <a id="excluir" th:attr="id_evento=${evento.id}, nome_evento=${evento.nome}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a>
             </div>
           </div>
          </div>

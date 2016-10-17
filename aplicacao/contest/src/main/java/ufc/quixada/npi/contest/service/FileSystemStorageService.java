@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,34 +23,39 @@ import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
 
 @Service
 public class FileSystemStorageService implements StorageService{
+	
 	private final Path rootLocation;
+	
+	@Autowired
+	private MessageService messsagemService;
 	
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
     
-    @Autowired
-    private MessageService messsagemService;
-    
+   
 	@Override
-	public void init() {
-		
-	}
-
-	@Override
-	public void store(MultipartFile file, Long idAutor) {
+	public void store(MultipartFile arquivoUpload, String filepath) {
 		 try {
-			 	String caminho = Constants.CAMINHO_TRABALHOS + "/" + idAutor;
-	            File diretorio = new File(caminho);
-	            if(!diretorio.exists()) diretorio.mkdir();
-			 	
-	            if (file.isEmpty()) {
+			 	String caminho = Constants.CAMINHO_TRABALHOS;
+	            if (arquivoUpload.isEmpty()) {
 	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
+	            String pastaDeDestino = new StringBuilder(caminho)
+	            		.append(filepath.substring(0, filepath.lastIndexOf('.'))).append("/").toString();
 	            
-	            Files.copy(file.getInputStream(), Paths.get(caminho, file.getOriginalFilename()));
+	            File pasta = new File(pastaDeDestino);
+	            if(!pasta.exists()){
+	            	if(!pasta.mkdirs()){
+	            		throw new RuntimeException("Não foi possível criar pasta de destino");
+	            	}          	
+	            }
+       
+	            String string = pastaDeDestino+filepath;
+				Files.copy(arquivoUpload.getInputStream(), Paths.get(string), REPLACE_EXISTING);
 	        } catch (IOException e) {
+	        	throw new RuntimeException(e);
 	        }
 	}
 
