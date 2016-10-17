@@ -70,7 +70,7 @@ public class ExcluirEventoSteps extends Mockito {
 	@Quando("^ele selecionar a lista de eventos (.*)$")
 	public void administradorVaiParaPaginaDeEventosInativos(String estado) throws Throwable {
 		listaParticipacaoEvento = new ArrayList<>();
-		when(participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.valueOf(estado)))
+		when(participacaoEventoService.getEventosDoOrganizador(EstadoEvento.valueOf(estado),1L))
 				.thenReturn(listaParticipacaoEvento);
 
 		if (estado.equals(EstadoEvento.INATIVO.toString())) {

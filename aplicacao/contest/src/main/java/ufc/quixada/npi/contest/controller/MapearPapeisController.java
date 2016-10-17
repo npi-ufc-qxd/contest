@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.PessoaService;
 
@@ -22,17 +21,24 @@ public class MapearPapeisController {
 	@RequestMapping(value = {""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getAutorLogado();
-
-		if(p.getPapelLdap().equals(PapelLdap.Tipo.ADMIN)){
+		
+		switch (p.getPapelLdap()) {
+		case ADMIN:
+			
 			return "redirect:/evento";
-		}else if(p.getPapelLdap().equals(PapelLdap.Tipo.STA)){
+		case STA:
+			
 			return "redirect:/eventoOrganizador";
-		}else if(p.getPapelLdap().equals(PapelLdap.Tipo.DISCENTE)){
+		case DISCENTE:
+			
 			return "redirect:/autor";
-		}else if(p.getPapelLdap().equals(PapelLdap.Tipo.DOCENTE)){
-			return "redirect:/eventoOrganizador";
+        case DOCENTE:
+			
+        	return "redirect:/eventoOrganizador";
+		default:
+			
+			return "redirect:/login";
 		}
-		return "redirect:/login";
 	}
 	
 	public Pessoa getAutorLogado(){

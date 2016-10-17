@@ -39,4 +39,5 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 			"ORDER BY e.id")
 	public List<Evento> findEventosDoRevisor(@Param("idRevisor") Long idRevisor);
 	
+	public List<Evento> findEventoByEstado(EstadoEvento estadoEvento);
 }

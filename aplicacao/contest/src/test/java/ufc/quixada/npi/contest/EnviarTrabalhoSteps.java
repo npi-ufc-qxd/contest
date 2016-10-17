@@ -8,10 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.mockito.InjectMocks;
@@ -52,12 +51,12 @@ public class EnviarTrabalhoSteps {
 	private static final String TRILHA_ID = "trilhaId";
 	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID = "/autor/enviarTrabalhoForm/{id}";
-	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/lucas.vieira/Downloads/certificado.pdf";
-	private static final String CAMINHO_ARQUIVO_INVALIDO = "/home/lucas.vieira/Downloads/pgadmin.log";
 	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM = "/autor/enviarTrabalhoForm";
 	private static final String TITULO = "titulo";
 	private static final String EVENTO_ID = "eventoId";
 	private static final String TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM = "autor/autor_enviar_trabalho_form";
+	private static final byte[] CONTEUDO = "Ola Mundo".getBytes();
+	
 	@InjectMocks
 	private AutorController autorController;
 	@Mock
@@ -94,14 +93,17 @@ public class EnviarTrabalhoSteps {
 		trilha = new Trilha();
 		
 		evento.setId(1L);
-		Calendar data1 = Calendar.getInstance();
-		data1.set(2016, Calendar.SEPTEMBER, 30);
+		Calendar dataInicialSubmissao = Calendar.getInstance();
+		dataInicialSubmissao.set(2016, Calendar.SEPTEMBER, 30);
 		
-		Calendar data2 = Calendar.getInstance();
-		data2.set(2016, Calendar.SEPTEMBER, 1);
+		Calendar dataFinalSubmissao = Calendar.getInstance();
+		dataFinalSubmissao.set(2017, Calendar.SEPTEMBER, 1);
 		
-		evento.setPrazoSubmissaoFinal(data1.getTime());
-		evento.setPrazoSubmissaoInicial(data2.getTime());
+		Date dataInicial = dataInicialSubmissao.getTime();
+		Date dataFinal = dataFinalSubmissao.getTime();
+		evento.setPrazoSubmissaoInicial(dataInicial);
+		evento.setPrazoSubmissaoFinal(dataFinal);
+		
 		
 		trilha.setId(3L);
 		
@@ -122,8 +124,7 @@ public class EnviarTrabalhoSteps {
 		
 		SecurityContextHolder.setContext(context);
 		action = mockMvc.perform(
-				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"))
-				.andExpect(view().name(TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM));
+				get(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID, "1"));
 	}
 	
 	@Quando("^ele preenche os campos corretamente e escolhe um arquivo .pdf$")
@@ -135,8 +136,7 @@ public class EnviarTrabalhoSteps {
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
 		
 		
-		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
-		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
 
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
                         .file(multipartFile)
@@ -156,8 +156,7 @@ public class EnviarTrabalhoSteps {
 	public void campoTituloNaoPreenchido() throws Exception{
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		
-		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
-		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
 
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
                         .file(multipartFile)
@@ -177,8 +176,7 @@ public class EnviarTrabalhoSteps {
 	public void camposNomeEEmailDoOrientadorEmBranco() throws Exception{
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		
-		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
-		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
 
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
                         .file(multipartFile)
@@ -210,8 +208,7 @@ public class EnviarTrabalhoSteps {
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
 		
 		
-		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_INVALIDO));
-		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "pgadmin.log","multipart/form-data",fi2);
+		MockMultipartFile  multipartFile = new MockMultipartFile("file", "pgadmin.log","text/plain",CONTEUDO);
 
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
                         .file(multipartFile)
@@ -233,8 +230,7 @@ public class EnviarTrabalhoSteps {
 	public void eventoInexistente() throws Exception{
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(null);
 		
-		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
-		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
 
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
                         .file(multipartFile)
