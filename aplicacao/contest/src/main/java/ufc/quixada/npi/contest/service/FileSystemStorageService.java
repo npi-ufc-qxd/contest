@@ -16,6 +16,7 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import ufc.quixada.npi.contest.model.StorageProperties;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.StorageException;
 import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
@@ -28,6 +29,9 @@ public class FileSystemStorageService implements StorageService{
 	@Autowired
 	private MessageService messsagemService;
 	
+	@Autowired
+	private TrabalhoService trabalhoService;
+	
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
@@ -35,7 +39,7 @@ public class FileSystemStorageService implements StorageService{
     
    
 	@Override
-	public void store(MultipartFile arquivoUpload, String filepath) {
+	public void store(MultipartFile arquivoUpload, String filepath, Trabalho trabalho) {
 		 try {
 			 	String caminho = Constants.CAMINHO_TRABALHOS;
 	            if (arquivoUpload.isEmpty()) {
@@ -50,7 +54,10 @@ public class FileSystemStorageService implements StorageService{
 	            		throw new RuntimeException("Não foi possível criar pasta de destino");
 	            	}	            	
 	            }
+	            
 	            String string = pastaDeDestino+filepath;
+	            trabalho.setPath(string);
+	            trabalhoService.adicionarTrabalho(trabalho);
 				Files.copy(arquivoUpload.getInputStream(), Paths.get(string));
 	        } catch (IOException e) {
 	        	throw new RuntimeException(e) ;

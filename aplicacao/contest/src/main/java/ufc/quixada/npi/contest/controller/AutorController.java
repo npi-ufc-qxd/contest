@@ -309,9 +309,7 @@ public class AutorController {
 		
 		submissaoService.adicionarOuEditar(submissao);
 		String path = new StringBuilder().append("CONT-").append(trabalho.getId()).append(".pdf").toString();		
-		storageService.store(file, path);
-		
-		trabalho.setPath(path);
+		storageService.store(file, path, trabalho);
 		
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";
