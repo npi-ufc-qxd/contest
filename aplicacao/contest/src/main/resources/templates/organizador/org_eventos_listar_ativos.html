@@ -34,105 +34,15 @@
           </div>
          </div>
         </div>
-                <div class="row col s12 center">
+        <div class="row col s12 center">
                   <ul class="pagination">
                     <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
                     <li class="active"><a href="#">1</a></li>
                     <li class="waves-effect"><a href="#">2</a></li>
                     <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
                   </ul>
-                </div>
       </div>
-    <div th:include="fragments/footer :: footer"></div>
-    <script type="text/javascript">
-      $(document).ready(function(){
-        //Inicialização dos elementos no JS
-        //Parallax BG
-        $('.parallax').parallax();
-        
-        //sideNav
-        $(".button-collapse").sideNav();
-        
-        //Tooltips
-        $('.tooltipped').tooltip({delay: 50});
-        
-        //select_initializer
-        $('select').material_select();
-        
-        //datepicker
-        $('.datepicker').pickadate({
-          selectMonths: true, // Creates a dropdown to control month
-          selectYears: 15, // Creates a dropdown of 15 years to control year
-          //Persnonalizando nomes dos meses do ano
-          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
-          //Persnonalizando nomes dos dias da semana
-          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
-          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
-          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
-          today: 'Hoje',
-          clear: 'Limpar',
-          close: 'Fechar'
-        });
-        
-        //Trata as datas na tela org_editar_eventos 
-        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
-        var calendarioSubmissaoFinal = "#prazo_submissao_final";
-        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
-        var calendarioRevisaoFinal = "#prazo_revisao_final";
-        
-        function habilitarCalendario(calendario){
-          $(calendario).removeAttr( "disabled" );
-        }
-        
-        function desabilitarCalendario(calendario){
-          $(calendario).attr( "disabled", true );
-          $(calendario).pickadate("clear");
-        }
-        
-        function definirDataMinimaCalendario(calendario, dataMin){
-          var picker = getPicker(calendario);
-          picker.set("min", dataMin);
-        }
-        
-        function getPicker(idCalendario){
-          var $input = $(idCalendario).pickadate();
-          var picker = $input.pickadate("picker");
-          return picker;
-        }
-        
-        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
-          var picker = getPicker(idCalendarioInicial);
-          var dataAtual = picker.get();
-          var umDia = 1;
-          
-          var dataMinima = new Date(dataAtual);
-          dataMinima.setDate(dataMinima.getDate()+umDia);
-                
-          if (dataAtual.length == 0) {
-            desabilitarCalendario(idCalendarioFinal);
-          } else {
-            habilitarCalendario(idCalendarioFinal);       
-            
-            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
-          }
-        }
-        
-        $(calendarioSubmissaoInicial).on("change",function(){
-          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
-        });
-        
-        $(calendarioSubmissaoFinal).on("change",function(){
-          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
-        });
-        
-        $(calendarioRevisaoInicial).on("change",function(){
-          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
-        });
-        
-        //Inicialização do Modal excluir Evento
-        $('.modal-trigger').leanModal();
-        
-      });
-    </script>
+      </div>
+     <div th:include="fragments/footer :: footer"></div>
   </body>
 </html>
