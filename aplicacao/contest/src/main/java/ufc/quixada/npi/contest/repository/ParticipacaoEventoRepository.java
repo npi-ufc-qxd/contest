@@ -15,5 +15,6 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 @Transactional
 public interface ParticipacaoEventoRepository extends CrudRepository<ParticipacaoEvento, Long>{
 	public ParticipacaoEvento findByEventoId(Long idEvento);
-	public List<ParticipacaoEvento> findByEventoEstadoAndPapel(EstadoEvento estadoEvento, Papel papel);
+	//public List<ParticipacaoEvento> findDistinctByEventoEstadoAndPapel(EstadoEvento estadoEvento, Papel papel);
+	public List<ParticipacaoEvento> findByEventoEstadoAndPapelAndPessoaId(EstadoEvento estadoEvento, Papel papel, Long id);
 }

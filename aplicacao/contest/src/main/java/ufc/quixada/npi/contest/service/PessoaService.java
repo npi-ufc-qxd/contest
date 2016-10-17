@@ -61,4 +61,11 @@ public class PessoaService {
 	public List<Pessoa> getPossiveisOrganizadores(){
 		return pessoaRepository.getPossiveisOrganizadores();
 	}
+	public List<Pessoa> getPossiveisOrganizadoresDoEvento(Long idEvento){
+		return pessoaRepository.getPossiveisOrganizadoresDoEvento(idEvento);
+	}
+	
+	public List<Pessoa> pessoasPorPapelNoEvento(Papel papel, Long idEvento){
+		return pessoaRepository.pessoasPorPapelNoEvento(papel, idEvento);
+	}
 }

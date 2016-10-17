@@ -55,7 +55,6 @@ public class CadastrarTrilhasSteps {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoControllerOrganizador).build();
 		pessoaService.toString(); //Para evitar do codacy reclamar
 		trilha = new Trilha();
-		trilha.setNome("aaa");
 		trilha.setId(3L);
 		trilha.setEvento(evento);
 	}
@@ -71,7 +70,7 @@ public class CadastrarTrilhasSteps {
 
 	@Quando("^o organizador cadastra uma trilha de submissão (.*)$")
 	public void cadastraSubmissao(String nomeTrilha) throws Throwable {
-
+		trilha.setNome(nomeTrilha);
 		
 		when(trilhaService.exists(trilha.getNome(), evento.getId())).thenReturn(false);
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
@@ -87,7 +86,7 @@ public class CadastrarTrilhasSteps {
 	@Então("^a trilha de submissão é cadastrada$")
 	public void submissaoCadastrada() throws Throwable {
 		verify(trilhaService).adicionarOuAtualizarTrilha(trilha);
-		action.andExpect(redirectedUrl("/eventoOrganizador/trilhas/" + evento.getId()))
+		action.andExpect(redirectedUrl("/eventoOrganizador/trilhas/"+ EVENTO_ID))
 		      .andExpect(flash().attribute("trilhaAdd", messagesService.getMessage("TRILHA_ADD_COM_SUCESSO")));
 	}
 	

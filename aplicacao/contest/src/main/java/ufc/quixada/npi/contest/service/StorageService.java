@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface StorageService {
 
-    void store(MultipartFile file, Long idAutor);
+    void store(MultipartFile file, String path);
 
     Stream<Path> loadAll();
 

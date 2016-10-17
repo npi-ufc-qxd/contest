@@ -52,4 +52,8 @@ public class TrabalhoService {
 	public void remover(Long id){
 		trabalhoRepository.delete(id);
 	}
+	
+	public int buscarQtdTrabalhosPorEvento(Long eventoID){
+		return trabalhoRepository.findAllByEventoId(eventoID).size();
+	}
 }
