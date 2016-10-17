@@ -90,16 +90,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = {"/ativos",""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO,p.getId());
-		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
+		//List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO,p.getId());
+		List<Evento> eventos = eventoService.getEventosByEstado(EstadoEvento.ATIVO);
+		model.addAttribute(EVENTOS_ATIVOS, eventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.INATIVO,p.getId());
-		model.addAttribute(EVENTOS_INATIVOS, listaEventos);
+		//List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.INATIVO,p.getId());
+		List<Evento> eventos = eventoService.getEventosByEstado(EstadoEvento.INATIVO);
+		model.addAttribute(EVENTOS_INATIVOS, eventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 	
