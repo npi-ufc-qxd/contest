@@ -245,5 +245,4 @@ public class RevisorController {
 
 		return coAutores;
 	}
-
 }
