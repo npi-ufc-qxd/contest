@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.stream.Stream;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -36,26 +38,38 @@ public class FileSystemStorageService implements StorageService{
     
    
 	@Override
-	public void store(MultipartFile arquivoUpload, String filepath) {
+	public String store(MultipartFile arquivoUpload, String pastaDeDestino) {
 		 try {
-			 	String caminho = Constants.CAMINHO_TRABALHOS;
+			 
+			 	String caminho = new StringBuilder(Constants.CAMINHO_TRABALHOS)
+			 			.append(File.separator)
+			 			.append(pastaDeDestino)
+			 			.append(File.separator)			 			
+			 			.toString();
+			 	
 	            if (arquivoUpload.isEmpty()) {
 	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
-	            String pastaDeDestino = new StringBuilder(caminho)
-	            		.append(filepath.substring(0, filepath.lastIndexOf('.'))).append("/").toString();
 	            
-	            File pasta = new File(pastaDeDestino);
+	            File pasta = new File(caminho);
 	            if(!pasta.exists()){
 	            	if(!pasta.mkdirs()){
 	            		throw new RuntimeException("Não foi possível criar pasta de destino");
-	            	}          	
+	            	}	            	
 	            }
-       
-	            String string = pastaDeDestino+filepath;
-				Files.copy(arquivoUpload.getInputStream(), Paths.get(string), REPLACE_EXISTING);
+	            SimpleDateFormat dataFormat = new SimpleDateFormat("-ddMMyy-HHmmss-SSS");
+	            
+	            String caminhoDoArquivo = new StringBuilder(caminho)
+	            		.append(pastaDeDestino)
+	            		.append(dataFormat.format(new Date()))
+	            		.append(".pdf")
+	            		.toString();
+	            
+				Files.copy(arquivoUpload.getInputStream(), Paths.get(caminhoDoArquivo), REPLACE_EXISTING);
+				return caminhoDoArquivo;
+				
 	        } catch (IOException e) {
-	        	throw new RuntimeException(e);
+	        	throw new RuntimeException(e) ;
 	        }
 	}
 

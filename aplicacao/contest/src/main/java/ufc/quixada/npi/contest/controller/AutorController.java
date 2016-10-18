@@ -354,11 +354,8 @@ public class AutorController {
 		definePapelParticipantes(trabalho);	
 		submissao.setTrabalho(trabalho);
 
-		submissaoService.adicionarOuEditar(submissao);
-		String path = new StringBuilder().append("CONT-").append(trabalho.getId()).append(".pdf").toString();		
-		storageService.store(file, path);
-
-		trabalho.setPath(path);
+		String nomeDoArquivo = new StringBuilder("CONT-").append(evento.getId()).toString();		
+		trabalho.setPath(storageService.store(file, nomeDoArquivo));
 
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";

@@ -133,8 +133,8 @@ public class EventoController extends EventoGenericoController{
 		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN, "redirect:/evento/inativos");
 	}
 
-	@RequestMapping(value = "/remover/{id}", method = RequestMethod.GET)
-	public String removerEvento(@PathVariable String id, RedirectAttributes redirect) {
+	@RequestMapping(value = "/remover", method = RequestMethod.POST)
+	public String removerEvento(@RequestParam("idEvento") String id, RedirectAttributes redirect) {
 		try {
 			Long idEvento = Long.valueOf(id);
 			Evento evento = eventoService.buscarEventoPorId(idEvento);
