@@ -26,7 +26,7 @@
           <i class="material-icons">close</i>
         </div>
         
-        <div th:if="${FORA_DO_PRAZO_SUBMISSAO}" id="error_area" class="row chip red white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}">
+        <div th:if="${FORA_DA_DATA_DE_SUBMISSAO}" id="error_area" class="row chip red white-text" th:text="#{FORA_DA_DATA_DE_SUBMISSAO}">
 	          <i class="material-icons">close</i>
 	    </div>
 	    
@@ -35,6 +35,10 @@
         </div>
         
         <div th:if="${ERRO_REENVIAR}" id="error_area" class="row chip red white-text" th:text="#{ERRO_REENVIAR}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${erroExcluir}" id="error_area" class="row chip red white-text" th:text="#{ERRO_EXCLUIR_TRABALHO}">
           <i class="material-icons">close</i>
         </div>
         

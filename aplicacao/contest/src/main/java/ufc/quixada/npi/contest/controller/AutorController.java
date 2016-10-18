@@ -273,7 +273,7 @@ public class AutorController {
 						submissao.setTipoSubmissao(TipoSubmissao.FINAL);
 						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 					}else{
-						redirect.addFlashAttribute("FORA_DO_PRAZO_SUBMISSAO", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
+						redirect.addFlashAttribute("FORA_DA_DATA_DE_SUBMISSAO", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
 						return "redirect:/autor/listarTrabalhos/" + idEvento;
 					}
 				}else{
