@@ -24,7 +24,6 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
-import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 
@@ -56,7 +55,6 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	private static final String PAGINA_DETALHES_EVENTO_INEXISTENTE = "/eventoOrganizador/detalhes-evento/2";
 	private static final String PAGINA_DETALHES_EVENTO_ID_1 = "/eventoOrganizador/detalhes-evento/1";
 	private static final String PAGINA_DETALHES_EVENTO = "/eventoOrganizador/detalhes-evento/{id}";
-	private static final String ID_PESSOA = "2";
 	
 	@Before
 	public void setup() {

@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 import org.mockito.InjectMocks;
@@ -27,31 +28,21 @@ import ufc.quixada.npi.contest.controller.AutorController;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Submissao;
-import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
-import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
 public class AlunoSubmeteVersaoFinalSteps {
 
-	private static final String EMAIL_PARTICIPANTES = "participacoes[0].pessoa.email";
-	private static final String NOME_PARTICIPANTES = "participacoes[0].pessoa.nome";
-	private static final String TRILHA_ID = "trilhaId";
 	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
-	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM_ID = "/autor/enviarTrabalhoForm/{id}";
 	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/allef.lobo/Documentos/certificado.pdf";
-	private static final String CAMINHO_ARQUIVO_INVALIDO = "/home/lucas.vieira/Downloads/pgadmin.log";
-	private static final String PAGINA_AUTOR_ENVIAR_TRABALHO_FORM = "/autor/enviarTrabalhoForm";
-	private static final String TITULO = "titulo";
-	private static final String EVENTO_ID = "eventoId";
-	private static final String TEMPLATE_AUTOR_AUTOR_ENVIAR_TRABALHO_FORM = "autor/autor_enviar_trabalho_form";
-	private static final String FORA_DA_DATA_DE_SUBMISSAO = "FORA_DA_DATA_DE_SUBMISSAO";
 
 	@InjectMocks
 	private AutorController autorController;
@@ -71,13 +62,16 @@ public class AlunoSubmeteVersaoFinalSteps {
 	private SubmissaoService submissaoService;
 	@Mock
 	private TrilhaService trilhaService;
+	@Mock
+	private TrabalhoService trabalhoService;
+	
 
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
 	private Pessoa pessoa;
 	private Submissao submissao;
-	private Trilha trilha;
+	private Trabalho trabalho;
 	
 	@Before
 	public void setup() {
@@ -89,47 +83,51 @@ public class AlunoSubmeteVersaoFinalSteps {
 		evento = new Evento();
 		pessoa = new Pessoa();
 		submissao = new Submissao();
-		trilha = new Trilha();
+		
+		trabalho = new Trabalho();
+		trabalho.setTitulo("Trabalho");
+		trabalho.setId(5L);
+		trabalho.setParticipacoes(new ArrayList<>());
 	}
 	
 	@Dado("^que existe um aluno$")
 	public void existeAluno() throws Throwable{
 		pessoa.setCpf("123");
 		pessoa.setEmail("teste@tes.com");
+		
 	}
 	
 	@E("^que possui um trabalho$")
 	public void trabalhoFoiEnviado() throws Throwable{
-		
 		evento.setId(1L);
-//		evento.setPrazoSubmissaoFinal(new Date("30/09/2017"));
-//		evento.setPrazoSubmissaoInicial(new Date("01/09/2016"));
-		
 		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2016, 9, 1).getTime());
-		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2017, 9, 30).getTime());
+		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2017, 11, 30).getTime());
 		
-		trilha.setId(3L);
+		evento.setPrazoRevisaoInicial(new GregorianCalendar(2017, 11, 27).getTime());
+		evento.setPrazoRevisaoFinal(new GregorianCalendar(2017, 11, 28).getTime());
+		
+		submissao.setId(6L);
+		submissao.setTrabalho(trabalho);
 	}
 	
 	@Quando("^está dentro do prazo de submissão de envio do evento$")
 	public void dentroDoPrazoDeSubmissao() throws Throwable{
-		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
-		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
-		
+		when(trabalhoService.existeTrabalho(trabalho.getId())).thenReturn(true);
+		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
+				
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
 		
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
+		when(submissaoService.getSubmissaoByTrabalho(trabalho)).thenReturn(submissao);
 		
 		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
 		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
 
-        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload("/autor/reenviarTrabalho")
                         .file(multipartFile)
-                        .param(EVENTO_ID, "1")
-                        .param(TITULO, "Teste")
-                        .param(NOME_PARTICIPANTES, "joao")
-                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
-                        .param(TRILHA_ID, "3"));
+                        .param("trabalhoId", trabalho.getId().toString())
+                        .param("eventoId", evento.getId().toString()));
 	}
 	
 	@Então("^o trabalho poderá ser reenviado$")
@@ -140,33 +138,35 @@ public class AlunoSubmeteVersaoFinalSteps {
 	
 	@Quando("^está fora do prazo de submissão de envio do evento$")
 	public void foraDoPrazoDeSubmissao() throws Throwable{
-		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2016, 9, 1).getTime());
-		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2016, 9, 2).getTime());
+		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2015, 9, 1).getTime());
+		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2015, 9, 20).getTime());
 		
-		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
-		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
+		evento.setPrazoRevisaoInicial(new GregorianCalendar(2015, 9, 5).getTime());
+		evento.setPrazoRevisaoFinal(new GregorianCalendar(2015, 9, 10).getTime());
 		
+		when(trabalhoService.existeTrabalho(trabalho.getId())).thenReturn(true);
+		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
+				
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
 		
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
+		when(submissaoService.getSubmissaoByTrabalho(trabalho)).thenReturn(submissao);
 		
 		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
 		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
 
-        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload(PAGINA_AUTOR_ENVIAR_TRABALHO_FORM)
+        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload("/autor/reenviarTrabalho")
                         .file(multipartFile)
-                        .param(EVENTO_ID, "1")
-                        .param(TITULO, "Teste")
-                        .param(NOME_PARTICIPANTES, "joao")
-                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
-                        .param(TRILHA_ID, "3"));
+                        .param("trabalhoId", trabalho.getId().toString())
+                        .param("eventoId", evento.getId().toString()));
 	}
 	
 	@Então("^o trabalho não poderá ser reenviado$")
 	public void trabalhoNaoReenviado() throws Throwable{
 		action.andExpect(status().isFound())
-	      .andExpect(redirectedUrl("/autor/enviarTrabalhoForm/"+ evento.getId()))
-	      .andExpect(flash().attribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO)));
+	      .andExpect(redirectedUrl("/autor/listarTrabalhos/" + evento.getId()))
+	      .andExpect(flash().attribute("FORA_DO_PRAZO_SUBMISSAO", messageService.getMessage("FORA_DO_PRAZO_SUBMISSAO")));
 	}
 
 }

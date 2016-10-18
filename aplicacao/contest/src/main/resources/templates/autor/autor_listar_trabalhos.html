@@ -26,9 +26,17 @@
           <i class="material-icons">close</i>
         </div>
         
-        <div th:if="${foraDoPrazoDeSubmissao}" id="error_area" class="row chip red white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}">
+        <div th:if="${FORA_DO_PRAZO_SUBMISSAO}" id="error_area" class="row chip red white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}">
 	          <i class="material-icons">close</i>
 	    </div>
+	    
+	    <div th:if="${ERRO_TRABALHO_EVENTO}" id="error_area" class="row chip red white-text" th:text="#{ERRO_TRABALHO_EVENTO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${ERRO_REENVIAR}" id="error_area" class="row chip red white-text" th:text="#{ERRO_REENVIAR}">
+          <i class="material-icons">close</i>
+        </div>
         
         <div th:if="${arquivoInvalido}" id="error_area" class="row chip red white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}">
           <i class="material-icons">close</i>

@@ -65,6 +65,8 @@ public class AutorController {
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String PARTICIPAR_EVENTO_INATIVO_ERROR = "participarEventoInativoError";
+	private static final String ERRO_TRABALHO_EVENTO = "ERRO_TRABALHO_EVENTO";
+	private static final String ERRO_REENVIAR = "ERRO_REENVIAR";
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -249,16 +251,14 @@ public class AutorController {
 	
 	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
 	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId, @RequestParam("eventoId") String eventoId, @RequestParam(value="file",required = true) MultipartFile file, RedirectAttributes redirect){
-		try{
-			Long idEvento = Long.parseLong(eventoId);
-			Long idTrabalho = Long.parseLong(trabalhoId);
-			
+		Long idEvento = Long.parseLong(eventoId);
+		Long idTrabalho = Long.parseLong(trabalhoId);
+		try{			
 			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
 				
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
 				Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 				Submissao submissao = submissaoService.getSubmissaoByTrabalho(trabalho);
-				Pessoa autor = getAutorLogado();
 				
 				if(validarArquivo(file)){
 					Date dataDeEnvio = new Date(System.currentTimeMillis());
@@ -273,7 +273,7 @@ public class AutorController {
 						submissao.setTipoSubmissao(TipoSubmissao.FINAL);
 						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 					}else{
-						redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
+						redirect.addFlashAttribute("FORA_DO_PRAZO_SUBMISSAO", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
 						return "redirect:/autor/listarTrabalhos/" + idEvento;
 					}
 				}else{
@@ -282,11 +282,11 @@ public class AutorController {
 				}
 
 			}
-			redirect.addAttribute("erroReenviar", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
-			return "redirect:/autor/meusTrabalhos/";
+			redirect.addAttribute("ERRO_TRABALHO_EVENTO", messageService.getMessage(ERRO_TRABALHO_EVENTO));
+			return "redirect:/autor/listarTrabalhos/" + idEvento;
 		}catch(NumberFormatException e){
-			redirect.addAttribute("erroReenviar", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
-			return "redirect:/autor/meusTrabalhos/";
+			redirect.addAttribute("ERRO_REENVIAR", messageService.getMessage(ERRO_REENVIAR));
+			return "redirect:/autor/listarTrabalhos/" + idEvento;
 		}
 	}
 	
