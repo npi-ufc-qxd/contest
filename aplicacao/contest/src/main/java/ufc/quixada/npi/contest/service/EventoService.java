@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 
 @Service
@@ -74,8 +75,8 @@ public class EventoService {
 		return eventoRepository.findEventosDoAutor(idAutor);
 	}
 	
-	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor){
-		return eventoRepository.findEventosDoAutor(idRevisor);
+	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor, Papel papel){
+		return eventoRepository.findEventosDoRevisor(idRevisor,papel.toString());
 	}
 	
 	public List<Evento> getEventosByEstado(EstadoEvento estado){

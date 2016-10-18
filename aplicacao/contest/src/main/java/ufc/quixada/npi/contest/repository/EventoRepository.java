@@ -35,9 +35,10 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 	
 	@Query("SELECT e FROM Evento e " + 
 			"WHERE e.id in (SELECT DISTINCT pe.evento.id FROM ParticipacaoEvento pe WHERE :idRevisor = pe.pessoa.id) "
-			+ "AND  e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO "+
+			+ "AND  e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO AND pe.papel = :papel "+
 			"ORDER BY e.id")
-	public List<Evento> findEventosDoRevisor(@Param("idRevisor") Long idRevisor);
+	public List<Evento> findEventosDoRevisor(@Param("idRevisor") Long idRevisor, @Param("papel") String papel);
 	
 	public List<Evento> findEventoByEstado(EstadoEvento estadoEvento);
+	
 }
