@@ -74,9 +74,11 @@
 	                    </div>
 	                  </div>
 	                  <div class="input-field col m6 s6">
-	                    <a th:attr="href='#modal' + ${trabalho.id}" class="btn right white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
-	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Reenviar</a>
-	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Baixar</a>
+	                  	<small>Opções</small>
+	                  	<br/>
+	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
+	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
+						<a th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
 	              </div>
