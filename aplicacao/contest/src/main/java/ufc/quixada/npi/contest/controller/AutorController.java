@@ -1,9 +1,14 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -308,6 +313,25 @@ public class AutorController {
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
 		}
+	}
+   
+	@RequestMapping(value="/file", method=RequestMethod.GET, produces = "application/pdf")
+	public void downloadPDFFile(@RequestParam("path") String path,  HttpServletResponse response)
+	        throws IOException {
+        Path file = Paths.get(path);
+        if (Files.exists(file)) 
+        {
+            response.setContentType("application/pdf");
+            response.addHeader("Content-Disposition", "attachment; filename="+path);
+            try
+            {
+                Files.copy(file, response.getOutputStream());
+                response.getOutputStream().flush();
+            } 
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 	}
 	
 	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)

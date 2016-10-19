@@ -55,7 +55,8 @@
         	  
         	  <div class="card-content"><span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span>
                 <div th:each="participacao : ${trabalho.participacoes}">
-                	<p th:text=" ${participacao.papel} + ': ' + ${participacao.pessoa.nome} + ' | ' + 'Email: ' + ${participacao.pessoa.email}"></p>
+                	<p th:text="'Participante: ' + ${participacao.pessoa.nome}"></p>
+                	<p th:text="'Email: ' + ${participacao.pessoa.email}"></p>
                 </div>
                 <p th:text="'Trilha: ' + ${trabalho.trilha.nome}"></p>
                 <p th:text="'Data de envio: ' + ${#dates.format(trabalho.submissoes.get(0).dataSubmissao,'dd/MM/yyyy')} "></p> 
@@ -75,6 +76,7 @@
 	                  <div class="input-field col m6 s6">
 	                    <a th:attr="href='#modal' + ${trabalho.id}" class="btn right white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
 	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Reenviar</a>
+	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Baixar Trabalho</a>
 	                  </div>
 	                </div>
 	              </div>
