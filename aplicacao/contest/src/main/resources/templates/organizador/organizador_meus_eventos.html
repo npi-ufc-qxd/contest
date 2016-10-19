@@ -51,7 +51,7 @@
                   <h5 th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início da Submissão</h5>
 				  <h5 th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></h5>
                 </div>
-                <div class="card-action"><a th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
+                <div class="card-action"><a href="#" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
               </div>
             </div>
           </div>
