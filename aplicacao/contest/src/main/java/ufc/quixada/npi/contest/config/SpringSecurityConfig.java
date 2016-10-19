@@ -26,7 +26,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
 				.antMatchers("/autor/**").hasRole("DISCENTE")
 				.antMatchers("/evento/**").hasRole("ADMIN")
-				.antMatchers("/eventoOrganizador/**").hasAnyRole("DOCENTE", "STA")
+				.antMatchers("/eventoOrganizador/**").hasAnyRole("DOCENTE", "STA", "ADMIN")
 				.antMatchers("/revisor/**").hasRole("DOCENTE")
 				.anyRequest()
 				.fullyAuthenticated()

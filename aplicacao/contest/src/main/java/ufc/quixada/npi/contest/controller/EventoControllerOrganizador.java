@@ -91,8 +91,22 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
-		List<Pessoa> pessoas = pessoaService.getPossiveisOrganizadoresDoEvento(eventoId);
-		model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
+		Pessoa pessoa = getOrganizadorLogado();
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		List<Pessoa> pessoas = new ArrayList<Pessoa>(); 
+		List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
+		boolean organizaEvento = false;
+		
+		for(ParticipacaoEvento pe : pessoa.getParticipacoesEvento()){
+			if(pe.getEvento().getId() == evento.getId() && pe.getPapel() == Papel.ORGANIZADOR){
+				organizaEvento = true;
+				pessoas = pessoaService.getPossiveisOrganizadoresDoEvento(eventoId);
+			}
+		}
+		
+		model.addAttribute("trilhasEvento", trilhas);
+		model.addAttribute("organizaEvento", organizaEvento);
+		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
@@ -101,21 +115,24 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value={"/meusEventos",""}, method = RequestMethod.GET)
 	public String meusEventos(Model model){
 		Pessoa revisor = getOrganizadorLogado();
-		//ver isso aqui
-		model.addAttribute("eventos", eventoService.buscarEventosParticapacaoAutor(revisor.getId()));
+		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
 	
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.getEventosByEstado(EstadoEvento.ATIVO);
-		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId(),Papel.REVISOR);
+		List<Evento> eventos = eventoService.getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
+		boolean existeEventos = true;
 		
 		for(Evento e : eventosQueReviso){
 			eventos.remove(e);
 		}
-
+		if(eventos.isEmpty() && eventosQueReviso.isEmpty())
+			existeEventos = false;
+		
+		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute(EVENTOS_ATIVOS, eventos);
 		model.addAttribute(EVENTO_QUE_PARTICIPO, eventosQueReviso);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
@@ -125,13 +142,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String listarEventosInativos(Model model) {
 		Pessoa p = getOrganizadorLogado();
 		
-		List<Evento> eventos = eventoService.getEventosByEstado(EstadoEvento.INATIVO);
-		List<Evento> eventosQueOrganizo = getEventosQueParticipoComo(Papel.ORGANIZADOR, p.getParticipacoesEvento(), eventos);
+		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.INATIVO);
+		List<Evento> eventosQueOrganizo = eventoService.buscarEventosInativosQueOrganizo(p.getId());
+		
+		boolean existeEventos = true;
 		
 		for(Evento e : eventosQueOrganizo){
 			eventos.remove(e);
 		}
 		
+		if(eventos.isEmpty() && eventosQueOrganizo.isEmpty())
+			existeEventos = false;
+		
+		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute(EVENTOS_INATIVOS, eventos);
 		model.addAttribute(EVENTOS_QUE_ORGANIZO, eventosQueOrganizo);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
@@ -351,16 +374,4 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		String cpf = auth.getName();
 		return pessoaService.getByCpf(cpf);
 	}
-	public List<Evento> getEventosQueParticipoComo(Papel papel, List<ParticipacaoEvento> listaParticipacao, List<Evento> eventos){
-		List<Evento> eventosQueOrganizo = new ArrayList<>();
-		for(Evento e: eventos){
-			for(ParticipacaoEvento pe : listaParticipacao){
-				if((pe.getEvento().getId() == e.getId()) && (pe.getPapel().equals(papel))){
-					eventosQueOrganizo.add(e);
-				}
-			}
-		}
-		return eventosQueOrganizo;
-	}
-	
 }

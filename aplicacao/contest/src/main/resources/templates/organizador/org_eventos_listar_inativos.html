@@ -62,10 +62,13 @@
                 <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
               </div>
               <div class="card-action">
-                <a href="#"  class="btn white-text waves-effect waves-light  blue-grey">Ativar</a>
-                <a href="#" class="btn white-text waves-effect waves-light  blue-grey">Editar</a>
+                <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}"  class="btn white-text waves-effect waves-light  blue-grey">Detalhes</a>
               </div>
             </div>
+        </div>
+        
+        <div class="col m4 s12" th:if="${!existeEventos}">
+          <p>Não há eventos Inativos</p>
         </div>
       </div>
         

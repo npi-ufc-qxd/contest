@@ -49,8 +49,7 @@ public class RevisorController {
 	@RequestMapping(value="/meusEventos", method = RequestMethod.GET)
 	public String meusEventos(Model model){
 		Pessoa revisor = getRevisorLogado();
-		//ver isso aqui
-		model.addAttribute("eventos", eventoService.buscarEventosParticapacaoAutor(revisor.getId()));
+		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return REVISOR_MEUS_EVENTOS;
 	}
 	
