@@ -11,18 +11,7 @@
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
-    <nav role="navigation" class="purple darken-4">
-      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px"/></a>
-        <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul>
-        <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-      </div>
-    </nav>
+    <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
       <div class="row opcoes">
       	<a th:href="@{/revisor}">Eventos Ativos</a>

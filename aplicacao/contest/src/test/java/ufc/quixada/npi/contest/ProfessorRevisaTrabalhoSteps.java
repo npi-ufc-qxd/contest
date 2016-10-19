@@ -48,8 +48,6 @@ public class ProfessorRevisaTrabalhoSteps {
 	@Mock
 	private MessageService messageService;
 
-	
-
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Trabalho trabalho;
@@ -84,7 +82,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		when(revisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
 				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'FRACO','clareza':'RUIM',"
 						+ "'avaliacao_geral':'RUIM','qualidade':'RUIM','formatacao':'Problemas com a formatação',"
-						+ "'relevancia':'Não Conhecedor','comentarios':'Cara,  pelo amor de Deus, tome tendência',"
+						+ "'relevancia':'Não Conhecedor','comentarios':'Cara',"
 						+ "'merito':'FRACO','avaliacao_final':'REPROVADO'}");
 		
 		revisao = new Revisao();
