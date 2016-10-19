@@ -30,6 +30,8 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
+import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -107,13 +109,25 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/evento/{id}/revisores",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String atibuirRevisor(@PathVariable String id,@RequestBody String revisorId, Model model) {
+	public @ResponseBody String atibuirRevisor(@PathVariable String id,@RequestBody RevisaoJsonWrapper dadosRevisao) {
 		Long eventoId = Long.parseLong(id);
+		Long revisorId = dadosRevisao.getRevidorId();
+		
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
-		model.addAttribute("revisores", pessoaService.revisoresNoEvento(eventoId));
-		model.addAttribute("evento", evento);
-		model.addAttribute("trabalhos", trabalhos);
+		Pessoa revisor = pessoaService.get(dadosRevisao.getRevidorId());
+		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId());
+		
+		Revisao revisao = new Revisao();
+		revisao.setRevisor(revisor);
+		revisao.setTrabalho(trabalho);
+		revisaoService.adicionarOuAtualizarRevisao(revisao);
+		
+		ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
+		participacaoEvento.setEvento(evento);
+		participacaoEvento.setPapel(Papel.REVISOR);
+		participacaoEvento.setPessoa(revisor);
+		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
+		
 		return "{\"result\":\"ok\"}";
 	}
 

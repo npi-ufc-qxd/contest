@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.repository.RevisaoRepository;
 
 @Service
@@ -13,5 +14,17 @@ public class RevisaoService {
 	
 	public boolean existeTrabalhoNesseEvento(Long id){
 		return revisaoRepository.existTrabalhoNesseEvento(id);
+	}
+	
+	public boolean adicionarOuAtualizarRevisao(Revisao revisao) {
+		if (podeAdicionarOuAtualizar(revisao)) {
+			revisaoRepository.save(revisao);
+		}
+		return false;
+	}
+	
+	// TODO Adicionar validação
+	private boolean podeAdicionarOuAtualizar(Revisao revisao){
+		return true;
 	}
 }
