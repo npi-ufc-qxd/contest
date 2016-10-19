@@ -37,7 +37,7 @@ public class FileSystemStorageService implements StorageService{
     }
     
    
-	@Override
+    @Override
 	public String store(MultipartFile arquivoUpload, String pastaDeDestino) {
 		 try {
 			 
@@ -73,7 +73,7 @@ public class FileSystemStorageService implements StorageService{
 	        }
 	}
 
-	@Override
+    @Override
 	public Stream<Path> loadAll() {
 		try {
             return Files.walk(this.rootLocation, 1)
@@ -117,5 +117,6 @@ public class FileSystemStorageService implements StorageService{
 		File file = new File(path);
 		return file;
 	}
+
 
 }
