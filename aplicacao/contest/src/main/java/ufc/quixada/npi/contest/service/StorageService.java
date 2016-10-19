@@ -7,11 +7,9 @@ import java.util.stream.Stream;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-import ufc.quixada.npi.contest.model.Trabalho;
-
 public interface StorageService {
 
-    void store(MultipartFile file, String path, Trabalho trabalho);
+    String store(MultipartFile file, String path);
 
     Stream<Path> loadAll();
 
@@ -24,3 +22,4 @@ public interface StorageService {
     File getFile(String path);
 
 }
+ 

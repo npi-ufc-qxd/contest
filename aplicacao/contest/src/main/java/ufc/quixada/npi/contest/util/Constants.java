@@ -33,5 +33,5 @@ public class Constants {
 	public static final String TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR = "autor/autor_enviar_trabalho_form";
 	public static final String TEMPLATE_LISTAR_TRABALHO_AUTOR = "autor/autor_listar_trabalhos";
 	
-	public static final String CAMINHO_TRABALHOS = "/mnt/contest-uploads/";
+	public static final String CAMINHO_TRABALHOS = "/mnt/contest-uploads";
 }

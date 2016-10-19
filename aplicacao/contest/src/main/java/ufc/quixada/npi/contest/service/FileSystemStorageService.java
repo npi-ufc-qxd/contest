@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import ufc.quixada.npi.contest.model.StorageProperties;
-import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.StorageException;
 import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
@@ -29,9 +30,6 @@ public class FileSystemStorageService implements StorageService{
 	@Autowired
 	private MessageService messsagemService;
 	
-	@Autowired
-	private TrabalhoService trabalhoService;
-	
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
@@ -39,26 +37,36 @@ public class FileSystemStorageService implements StorageService{
     
    
 	@Override
-	public void store(MultipartFile arquivoUpload, String filepath, Trabalho trabalho) {
+	public String store(MultipartFile arquivoUpload, String pastaDeDestino) {
 		 try {
-			 	String caminho = Constants.CAMINHO_TRABALHOS;
+			 
+			 	String caminho = new StringBuilder(Constants.CAMINHO_TRABALHOS)
+			 			.append(File.separator)
+			 			.append(pastaDeDestino)
+			 			.append(File.separator)			 			
+			 			.toString();
+			 	
 	            if (arquivoUpload.isEmpty()) {
 	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
-	            String pastaDeDestino = new StringBuilder(caminho)
-	            		.append(filepath.substring(0, filepath.lastIndexOf('.'))).append("/").toString();
 	            
-	            File pasta = new File(pastaDeDestino);
+	            File pasta = new File(caminho);
 	            if(!pasta.exists()){
 	            	if(!pasta.mkdirs()){
 	            		throw new RuntimeException("Não foi possível criar pasta de destino");
 	            	}	            	
 	            }
+	            SimpleDateFormat dataFormat = new SimpleDateFormat("-ddMMyy-HHmmss-SSS");
 	            
-	            String string = pastaDeDestino+filepath;
-	            trabalho.setPath(string);
-	            trabalhoService.adicionarTrabalho(trabalho);
-				Files.copy(arquivoUpload.getInputStream(), Paths.get(string));
+	            String caminhoDoArquivo = new StringBuilder(caminho)
+	            		.append(pastaDeDestino)
+	            		.append(dataFormat.format(new Date()))
+	            		.append(".pdf")
+	            		.toString();
+	            
+				Files.copy(arquivoUpload.getInputStream(), Paths.get(caminhoDoArquivo));
+				return caminhoDoArquivo;
+				
 	        } catch (IOException e) {
 	        	throw new RuntimeException(e) ;
 	        }
