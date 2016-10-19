@@ -6,7 +6,10 @@ import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
+import org.mortbay.util.ajax.AjaxFilter.AjaxResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,15 +17,17 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
@@ -91,7 +96,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/evento/{id}/revisores", method = RequestMethod.GET)
-	public String atribuirRevisor(@PathVariable String id, Model model) {
+	public String gerenciarRevisor(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
@@ -99,6 +104,17 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("evento", evento);
 		model.addAttribute("trabalhos", trabalhos);
 		return Constants.TEMPLATE_ATRIBUIR_REVISOR_ORG;
+	}
+	
+	@RequestMapping(value = "/evento/{id}/revisores",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String atibuirRevisor(@PathVariable String id,@RequestBody String revisorId, Model model) {
+		Long eventoId = Long.parseLong(id);
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
+		model.addAttribute("revisores", pessoaService.revisoresNoEvento(eventoId));
+		model.addAttribute("evento", evento);
+		model.addAttribute("trabalhos", trabalhos);
+		return "{\"result\":\"ok\"}";
 	}
 
 	@RequestMapping(value = {"/ativos",""}, method = RequestMethod.GET)

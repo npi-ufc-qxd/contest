@@ -3,6 +3,11 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+	
     <title>Constest - Controle de Eventos de Submissão</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <!-- CSS-->
@@ -38,11 +43,12 @@
           </div>
           </div>
         </div>
-      	<form action="">
+      	<form action="#" th:action="@{/eventoOrganizador/evento/1/revisores}" method="post">
 	      	<div id="modalRevisor" class="modal">
 	      		<div class="modal-content">
 	      			<h4 class="block">Nome do Trabalho</h4>
 	      			<div class="row">
+	      				<input id="eventoID" type="hidden" th:value="${evento.id}" />
 	      				<div class="input-field col m6 s6">
 	      					<i class="material-icons large prefix">search</i>
 	      					<input id="nome_do_revisor" type="text" />
@@ -60,6 +66,7 @@
 	      			</div>
 	      		</div>
 	      		<div class="modal-footer block">
+	      			<input type="submit" class="modal-action modal-close waves-effect btn-flat" value="Salvar"></input>
 	            	<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar  </a>
 	            </div>
 	      	</div>
@@ -158,12 +165,12 @@
       //select_initializer
         $('select').material_select();
         
-        $( "#listaRevisores" ).scroll(function() {
-        });
+        $( "#listaRevisores" ).scroll(function(){});
         
         add = function(e) {//vai receber o Objeto vindo da linkRevisor
             var elemento = document.getElementById(e.id);
             var listaescolhidos = document.getElementById("listaEscolhidos");
+            var eventoID = document.getElementById("eventoID");
             var cont = 0;
             
             if ($('#listaEscolhidos').find('#'+e.id).length>0){
@@ -174,8 +181,30 @@
               Materialize.toast('O mesmo organizador não pode ser alocado mais de uma vez no mesmo evento', 4000)
             }else{
               var a = elemento.cloneNode(true);
+              var idPessoa = a.id;
               a.setAttribute('onclick','$(this).remove();');
-              document.getElementById("listaEscolhidos").appendChild(a);
+              
+              
+              var token = $("meta[name='_csrf']").attr("content");
+              
+              $.ajax({
+            	  contentType: 'application/json;charset=UTF-8',
+            	  url: '/eventoOrganizador/evento/1/revisores',
+            	  dataType: 'json',
+            	  headers: {"X-CSRF-TOKEN":token},
+            	  type: 'POST',
+            	  cache: false, 
+            	  processData: false, 
+            	  data: {'revidorId':idPessoa},
+            	  success: function (data) {
+		                	  document.getElementById("listaEscolhidos").appendChild(a);	
+		                	  console.log('Deu tudo certo...'+data);
+                			},
+                  error: function (data, error) {
+                	  console.log('Falhou...');
+                	  console.log('dados = '+error);
+                	}
+            	});
             }
           }
         
