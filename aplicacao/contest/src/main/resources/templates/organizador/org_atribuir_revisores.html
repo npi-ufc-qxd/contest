@@ -32,7 +32,7 @@
                 		<span class="card-title" th:text="${trabalho.titulo}"></span>
                   		<p th:text="'Autor: ' + ${trabalho.participacoes[0].pessoa.nome}"></p>
                   		<p>Orientador: Thiago Nogueira</p>
-                  		<p th:each="revisao : ${trabalho.revisoes}" th:text="revisao.revisor.nome"></p>
+                  		<p th:each="revisao : ${trabalho.revisoes}" th:text="${revisao.revisor.nome}"></p>
                    	</div>
                    	<div class="card-action">
               			<a href="#modalRevisor" class="btn white-text waves-effect waves-light blue-grey modal-trigger">Revisor Alocado</a>
@@ -54,7 +54,7 @@
 	      					<input id="nome_do_revisor" type="text" />
 	                		<label for="nome_do_revisor">Nome do Revisor</label>
 	                		<div id="listaRevisores" class="collection">
-	                			<a th:each="revisor : ${revisores}" th:id="${revisor.id}" onclick="add(this)" class="collection-item" th:text="${revisor.nome}"> 
+	                			<a th:each="revisor : ${revisores}" th:id="${revisor.id}" onclick="add(this)" class="collection-item" th:text="${revisor.pessoa.nome}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                		</div>
@@ -170,7 +170,6 @@
         add = function(e) {//vai receber o Objeto vindo da linkRevisor
             var elemento = document.getElementById(e.id);
             var listaescolhidos = document.getElementById("listaEscolhidos");
-            var eventoID = document.getElementById("eventoID");
             var cont = 0;
             
             if ($('#listaEscolhidos').find('#'+e.id).length>0){
@@ -192,7 +191,7 @@
 			    		  };
               $.ajax({
             	  contentType: 'application/json;charset=UTF-8',
-            	  url: '/eventoOrganizador/evento/1/revisores',
+            	  url: '/eventoOrganizador/evento/trabalho/revisor',
             	  dataType: 'json',
             	  headers: {"X-CSRF-TOKEN":token},
             	  type: 'POST',

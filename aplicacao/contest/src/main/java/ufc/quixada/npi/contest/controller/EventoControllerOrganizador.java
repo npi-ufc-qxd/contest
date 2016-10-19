@@ -29,6 +29,7 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
@@ -37,6 +38,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
@@ -76,6 +78,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private TrabalhoService trabalhoService;
 	
 	@Autowired
+	private ParticipacaoTrabalhoService participacaotrabalhoService;
+	
+	@Autowired
 	private RevisaoService revisaoService;
 	
 	@Autowired
@@ -102,31 +107,24 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
-		model.addAttribute("revisores", pessoaService.revisoresNoEvento(eventoId));
+		model.addAttribute("revisores", participacaoEventoService.getRevisoresNoEvento(eventoId));
 		model.addAttribute("evento", evento);
 		model.addAttribute("trabalhos", trabalhos);
 		return Constants.TEMPLATE_ATRIBUIR_REVISOR_ORG;
 	}
 	
-	@RequestMapping(value = "/evento/{id}/revisores",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String atibuirRevisor(@PathVariable String id,@RequestBody RevisaoJsonWrapper dadosRevisao) {
-		Long eventoId = Long.parseLong(id);
-		Long revisorId = dadosRevisao.getRevidorId();
+	@RequestMapping(value = "/evento/trabalho/revisor",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String atibuirRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
 		
-		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		Pessoa revisor = pessoaService.get(dadosRevisao.getRevidorId());
 		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId());
 		
-		Revisao revisao = new Revisao();
-		revisao.setRevisor(revisor);
-		revisao.setTrabalho(trabalho);
-		revisaoService.adicionarOuAtualizarRevisao(revisao);
+		ParticipacaoTrabalho participacaoTrabalho = new ParticipacaoTrabalho();
+		participacaoTrabalho.setPapel(Papel.REVISOR);
+		participacaoTrabalho.setPessoa(revisor);
+		participacaoTrabalho.setTrabalho(trabalho);
 		
-		ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
-		participacaoEvento.setEvento(evento);
-		participacaoEvento.setPapel(Papel.REVISOR);
-		participacaoEvento.setPessoa(revisor);
-		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
+		participacaotrabalhoService.adicionarOuEditar(participacaoTrabalho);
 		
 		return "{\"result\":\"ok\"}";
 	}

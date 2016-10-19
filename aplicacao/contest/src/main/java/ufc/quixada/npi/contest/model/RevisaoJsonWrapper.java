@@ -17,5 +17,4 @@ public class RevisaoJsonWrapper {
 	public void setTrabalhoId(Long trabalhoId) {
 		this.trabalhoId = trabalhoId;
 	}
-	
 }
