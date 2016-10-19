@@ -285,7 +285,6 @@ public class AutorController {
 		}
 	}
 	
-	
 	public Pessoa getAutorLogado(){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String cpf = auth.getName();		

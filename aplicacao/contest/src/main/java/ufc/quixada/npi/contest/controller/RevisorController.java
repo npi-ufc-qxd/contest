@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ufc.quixada.npi.contest.model.AvaliacaoTrabalho;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
@@ -99,6 +100,9 @@ public class RevisorController {
 		
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
+		model.addAttribute("trabalhosRevisados", 
+				trabalhoService.getTrabalhosRevisadosDoRevisor(revisor.getId(), idEvento));
+		
 		model.addAttribute("evento", evento);
 		
 		RevisorController.ID_EVENTO = idEvento;
@@ -130,15 +134,17 @@ public class RevisorController {
 			@RequestParam(value = "qualidade", required = false) String qualidade,
 			@RequestParam(value = "relevancia", required = false) String relevancia,
 			@RequestParam(value = "auto-avaliacao", required = false) String auto_avaliacao,
+			@RequestParam(value = "comentarios_autores", required = false) String comentarios_autores,
+			@RequestParam(value = "comentarios_organizacao", required = false) String comentarios_organizacao,
 			@RequestParam(value = "avaliacao-geral", required = false) String avaliacao_geral,
-			@RequestParam(value = "comentarios", required = false) String comentarios,
+			@RequestParam(value = "avaliacao-final", required = false) String avaliacao_final,
 			@RequestParam(value = "indicar", required = false) String indicar, RedirectAttributes redirect) {
 
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 
 		CriteriosRevisaoValidator criterios = new CriteriosRevisaoValidator();
 		boolean validacao = criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
-				avaliacao_geral, comentarios);
+				comentarios_autores, avaliacao_geral, avaliacao_final);
 
 		if (!validacao) {
 			redirect.addFlashAttribute("criterioRevisaoVazioError", messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
@@ -147,19 +153,34 @@ public class RevisorController {
 
 		RevisaoJSON revisaoJson = new RevisaoJSON();
 		String conteudo = revisaoJson.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
-				auto_avaliacao, avaliacao_geral, comentarios, indicar);
+				auto_avaliacao, comentarios_autores, avaliacao_geral, avaliacao_final, indicar);
 
 		Revisao revisao = new Revisao();
 		revisao.setConteudo(conteudo);
 		revisao.setRevisor(getRevisorLogado());
 		revisao.setTrabalho(trabalho);
-
+		revisao.setObservacoes(comentarios_organizacao);
+		
+		switch (avaliacao_final) {
+			case "APROVADO":
+				revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.APROVADO);
+				break;
+			case "RESSALVAS":
+				revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.RESSALVAS);
+				break;
+			case "REPROVADO":
+				revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.REPROVADO);
+				break;
+			default:
+				break;
+		}
+		
 		revisaoService.addOrUpdate(revisao);
 			
 		redirect.addFlashAttribute("trabalhoRevisado", messageService.getMessage(TRABALHO_REVISADO));
 		return "redirect:/revisor/" + RevisorController.ID_EVENTO + "/trabalhosRevisao";
 	}
-
+ 
 	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
 	public String validaTrabalho(@PathVariable("trabalhoID") String idTrabalho, 
 			HttpServletResponse response,

@@ -13,7 +13,7 @@ Funcionalidade: Professor revisa trabalhos submetidos
         
 	  Cenário: Professor revisa um trabalho com sucesso
 		E Realizo a revisão de um artigo com todos os critérios obrigatórios selecionados
-		Então A revisão é aceita
+		Então A revisão é registrada
 		E Uma mensagem de sucesso deve ser mostrada
 			
 	  Cenário: Professor não preenche todos os campos obrigatórios

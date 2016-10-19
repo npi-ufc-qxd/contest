@@ -4,7 +4,11 @@ public class CriteriosRevisaoValidator {
 
 	public boolean validate(String ... campos){
 		for(String campo : campos){
-			if(campo == null) return false;
+			if(campo == null){
+				return false;
+			}else if(campo.isEmpty()){
+				return false;
+			}
 		}
 		return true;
 	}

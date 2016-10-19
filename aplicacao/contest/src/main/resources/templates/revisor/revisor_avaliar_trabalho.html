@@ -24,7 +24,7 @@
       </div>
     </nav>
     <div class="container page"><br/>
-      <div class="row opcoes"><a href="revisor_index.html">Eventos Ativos</a></div>
+      <div class="row opcoes"><a th:href="@{/revisor}">Eventos Ativos</a></div>
       <div class="row">
         <h1 th:text="${nomeEvento}"></h1>
         <div>
@@ -48,185 +48,244 @@
     		  </ul>
             </div>
             <div class="card-action">
-              <a id="baixar-artigo" th:href="@{'/revisor/trabalho/' + ${trabalho.id}}" name="baixar-artigo" class="btn waves-effect waves-light white-text">Fazer Download do Artigo<i aria-hidden="true" class="fa fa-download left"></i></a>
+              <a id="baixar-trabalho" th:href="@{'/revisor/trabalho/' + ${trabalho.id}}" name="baixar-trabalho" class="btn waves-effect waves-light white-text">Fazer Download do Trabalho<i aria-hidden="true" class="fa fa-download left"></i></a>
             </div>
           </div>
         </div>
         <div>
           <h2>Revisão</h2>
+          <p>* Critério obrigatórios</p>
           <form class="col s12" method="post" th:action="@{/revisor/avaliar}">
             <input type="hidden" name="idTrabalho" th:value="${trabalho.id}"/>
             <div class="col s12 center">
-              <input id="problema-formato-artigo" type="checkbox" name="formatacao"/>
-              <label for="problema-formato-artigo">Há problemas na formatação do artigo?</label>
+              <input id="problema-formato-trabalho" type="checkbox" name="formatacao" value="Problemas com a formatação"/>
+              <label for="problema-formato-trabalho">Há problemas na formatação do trabalho?</label>
             </div>
             <div>
+            
+              <!-- ORIGINALIDADE -->	
               <div class="col m6 s12">
                 <div class="card horizontal small">
                   <div class="card-stacked">
-                    <div class="card-content"><span class="card-title">Originalidade</span>
+                    <div class="card-content"><span class="card-title">* Originalidade</span>
                       <p>Tema atual e inovador, contribuição científica clara (quando tiver resultados), abordagem ou solução inovadora.</p>
                     </div>
                     <div class="card-action">
-                                            <div class="input-field">
-                                              <select name="originalidade">
-                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                                <option value="RUIM">RUIM</option>
-                                                <option value="FRACO">FRACO</option>
-                                                <option value="MEDIO">MEDIO</option>
-                                                <option value="BOM">BOM</option>
-                                                <option value="OTIMO">OTIMO</option>
-                                              </select>
-                                            </div>
+                    	<div class="input-field">
+                        	<select name="originalidade">
+                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                <option value="RUIM">RUIM</option>
+                                <option value="FRACO">FRACO</option>
+                                <option value="MEDIO">MEDIO</option>
+                            	<option value="BOM">BOM</option>
+                            	<option value="OTIMO">OTIMO</option>
+                      		</select>
+              			</div>
                     </div>
                   </div>
                 </div>
               </div>
+              
+              <!-- MERITO -->
               <div class="col m6 s12">
                 <div class="card horizontal small">
                   <div class="card-stacked">
-                    <div class="card-content"><span class="card-title">Mérito Técnico</span>
+                    <div class="card-content"><span class="card-title">* Mérito Técnico</span>
                       <p>Motivação, fundamentação teórica, metodologia. Para trabalhos que apresentam resultados, avaliar a aquisição e conclusões acerca dos resultados encontrados. Para trabalhos em andamento, avaliar os resultados esperados e o alcance dos resultados dado os objetivos de pesquisa e experimentos propostos.</p>
                     </div>
                     <div class="card-action">
-                                            <div class="input-field">
-                                              <select name="merito">
-                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                                <option value="RUIM">RUIM</option>
-                                                <option value="FRACO">FRACO</option>
-                                                <option value="MEDIO">MEDIO</option>
-                                                <option value="BOM">BOM</option>
-                                                <option value="OTIMO">OTIMO</option>
-                                              </select>
-                                            </div>
+                    	<div class="input-field">
+                        	<select name="merito">
+                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                <option value="RUIM">RUIM</option>
+                                <option value="FRACO">FRACO</option>
+                                <option value="MEDIO">MEDIO</option>
+                                <option value="BOM">BOM</option>
+                                <option value="OTIMO">OTIMO</option>
+                       		</select>
+                    	</div>
                     </div>
                   </div>
                 </div>
               </div>
+              
+              <!-- CLAREZA -->
               <div class="col m6 s12">
                 <div class="card horizontal small">
                   <div class="card-stacked">
-                    <div class="card-content"><span class="card-title">Clareza</span>
-                      <p>Organização do texto, separação e ordenação das seções para os artigos, fluxo de ideias coerente, conclusões sobre o trabalho claras e possíveis dadas as premissas, bom uso de figuras/tabelas/exemplos.</p>
+                    <div class="card-content"><span class="card-title">* Clareza</span>
+                      <p>Organização do texto, separação e ordenação das seções para os trabalhos, fluxo de ideias coerente, conclusões sobre o trabalho claras e possíveis dadas as premissas, bom uso de figuras/tabelas/exemplos.</p>
                     </div>
                     <div class="card-action">
-                                            <div class="input-field">
-                                              <select name="clareza">
-                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                                <option value="RUIM">RUIM</option>
-                                                <option value="FRACO">FRACO</option>
-                                                <option value="MEDIO">MEDIO</option>
-                                                <option value="BOM">BOM</option>
-                                                <option value="OTIMO">OTIMO</option>
-                                              </select>
-                                            </div>
+                    	<div class="input-field">
+                        	<select name="clareza">
+                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                            	<option value="RUIM">RUIM</option>
+                            	<option value="FRACO">FRACO</option>
+                             	<option value="MEDIO">MEDIO</option>
+                            	<option value="BOM">BOM</option>
+                            	<option value="OTIMO">OTIMO</option>
+                        	</select>
+                   		</div>
                     </div>
                   </div>
                 </div>
               </div>
+              
+              <!-- QUALIDADE -->
               <div class="col m6 s12">
                 <div class="card horizontal small">
                   <div class="card-stacked">
-                    <div class="card-content"><span class="card-title">Qualidade do Texto</span>
+                    <div class="card-content"><span class="card-title">* Qualidade do Texto</span>
                       <p>Redação do texto adequada: respeito pelas normas, bibliografia, redação correta em Português/Inglês. Respeito pela formatação especificada pelo edital (tamanho de fonte, espaçamento, tamanho máximo e mínimo).</p>
                     </div>
                     <div class="card-action">
-                                            <div class="input-field">
-                                              <select name="qualidade">
-                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                                <option value="RUIM">RUIM</option>
-                                                <option value="FRACO">FRACO</option>
-                                                <option value="MEDIO">MEDIO</option>
-                                                <option value="BOM">BOM</option>
-                                                <option value="OTIMO">OTIMO</option>
-                                              </select>
-                                            </div>
+                    <div class="input-field">
+                    	<select name="qualidade">
+                        	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                        	<option value="RUIM">RUIM</option>
+                        	<option value="FRACO">FRACO</option>
+                        	<option value="MEDIO">MEDIO</option>
+                        	<option value="BOM">BOM</option>
+                        	<option value="OTIMO">OTIMO</option>
+                    	</select>
+                 	</div>
                     </div>
                   </div>
                 </div>
               </div>
+              
+              <!-- RELEVANCIA -->
               <div class="col m6 s12">
                 <div class="card horizontal small">
                   <div class="card-stacked">
-                    <div class="card-content"><span class="card-title">Relevancia</span>
-                      <p>Organização do texto, separação e ordenação das seções para os artigos, fluxo de ideias coerente, conclusões sobre o trabalho claras e possíveis dadas as premissas, bom uso de figuras/tabelas/exemplos.</p>
+                    <div class="card-content"><span class="card-title">* Relevancia</span>
+                      <p>Organização do texto, separação e ordenação das seções para os trabalhos, fluxo de ideias coerente, conclusões sobre o trabalho claras e possíveis dadas as premissas, bom uso de figuras/tabelas/exemplos.</p>
                     </div>
                     <div class="card-action">
-                                            <div class="input-field">
-                                              <select name="relevancia">
-                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                                <option value="RUIM">RUIM</option>
-                                                <option value="FRACO">FRACO</option>
-                                                <option value="MEDIO">MEDIO</option>
-                                                <option value="BOM">BOM</option>
-                                                <option value="OTIMO">OTIMO</option>
-                                              </select>
-                                            </div>
+                    	<div class="input-field">
+                        	<select name="relevancia">
+                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                            	<option value="RUIM">RUIM</option>
+                            	<option value="FRACO">FRACO</option>
+                            	<option value="MEDIO">MEDIO</option>
+                            	<option value="BOM">BOM</option>
+                            	<option value="OTIMO">OTIMO</option>
+                            </select>
+              			</div>
                     </div>
                   </div>
                 </div>
               </div>
+              
+              <!-- AUTO AVALIAÇÃO DO REVISOR -->
               <div class="col m6 s12">
                 <div class="card horizontal small">
                   <div class="card-stacked">
-                    <div class="card-content"><span class="card-title">Auto-Avaliação do Revisor</span>
-                      <p>Avaliação global do artigo. A nota final será obtida a partir dos quesitos: originalidade, mérito técnico, clareza, qualidade e relevância. A avaliação geral, assim como a auto-avaliação, servirá como critério para um eventual desempate.</p>
+                    <div class="card-content"><span class="card-title">* Auto-Avaliação do Revisor</span>
+                      <p>Avaliação global do trabalho. A nota final será obtida a partir dos quesitos: originalidade, mérito técnico, clareza, qualidade e relevância. A avaliação geral, assim como a auto-avaliação, servirá como critério para um eventual desempate.</p>
                     </div>
                     <div class="card-action">
-                                            <div class="input-field">
-                                              <select name="auto-avaliacao">
-                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                                <option value="Não Conhecedor">Não Conhecedor</option>
-                                                <option value="Conhecedor">Conhecedor</option>
-                                                <option value="Especialista">Especialista</option>
-                                              </select>
-                                            </div>
+					    <div class="input-field">
+                        	<select name="auto-avaliacao">
+                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                <option value="Não Conhecedor">Não Conhecedor</option>
+                                <option value="Conhecedor">Conhecedor</option>
+                                <option value="Especialista">Especialista</option>
+                            </select>
+                        </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col m6 s12">
-                <div class="card horizontal small">
-                  <div class="card-stacked">
-                    <div class="card-content"><span class="card-title">Avaliação Geral</span>
-                      <p>Avaliação global do artigo. A nota final será obtida a partir dos quesitos: originalidade, mérito técnico, clareza, qualidade e relevância. A avaliação geral, assim como a auto-avaliação, servirá como critério para um eventual desempate.</p>
-                    </div>
-                    <div class="card-action">
-                                            <div class="input-field">
-                                              <select name="avaliacao-geral">
-                                                <option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                                <option value="RUIM">RUIM</option>
-                                                <option value="FRACO">FRACO</option>
-                                                <option value="MEDIO">MEDIO</option>
-                                                <option value="BOM">BOM</option>
-                                                <option value="OTIMO">OTIMO</option>
-                                              </select>
-                                            </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+				
+			 <!-- COMENTÁRIOS PARA OS AUTORES -->              
               <div class="col m6 s12">
                 <div class="card horizontal small">
                   <div class="card-stacked">
                     <div class="card-content"></div>
                     <div class="col s12">
                       <div class="input-field">
-                        <textarea id="comentarios-para-autor" class="materialize-textarea" name="comentarios"></textarea>
-                        <label for="comentarios-para-autor">Comentarios para os autores:</label>
+                        <textarea id="comentarios-para-autor" class="materialize-textarea" name="comentarios_autores"></textarea>
+                        <label for="comentarios-para-autor">* Comentários para os autores:</label>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              
+              <!-- COMENTÁRIOS PARA A ORGANIZAÇÃO -->              
               <div class="col m6 s12">
-                <input id="indicar-artigo" type="checkbox" name="indicar"/>
-                <label for="indicar-artigo">Você indicaria este trabalho para premiação dos melhores artigos?</label>
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"></div>
+                    <div class="col s12">
+                      <div class="input-field">
+                        <textarea id="comentarios-para-organizacao" class="materialize-textarea" name="comentarios_organizacao"></textarea>
+                        <label for="comentarios-para-organizacao">Comentários para a organização:</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+              
+              <!-- AVALIAÇÃO GERAL -->
               <div class="col m6 s12">
-                <button id="submit" type="submit" name="action" class="btn waves-effect waves-light white-text btn-large">Enviar Revisão<i class="material-icons right">send</i></button>
+                <div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">* Avaliação Geral</span>
+                      <p>Avaliação global do trabalho. A nota final será obtida a partir dos quesitos: originalidade, mérito técnico, clareza, qualidade e relevância. A avaliação geral, assim como a auto-avaliação, servirá como critério para um eventual desempate.</p>
+                    </div>
+                    <div class="card-action">
+                    	<div class="input-field">
+                         	<select name="avaliacao-geral">
+                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                <option value="RUIM">RUIM</option>
+                                <option value="FRACO">FRACO</option>
+                                <option value="MEDIO">MEDIO</option>
+                                <option value="BOM">BOM</option>
+                                <option value="OTIMO">OTIMO</option>
+                            </select>
+                        </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+              
+              <!-- AVALIAÇÃO FINAL -->
+              <div class="col m6 s12">
+              	<div class="card horizontal small">
+                  <div class="card-stacked">
+                    <div class="card-content"><span class="card-title">* Avaliação Final do Trabalho</span>
+                      <p>A avaliação final define a aprovação do trabalho</p>
+                    </div>
+                    <div class="card-action">
+                    	<div class="input-field">
+                         	<select name="avaliacao-final">
+                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+                                <option value="APROVADO">APROVADO</option>
+                                <option value="RESSALVAS">APROVADO COM RESSALVAS</option>
+                                <option value="REPROVADO">REPROVADO</option>
+                            </select>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- INDICAÇÃO MELHORES TRABALHOS -->
+              <div class="col m6 s12">
+                <input id="indicar-trabalho" type="checkbox" name="indicar" value="Digno de indicação aos melhores trabalhos"/>
+                <label for="indicar-trabalho">Você indicaria este trabalho para premiação dos melhores trabalhos?</label>
+              </div>
+                
             </div>
+            
+            <div class="row">
+              	<div class="col m6 s12">
+                	<button id="submit" type="submit" name="action" class="btn waves-effect waves-light white-text btn-large">Enviar Revisão<i class="material-icons right">send</i></button>
+             	</div>
+              </div> 
           </form>
         </div>
       </div>
