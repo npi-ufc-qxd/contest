@@ -61,7 +61,7 @@
 	      				<div class="col m6 s6">
                 			<h5 id="listaEscolhidosTitulo">Revisores Selecionados</h5>
                 			<div id="listaEscolhidos" class="collection" >
-                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|revisando_${revisor.pessoa.id}|" onclick="$(this).remove();" class="collection-item" th:text="${revisor.pessoa.nome}"> 
+                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|revisando_${revisor.pessoa.id}|" onclick="remove(this)" class="collection-item" th:text="${revisor.pessoa.nome}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                	    </div>
@@ -150,6 +150,39 @@
             	});
             }
           }
+        
+        remove = function(e){
+        	var idRevisor = $(e).attr('id').replace('revisando_','');
+        	var idTrabalho = $(e).attr('trabalho');
+        	
+        	var token = $("meta[name='_csrf']").attr("content");
+        	
+        	var data = {
+	        	'revisorId': 	idRevisor,
+	    		'trabalhoId': 	idTrabalho,
+	    	};
+        	
+        	$(e).remove();
+        	
+        	$.ajax({
+          	  contentType: 'application/json;charset=UTF-8',
+          	  url: '/eventoOrganizador/evento/trabalho/removerRevisor',
+          	  dataType: 'json',
+          	  headers: {"X-CSRF-TOKEN":token},
+          	  type: 'POST',
+          	  cache: false, 
+          	  processData: false, 
+          	  data: JSON.stringify(data),
+          	  success: function (data) {
+          		  		  listaescolhidos.append(a);	
+		                	  console.log('Deu tudo certo...'+data);
+              			},
+                error: function (data, error) {
+              	  console.log('Falhou...');
+              	  console.log('dados = '+error);
+              	}
+          	});
+        }
         
     });
     </script>

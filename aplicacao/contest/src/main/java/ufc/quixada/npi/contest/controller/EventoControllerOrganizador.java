@@ -84,7 +84,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private TrabalhoService trabalhoService;
 	
 	@Autowired
-	private ParticipacaoTrabalhoService participacaotrabalhoService;
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	@Autowired
 	private RevisaoService revisaoService;
@@ -144,7 +144,17 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		participacaoTrabalho.setPessoa(revisor);
 		participacaoTrabalho.setTrabalho(trabalho);
 
-		participacaotrabalhoService.adicionarOuEditar(participacaoTrabalho);
+		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalho);
+		
+		return "{\"result\":\"ok\"}";
+	}
+	
+	@RequestMapping(value = "/evento/trabalho/removerRevisor", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String removerRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao){
+		
+		ParticipacaoTrabalho participacao = participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
+		
+		participacaoTrabalhoService.remover(participacao);
 		
 		return "{\"result\":\"ok\"}";
 	}
