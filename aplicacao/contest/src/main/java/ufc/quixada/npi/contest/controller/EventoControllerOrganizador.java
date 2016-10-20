@@ -6,9 +6,7 @@ import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
-import org.mortbay.util.ajax.AjaxFilter.AjaxResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
@@ -31,7 +28,6 @@ import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
-import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -68,7 +64,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	
-	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -132,7 +127,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
-		model.addAttribute("revisores", participacaoEventoService.getRevisoresNoEvento(eventoId));
+		model.addAttribute("revisores", pessoaService.getRevisoresDoEventoQueNaoParticipaDoTrabalho(eventoId));
 		model.addAttribute("evento", evento);
 		model.addAttribute("trabalhos", trabalhos);
 		return Constants.TEMPLATE_ATRIBUIR_REVISOR_ORG;
@@ -141,14 +136,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/evento/trabalho/revisor",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String atibuirRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
 		
-		Pessoa revisor = pessoaService.get(dadosRevisao.getRevidorId());
+		Pessoa revisor = pessoaService.get(dadosRevisao.getRevisorId());
 		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId());
 		
 		ParticipacaoTrabalho participacaoTrabalho = new ParticipacaoTrabalho();
 		participacaoTrabalho.setPapel(Papel.REVISOR);
 		participacaoTrabalho.setPessoa(revisor);
 		participacaoTrabalho.setTrabalho(trabalho);
-		
+
 		participacaotrabalhoService.adicionarOuEditar(participacaoTrabalho);
 		
 		return "{\"result\":\"ok\"}";

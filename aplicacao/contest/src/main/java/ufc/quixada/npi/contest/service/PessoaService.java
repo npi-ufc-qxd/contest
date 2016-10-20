@@ -77,4 +77,8 @@ public class PessoaService {
 		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.STA, idEvento));
 		return revisores;
 	}
+	
+	public List<Pessoa> getRevisoresDoEventoQueNaoParticipaDoTrabalho(Long idEvento){
+		return pessoaRepository.findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoId(Papel.REVISOR, idEvento);
+	}
 }

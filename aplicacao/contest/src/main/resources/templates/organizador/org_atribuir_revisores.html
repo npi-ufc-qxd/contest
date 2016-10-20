@@ -24,27 +24,26 @@
 
         <div>
           <div class="col s12">
-            <div class="col s4" th:each="trabalho : ${trabalhos}">
+            <div class="col s4" th:each="trabalho,count : ${trabalhos}">
 	            <div class="card horizontal small">
 	              <div class="card-stacked">
 	                <div>
 	                	<div class="card-content">
 	                		<span class="card-title" th:text="${trabalho.titulo}"></span>
 	                  		<p th:text="'Autor: ' + ${trabalho.participacoes[0].pessoa.nome}"></p>
-	                  		<p>Orientador: Thiago Nogueira</p>
-	                  		<p th:each="revisao : ${trabalho.revisoes}" th:text="${revisao.revisor.nome}"></p>
+	                  		<p th:each="revisor : ${trabalho.participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:text="|Revisor: ${revisor.pessoa.nome}"></p>
 	                   	</div>
 	                   	<div class="card-action">
-	              			<a th:id="${trabalho.id}" href="#modalRevisor" onclick="trabalho_atual(this)" class="btn white-text waves-effect waves-light blue-grey modal-trigger">Atribuir Revisor</a>
+	              			<a th:id="${trabalho.id}" th:attr="href='#modalRevisor' + ${count.index}" onclick="trabalho_atual(this)" class="btn white-text waves-effect waves-light blue-grey modal-trigger">Atribuir Revisor</a>
 	              		</div>
 	                </div>
 	              </div>
 	            </div>
-          </div>
-          </div>
-        </div>
-      	<form action="#" th:action="@{/eventoOrganizador/evento/1/revisores}" method="post">
-	      	<div id="modalRevisor" class="modal">
+	            
+	            
+	            
+	      <form action="#" th:action="@{/eventoOrganizador/evento/1/revisores}" method="post">
+	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal">
 	      		<div class="modal-content">
 	      			<h4 class="block">Nome do Trabalho</h4>
 	      			<div class="row">
@@ -54,23 +53,31 @@
 	      					<input id="nome_do_revisor" type="text" />
 	                		<label for="nome_do_revisor">Nome do Revisor</label>
 	                		<div id="listaRevisores" class="collection">
-	                			<a th:each="revisor : ${revisores}" th:id="${revisor.id}" onclick="add(this)" class="collection-item" th:text="${revisor.pessoa.nome}"> 
+	                			<a th:each="revisor : ${revisores}" th:id="${revisor.id}" onclick="add(this)" class="collection-item" th:text="${revisor.nome}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                		</div>
 	      				</div>
 	      				<div class="col m6 s6">
                 			<h5 id="listaEscolhidosTitulo">Revisores Selecionados</h5>
-                			<div id="listaEscolhidos" class="collection"></div>
+                			<div id="listaEscolhidos" class="collection" >
+                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|revisando_${revisor.pessoa.id}|" onclick="$(this).remove();" class="collection-item" th:text="${revisor.pessoa.nome}"> 
+	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
+	                			</a>
+	                	    </div>
                 		</div>
 	      			</div>
 	      		</div>
 	      		<div class="modal-footer block">
-	      			<input type="submit" class="modal-action modal-close waves-effect btn-flat" value="Salvar"></input>
 	            	<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar  </a>
 	            </div>
 	      	</div>
       	</form>
+	            
+          </div>
+          </div>
+        </div>
+
       </div>
     </div>
 	<div th:include="fragments/footer :: footer"></div>
@@ -89,76 +96,6 @@
         //select_initializer
         $('select').material_select();
         
-        //datepicker
-        $('.datepicker').pickadate({
-          selectMonths: true, // Creates a dropdown to control month
-          selectYears: 15, // Creates a dropdown of 15 years to control year
-          //Persnonalizando nomes dos meses do ano
-          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
-          //Persnonalizando nomes dos dias da semana
-          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
-          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
-          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
-          today: 'Hoje',
-          clear: 'Limpar',
-          close: 'Fechar'
-        });
-        
-      //Trata as datas na tela org_editar_eventos 
-        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
-        var calendarioSubmissaoFinal = "#prazo_submissao_final";
-        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
-        var calendarioRevisaoFinal = "#prazo_revisao_final";
-        
-        function habilitarCalendario(calendario){
-          $(calendario).removeAttr( "disabled" );
-        }
-        
-        function desabilitarCalendario(calendario){
-          $(calendario).attr( "disabled", true );
-          $(calendario).pickadate("clear");
-        }
-        
-        function definirDataMinimaCalendario(calendario, dataMin){
-          var picker = getPicker(calendario);
-          picker.set("min", dataMin);
-        }
-        
-        function getPicker(idCalendario){
-          var $input = $(idCalendario).pickadate();
-          var picker = $input.pickadate("picker");
-          return picker;
-        }
-        
-        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
-          var picker = getPicker(idCalendarioInicial);
-          var dataAtual = picker.get();
-          var umDia = 1;
-          
-          var dataMinima = new Date(dataAtual);
-          dataMinima.setDate(dataMinima.getDate()+umDia);
-                
-          if (dataAtual.length == 0) {
-            desabilitarCalendario(idCalendarioFinal);
-          } else {
-            habilitarCalendario(idCalendarioFinal);       
-            
-            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
-          }
-        }
-        
-        $(calendarioSubmissaoInicial).on("change",function(){
-          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
-        });
-        
-        $(calendarioSubmissaoFinal).on("change",function(){
-          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
-        });
-        
-        $(calendarioRevisaoInicial).on("change",function(){
-          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
-        });
-        
         //Inicialização do Modal excluir Evento
         $('.modal-trigger').leanModal();
         
@@ -172,28 +109,27 @@
         };
         
         add = function(e) {//vai receber o Objeto vindo da linkRevisor
-            var elemento = document.getElementById(e.id);
-            var listaescolhidos = document.getElementById("listaEscolhidos");
-            var cont = 0;
+            var listaescolhidos = $("#listaEscolhidos");
+            
             var trabalhoId = $(e).attr('trabalho');
             
-            if ($('#listaEscolhidos').find('#'+e.id).length>0){
-                cont++;
-            }
-           
-            if(cont != 0){
-              Materialize.toast('O mesmo organizador não pode ser alocado mais de uma vez no mesmo evento', 4000)
+            var seletor = '#revisando_'+$(e).attr('id');
+            
+            if ($(seletor).length>0){
+            	Materialize.toast('O mesmo organizador não pode ser alocado mais de uma vez no mesmo evento', 4000)
             }else{
-              var a = elemento.cloneNode(true);
-              var idPessoa = a.id;
-              a.setAttribute('onclick','$(this).remove();');
+              var a = $(e).clone(true);              
+              a.attr('onclick','$(this).remove();');
+              a.attr("id", "revisando_"+$(e).attr('id'));
               
               
               var token = $("meta[name='_csrf']").attr("content");
+              
               var data = {
-			      		  	'revidorId':idPessoa,
-			    		  	'trabalhoId': trabalhoId,
+			      		  	'revisorId': 	$(e).attr('id'),
+			    		  	'trabalhoId': 	trabalhoId,
 			    		  };
+              console.log(data);
               $.ajax({
             	  contentType: 'application/json;charset=UTF-8',
             	  url: '/eventoOrganizador/evento/trabalho/revisor',
@@ -204,7 +140,7 @@
             	  processData: false, 
             	  data: JSON.stringify(data),
             	  success: function (data) {
-		                	  document.getElementById("listaEscolhidos").appendChild(a);	
+            		  		  listaescolhidos.append(a);	
 		                	  console.log('Deu tudo certo...'+data);
                 			},
                   error: function (data, error) {

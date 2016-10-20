@@ -52,8 +52,6 @@ public class ParticipacaoEventoService {
 	}
 	
 	public List<ParticipacaoEvento> getRevisoresNoEvento(Long id){
-		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
-		listaParticipacaoEventos = participacaoEventoRepository.findByPapelAndEventoId(Papel.REVISOR, id);
-		return listaParticipacaoEventos;
+		return participacaoEventoRepository.findByPapelAndEventoId(Papel.REVISOR, id);
 	}
 }

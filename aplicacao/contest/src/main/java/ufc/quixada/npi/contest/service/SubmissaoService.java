@@ -23,4 +23,8 @@ public class SubmissaoService {
 		}
 		return false;
 	}
+	
+	public Submissao getSubmissaoByTrabalho(Long id){
+		return submissaoRepository.findSubmissaoByTrabalhoId(id);
+	}
 }

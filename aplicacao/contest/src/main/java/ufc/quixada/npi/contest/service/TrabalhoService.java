@@ -33,7 +33,6 @@ public class TrabalhoService {
 		return trabalhoRepository.findByTrilha(trilha);
 	}
 	
-	
 	public void adicionarTrabalho(Trabalho trabalho){
 		trabalhoRepository.save(trabalho);
 	}
