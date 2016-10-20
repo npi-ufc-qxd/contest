@@ -16,6 +16,11 @@ h1, h2, h3 {
   margin-right: 20px;
 }
 
+.scrollable{
+	height:170px;;
+	overflow:scroll;
+}
+
 .opcoes a{
   margin-right: 20px;
 }

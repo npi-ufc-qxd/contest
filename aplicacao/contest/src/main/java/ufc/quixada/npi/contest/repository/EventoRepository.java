@@ -11,11 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 
 @Repository
 @Transactional
 public interface EventoRepository extends CrudRepository<Evento, Long>{
-	public List<Evento> findByEstadoEquals(EstadoEvento estado);
+	public List<Evento> findEventoByEstadoAndVisibilidade(EstadoEvento estado, VisibilidadeEvento visibilidade);
+	
 	@Query("select e from Evento e where e.estado = ufc.quixada.npi.contest.model.EstadoEvento.ATIVO and "
 			+ "e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO")
 	public List<Evento> findEventosAtivosEPublicos();
@@ -27,17 +30,12 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 	"ORDER BY e.id")
 	public List<Evento> eventosParaParticipar(@Param("idPessoa") Long idPessoa);
 	
-	@Query("SELECT e FROM Evento e " + 
-			"WHERE e.id in ( SELECT DISTINCT pe.evento.id FROM ParticipacaoEvento pe WHERE :idAutor = pe.pessoa.id) "
-			+ "AND  e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO "+
-			"ORDER BY e.id")
-	public List<Evento> findEventosDoAutor(@Param("idAutor") Long idAutor);
+	public List<Evento> findDistinctEventoByParticipacoesPessoaIdAndVisibilidade(Long id, VisibilidadeEvento visbilidade);
 	
-	@Query("SELECT e FROM Evento e " + 
-			"WHERE e.id in (SELECT DISTINCT pe.evento.id FROM ParticipacaoEvento pe WHERE :idRevisor = pe.pessoa.id) "
-			+ "AND  e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO "+
-			"ORDER BY e.id")
-	public List<Evento> findEventosDoRevisor(@Param("idRevisor") Long idRevisor);
+	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(Long id,Papel papel,VisibilidadeEvento visibilidade, EstadoEvento estado);
+	
+	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(Long id, Papel papel, EstadoEvento estado);
 	
 	public List<Evento> findEventoByEstado(EstadoEvento estadoEvento);
+	
 }
