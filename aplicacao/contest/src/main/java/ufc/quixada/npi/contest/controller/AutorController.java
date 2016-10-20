@@ -41,6 +41,7 @@ import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
+
 @Controller
 @RequestMapping("/autor")
 public class AutorController {
@@ -96,38 +97,38 @@ public class AutorController {
 	private StorageService storageService;
 
 	@RequestMapping
-	public String index(Model model) {
+	public String index(Model model){
 		Pessoa autorLogado = getAutorLogado();
 		model.addAttribute("eventosParaParticipar", eventoService.eventosParaParticipar(autorLogado.getId()));
 		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
-
-	@RequestMapping(value = "/participarEvento", method = RequestMethod.GET)
-	public String eventosAtivos(Model model) {
+	
+	@RequestMapping(value="/participarEvento", method = RequestMethod.GET)
+	public String eventosAtivos(Model model){
 		Pessoa autorLogado = getAutorLogado();
 		model.addAttribute("eventosParaParticipar", eventoService.eventosParaParticipar(autorLogado.getId()));
 		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
-
-	@RequestMapping(value = "/participarEvento", method = RequestMethod.POST)
-	public String participarEvento(@RequestParam String idEvento, Model model, RedirectAttributes redirect) {
-		if (!eventoService.existeEvento(Long.parseLong(idEvento))) {
+		
+	@RequestMapping(value="/participarEvento", method = RequestMethod.POST)
+	public String participarEvento(@RequestParam String idEvento, Model model, RedirectAttributes redirect){
+		if(!eventoService.existeEvento(Long.parseLong(idEvento))){
 			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
 			return "redirect:/autor/participarEvento";
 		}
 
 		Pessoa autorLogado = getAutorLogado();
 		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
-
-		if (evento != null) {
-			if (evento.getEstado() == EstadoEvento.ATIVO) {
+		
+		if(evento != null){
+			if(evento.getEstado() == EstadoEvento.ATIVO){
 				ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
 				participacaoEvento.setEvento(evento);
 				participacaoEvento.setPessoa(autorLogado);
 				participacaoEvento.setPapel(Papel.AUTOR);
-
+				
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
 				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO,
 						messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));
@@ -146,36 +147,36 @@ public class AutorController {
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa autorLogado = getAutorLogado();
-		List<Evento> eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
-		if (eventos != null) {
+		List<Evento> eventos =  eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
+		if(eventos != null){
 			List<String> trabalhosEventos = new ArrayList<>();
-
-			for (Evento evento : eventos) {
-				if (submissaoService.existeTrabalhoNesseEvento(evento.getId())) {
-					if (revisaoService.existeTrabalhoNesseEvento(evento.getId())) {
+			
+			for(Evento evento : eventos){
+				if(submissaoService.existeTrabalhoNesseEvento(evento.getId())){
+					if(revisaoService.existeTrabalhoNesseEvento(evento.getId())){
 						trabalhosEventos.add(TEM_REVISAO);
-					} else {
+					}else{
 						trabalhosEventos.add(NAO_TEM_REVISAO);
 					}
-				} else {
+				}else{
 					trabalhosEventos.add(NAO_TEM_REVISAO);
 				}
 			}
-
+			
 			model.addAttribute("eventos", eventos);
 			model.addAttribute("trabalhosEvento", trabalhosEventos);
-		} else {
+		}else{
 			model.addAttribute("naoHaTrabalhos", messageService.getMessage(NAO_HA_TRABALHOS));
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
 
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
-	public String enviarTrabalhoForm(@PathVariable String id, Model model, RedirectAttributes redirect) {
-		try {
+	public String enviarTrabalhoForm(@PathVariable String id, Model model, RedirectAttributes redirect){
+		try{
 			Long idEvento = Long.parseLong(id);
-
-			if (eventoService.existeEvento(idEvento)) {
+			
+			if(eventoService.existeEvento(idEvento)){
 				List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
 				Pessoa p = getAutorLogado();
 				Trabalho trabalho = new Trabalho();
@@ -184,156 +185,151 @@ public class AutorController {
 				List<ParticipacaoTrabalho> partipacoes = new ArrayList<>();
 				partipacoes.add(part);
 				trabalho.setParticipacoes(partipacoes);
-
+				
 				model.addAttribute("trabalho", trabalho);
 				model.addAttribute("eventoId", id);
 				model.addAttribute("trilhas", trilhas);
-				return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
+				return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;	
 			}
 			return "redirect:/autor/meusTrabalhos";
-		} catch (NumberFormatException e) {
+		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("error", messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
 			return "redirect:/autor/meusTrabalhos";
 		}
 	}
-
+	
 	@RequestMapping(value = "/enviarTrabalhoForm", method = RequestMethod.POST)
-	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model,
-			@RequestParam(value = "file", required = true) MultipartFile file,
-			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
-			RedirectAttributes redirect) {
+	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model, @RequestParam(value="file",required = true) MultipartFile file,
+                                 @RequestParam("eventoId") String eventoId,  @RequestParam(required = false) String trilhaId, RedirectAttributes redirect){
 		Evento evento;
 		Trilha trilha;
-		try {
+		try{
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
-
+			
 			evento = eventoService.buscarEventoPorId(idEvento);
-			trilha = trilhaService.get(idTrilha, idEvento);
+			trilha = trilhaService.get(idTrilha,idEvento);
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
-		} catch (NumberFormatException e) {
+		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
 		}
-
+		
 		trabalhoValidator.validate(trabalho, result);
-		if (result.hasErrors()) {
+		if(result.hasErrors()){
 			List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(trilhaId));
 			model.addAttribute("eventoId", eventoId);
 			model.addAttribute("trilhas", trilhas);
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
-		} else {
-			if (validarArquivo(file)) {
+		}else{
+			if(validarArquivo(file)){
 				Date dataDeEnvio = new Date(System.currentTimeMillis());
-				if (evento.getPrazoSubmissaoFinal().after(dataDeEnvio)
-						&& evento.getPrazoSubmissaoInicial().before(dataDeEnvio)) {
+				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
+				   evento.getPrazoSubmissaoInicial().before(dataDeEnvio)){
 					return adicionarTrabalho(trabalho, eventoId, file, redirect);
-				} else {
-					redirect.addFlashAttribute("foraDoPrazoDeSubmissao",
-							messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
-					return "redirect:/autor/enviarTrabalhoForm/" + eventoId;
+				}else{
+					redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
+					return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
 				}
-			} else {
+			}else{
 				redirect.addFlashAttribute("erro", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
-				return "redirect:/autor/enviarTrabalhoForm/" + eventoId;
+				return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
 			}
 		}
 	}
-
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
-	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
-		try {
+	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect){
+		try{
 			Long idEvento = Long.parseLong(id);
-			if (eventoService.existeEvento(idEvento)) {
+			if(eventoService.existeEvento(idEvento)){
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
 				Pessoa pessoa = getAutorLogado();
-				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosPorAutor(pessoa, evento);
-				model.addAttribute("nomeEvento", evento.getNome());
+				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosPorAutor(pessoa,evento);
+				model.addAttribute("nomeEvento",evento.getNome());
 				model.addAttribute("eventoId", evento.getId());
 				model.addAttribute("listaTrabalhos", listaTrabalho);
 				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";
-
-		} catch (NumberFormatException e) {
+			
+		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
 		}
 	}
-
-	@RequestMapping(value = "/excluirTrabalho", method = RequestMethod.POST)
-	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId,
-			@RequestParam("eventoId") String eventoId, Model model, RedirectAttributes redirect) {
-		try {
+	
+	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)
+	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId, @RequestParam("eventoId") String eventoId,
+								  Model model, RedirectAttributes redirect){
+		try{
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrabalho = Long.parseLong(trabalhoId);
-			if (trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)) {
-
+			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
+				
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
 				Date dataDeEnvio = new Date(System.currentTimeMillis());
-
-				if (evento.getPrazoSubmissaoFinal().after(dataDeEnvio)) {
+				
+				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
 					trabalhoService.remover(Long.parseLong(trabalhoId));
-					redirect.addFlashAttribute("trabalhoExcluido",
-							messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
-					return "redirect:/autor/listarTrabalhos/" + eventoId;
-				} else {
+					redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+					return "redirect:/autor/listarTrabalhos/"+eventoId;
+				}else{
 					redirect.addFlashAttribute("erroExcluir", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
-					return "redirect:/autor/listarTrabalhos/" + evento.getId();
+					return "redirect:/autor/listarTrabalhos/"+evento.getId();
 				}
 			}
 			model.addAttribute("erroExcluir", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
 			return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
-		} catch (NumberFormatException e) {
+		}catch(NumberFormatException e){
 			model.addAttribute("erroExcluir", messageService.getMessage(ERRO_EXCLUIR_TRABALHO));
 			return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 		}
 	}
-
-	public Pessoa getAutorLogado() {
+	
+	
+	public Pessoa getAutorLogado(){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String cpf = auth.getName();
+		String cpf = auth.getName();		
 		return pessoaService.getByCpf(cpf);
 	}
-
-	public boolean validarArquivo(MultipartFile file) {
+	
+	public boolean validarArquivo(MultipartFile file){
 		return file.getOriginalFilename().endsWith(EXTENSAO_PDF);
 	}
-
-	public String adicionarTrabalho(Trabalho trabalho, String eventoId, MultipartFile file,
-			RedirectAttributes redirect) {
+	
+	public String adicionarTrabalho(Trabalho trabalho, String eventoId, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);
-
+		
 		Submissao submissao = new Submissao();
-
-		Date data = new Date(System.currentTimeMillis());
+		
+		Date data = new Date(System.currentTimeMillis());  
 
 		submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
 		submissao.setTrabalho(trabalho);
 		submissao.setDataSubmissao(data);
-
-		String nomeDoArquivo = new StringBuilder("CONT-").append(eventoId).toString();
+		
+		String nomeDoArquivo = new StringBuilder("CONT-").append(eventoId).toString();		
 		trabalho.setPath(storageService.store(file, nomeDoArquivo));
-
+		
 		submissaoService.adicionarOuEditar(submissao);
-
+		
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";
 	}
-
-	public void definePapelParticipantes(Trabalho trabalho) {
+	
+	public void definePapelParticipantes(Trabalho trabalho){
 		List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
-		for (int i = 0; i < lista.size(); i++) {
+		for(int i = 0; i < lista.size(); i++){
 			ParticipacaoTrabalho p = lista.get(i);
 			p.setTrabalho(trabalho);
-			if (i == 0) {
+			if(i == 0){
 				lista.get(i).setPapel(Papel.AUTOR);
-			} else {
+			}else{
 				lista.get(i).setPapel(Papel.COAUTOR);
 			}
-			Pessoa autor = pessoaService.getByEmail(p.getPessoa().getEmail());
-			if (autor != null) {
+			Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
+			if(autor != null){
 				p.setPessoa(autor);
 			}
 		}
