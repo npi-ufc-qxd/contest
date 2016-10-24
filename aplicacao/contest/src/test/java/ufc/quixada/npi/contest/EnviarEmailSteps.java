@@ -4,6 +4,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.mockito.InjectMocks;
@@ -49,11 +51,7 @@ public class EnviarEmailSteps {
 	private static Long PESSOA_ID = (long) 1;
 	private Pessoa pessoa;
 	private String papelConvidado;
-	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
-	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
-
-	
-
+	private static final String PAG_EVENTOS_ORGANIZADOR = "/eventoOrganizador/ativos";
 
 	@Before
 	public void setup() {
@@ -72,9 +70,8 @@ public class EnviarEmailSteps {
 		pessoa.setEmail("manuelac@npi.com");
 		pessoa.setNome("Manuela Cardoso Fernandes");
 		
+		
 	}
-	
-	
 	/* O organizador convida pessoas para participarem de um evento ativo*/
 	@Dado("^que existe um evento ativo$")
     public void casoTesteDadoCenario1() throws Throwable {
@@ -92,23 +89,20 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador convida a pessoa com nome (.*) e email (.*) para participar do evento$")
     public void casoTesteQuandoCenario1(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.enviarEmail(TITULO_EMAIL_ORGANIZADOR, TEXTO_EMAIL_ORGANIZADOR)).thenReturn(true);
+		when(emailService.enviarEmail()).thenReturn(true);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("nomeEvento", evento.getNome())
 				.param("nomeConvidado", nomeConvidado)
 				.param("funcao", papelConvidado)
-				.param("enderecoDestinatario", enderecoEmail));
+				.param("email", enderecoEmail));
 		
     }
 	@Então("^um convite por email é enviado para a pessoa$")
     public void casoTesteEntao1Cenario1() throws Throwable {
-		action.andExpect(model().attribute("erro", messageService.getMessage("ERRO_ENVIO_EMAIL")));
+		action.andExpect(status().isFound()).andExpect(redirectedUrl(PAG_EVENTOS_ORGANIZADOR));
     }
-	
-	
 	/*O organizador enviar convite para email com formato inválido*/
-	
 	@Dado("^que existe um evento com estado ativo$")
     public void casoTesteDadoCenario2() throws Throwable {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
@@ -125,7 +119,7 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador tenta convidar uma pessoa com nome (.*) o email invalido (.*)$")
     public void casoTesteQuando(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.enviarEmail(TITULO_EMAIL_ORGANIZADOR, TEXTO_EMAIL_ORGANIZADOR)).thenReturn(false);
+		when(emailService.enviarEmail()).thenReturn(false);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("nomeEvento", evento.getNome())
@@ -136,7 +130,7 @@ public class EnviarEmailSteps {
     }
 	@Então("^uma mensagem de erro (.*) de impedimento é retornada$")
     public void casoTesteEntao1Cenario2(String mensagemErro) throws Throwable {
-		action.andExpect(model().attribute("erro", messageService.getMessage(mensagemErro)));
+		action.andExpect(model().attribute("organizadorError", messageService.getMessage(mensagemErro)));
     }
 	
 /*	O organizador convida pessoas para participarem de um evento inativo*/	

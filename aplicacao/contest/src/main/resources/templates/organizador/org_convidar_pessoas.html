@@ -34,28 +34,26 @@
         <div th:if="${sucesso}" id="" class="row chip green white-text " th:text="#{EMAIL_ENVIADO_COM_SUCESSO}" >
           <i class="material-icons">close</i>
         </div>
-        <form class="col s12"  th:action="@{/eventoOrganizador/convidar}" th:object="${email}" method="post">
+        <form class="col s12"  th:action="@{/eventoOrganizador/convidar}" method="post">
           <div class="input-field col m6 s6">
-            <input class="validate" placeholder="Exemplo: João" id="nomeConvidado"  th:field="*{nomeConvidado}" type="text" maxlength="25"/>
+            <input class="validate" placeholder="Exemplo: João" id="nomeConvidado" name= "nomeConvidado" type="text" maxlength="25"/>
             <label for="nomeConvidado">Nome do Convidado</label>
           </div>
           <div class="input-field col m6 s6">          
-            <input id="enderecoDestinatario"  th:field="*{enderecoDestinatario}" type="email" class="validate" autocomplete="off" placeholder="exemplo@mail.com" />
+            <input id="enderecoDestinatario"  name="email" type="email" class="validate" autocomplete="" placeholder="exemplo@mail.com" />
             <label for="enderecoDestinatario">Email do Convidado</label>
           </div>
           <div class="input-field col m6 s6">
-            <select id="funcoes" th:field="*{funcao}" name="Funcoes">
+            <select id="funcoes" name ="funcao">
               <option value="" disabled ="disabled" selected="selected">Selecione uma Função</option>
               <option value="1">Organizador</option>
               <option value="2">Revisor</option>
               <option value="3">Autor</option>
-              <option value="4">Coautor</option>
-              <option value="5">Orientador</option>
             </select>
             <label for="funcoes_select">Função do Convidado</label>
           </div>
           <div class="input-field col s4">
-            <input id="NomeEvento" name="nomeEvento" type="hidden" th:value="${nomeEvento}"/>
+            <input id="NomeEvento" name="nomeEvento" type="hidden"/>
           	<button class="waves-effect waves-light btn white-text" type="submit">Enviar Convite
           		<i aria-hidden="true" class="fa fa-envelope left"></i>
           	</button>

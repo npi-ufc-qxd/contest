@@ -1,20 +1,23 @@
 package ufc.quixada.npi.contest.model;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Email {
 
-	private String nomeConvidado;
-	private String funcao;
-	@NotNull
-	@Pattern(regexp=".+@.+\\.[a-z]+")
-	private String enderecoDestinatario;
-	private String texto;
-	private String titulo;
+	private String nomeDestinatario;
+	private Map<String, String> enderecosDestinatarios;
+	private String corpo;
+	private String assunto;
 	private String nomeEvento;
 	
-	
+	   private Email(EmailBuilder builder) {
+		   	      this.nomeDestinatario = builder.nomeDestinatario;
+		   	      this.nomeEvento = builder.nomeEvento;
+		   	      this.corpo = builder.corpo;
+		   	      this.assunto = builder.assunto;
+		   	      this.enderecosDestinatarios = builder.enderecosDestinatarios;
+		   	    }
 	public String getNomeEvento() {
 		return nomeEvento;
 	}
@@ -22,35 +25,55 @@ public class Email {
 		this.nomeEvento = nome;
 	}
 	public String getNomeConvidado() {
-		return nomeConvidado;
+		return nomeDestinatario;
 	}
 	public void setNomeConvidado(String nomeConvidado) {
-		this.nomeConvidado = nomeConvidado;
+		this.nomeDestinatario = nomeConvidado;
 	}
-	public String getFuncao() {
-		return funcao;
+	public Map<String, String> getEnderecosDestinatarios() {
+		return enderecosDestinatarios;
 	}
-	public void setFuncao(String funcao) {
-		this.funcao = funcao;
+	public void setEnderecoDestinatario(String email, String nome) {
+		 for (String key : this.enderecosDestinatarios.keySet()) {
+             if(email.equals(this.enderecosDestinatarios.get(key))){
+                  this.enderecosDestinatarios.put(email, nome);
+             }
+		}
 	}
-	public String getEnderecoDestinatario() {
-		return enderecoDestinatario;
+	public String getCorpo() {
+		return corpo;
 	}
-	public void setEnderecoDestinatario(String enderecoDestinatario) {
-		this.enderecoDestinatario = enderecoDestinatario;
+	public void setCorpo(String texto) {
+		this.corpo = texto;
 	}
-	public String getTexto() {
-		return texto;
+	public String getAssunto() {
+		return assunto;
 	}
-	public void setTexto(String texto) {
-		this.texto = texto;
-	}
-	public String getTitulo() {
-		return titulo;
-	}
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
+	public void setAssunto(String titulo) {
+		this.assunto = titulo;
 	}
 	
+  public static class EmailBuilder {
+  	        private String nomeDestinatario;
+  	        private String assunto;
+  	        private String corpo;
+  	        private String nomeEvento;
+  	        private Map<String, String> enderecosDestinatarios = new HashMap<String,String>();
+  
+  	        public EmailBuilder(String nome, String assunto, String email, String corpo, String nomeEvento) {
+  	        	this.nomeDestinatario = nome;
+  	        	this.assunto = assunto;
+  	        	this.enderecosDestinatarios.put(email, nome);
+  	        	this.corpo = corpo;
+  	        }
+  	        public EmailBuilder email_destinatario(String nome_destinario, String email_destinatario) {
+  	            this.enderecosDestinatarios.put(email_destinatario, nome_destinario);
+  	            return this;
+  	        }
+
+  	        public Email build() {
+  	            return new Email(this);
+  	        }
+  	}
 	
 }

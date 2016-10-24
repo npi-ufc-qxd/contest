@@ -1,5 +1,7 @@
 package ufc.quixada.npi.contest.service;
 
+import java.util.Map;
+
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,16 +26,23 @@ public class EnviarEmailService {
 		this.templateMessage = new SimpleMailMessage();
 	}
 
-	public boolean enviarEmail(String titulo, String texto) {
+	public boolean enviarEmail() {
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
+		Map<String, String> destinatariosHash;
+		  int i = 0;
+		 destinatariosHash = this.email.getEnderecosDestinatarios();
+	     int qtdDestinatario = destinatariosHash.size();
+	     String[] enderecos = new String[qtdDestinatario];
+	   
+	     for (String key : destinatariosHash.keySet()) {
+	           enderecos[i] = key;
+	     }
 
-		this.email.setTitulo(titulo);
-		this.email.setTexto(texto);
-        msg.setTo(email.getEnderecoDestinatario());
-        msg.setText(email.getTexto());
-        msg.setSubject(email.getTitulo());
+        msg.setText(email.getCorpo());
+        msg.setSubject(email.getAssunto());
         msg.setFrom(emailCONTEST);
-		
+        msg.setTo(enderecos);
+        
 		try {
 			javaMailSender.send(msg);
 			return true;

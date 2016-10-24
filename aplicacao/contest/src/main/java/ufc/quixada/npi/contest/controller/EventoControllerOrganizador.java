@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.Email;
+import ufc.quixada.npi.contest.model.Email.EmailBuilder;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
@@ -209,9 +210,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		
 		if(evento.getEstado().equals(EstadoEvento.ATIVO)){
-			model.addAttribute("nomeEvento", evento.getNome());
-			model.addAttribute("email", new Email());
-			
+			model.addAttribute("nomeEvento", evento.getNome());			
 			return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG;
 			
 		}else{
@@ -221,19 +220,24 @@ public class EventoControllerOrganizador extends EventoGenericoController{
     }
 	
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam String nomeEvento,@Valid Email email, BindingResult result, Model model, RedirectAttributes redirect) {
+	public String convidarPorEmail(@RequestParam("nome") String nome,@RequestParam("email") String email,@RequestParam("funcao") String funcao, @RequestParam String nomeEvento,
+			BindingResult result, Model model, RedirectAttributes redirect) {
 		if (!result.hasErrors()) {
-			 email.setNomeEvento(nomeEvento);
-			 EnviarEmailService serviceEmail = new EnviarEmailService(email);
-			 if(!serviceEmail.enviarEmail(messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + email.getNomeEvento(), email.getNomeConvidado()
-					  + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR))){
-				 model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
-			 }
-		 }else{
-			 model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
-		 }
+			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + nomeEvento;
+			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + funcao;
+			
+			EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo, nomeEvento );
+			Email mail = builder.build();
+			EnviarEmailService serviceEmail = new EnviarEmailService(mail);
+			if(!serviceEmail.enviarEmail()){
+				model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+			}
+		}else{
+			model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+		}
 		return "redirect:/eventoOrganizador/ativos";	
 	}
+	
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){
 		long id = Long.parseLong(eventoId);
