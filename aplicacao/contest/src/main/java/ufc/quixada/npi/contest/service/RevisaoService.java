@@ -23,7 +23,6 @@ public class RevisaoService {
 		return false;
 	}
 	
-	// TODO Adicionar validação
 	private boolean podeAdicionarOuAtualizar(Revisao revisao){
 		return true;
 	}
