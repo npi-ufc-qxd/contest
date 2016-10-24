@@ -172,9 +172,9 @@ public class AutorController {
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
 	public String enviarTrabalhoForm(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
-			Long idTrilha = Long.parseLong(id);
+			Long idEvento = Long.parseLong(id);
 			
-			if(trilhaService.existeTrilha(idTrilha)){
+			if(eventoService.existeEvento(idEvento)){
 				List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
 				Pessoa p = getAutorLogado();
 				Trabalho trabalho = new Trabalho();

@@ -13,16 +13,28 @@
   <body>
     <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
-      <div class="row opcoes">
-      <a th:href="@{/revisor}">Eventos Ativos</a>
-      <a th:href="@{/revisor/meusEventos}">Meus Eventos</a>
-      </div>
+      <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
+    
       
       <div class="row">
         <h2>Lista de Eventos</h2>
-        <div id="error_area" class="row chip red white-text" th:if="${eventoInexistenteError}" >
-        <span th:text="${eventoInexistenteError}"></span><i class="material-icons">close</i>
-		</div>
+        <div>
+        <div th:if="${eventoVazioError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoVazioError}">
+				<i class="material-icons">close</i>
+		  </div>
+			
+			<div th:if="${eventoInexistenteError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoInexistenteError}">
+				<i class="material-icons">close</i>
+			</div>
+			
+			<div th:if="${participarEventoInativoError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${participarEventoInativoError}">
+				<i class="material-icons">close</i>
+			</div>
+			
+			<div th:if="${particapacaoEventoSucesso != null}" id="success_area" class="row chip green white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${particapacaoEventoSucesso}">
+			<i class="material-icons">close</i>
+			</div>
+        </div>
         <div class="row">
           <div class="input-field">
             <input id="pesquisar" type="text" class="col s11"/>
@@ -39,7 +51,7 @@
                   <h5 th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início da Submissão</h5>
 				  <h5 th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></h5>
                 </div>
-                <div class="card-action"><a th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
+                <div class="card-action"><a href="#" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
               </div>
             </div>
           </div>
@@ -63,6 +75,7 @@
     <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
     <script type="text/javascript">
       $(document).ready(function(){
+
         //Inicialização do Modal excluir Evento
         $('.modal-trigger').leanModal();
         

@@ -26,9 +26,8 @@ public interface PessoaRepository extends CrudRepository<Pessoa, Long>{
 	public List<Pessoa> pessoasPorPapelNoEvento(@Param("papel")String papel, @Param("idEvento")Long idEvento);
 	
 	@Query("select p from Pessoa p where p.id not in "
-			+ "(select DISTINCT  pa.id from Pessoa pa, ParticipacaoEvento pe where pe.evento.id = :idEvento AND "
-			+ "pa.id = pe.pessoa.id) and "
-			+ "(p.papelLdap = ufc.quixada.npi.contest.model.PapelLdap$Tipo.DOCENTE or "
-			+ "p.papelLdap = ufc.quixada.npi.contest.model.PapelLdap$Tipo.STA)")
+			+ "(select DISTINCT pe.pessoa.id from ParticipacaoEvento pe where pe.evento.id = :idEvento AND "
+			+ " pe.papel = ufc.quixada.npi.contest.model.Papel.ORGANIZADOR) AND "
+			+ "(p.papelLdap <> ufc.quixada.npi.contest.model.PapelLdap$Tipo.DISCENTE)")	
 	public List<Pessoa> getPossiveisOrganizadoresDoEvento(@Param("idEvento")Long idEvento);
 }

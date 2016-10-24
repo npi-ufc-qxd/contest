@@ -67,7 +67,7 @@ public class EventoController extends EventoGenericoController{
 
 	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
-		List<Evento> listaEventos = eventoService.getEventosByEstado(EstadoEvento.ATIVO);
+		List<Evento> listaEventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
 		
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ADMIN;
@@ -75,7 +75,7 @@ public class EventoController extends EventoGenericoController{
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
-		List<Evento> listaEventos = eventoService.getEventosByEstado(EstadoEvento.INATIVO);
+		List<Evento> listaEventos = eventoService.buscarEventoPorEstado(EstadoEvento.INATIVO);
 		model.addAttribute(EVENTOS_INATIVOS, listaEventos);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ADMIN;
 	}

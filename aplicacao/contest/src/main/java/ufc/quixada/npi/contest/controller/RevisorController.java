@@ -81,7 +81,7 @@ public class RevisorController {
 	private static Long ID_TRABALHO;
 
 	@RequestMapping
-	public String index(Model model) {
+	public String index(Model model){
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("eventos", eventoService.eventosParaParticipar(revisor.getId()));
 		return REVISOR_INDEX;
@@ -90,13 +90,15 @@ public class RevisorController {
 	@RequestMapping(value = "/meusEventos", method = RequestMethod.GET)
 	public String meusEventos(Model model) {
 		Pessoa revisor = getRevisorLogado();
-		model.addAttribute("eventos", eventoService.buscarEventosParticapacaoRevisor(revisor.getId()));
+		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return REVISOR_MEUS_EVENTOS;
 	}
 
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(evento == null)
+			return "";
 		
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
@@ -114,6 +116,8 @@ public class RevisorController {
 			@PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(trabalho == null || evento == null)
+			return "";
 		
 		model.addAttribute("nomeEvento", evento.getNome());
 		model.addAttribute("trabalho", trabalho);
@@ -266,4 +270,5 @@ public class RevisorController {
 
 		return coAutores;
 	}
+	
 }
