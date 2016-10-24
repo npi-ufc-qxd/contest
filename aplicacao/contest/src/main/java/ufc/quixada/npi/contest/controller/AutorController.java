@@ -46,6 +46,7 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String EXTENSAO_PDF = ".pdf";
 	private static final String FORA_DO_PRAZO_SUBMISSAO = "FORA_DO_PRAZO_SUBMISSAO";
 	private static final String ERRO_EXCLUIR_TRABALHO = "ERRO_EXCLUIR_TRABALHO";
 	private static final String TRABALHO_EXCLUIDO_COM_SUCESSO = "TRABALHO_EXCLUIDO_COM_SUCESSO";
@@ -171,9 +172,9 @@ public class AutorController {
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
 	public String enviarTrabalhoForm(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
-			Long idTrilha = Long.parseLong(id);
+			Long idEvento = Long.parseLong(id);
 			
-			if(trilhaService.existeTrilha(idTrilha)){
+			if(eventoService.existeEvento(idEvento)){
 				List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
 				Pessoa p = getAutorLogado();
 				Trabalho trabalho = new Trabalho();
@@ -287,18 +288,13 @@ public class AutorController {
 	
 	public Pessoa getAutorLogado(){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String cpf = auth.getName();
-		Pessoa autorLogado = pessoaService.getByCpf(cpf);
-		return autorLogado;
-	}
-	public boolean validarArquivo(MultipartFile file){
-		String fileExtentions = ".pdf";
-		String fileName = file.getOriginalFilename();
-		int lastIndex = fileName.lastIndexOf('.');
-		String substring = fileName.substring(lastIndex, fileName.length());
-		return fileExtentions.contains(substring);
+		String cpf = auth.getName();		
+		return pessoaService.getByCpf(cpf);
 	}
 	
+	public boolean validarArquivo(MultipartFile file){
+		return file.getOriginalFilename().endsWith(EXTENSAO_PDF);
+	}
 	
 	public String adicionarTrabalho(Trabalho trabalho, String eventoId, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);
@@ -311,10 +307,10 @@ public class AutorController {
 		submissao.setTrabalho(trabalho);
 		submissao.setDataSubmissao(data);
 		
-		Long idAutor = trabalho.getParticipacoes().get(0).getPessoa().getId();
+		String nomeDoArquivo = new StringBuilder("CONT-").append(eventoId).toString();		
+		trabalho.setPath(storageService.store(file, nomeDoArquivo));
 		
 		submissaoService.adicionarOuEditar(submissao);
-		storageService.store(file,idAutor);
 		
 		redirect.addFlashAttribute("sucessoEnviarTrabalho", messageService.getMessage(TRABALHO_ENVIADO));
 		return "redirect:/autor/meusTrabalhos";

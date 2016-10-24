@@ -18,30 +18,87 @@
       <div class="row">
         <h2>Lista de Eventos Ativos</h2>
         
-        <div> 
-          <div th:each="participacaoEventoAtivos : ${eventosAtivos}" class="col m6 s12">
-            <div class="card">
-              <div class="card-content">
-	              <span class="card-title" th:text="${participacaoEventoAtivos.evento.nome}" >Nome do Evento</span>
-	              <p th:text="|Organizador: ${participacaoEventoAtivos.pessoa.nome}|"></p>
-	              <p th:text="|Visibilidade: ${participacaoEventoAtivos.evento.visibilidade.visibilidade}|"></p>
-              </div>
-              <div class="card-action">
-              	<a href="#" class="btn white-text waves-effect waves-light blue-grey">Inativar</a>
-              	<a th:href="@{'/eventoOrganizador/evento/' + ${participacaoEventoAtivos.evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Detalhes</a>
-              </div>
-            </div>
+        <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}"> 
+          <div th:case="${true}">
+
+           </div>
+           <div class="col m4 s12" th:case="${false}">
+            <p>Não há eventos ativos</p>
+           </div> 
           </div>
-         </div>
         </div>
-        <div class="row col s12 center">
+        
+        <div class="row">
+           <div th:each="evento : ${eventosAtivos}" class="col m6 s12">
+              <div class="card">
+                <div class="card-content">
+	              <span class="card-title" th:text="${evento.nome}" ></span>
+	              <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+	              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
+                </div>
+                <div class="card-action">
+              	  <div class="row">
+              	  
+	              	  <div class="col m4 s4">
+	              	  	<a href="#" class="purple-text">Inativar</a>
+	              	  </div>
+	              	  <div class="col m4 s4">
+	              	  	<a th:attr="href='#modal' + ${evento.id}" 
+	              	  	class="purple-text modal-trigger">Revisar</a>
+	              	  </div>
+	              	  <div class="col m4 s4">
+	              	    <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}" class="purple-text">Detalhes</a>
+	              	  </div>
+              	  
+              	  </div>
+                </div>
+              </div>
+              <div th:attr="id='modal'+${evento.id}" class="modal">
+          		<div class="modal-content">
+	            	<h5 th:text="| Participar do Evento ${evento.nome} como revisor|"></h5>
+	            	<p>Tem certeza que quer participar desse evento como revisor?</p>	
+          		</div>
+          		<form th:action="@{/eventoOrganizador/participarevento}" method="post">		
+					<div class="modal-footer">
+						<input type="hidden" name="idEvento" th:value="${evento.id}"/>
+						<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button><a
+						href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+					</div>
+				</form>	
+        	  </div>
+             </div>
+        
+        
+        	<div th:each="eventoParticipo : ${eventoQueParticipo}" class="col m6 s12">
+              <div class="card">
+                <div class="card-content">
+	              <span class="card-title" th:text="${eventoParticipo.nome}" ></span>
+	              <p >Participando</p>
+	              <p th:text="|Organizador: ${eventoParticipo.participacoes[0].pessoa.nome}|"></p>
+	              <p th:text="|Visibilidade: ${eventoParticipo.visibilidade.visibilidade}|"></p>
+                </div>
+                <div class="card-action">
+              	  
+            	  <a href="#" class="blue-text">Revisando</a>
+            	  <a th:href="@{'/eventoOrganizador/evento/' + ${eventoParticipo.id}}" class="purple-text">Detalhes</a>
+              	  
+                </div>
+              </div>
+        		
+        	<div class="col m4 s12" th:if="${!existeEventos}">
+              <p>Não há eventos Ativos</p>
+            </div>
+        		
+        	</div>
+        </div>
+                <div class="row col s12 center">
                   <ul class="pagination">
                     <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
                     <li class="active"><a href="#">1</a></li>
                     <li class="waves-effect"><a href="#">2</a></li>
                     <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
                   </ul>
-      </div>
+                </div>
       </div>
      <div th:include="fragments/footer :: footer"></div>
   </body>

@@ -22,11 +22,11 @@
       <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}">
         <div th:case="${true}">
          
-         <div th:each="participacaoEventoAtivos : ${eventosAtivos}" class="col m6 s6">
+         <div th:each="evento : ${eventosAtivos}" class="col m6 s6">
           <div class="card">
-            <div class="card-content"><span class="card-title" th:text="${participacaoEventoAtivos.evento.nome}" >Nome do Evento</span>
-              <p th:text="|Organizador: ${participacaoEventoAtivos.pessoa.nome}|"></p>
-              <p th:text="|Visibilidade: ${participacaoEventoAtivos.evento.visibilidade.visibilidade}|"></p>
+            <div class="card-content"><span class="card-title" th:text="${evento.nome}" ></span>
+              <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
             </div>
             <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Inativar</a></div>
           </div>
@@ -35,8 +35,8 @@
         
         
 
-        <div class="col m4 s12" th:case="${false}">
-          <p>Não há eventos ativos</p>
+        <div class="col m4 s12" th:if="${false}">
+          <p>Não há eventos Ativos</p>
         </div>
         
         <div class="center">

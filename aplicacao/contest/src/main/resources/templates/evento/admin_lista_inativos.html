@@ -44,17 +44,34 @@
 
         <div th:case="${true}">
       
-         <div th:each="participacaoEventoInativos : ${eventosInativos}" class="col m6 s12">
+         <div th:each="evento : ${eventosInativos}" class="col m6 s12">
           <div class="card">
-            <div class="card-content"><span class="card-title" th:text="${participacaoEventoInativos.evento.nome}"></span>
-              <p th:text="|Organizador: ${participacaoEventoInativos.pessoa.nome}|"></p>
-              <p th:text="|Visibilidade: ${participacaoEventoInativos.evento.visibilidade.visibilidade}|"></p>
+            <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
+              <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
             </div>
             <div class="card-action">
-              <a th:href="@{'/evento/editar/' + ${participacaoEventoInativos.evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
-              <a id="excluir" th:attr="id_evento=${participacaoEventoInativos.evento.id}, nome_evento=${participacaoEventoInativos.evento.nome}" href="#modal" class="btn white-text waves-effect waves-light red confirmar modal-trigger excluirOnclick">Excluir</a>
+              <a th:href="@{'/evento/editar/' + ${evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
+              <a th:attr="href='#modal' + ${evento.id}"  
+	               class="btn white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
             </div>
           </div>
+          
+          <div th:attr="id='modal' + ${evento.id}" class="modal">
+            <div class="modal-content">
+              <h4>Excluir Evento</h4>
+              <h5 th:text="${evento.nome}"></h5>
+              <p>Tem certeza que quer excluir esse evento?</p>
+             </div>
+            <form th:action="@{/evento/remover}" method="post">
+              <div class="modal-footer">
+                <input type="hidden" name="idEvento" th:value="${evento.id}"/>
+                <button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+                <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+              </div>
+            </form>
+           </div>
+          
          </div>
         </div>
         
@@ -85,16 +102,5 @@
       </div>
     </div>
     <div th:include="fragments/footer :: footer"></div>
-    <script type="text/javascript">
-      $(document).ready(function(){
-    	//  
-        $('.excluirOnclick').click( function(){
-        	var idEvento = $(this).attr("id_evento");
-        	var nomeEvento = $(this).attr("nome_evento");
-        	$('#confirmarExclusao').attr("href","/evento/remover/"+idEvento);
-        	$('#nomeEventoModal').text("O evento '" + nomeEvento + "' será excluído.");
-        });
-      });
-    </script>
   </body>
 </html>

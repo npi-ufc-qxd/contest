@@ -112,7 +112,7 @@ public class Pessoa implements UserDetails {
 		try {
 			this.papelLdap = Tipo.valueOf(papelLdap);
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("Papel proveniente do LDAP não condiz com os papéis mapeados pelo sistema");
+			throw new IllegalArgumentException("Papel proveniente do LDAP não condiz com os papéis mapeados pelo sistema [" +papelLdap + "]" );
 		}
 	}
 

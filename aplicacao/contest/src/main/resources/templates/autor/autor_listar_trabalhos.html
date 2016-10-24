@@ -83,7 +83,9 @@
         	
           </div>
         </div>
-        
+        <div th:if="${#lists.isEmpty(listaTrabalhos)}" class="col s4">
+        	<p>Você não enviou trabalhos para esse evento</p>
+        </div>
       </div>
             <div class="row col s12 center">
               <ul class="pagination">
