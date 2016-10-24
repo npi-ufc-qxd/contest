@@ -125,12 +125,13 @@ public class EnviarEmailSteps {
 				.param("nomeEvento", evento.getNome())
 				.param("nomeConvidado", nomeConvidado)
 				.param("funcao", papelConvidado)
-				.param("enderecoDestinatario", enderecoEmail)
+				.param("email", enderecoEmail)
 				);
     }
 	@Então("^uma mensagem de erro (.*) de impedimento é retornada$")
     public void casoTesteEntao1Cenario2(String mensagemErro) throws Throwable {
-		action.andExpect(model().attribute("organizadorError", messageService.getMessage(mensagemErro)));
+		action.andExpect(redirectedUrl(PAG_EVENTOS_ORGANIZADOR))
+		      .andExpect(model().attribute("organizadorError", messageService.getMessage("ERRO_ENVIO_EMAIL")));
     }
 	
 /*	O organizador convida pessoas para participarem de um evento inativo*/	

@@ -220,20 +220,17 @@ public class EventoControllerOrganizador extends EventoGenericoController{
     }
 	
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam("nome") String nome,@RequestParam("email") String email,@RequestParam("funcao") String funcao, @RequestParam String nomeEvento,
-			BindingResult result, Model model, RedirectAttributes redirect) {
-		if (!result.hasErrors()) {
-			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + nomeEvento;
-			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + funcao;
-			
-			EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo, nomeEvento );
-			Email mail = builder.build();
-			EnviarEmailService serviceEmail = new EnviarEmailService(mail);
-			if(!serviceEmail.enviarEmail()){
-				model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
-			}
-		}else{
-			model.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+	public String convidarPorEmail(@RequestParam("nomeConvidado") String nome,@RequestParam("email") String email,
+			@RequestParam("funcao") String funcao, @RequestParam("nomeEvento") String nomeEvento, 
+			Model model, RedirectAttributes redirect) {
+		String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + nomeEvento;
+		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + funcao;
+		
+		EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo, nomeEvento );
+		Email mail = builder.build();
+		EnviarEmailService serviceEmail = new EnviarEmailService(mail);
+		if(!serviceEmail.enviarEmail()){
+			redirect.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
 		}
 		return "redirect:/eventoOrganizador/ativos";	
 	}
