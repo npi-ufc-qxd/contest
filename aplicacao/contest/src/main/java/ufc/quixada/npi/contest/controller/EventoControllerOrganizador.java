@@ -153,7 +153,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public @ResponseBody String removerRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao){
 		ParticipacaoTrabalho participacao = participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
 		participacaoTrabalhoService.remover(participacao);
-		
 		return "{\"result\":\"ok\"}";
 	}
 	
