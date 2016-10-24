@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/css/horizontal-timeline.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -48,8 +49,54 @@
                 <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
                   <p th:text="${evento.descricao}">
                   </p>
-                  <h5 th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início da Submissão</h5>
-				  <h5 th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></h5>
+                  <div th:if="${evento.isPeriodoInicial()}">
+                  	<p>Inicial</p>
+                  </div>
+                  <div th:if="${evento.isPeriodoRevisao()}">
+                  	<p>Revisão</p>
+                  </div>
+                  <section class="cd-horizontal-timeline">
+                  	<div class="timeline">
+                  		<div class="events-wrapper">
+                  			<div class="events">
+                  				<ol>
+									<li><a href="#0" data-date="16/01/2014" class="selected">16 Jan</a></li>
+									<li><a href="#0" data-date="28/02/2014">28 Feb</a></li>
+									<!-- other dates here -->
+									<span class="filling-line" aria-hidden="true"></span>
+								</ol>
+                  			</div> <!-- .events -->
+                  		</div> <!-- .events-wrapper -->
+                  		
+                  		<ul class="cd-timeline-navigation">
+							<li><a href="#0" class="prev inactive">Prev</a></li>
+							<li><a href="#0" class="next">Next</a></li>
+						</ul> <!-- .cd-timeline-navigation -->
+                  	</div> <!-- .timeline -->
+                  
+                  	<div class="events-content">
+						<ol>
+							<li class="selected" data-date="16/01/2014">
+								<h2>Horizontal Timeline</h2>
+								<em>January 16th, 2014</em>
+								<p>	
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
+								</p>
+							</li>
+				 
+							<li data-date="28/02/2014">
+								<!-- event description here -->
+							</li>
+				 
+							<!-- other descriptions here -->
+						</ol>
+					</div> <!-- .events-content -->
+                  </section>
+                  
+                  <div th:if="${evento.isPeriodoFinal()}">
+                  	<h5 th:text="'Início da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início da Submissão</h5>
+				  	<h5 th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></h5>
+                  </div>
                 </div>
                 <div class="card-action"><a href="#" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
               </div>
@@ -73,6 +120,7 @@
     </footer>
     <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript">
       $(document).ready(function(){
 
