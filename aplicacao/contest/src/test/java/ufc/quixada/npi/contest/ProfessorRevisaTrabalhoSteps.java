@@ -69,12 +69,13 @@ public class ProfessorRevisaTrabalhoSteps {
 	private Trabalho trabalho;
 	private Revisao revisao;
 	private Pessoa revisor;
-	private String idEvento = "1", formatacao = "form", 
-			originalidade = "orig", merito = "mer",
-			clareza = "cla", qualidade = "qua", 
-			relevancia = "rele", auto_avaliacao = "auto",
-			comentarios_autores = "c_a", comentarios_organizacao="c_org", 
-			avaliacao_geral = "av_ge", indicar = "indi", avaliacao_final="APROVADO";
+	private String idEvento = "1", formatacao = "Problemas com a formatação", 
+			originalidade = "OTIMO", merito = "OTIMO",
+			clareza = "OTIMO", qualidade = "OTIMO", 
+			relevancia = "Especialista", auto_avaliacao = "OTIMO",
+			comentarios_autores = "Bom Trabalho", comentarios_organizacao="Bom Trabalho", 
+			avaliacao_geral = "OTIMO", indicar = "Digno de indicação aos melhores trabalhos",
+			avaliacao_final="APROVADO";
 	
 	String idTrabalho = "2";
 	
@@ -111,10 +112,10 @@ public class ProfessorRevisaTrabalhoSteps {
 				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(true);
 		
 		when(revisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
-				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'FRACO','clareza':'RUIM',"
-						+ "'avaliacao_geral':'RUIM','qualidade':'RUIM','formatacao':'Problemas com a formatação',"
-						+ "'relevancia':'Não Conhecedor','comentarios':'Cara',"
-						+ "'merito':'FRACO','avaliacao_final':'REPROVADO'}");
+				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'OTIMO','clareza':'OTIMO',"
+						+ "'avaliacao_geral':'OTIMO','qualidade':'OTIMO','formatacao':'Problemas com a formatação',"
+						+ "'relevancia':'Especialista','comentarios':'Bom Trabalho',"
+						+ "'merito':'OTIMO','avaliacao_final':'APROVADO'}");
 		
 		
 		when(context.getAuthentication()).thenReturn(auth);
@@ -196,7 +197,7 @@ public class ProfessorRevisaTrabalhoSteps {
 	
 	@Entao("^A revisão não é aceita$")
 	public void revisaoNaoAceita(){
-		verify(revisaoService, never()).addOrUpdate(revisao);;
+		verify(revisaoService, never()).addOrUpdate(revisao);
 	}
 	
 	@E("^Uma mensagem de erro deve ser mostrada$")
@@ -205,26 +206,42 @@ public class ProfessorRevisaTrabalhoSteps {
 		.andExpect(flash().attribute("criterioRevisaoVazioError", messageService.getMessage("CRITERIOS_REVISAO_VAZIO")));
 	}
 	
-	//Cenário: Professor consegue baixar o trabalho 
-	@E("^Tento baixar o trabalho existente para realizar a revisão$")
-	public void baixarTrabalhoExistente() throws Exception{
-		trabalho = new Trabalho();
-		trabalho.setId(Long.valueOf(2));
-		trabalho.setTitulo("O que fazer na greve");
-	
-		when(trabalhoService.existeTrabalho(Long.valueOf(idTrabalho))).thenReturn(true);
-		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-		
+	//Cenário: Professor tenta revisar um trabalho inexistente
+	@E("^Preencho todos os critérios obrigatórios$")
+	public void todosCriteriosObrigatorios() throws Exception{
 		action = mockMvc
-				.perform(post("/trabalho/"+idTrabalho)
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
+				.perform(post("/revisor/avaliar")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("idTrabalho", idTrabalho)
+				.param("idEvento", idEvento)
+				.param("formatacao", formatacao)
+				.param("originalidade", originalidade)
+				.param("merito", merito)
+				.param("clareza", clareza)
+				.param("qualidade", qualidade)
+				.param("relevancia", relevancia)
+				.param("auto-avaliacao", auto_avaliacao)
+				.param("avaliacao-geral", avaliacao_geral)
+				.param("avaliacao-final", avaliacao_final)
+				.param("comentarios_autores", comentarios_autores)
+				.param("comentarios_organizacao", comentarios_organizacao)
+				.param("indicar", indicar));
 	}
 	
-	@Entao("^A solicitação para baixar o arquivo é mostrada$")
-	public void solicitarBaixarTrabalho() throws Exception{
-		action.andExpect(redirectedUrl("/revisor/" + idEvento + 
-		"/" + idTrabalho + "/revisar"));
+	@E("^O Trabalho a ser revisado não existe$")
+	public void trabalhoNaoExiste(){
+		when(trabalhoService.getTrabalhoById(Long.valueOf(-1))).thenReturn(null);
+		when(eventoService.existeEvento(Long.valueOf(-1))).thenReturn(false);
 	}
 	
+	@Entao("^A revisão não é registrada$")
+	public void revisaoNaoRegistrada(){
+		verify(revisaoService, never()).addOrUpdate(revisao);;
+	}
 	
+	@E("^Um erro no sistema deve ser mostrado$")
+	public void erroMostrado() throws NoSuchMessageException, Exception{
+		action.andExpect(redirectedUrl("/error"));
+	}
+
 }

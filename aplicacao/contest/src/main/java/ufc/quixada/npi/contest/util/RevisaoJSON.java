@@ -14,11 +14,13 @@ public class RevisaoJSON {
 		json.put("merito", merito);
 		json.put("clareza", clareza);
 		json.put("qualidade", qualidade);
-		json.put("relevancia", auto_avaliacao);
-		json.put("comentarios", comentarios_autores);
+		json.put("relevancia", relevancia);
+		json.put("auto_avaliacao", auto_avaliacao);
+		json.put("comentarios_autores", comentarios_autores);
 		json.put("avaliacao_geral", avaliacao_geral);
 		json.put("avaliacao_final", avaliacao_final);
 		json.put("indicacao", indicar);
+		
 		
 		return json.toString();
 	}

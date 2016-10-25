@@ -22,7 +22,8 @@ Funcionalidade: Professor revisa trabalhos submetidos
 	  	E Uma mensagem de erro deve ser mostrada
 	  
 	  Cenário: Professor tenta revisar um trabalho inexistente
-		E Realizo a revisão de um artigo com todos os critérios obrigatórios selecionados
+		E Preencho todos os critérios obrigatórios
 		E O Trabalho a ser revisado não existe
 		Então A revisão não é registrada
-		E Uma mensagem de erro deve ser mostrada
+		E Um erro no sistema deve ser mostrado
+	  	
