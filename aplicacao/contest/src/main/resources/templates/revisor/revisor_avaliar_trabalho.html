@@ -44,8 +44,10 @@
         <div>
           <h2>Revisão</h2>
           <p>* Critério obrigatórios</p>
+          
           <form class="col s12" method="post" th:action="@{/revisor/avaliar}">
             <input type="hidden" name="idTrabalho" th:value="${trabalho.id}"/>
+            <input type="hidden" name="idEvento" th:value="${idEvento}"/>
             <div class="col s12 center">
               <input id="problema-formato-trabalho" type="checkbox" name="formatacao" value="Problemas com a formatação"/>
               <label for="problema-formato-trabalho">Há problemas na formatação do trabalho?</label>

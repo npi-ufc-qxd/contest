@@ -21,11 +21,8 @@ Funcionalidade: Professor revisa trabalhos submetidos
 	  	Então A revisão não é aceita
 	  	E Uma mensagem de erro deve ser mostrada
 	  
-	  Cenário: Professor consegue baixar o trabalho
-		E Tento baixar o trabalho para realizar a revisão 
-		Então A solicitação para baixar o arquivo é mostrada
-		
-	  Cenário: Professor tenta baixar um trabalho não existente
-		E Tento baixar um trabalho com id 454231234534 que não está cadastrado no sistema
-		Então Um erro ocorre no sistema
-		E O professor é redirecionado para uma página de erro
+	  Cenário: Professor tenta revisar um trabalho inexistente
+		E Realizo a revisão de um artigo com todos os critérios obrigatórios selecionados
+		E O Trabalho a ser revisado não existe
+		Então A revisão não é registrada
+		E Uma mensagem de erro deve ser mostrada

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,6 @@ public class RevisorController {
 	@Autowired
 	private RevisaoService revisaoService;
 
-	private static final String REVISOR_INDEX = "revisor/revisor_index";
-	private static final String REVISOR_MEUS_EVENTOS = "revisor/revisor_meus_eventos";
 	private static final String REVISOR_TRABALHOS_REVISAO = "revisor/revisor_trabalhos";
 	private static final String REVISOR_AVALIAR_TRABALHO = "revisor/revisor_avaliar_trabalho";
 
@@ -77,28 +76,9 @@ public class RevisorController {
 	private static final String TRABALHO_NAO_EXISTE = "TRABALHO_NAO_EXISTE";
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
 
-	private static Long ID_EVENTO;
-	private static Long ID_TRABALHO;
-
-	@RequestMapping
-	public String index(Model model){
-		Pessoa revisor = getRevisorLogado();
-		model.addAttribute("eventos", eventoService.eventosParaParticipar(revisor.getId()));
-		return REVISOR_INDEX;
-	}
-
-	@RequestMapping(value = "/meusEventos", method = RequestMethod.GET)
-	public String meusEventos(Model model) {
-		Pessoa revisor = getRevisorLogado();
-		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
-		return REVISOR_MEUS_EVENTOS;
-	}
-
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
-		if(evento == null)
-			return "";
 		
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
@@ -107,30 +87,29 @@ public class RevisorController {
 		
 		model.addAttribute("evento", evento);
 		
-		RevisorController.ID_EVENTO = idEvento;
 		return REVISOR_TRABALHOS_REVISAO;
 	}
 
 	@RequestMapping(value = "/{idEvento}/{idTrabalho}/revisar", method = RequestMethod.GET)
-	public String revisarTrabalho(Model model, @PathVariable("idTrabalho") Long idTrabalho,
+	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
 			@PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
-		if(trabalho == null || evento == null)
-			return "";
 		
 		model.addAttribute("nomeEvento", evento.getNome());
+		model.addAttribute("idEvento", evento.getId());
 		model.addAttribute("trabalho", trabalho);
 		model.addAttribute("autores", getAutoresDoTrabalho(trabalho));
 		model.addAttribute("coAutores", getCoAutoresDoTrabalho(trabalho));
 		
-		RevisorController.ID_EVENTO = idEvento;
-		RevisorController.ID_TRABALHO = idTrabalho;
+		session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
+		session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
 		return REVISOR_AVALIAR_TRABALHO;
 	}
 
 	@RequestMapping(value = "/avaliar", method = RequestMethod.POST)
 	public String avaliarTrabalho(@RequestParam(value = "idTrabalho") String idTrabalho,
+			@RequestParam(value = "idEvento") String idEvento,
 			@RequestParam(value = "formatacao", required = false) String formatacao,
 			@RequestParam(value = "originalidade", required = false) String originalidade,
 			@RequestParam(value = "merito", required = false) String merito,
@@ -142,17 +121,24 @@ public class RevisorController {
 			@RequestParam(value = "comentarios_organizacao", required = false) String comentarios_organizacao,
 			@RequestParam(value = "avaliacao-geral", required = false) String avaliacao_geral,
 			@RequestParam(value = "avaliacao-final", required = false) String avaliacao_final,
-			@RequestParam(value = "indicar", required = false) String indicar, RedirectAttributes redirect) {
-
+			@RequestParam(value = "indicar", required = false) String indicar, RedirectAttributes redirect,
+			HttpSession session) {
+		
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-
+		if(trabalho == null || !eventoService.existeEvento(Long.valueOf(idEvento))){
+			return "redirect:/error";
+		}
+		
+		session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
+		session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
+		
 		CriteriosRevisaoValidator criterios = new CriteriosRevisaoValidator();
 		boolean validacao = criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
 				comentarios_autores, avaliacao_geral, avaliacao_final);
 
 		if (!validacao) {
 			redirect.addFlashAttribute("criterioRevisaoVazioError", messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
-			return "redirect:/revisor/" + RevisorController.ID_EVENTO + "/" + RevisorController.ID_TRABALHO + "/revisar";
+			return "redirect:/revisor/" + idEvento + "/" + idTrabalho + "/revisar";
 		}
 
 		RevisaoJSON revisaoJson = new RevisaoJSON();
@@ -180,28 +166,34 @@ public class RevisorController {
 		}
 		
 		revisaoService.addOrUpdate(revisao);
-			
+		
 		redirect.addFlashAttribute("trabalhoRevisado", messageService.getMessage(TRABALHO_REVISADO));
-		return "redirect:/revisor/" + RevisorController.ID_EVENTO + "/trabalhosRevisao";
+		return "redirect:/revisor/" + idEvento + "/trabalhosRevisao";
 	}
  
 	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
-	public String validaTrabalho(@PathVariable("trabalhoID") String idTrabalho, 
+	public String validaTrabalho(HttpSession session, @PathVariable("trabalhoID") String idTrabalho, 
 			HttpServletResponse response,
 			RedirectAttributes redirect) throws IOException {
-
+		
 		if (trabalhoService.existeTrabalho(Long.valueOf(idTrabalho))) {
 			Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 			baixarTrabalho(response, trabalho);
-			return "redirect:/revisor/" + RevisorController.ID_EVENTO + "/" + idTrabalho + "/revisar";
+			
+			session.setAttribute("ID_TRABALHO_REVISOR", idTrabalho);
+			return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") 
+										+ "/" + idTrabalho + "/revisar";
 		}
-
+		
+		
 		redirect.addFlashAttribute("trabalhoNaoExisteError", messageService.getMessage(TRABALHO_NAO_EXISTE));
-		return "redirect:/revisor/" + RevisorController.ID_EVENTO + "/" + idTrabalho + "/revisar";	
+		return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") + "/" 
+									+ session.getAttribute("ID_TRABALHO_REVISOR") 
+									+ "/revisar";
 	}
 
 	@ResponseBody
-	private void baixarTrabalho(HttpServletResponse response, Trabalho trabalho) throws IOException {
+	public void baixarTrabalho(HttpServletResponse response, Trabalho trabalho) throws IOException {
 		String titulo = trabalho.getTitulo();
 		titulo = titulo.replaceAll("\\s", "_");
 		String src = trabalho.getPath();

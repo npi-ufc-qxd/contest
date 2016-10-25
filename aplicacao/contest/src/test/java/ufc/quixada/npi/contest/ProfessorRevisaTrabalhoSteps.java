@@ -1,15 +1,21 @@
 package ufc.quixada.npi.contest;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -17,12 +23,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import cucumber.api.java.Before;
 import cucumber.api.java.gl.E;
 import cucumber.api.java.pt.Dado;
+import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Então;
 import ufc.quixada.npi.contest.controller.RevisorController;
 import ufc.quixada.npi.contest.model.AvaliacaoTrabalho;
+import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
+import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.RevisaoJSON;
@@ -37,7 +47,10 @@ public class ProfessorRevisaTrabalhoSteps {
 	private TrabalhoService trabalhoService;
 	
 	@Mock
-	private CriteriosRevisaoValidator validator;
+	private EventoService eventoService;
+	
+	@Mock
+	private CriteriosRevisaoValidator criterios;
 	
 	@Mock
 	private RevisaoJSON revisaoJSON;
@@ -47,53 +60,80 @@ public class ProfessorRevisaTrabalhoSteps {
 	
 	@Mock
 	private MessageService messageService;
-
+	
+	@Mock
+	private PessoaService pessoaService;
+	
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Trabalho trabalho;
 	private Revisao revisao;
-	private String idTrabalho = "1", formatacao = "ok", 
-			originalidade = "ok", merito = "ok",
-			clareza = "ok", qualidade = "ok", 
-			relevancia = "ok", auto_avaliacao = "ok",
-			comentarios_autores = "ok", comentarios_organizacao="ok", 
-			avaliacao_geral = "ok", avaliacao_final="APROVADO", indicar = "ok";
+	private Pessoa revisor;
+	private String idEvento = "1", formatacao = "form", 
+			originalidade = "orig", merito = "mer",
+			clareza = "cla", qualidade = "qua", 
+			relevancia = "rele", auto_avaliacao = "auto",
+			comentarios_autores = "c_a", comentarios_organizacao="c_org", 
+			avaliacao_geral = "av_ge", indicar = "indi", avaliacao_final="APROVADO";
+	
+	String idTrabalho = "2";
 	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(revisorController).build();
 	}
-
+	
+	
+	//Contexto
 	@Dado("^Dado Estou logado no sistema como professor$")
 	public void professorLogadoNoSistema() throws Throwable {
 		// nenhuma ação de teste necessária
 	}
 
+	
+	//Cenário: Professor revisa um trabalho com sucesso
 	@E("^Realizo a revisão de um artigo com todos os critérios obrigatórios selecionados$")
 	public void todosOsCriteriosObrigatoriosSelecionados() throws Exception{
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		
+		revisor = new Pessoa();
+		revisor.setCpf("92995454310");
 		
 		trabalho = new Trabalho();
-		trabalho.setId(Long.valueOf(1));
+		trabalho.setId(Long.valueOf(2));
+		trabalho.setTitulo("O que fazer na greve");
 		
 		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-		when(validator.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
+		when(eventoService.existeEvento(Long.valueOf(idEvento))).thenReturn(true);
+		when(criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
 				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(true);
+		
 		when(revisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
 				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'FRACO','clareza':'RUIM',"
 						+ "'avaliacao_geral':'RUIM','qualidade':'RUIM','formatacao':'Problemas com a formatação',"
 						+ "'relevancia':'Não Conhecedor','comentarios':'Cara',"
 						+ "'merito':'FRACO','avaliacao_final':'REPROVADO'}");
 		
+		
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("92995454310");
+		SecurityContextHolder.setContext(context);
+		
+		when(pessoaService.get(1L)).thenReturn(revisor);
+		
 		revisao = new Revisao();
 		revisao.setConteudo("conteudo");
 		revisao.setObservacoes(comentarios_organizacao);
 		revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.REPROVADO);
+		revisao.setTrabalho(trabalho);
 		
 		action = mockMvc
 				.perform(post("/revisor/avaliar")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("idTrabalho", idTrabalho)
+				.param("idEvento", idEvento)
 				.param("formatacao", formatacao)
 				.param("originalidade", originalidade)
 				.param("merito", merito)
@@ -102,25 +142,89 @@ public class ProfessorRevisaTrabalhoSteps {
 				.param("relevancia", relevancia)
 				.param("auto-avaliacao", auto_avaliacao)
 				.param("avaliacao-geral", avaliacao_geral)
-				.param("avaliacao_final", avaliacao_final)
+				.param("avaliacao-final", avaliacao_final)
 				.param("comentarios_autores", comentarios_autores)
-				.param("comentarios_organizacao", comentarios_organizacao));
+				.param("comentarios_organizacao", comentarios_organizacao)
+				.param("indicar", indicar));
 	}
 	
 	@Então("^A revisão é registrada$")
 	public void revisaoERegistrada(){
-		verify(trabalhoService).getTrabalhoById(1L);
-		verify(validator).validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
-				comentarios_autores, avaliacao_geral, avaliacao_final);
-		verify(revisaoJSON).toJson(formatacao,
-				originalidade, merito, clareza,
-				qualidade, relevancia, auto_avaliacao,
-				comentarios_autores, avaliacao_geral, avaliacao_final, indicar);
 		verify(revisaoService).addOrUpdate(revisao);
 	}
 	
 	@E("^Uma mensagem de sucesso deve ser mostrada$")
 	public void mensagemSucessoMostrada() throws Exception{
-		action.andExpect(redirectedUrl("/revisor/" + 1L + "/trabalhosRevisao")).andExpect(model().attributeExists("trabalhoRevisado"));
+		action.andExpect(redirectedUrl("/revisor/" + 1 + "/trabalhosRevisao"))
+		.andExpect(flash().attribute("trabalhoRevisado", messageService.getMessage("TRABALHO_REVISADO")));
 	}
+	
+	//Cenário: Professor não preenche todos os campos obrigatórios
+	@E("^Realizo a revisão de um artigo com um critério obrigatório não preenchido$")
+	public void criterioObrigatorioNaoPreenchido() throws Exception{
+		
+		revisor = new Pessoa();
+		revisor.setCpf("92995454310");
+		
+		trabalho = new Trabalho();
+		trabalho.setId(Long.valueOf(2));
+		trabalho.setTitulo("O que fazer na greve");
+		
+		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
+		when(eventoService.existeEvento(Long.valueOf(idEvento))).thenReturn(true);
+		when(criterios.validate(originalidade, merito, "", "", "", "",
+				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(false);
+		
+		action = mockMvc
+				.perform(post("/revisor/avaliar")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("idTrabalho", idTrabalho)
+				.param("idEvento", idEvento)
+				.param("formatacao", formatacao)
+				.param("originalidade", originalidade)
+				.param("merito", merito)
+				.param("clareza", "")
+				.param("qualidade", "")
+				.param("relevancia", "")
+				.param("auto-avaliacao", "")
+				.param("avaliacao-geral", avaliacao_geral)
+				.param("avaliacao-final", avaliacao_final)
+				.param("comentarios_autores", comentarios_autores)
+				.param("comentarios_organizacao", comentarios_organizacao)
+				.param("indicar", indicar));
+	}
+	
+	@Entao("^A revisão não é aceita$")
+	public void revisaoNaoAceita(){
+		verify(revisaoService, never()).addOrUpdate(revisao);;
+	}
+	
+	@E("^Uma mensagem de erro deve ser mostrada$")
+	public void mensagemErroMostrada() throws NoSuchMessageException, Exception{
+		action.andExpect(redirectedUrl("/revisor/" + idEvento + "/" + idTrabalho + "/revisar"))
+		.andExpect(flash().attribute("criterioRevisaoVazioError", messageService.getMessage("CRITERIOS_REVISAO_VAZIO")));
+	}
+	
+	//Cenário: Professor consegue baixar o trabalho 
+	@E("^Tento baixar o trabalho existente para realizar a revisão$")
+	public void baixarTrabalhoExistente() throws Exception{
+		trabalho = new Trabalho();
+		trabalho.setId(Long.valueOf(2));
+		trabalho.setTitulo("O que fazer na greve");
+	
+		when(trabalhoService.existeTrabalho(Long.valueOf(idTrabalho))).thenReturn(true);
+		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
+		
+		action = mockMvc
+				.perform(post("/trabalho/"+idTrabalho)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
+	}
+	
+	@Entao("^A solicitação para baixar o arquivo é mostrada$")
+	public void solicitarBaixarTrabalho() throws Exception{
+		action.andExpect(redirectedUrl("/revisor/" + idEvento + 
+		"/" + idTrabalho + "/revisar"));
+	}
+	
+	
 }
