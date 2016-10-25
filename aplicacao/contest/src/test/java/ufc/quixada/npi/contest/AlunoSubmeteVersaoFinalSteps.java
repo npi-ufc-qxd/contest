@@ -31,13 +31,10 @@ import ufc.quixada.npi.contest.model.Submissao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
-import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
-import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
-import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
 public class AlunoSubmeteVersaoFinalSteps {
 
@@ -49,13 +46,7 @@ public class AlunoSubmeteVersaoFinalSteps {
 	@Mock
 	private EventoService eventoService;
 	@Mock
-	private TrabalhoValidator trabalhoValidator;
-	@Mock
 	private PessoaService pessoaService;
-	@Mock
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
-	@Mock
-	private StorageService storageService;
 	@Mock
 	private MessageService messageService;
 	@Mock
