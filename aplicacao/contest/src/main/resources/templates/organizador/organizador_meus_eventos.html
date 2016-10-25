@@ -81,12 +81,12 @@
 							</li>
 				
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
-								<h5>Terminaram as revisões, hora de submeter a versão final do artigo</h5>
+								<h5>Terminaram as revisões, hora de submeter a versão final</h5>
 								<em th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMMM YYYY')}"></em>
 							</li>
 							
 							<li href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}">
-								<h5>Ultimo dia para submissão da versão final do artigo</h5>
+								<h5>Ultimo dia para submeter a versão final do artigo</h5>
 								<em th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMMM YYYY')}"></em>
 							</li>
 						</ol>
