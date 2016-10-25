@@ -50,16 +50,27 @@
       <div class="col s12">
         
         <div th:if="${not #lists.isEmpty(listaTrabalhos)}" class="col s4">
-          <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal small">
+          <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal ">
         	<div class="card-stacked">
         	  
         	  <div class="card-content"><span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span>
-                <div th:each="participacao : ${trabalho.participacoes}">
-                	<p th:text="'Participante: ' + ${participacao.pessoa.nome}"></p>
-                	<p th:text="'Email: ' + ${participacao.pessoa.email}"></p>
+                <div class="row">
+                <div class="col s4">
+                	<p><b>Autor(es):</b></p>
+	                <div th:each="participacao : ${trabalho.participacoes}">
+	                	<p th:text="${participacao.pessoa.nome}"></p>
+	                </div>
                 </div>
-                <p th:text="'Trilha: ' + ${trabalho.trilha.nome}"></p>
-                <p th:text="'Data de envio: ' + ${#dates.format(trabalho.submissoes.get(0).dataSubmissao,'dd/MM/yyyy')} "></p> 
+                
+                <div class="col s4">
+                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
+                </div>
+                
+                <div class="col s4">
+                	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(0).dataSubmissao,'dd/MM/yyyy')} "></span></p>
+                </div>
+                </div>
+                 
               </div>
               
            	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
