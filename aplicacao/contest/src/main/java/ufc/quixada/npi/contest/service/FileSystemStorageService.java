@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,30 +24,51 @@ import ufc.quixada.npi.contest.validator.StorageFileNotFoundException;
 
 @Service
 public class FileSystemStorageService implements StorageService{
+	
 	private final Path rootLocation;
+	
+	@Autowired
+	private MessageService messsagemService;
 	
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
     
-    @Autowired
-    private MessageService messsagemService;
-    
+   
 	@Override
-	public void init() {
-		
-	}
-
-	@Override
-	public void store(MultipartFile file, Long idAutor) {
+	public String store(MultipartFile arquivoUpload, String pastaDeDestino) {
 		 try {
-			 	String caminho = Constants.CAMINHO_TRABALHOS;
-	            if (file.isEmpty()) {
+			 
+			 	String caminho = new StringBuilder(Constants.CAMINHO_TRABALHOS)
+			 			.append(File.separator)
+			 			.append(pastaDeDestino)
+			 			.append(File.separator)			 			
+			 			.toString();
+			 	
+	            if (arquivoUpload.isEmpty()) {
 	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
 	            }
-	            Files.copy(file.getInputStream(), Paths.get(caminho, idAutor + file.getOriginalFilename()));
+	            
+	            File pasta = new File(caminho);
+	            if(!pasta.exists()){
+	            	if(!pasta.mkdirs()){
+	            		throw new RuntimeException("Não foi possível criar pasta de destino");
+	            	}	            	
+	            }
+	            SimpleDateFormat dataFormat = new SimpleDateFormat("-ddMMyy-HHmmss-SSS");
+	            
+	            String caminhoDoArquivo = new StringBuilder(caminho)
+	            		.append(pastaDeDestino)
+	            		.append(dataFormat.format(new Date()))
+	            		.append(".pdf")
+	            		.toString();
+	            
+				Files.copy(arquivoUpload.getInputStream(), Paths.get(caminhoDoArquivo));
+				return caminhoDoArquivo;
+				
 	        } catch (IOException e) {
+	        	throw new RuntimeException(e) ;
 	        }
 	}
 

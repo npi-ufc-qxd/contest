@@ -11,28 +11,15 @@
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
-    <nav role="navigation" class="purple darken-4">
-      <div class="nav-wrapper container"><a href="#"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px"/></a>
-        <ul class="white-text right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul>
-        <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-      </div>
-    </nav>
+    <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
-      <div class="row opcoes">
-      	<a th:href="@{/revisor}">Eventos Ativos</a>
-      	<a th:href="@{/revisor/meusEventos}">Meus Eventos</a>
-      </div>
+      <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
+    
       
       <div class="row">
         <h2>Lista de Eventos</h2>
         <div>
-          <div th:if="${eventoVazioError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoVazioError}">
+        <div th:if="${eventoVazioError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoVazioError}">
 				<i class="material-icons">close</i>
 		  </div>
 			
@@ -64,23 +51,9 @@
                   <h5 th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início da Submissão</h5>
 				  <h5 th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></h5>
                 </div>
-                <div class="card-action"><a th:attr="href='#modal' + ${evento.id}" class="waves-effect waves-light btn-large white-text blue-grey modal-trigger">Participar</a></div>
+                <div class="card-action"><a href="#" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
               </div>
             </div>
-            <div th:attr="id='modal'+${evento.id}" class="modal">
-          		<div class="modal-content">
-	            	<h4>Participar do Evento</h4>
-	            	<h5 th:text="${evento.nome}"></h5>
-	            	<p>Tem certeza que quer participar desse evento?</p>	
-          		</div>
-          		<form th:action="@{/revisor/participarevento}" method="post">		
-					<div class="modal-footer">
-						<input type="hidden" name="idEvento" th:value="${evento.id}"/>
-						<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button><a
-						href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-					</div>
-				</form>	
-        	</div>
           </div>
         </div>
         <div class="row col s12 center">
@@ -93,6 +66,6 @@
         </div>
       </div>
     </div>
-    <div th:include="fragments/footer :: footer"></div>
+   <div th:include="fragments/footer :: footer"></div>
   </body>
 </html>

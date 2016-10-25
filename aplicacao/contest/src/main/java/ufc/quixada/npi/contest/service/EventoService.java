@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 
 @Service
@@ -51,7 +53,7 @@ public class EventoService {
 	}
 
 	public Boolean existeEvento(Long id){
-		if(id.toString().isEmpty() || id == null){
+		if(id == null || id.toString().isEmpty()){
 			return false;
 		}else{
 			return eventoRepository.exists(id);
@@ -59,7 +61,7 @@ public class EventoService {
 	}
 	
 	public List<Evento> buscarEventoPorEstado(EstadoEvento estado){
-		return eventoRepository.findByEstadoEquals(estado);
+		return eventoRepository.findEventoByEstado(estado);
 	}
 	
 	public List<Evento> buscarEventosAtivosEPublicos(){
@@ -70,12 +72,28 @@ public class EventoService {
 		return eventoRepository.eventosParaParticipar(idPessoa);
 	}
 	
+	public List<Evento> buscarMeusEventos(Long id){
+		return eventoRepository.findDistinctEventoByParticipacoesPessoaIdAndVisibilidade(id, VisibilidadeEvento.PUBLICO);
+	}
+
 	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor){
-		return eventoRepository.findEventosDoAutor(idAutor);
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idAutor, Papel.AUTOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 	
 	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor){
-		return eventoRepository.findEventosDoAutor(idRevisor);
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idRevisor, Papel.REVISOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
+	}
+	
+	public List<Evento> buscarEventosParticapacaoOrganizador(Long idOrganizador){
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idOrganizador, Papel.ORGANIZADOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
+	}
+	
+	public List<Evento> buscarEventosInativosQueOrganizo(Long idOrganizador){
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idOrganizador, Papel.ORGANIZADOR, EstadoEvento.INATIVO);
+	}
+	
+	public List<Evento> getEventosByEstadoEVisibilidadePublica(EstadoEvento estado){
+		return eventoRepository.findEventoByEstadoAndVisibilidade(estado, VisibilidadeEvento.PUBLICO);
 	}
 	
 }

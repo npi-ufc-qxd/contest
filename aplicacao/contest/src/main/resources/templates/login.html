@@ -68,22 +68,6 @@
       </div>
     </div>
   </div>
-
-  <footer class="page-footer purple darken-4">
-    <div class="footer-copyright">
-      <div class="container">
-        Desenvolvido por <a class="orange-text text-lighten-3" th:href="@{http://www.npi.quixada.ufc.br}" target="_blank">NPI - Núcleo de Práticas em Informática</a>
-      </div>
-    </div>
-  </footer>
-
-  <!--  Scripts-->
-  <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
-  <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
-  <script>
-    $(document).ready(function(){
-	  $('.parallax').parallax();
-    });
-  </script>
+<div th:include="fragments/footer :: footer"></div>
 </body>
 </html>

@@ -13,7 +13,6 @@ public class Email {
 	
 	   private Email(EmailBuilder builder) {
 		   	      this.nomeDestinatario = builder.nomeDestinatario;
-		   	      this.nomeEvento = builder.nomeEvento;
 		   	      this.corpo = builder.corpo;
 		   	      this.assunto = builder.assunto;
 		   	      this.enderecosDestinatarios = builder.enderecosDestinatarios;
@@ -57,16 +56,15 @@ public class Email {
   	        private String nomeDestinatario;
   	        private String assunto;
   	        private String corpo;
-  	        private String nomeEvento;
   	        private Map<String, String> enderecosDestinatarios = new HashMap<String,String>();
   
-  	        public EmailBuilder(String nome, String assunto, String email, String corpo, String nomeEvento) {
+  	        public EmailBuilder(String nome, String assunto, String email, String corpo) {
   	        	this.nomeDestinatario = nome;
   	        	this.assunto = assunto;
   	        	this.enderecosDestinatarios.put(email, nome);
   	        	this.corpo = corpo;
   	        }
-  	        public EmailBuilder email_destinatario(String nome_destinario, String email_destinatario) {
+  	        public EmailBuilder emailDestinatario(String nome_destinario, String email_destinatario) {
   	            this.enderecosDestinatarios.put(email_destinatario, nome_destinario);
   	            return this;
   	        }

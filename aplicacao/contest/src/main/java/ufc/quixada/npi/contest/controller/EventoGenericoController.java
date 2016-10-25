@@ -23,7 +23,7 @@ import ufc.quixada.npi.contest.validator.EventoValidator;
 public class EventoGenericoController {
 
 	private static final String EVENTO_INATIVO = "eventoInativo";
-	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
+	protected static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	private static final String ID_PESSOA = "idPessoa";
 	private static final String EVENTO = "evento";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";

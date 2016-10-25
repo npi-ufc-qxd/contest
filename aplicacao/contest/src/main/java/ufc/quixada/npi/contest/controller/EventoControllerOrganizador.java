@@ -1,6 +1,8 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
@@ -41,14 +43,25 @@ import ufc.quixada.npi.contest.util.Constants;
 public class EventoControllerOrganizador extends EventoGenericoController{
 
 	private static final String ERRO_ENVIO_EMAIL = "ERRO_ENVIO_EMAIL";
+	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String EVENTO_QUE_PARTICIPO = "eventoQueParticipo";
+	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	private static final String EVENTOS_ATIVOS = "eventosAtivos";
-	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
-	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
+	
+	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
+	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
+	private static final String PARTICAPACAO_EVENTO_SUCESSO = "particapacaoEventoSucesso";
+	private static final String PARTICIPAR_EVENTO_INATIVO_ERROR = "participarEventoInativoError";
+	private static final String PARTICAPAR_EVENTO_SUCESSO = "PARTICAPAR_EVENTO_SUCESSO";
+	private static final String PARTICIPAR_EVENTO_INATIVO = "PARTICIPAR_EVENTO_INATIVO";
+	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
+	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	
 	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
 
@@ -84,22 +97,72 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
-		model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId) );
+		Pessoa pessoa = getOrganizadorLogado();
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		List<Pessoa> pessoas = new ArrayList<Pessoa>(); 
+		List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
+		boolean organizaEvento = false;
+		
+		for(ParticipacaoEvento pe : pessoa.getParticipacoesEvento()){
+			if(pe.getEvento().getId() == evento.getId() && pe.getPapel() == Papel.ORGANIZADOR){
+				organizaEvento = true;
+				pessoas = pessoaService.getPossiveisOrganizadoresDoEvento(eventoId);
+			}
+		}
+		
+		model.addAttribute("trilhasEvento", trilhas);
+		model.addAttribute("organizaEvento", organizaEvento);
+		model.addAttribute("evento", evento);
+		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
-
-	@RequestMapping(value = {"/ativos",""}, method = RequestMethod.GET)
+	
+	@RequestMapping(value={"/meusEventos",""}, method = RequestMethod.GET)
+	public String meusEventos(Model model){
+		Pessoa revisor = getOrganizadorLogado();
+		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
+		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
+	}
+	
+	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.ATIVO);
-		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
+		Pessoa p = getOrganizadorLogado();
+		List<Evento> eventos = eventoService.getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
+		boolean existeEventos = true;
+		
+		for(Evento e : eventosQueReviso){
+			eventos.remove(e);
+		}
+		if(eventos.isEmpty() && eventosQueReviso.isEmpty())
+			existeEventos = false;
+		
+		model.addAttribute("existeEventos", existeEventos);
+		model.addAttribute(EVENTOS_ATIVOS, eventos);
+		model.addAttribute(EVENTO_QUE_PARTICIPO, eventosQueReviso);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
-		List<ParticipacaoEvento> listaEventos = participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.INATIVO);
-		model.addAttribute(EVENTOS_INATIVOS, listaEventos);
+		Pessoa p = getOrganizadorLogado();
+		
+		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.INATIVO);
+		List<Evento> eventosQueOrganizo = eventoService.buscarEventosInativosQueOrganizo(p.getId());
+		
+		boolean existeEventos = true;
+		
+		for(Evento e : eventosQueOrganizo){
+			eventos.remove(e);
+		}
+		
+		if(eventos.isEmpty() && eventosQueOrganizo.isEmpty())
+			existeEventos = false;
+		
+		model.addAttribute("existeEventos", existeEventos);
+		model.addAttribute(EVENTOS_INATIVOS, eventos);
+		model.addAttribute(EVENTOS_QUE_ORGANIZO, eventosQueOrganizo);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 	
@@ -180,8 +243,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
+			return "redirect:/eventoOrganizador/evento" + id;
 		}
-		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+
 	}
 	
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
@@ -223,10 +287,12 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String convidarPorEmail(@RequestParam("nomeConvidado") String nome,@RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("nomeEvento") String nomeEvento, 
 			Model model, RedirectAttributes redirect) {
-		String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + nomeEvento;
-		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + funcao;
+		String msgAssunto =messageService.getMessage(TITULO_EMAIL_ORGANIZADOR); 
+		String msgCorpo = messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR);
+		String assunto =  msgAssunto + " " + nomeEvento;
+		String corpo = nome + msgCorpo + " " +nomeEvento + " como " + funcao;
 		
-		EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo, nomeEvento );
+		EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo);
 		Email mail = builder.build();
 		EnviarEmailService serviceEmail = new EnviarEmailService(mail);
 		if(!serviceEmail.enviarEmail()){
@@ -238,6 +304,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){
 		long id = Long.parseLong(eventoId);
+		if(trilha.getNome().isEmpty()){
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
+		}
 		if (trilhaService.exists(trilha.getNome(), id)) {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
 			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
@@ -245,11 +314,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if (eventoService.existeEvento(id)) {
 			trilha.setEvento(eventoService.buscarEventoPorId(id));
 			trilhaService.adicionarOuAtualizarTrilha(trilha);
-			model.addAttribute("evento", trilha.getEvento());
-			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			redirect.addFlashAttribute("trilhaAdd", messageService.getMessage("TRILHA_ADD_COM_SUCESSO"));
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
 		}else{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_ENCONTRADO"));
-			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
+			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
 		}
 	}
 	
@@ -258,20 +327,20 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		long idEvento = Long.parseLong(eventoId);
 		model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
 		if (trilha.getNome().isEmpty()) {
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
+			model.addAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_VAZIO"));
 		}else{
 			if (eventoService.existeEvento(idEvento)) {
 				if (trilhaService.exists(trilha.getNome(), idEvento)) {
-					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
+					model.addAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
 				}else if (trilhaService.existeTrabalho(trilha.getId()) ) {
-					redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
+					model.addAttribute("organizadorError", messageService.getMessage("TRILHA_POSSUI_TRABALHO"));
 				}else{
 					trilha.setEvento(eventoService.buscarEventoPorId(idEvento));
 					trilhaService.adicionarOuAtualizarTrilha(trilha);
 					model.addAttribute("trilha", trilhaService.get(trilha.getId(), idEvento));
 				}
 			}else{
-				redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
+				model.addAttribute("organizadorError", messageService.getMessage("EVENTO_NAO_EXISTE"));
 			}
 		}
 		return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
@@ -288,6 +357,59 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 		redirect.addFlashAttribute("organizadorError", messageService.getMessage("EVENTO_VAZIO_OU_TEM_TRABALHO"));
 		return "redirect:/eventoOrganizador/trilhas/"+ eventoId;
+	}
+	
+	@RequestMapping(value = "/addOrganizadores", method = RequestMethod.POST)
+	public String addOrganizadores(@RequestParam(required = false) String idOrganizadores, @RequestParam String idEvento, Model model){
+		if(idOrganizadores != null){
+			String ids[] = idOrganizadores.split(Pattern.quote(","));
+			List<Pessoa> organizadores = new ArrayList<>();
+			for(String id : ids){
+				organizadores.add(pessoaService.get(Long.parseLong(id)));
+			}
+			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
+			ParticipacaoEvento participacao = new ParticipacaoEvento();
+			
+			for(Pessoa p : organizadores){
+				participacao.setEvento(evento);
+				participacao.setPessoa(p);
+				participacao.setPapel(Papel.ORGANIZADOR);
+				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
+			}
+			return "redirect:/eventoOrganizador/evento/"+idEvento;
+		}
+		return "redirect:/eventoOrganizador/evento/"+idEvento;
+	}
+	
+	@RequestMapping(value = "/participarevento", method = RequestMethod.POST)
+	public String professorParticipa(@RequestParam String idEvento, Model model, RedirectAttributes redirect) {
+		if (!eventoService.existeEvento(Long.parseLong(idEvento))) {
+			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
+			return "redirect:/eventoOrganizador";
+		}
+		
+		Pessoa professorLogado = getOrganizadorLogado();
+		
+		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
+		
+		if(evento != null){
+			if(evento.getEstado() == EstadoEvento.ATIVO){
+				ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
+				participacaoEvento.setEvento(evento);
+				participacaoEvento.setPessoa(professorLogado);
+				participacaoEvento.setPapel(Papel.REVISOR);
+				
+				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
+				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO, messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));
+			}else{
+				redirect.addFlashAttribute(PARTICIPAR_EVENTO_INATIVO_ERROR, messageService.getMessage(PARTICIPAR_EVENTO_INATIVO));
+			}
+		}else{
+			redirect.addFlashAttribute(EVENTO_INEXISTENTE_ERROR, messageService.getMessage(EVENTO_NAO_EXISTE));
+			return "redirect:/eventoOrganizador";
+		}
+		
+		return "redirect:/eventoOrganizador";
 	}
 	
 	public Pessoa getOrganizadorLogado() {

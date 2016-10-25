@@ -1,6 +1,7 @@
 package ufc.quixada.npi.contest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -49,7 +50,7 @@ public class ExcluirEventoSteps extends Mockito {
 	private MessageService messages;
 
 	private static final String ID_EVENTO = "1";
-	private static final String TEMPLATE_REMOVER = "/evento/remover/{id}";
+	private static final String TEMPLATE_REMOVER = "/evento/remover";
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
@@ -70,7 +71,7 @@ public class ExcluirEventoSteps extends Mockito {
 	@Quando("^ele selecionar a lista de eventos (.*)$")
 	public void administradorVaiParaPaginaDeEventosInativos(String estado) throws Throwable {
 		listaParticipacaoEvento = new ArrayList<>();
-		when(participacaoEventoService.getEventosByEstadoAndPapelOrganizador(EstadoEvento.valueOf(estado)))
+		when(participacaoEventoService.getEventosDoOrganizador(EstadoEvento.valueOf(estado),1L))
 				.thenReturn(listaParticipacaoEvento);
 
 		if (estado.equals(EstadoEvento.INATIVO.toString())) {
@@ -101,7 +102,7 @@ public class ExcluirEventoSteps extends Mockito {
 		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_SUCESSO"))
 				.thenReturn("Evento inativo excluido com sucesso");
 
-		action = mockMvc.perform(get(TEMPLATE_REMOVER, Long.valueOf(ID_EVENTO)));
+		action = mockMvc.perform(post(TEMPLATE_REMOVER).param("idEvento", ID_EVENTO));
 	}
 
 	@Então("^evento deve ser excluido com sucesso$")
@@ -120,7 +121,7 @@ public class ExcluirEventoSteps extends Mockito {
 		evento.setId(Long.valueOf(ID_EVENTO));
 		when(eventoService.buscarEventoPorId(Long.valueOf(idEvento))).thenReturn(evento);
 
-		action = mockMvc.perform(get(TEMPLATE_REMOVER, Long.valueOf(ID_EVENTO)));
+		action = mockMvc.perform(post(TEMPLATE_REMOVER).param("idEvento", ID_EVENTO));
 	}
 
 	@Então("^o usuário é informado que não pode excluir esse evento$")

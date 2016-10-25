@@ -21,5 +21,7 @@ aplicacao/contest/.springBeans
 aplicacao/contest/.mvn
 aplicacao/contest/mvnw*
 
+aplicacao/contest/src/main/resources/application.properties
+
 *.bak
 *.log
