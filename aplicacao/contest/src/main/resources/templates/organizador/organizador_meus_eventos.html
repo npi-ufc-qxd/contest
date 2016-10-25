@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/css/horizontal-timeline.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -42,61 +42,56 @@
             <label for="pesquisar">Procurando um evento específico?</label><a class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">search</i></a>
           </div>
         </div>
+        
         <div class="row" th:if="${not #lists.isEmpty(eventos)}">
           <div class="row" th:each="evento : ${eventos}">
-            <div class="card horizontal">
+            <div class="card horizontal large">
               <div class="card-stacked">
                 <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
                   <p th:text="${evento.descricao}">
                   </p>
-                  <div th:if="${evento.isPeriodoInicial()}">
-                  	<p>Inicial</p>
-                  </div>
-                  <div th:if="${evento.isPeriodoRevisao()}">
-                  	<p>Revisão</p>
-                  </div>
-                  <section class="cd-horizontal-timeline">
-                  	<div class="timeline">
-                  		<div class="events-wrapper">
-                  			<div class="events">
-                  				<ol>
-									<li><a href="#0" data-date="16/01/2014" class="selected">16 Jan</a></li>
-									<li><a href="#0" data-date="28/02/2014">28 Feb</a></li>
-									<!-- other dates here -->
-									<span class="filling-line" aria-hidden="true"></span>
+                  
+                 <section class="cd-horizontal-timeline">
+					<div class="timeline">
+						<div class="events-wrapper">
+							<div class="events">
+								<ol>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}" class="selected" th:text="${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMM')}">16 Jan</a></li>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoInicial},'dd MMM')}">28 Feb</a></li>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMM')}">20 Mar</a></li>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMM')}">20 Mar</a></li>
 								</ol>
-                  			</div> <!-- .events -->
-                  		</div> <!-- .events-wrapper -->
-                  		
-                  		<ul class="cd-timeline-navigation">
+								<span class="filling-line" aria-hidden="true"></span>
+							</div>
+						</div>
+						<ul class="cd-timeline-navigation">
 							<li><a href="#0" class="prev inactive">Prev</a></li>
 							<li><a href="#0" class="next">Next</a></li>
-						</ul> <!-- .cd-timeline-navigation -->
-                  	</div> <!-- .timeline -->
-                  
-                  	<div class="events-content">
+						</ul>
+					</div>
+					<div class="events-content">
 						<ol>
-							<li class="selected" data-date="16/01/2014">
-								<h2>Horizontal Timeline</h2>
-								<em>January 16th, 2014</em>
-								<p>	
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum praesentium officia, fugit recusandae ipsa, quia velit nulla adipisci? Consequuntur aspernatur at, eaque hic repellendus sit dicta consequatur quae, ut harum ipsam molestias maxime non nisi reiciendis eligendi! Doloremque quia pariatur harum ea amet quibusdam quisquam, quae, temporibus dolores porro doloribus.
-								</p>
+							<li class="selected" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}">
+								<h5>Começa o período de submissão dos artigos</h5>
+								<em th:text="${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMMM YYYY')}"></em>
 							</li>
-				 
-							<li data-date="28/02/2014">
-								<!-- event description here -->
+							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
+								<h5>Terminou o periodo de subissão, hora de começar as Revisões</h5>
+								<em th:text="${#calendars.format({evento.PrazoRevisaoInicial},'dd MMMM YYYY')}"></em>
 							</li>
-				 
-							<!-- other descriptions here -->
+				
+							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
+								<h5>Terminaram as revisões, hora de submeter a versão final do artigo</h5>
+								<em th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMMM YYYY')}"></em>
+							</li>
+							
+							<li href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}">
+								<h5>Ultimo dia para submissão da versão final do artigo</h5>
+								<em th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMMM YYYY')}"></em>
+							</li>
 						</ol>
-					</div> <!-- .events-content -->
-                  </section>
-                  
-                  <div th:if="${evento.isPeriodoFinal()}">
-                  	<h5 th:text="'Início da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início da Submissão</h5>
-				  	<h5 th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></h5>
-                  </div>
+					</div>
+				 </section>
                 </div>
                 <div class="card-action"><a href="#" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
               </div>
@@ -121,6 +116,8 @@
     <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+    
     <script type="text/javascript">
       $(document).ready(function(){
 
