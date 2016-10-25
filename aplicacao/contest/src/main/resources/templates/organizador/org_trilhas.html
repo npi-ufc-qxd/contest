@@ -52,14 +52,14 @@
             </div>
           </div>
           <div id="paginacao">         
-             <div class="row col s12 center">
-               <ul class="pagination">
-                 <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-                 <li class="active"><a href="#">1</a></li>
-                 <li class="waves-effect"><a href="#">2</a></li>
-                 <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-               </ul>
-             </div>
+                        <div class="row col s12 center">
+                          <ul class="pagination">
+                            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li class="waves-effect"><a href="#">2</a></li>
+                            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+                          </ul>
+                        </div>
           </div>
         </form>
       </div>
@@ -68,8 +68,8 @@
           <div class="modal-content">
             <h4>Adicionar Trilha</h4>
             <div class="input-field col m6 s6">
-            	<input type="hidden" th:value="${evento.id}" required="" name = "eventoId"/>
-            	<input id="nome_da_trilha" th:field="*{nome}" required="" x-moz-errormessage="Ops. Não esqueça de preencher o campo Nome da Trilha." name="nome" type="text" />
+            	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
+            	<input id="nome_da_trilha" th:field="*{nome}" name="nome" type="text" />
             	<label for="nome_da_trilha">Nome da Trilha</label>
             </div>
           </div>
@@ -81,5 +81,10 @@
       </form>
     </div>
     <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.modal-trigger').leanModal();
+      });
+    </script>
   </body>
 </html>
