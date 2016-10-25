@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.print.attribute.standard.DateTimeAtCompleted;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -190,4 +192,34 @@ public class Evento {
 		this.trilhas = trilhas;
 	}
 
+	
+	public boolean isPeriodoInicial(){
+		Date dataAtual = new Date();
+		Date diaAntesDoInicioDaRevisao = alterarDataEmDias(prazoRevisaoInicial, -1);
+		return (dataAtual.compareTo(diaAntesDoInicioDaRevisao) < 0);
+	}
+	
+	public boolean isPeriodoRevisao(){
+		Date dataAtual = new Date();
+		boolean comecaNoDiaOuAposInicioRevisao = (dataAtual.compareTo(prazoRevisaoInicial)>= 0);
+		boolean terminaNoDiaOuAntesFinalRevisao = (dataAtual.compareTo(prazoRevisaoFinal)<= 0);
+		return (comecaNoDiaOuAposInicioRevisao && terminaNoDiaOuAntesFinalRevisao);
+	}
+	
+	public boolean isPeriodoFinal(){
+		Date dataAtual = new Date();
+		Date diaAposRevisaoFinal = alterarDataEmDias(prazoRevisaoFinal, 1);
+		boolean comecaAposRevisaoFinal = (dataAtual.compareTo(diaAposRevisaoFinal)>= 0);
+		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(prazoSubmissaoFinal)<= 0);
+		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
+	}
+	
+	//Se o valor de dias for negativo a quantidade sera subtraida
+	private Date alterarDataEmDias(Date date, int dias)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, dias);
+        return cal.getTime();
+    }
 }
