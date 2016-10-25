@@ -2,12 +2,16 @@ package ufc.quixada.npi.contest.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import ufc.quixada.npi.contest.model.AvaliacaoTrabalho.Avaliacao;
 
 @Entity
 @Table(name = "revisao")
@@ -18,9 +22,16 @@ public class Revisao {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "conteudo")
+	@Column(name = "conteudo", columnDefinition="TEXT")
 	private String conteudo;
 
+	@Column(name = "avaliacao")
+	@Enumerated(EnumType.STRING)
+	private AvaliacaoTrabalho.Avaliacao avaliacao;
+	
+	@Column(name="observacoes", columnDefinition="TEXT")
+	private String observacoes;
+	
 	@OneToOne
 	private Pessoa revisor;
 
@@ -41,6 +52,22 @@ public class Revisao {
 
 	public void setConteudo(String conteudo) {
 		this.conteudo = conteudo;
+	}
+	
+	public Avaliacao getAvaliacao() {
+		return avaliacao;
+	}
+
+	public void setAvaliacao(AvaliacaoTrabalho.Avaliacao avaliacao) {
+		this.avaliacao = avaliacao;
+	}
+
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
 	}
 
 	public Pessoa getRevisor() {
