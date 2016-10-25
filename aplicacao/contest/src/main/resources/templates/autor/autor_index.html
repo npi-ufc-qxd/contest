@@ -58,9 +58,12 @@
 								da Submissão</p>
 							<p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
 						</div>
-						<div class="card-action">
-							<a th:attr="href='#modal' + ${evento.id}"
+						<div class="card-action" >
+							<a th:if="${evento.isPeriodoInicial()}"
+								th:attr="href='#modal' + ${evento.id}"
 								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+							<a th:unless="${evento.isPeriodoInicial()}"
+								class="btn white-text grey">Periodo Encerrado</a>
 						</div>
 					</div>
 				</div>
