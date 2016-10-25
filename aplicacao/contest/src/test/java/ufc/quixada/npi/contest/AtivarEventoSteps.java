@@ -29,7 +29,6 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
-import ufc.quixada.npi.contest.validator.EventoValidator;
 
 public class AtivarEventoSteps {
 	
@@ -43,8 +42,6 @@ public class AtivarEventoSteps {
 	private PessoaService pessoaService;
 	@Mock
 	private MessageService messageService;
-	@Mock
-	private EventoValidator eventoValidator;
 	@Mock
 	private RevisaoService revisaoService;
 	@Mock

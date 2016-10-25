@@ -1,9 +1,14 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +70,8 @@ public class AutorController {
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String PARTICIPAR_EVENTO_INATIVO_ERROR = "participarEventoInativoError";
+	private static final String ERRO_TRABALHO_EVENTO = "ERRO_TRABALHO_EVENTO";
+	private static final String ERRO_REENVIAR = "ERRO_REENVIAR";
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -201,6 +208,7 @@ public class AutorController {
                                  @RequestParam("eventoId") String eventoId,  @RequestParam(required = false) String trilhaId, RedirectAttributes redirect){
 		Evento evento;
 		Trilha trilha;
+		Submissao submissao;
 		try{
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
@@ -209,6 +217,9 @@ public class AutorController {
 			trilha = trilhaService.get(idTrilha,idEvento);
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
+			
+			submissao = configuraSubmissao(new Submissao(), evento);		
+
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
@@ -222,10 +233,8 @@ public class AutorController {
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
-				Date dataDeEnvio = new Date(System.currentTimeMillis());
-				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio) &&
-				   evento.getPrazoSubmissaoInicial().before(dataDeEnvio)){
-					return adicionarTrabalho(trabalho, eventoId, file, redirect);
+				if(submissao.getTipoSubmissao() == TipoSubmissao.PARCIAL){
+					return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 				}else{
 					redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
 					return "redirect:/autor/enviarTrabalhoForm/"+ eventoId;
@@ -236,6 +245,39 @@ public class AutorController {
 			}
 		}
 	}
+	
+	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
+	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId, @RequestParam("eventoId") String eventoId, @RequestParam(value="file",required = true) MultipartFile file, RedirectAttributes redirect){
+		Long idEvento = Long.parseLong(eventoId);
+		Long idTrabalho = Long.parseLong(trabalhoId);
+		try{			
+			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
+				
+				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
+				Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+				Submissao submissao = configuraSubmissao(submissaoService.getSubmissaoByTrabalho(trabalho), evento);
+				
+				if(validarArquivo(file)){		
+					if(submissao.getTipoSubmissao() != null){
+						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
+					}else{
+						redirect.addFlashAttribute("FORA_DA_DATA_DE_SUBMISSAO", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
+						return "redirect:/autor/listarTrabalhos/" + idEvento;
+					}
+				}else{
+					redirect.addFlashAttribute("arquivoInvalido", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
+					return "redirect:/autor/listarTrabalhos/" + idEvento;
+				}
+
+			}
+			redirect.addAttribute("ERRO_TRABALHO_EVENTO", messageService.getMessage(ERRO_TRABALHO_EVENTO));
+			return "redirect:/autor/listarTrabalhos/" + idEvento;
+		}catch(NumberFormatException e){
+			redirect.addAttribute("ERRO_REENVIAR", messageService.getMessage(ERRO_REENVIAR));
+			return "redirect:/autor/listarTrabalhos/" + idEvento;
+		}
+	}
+	
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
@@ -255,6 +297,27 @@ public class AutorController {
 			redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 			return "redirect:/autor/meusTrabalhos";
 		}
+	}
+   
+	@RequestMapping(value="/file", method=RequestMethod.GET, produces = "application/pdf")
+	public void downloadPDFFile(@RequestParam("path") String path,  HttpServletResponse response)
+	        throws IOException {
+
+            try{
+            	Path file = Paths.get(path);
+                response.setContentType("application/pdf");
+                response.addHeader("Content-Disposition", "attachment; filename="+path);
+                Files.copy(file, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                response.reset();
+                response.sendRedirect("/error/404");
+                response.addHeader("Status", "404 Not Found");
+                response.getOutputStream().flush();
+            }
+
 	}
 	
 	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)
@@ -293,21 +356,28 @@ public class AutorController {
 	}
 	
 	public boolean validarArquivo(MultipartFile file){
-		return file.getOriginalFilename().endsWith(EXTENSAO_PDF);
+		return file.getOriginalFilename().endsWith(EXTENSAO_PDF) && !file.isEmpty();
 	}
 	
-	public String adicionarTrabalho(Trabalho trabalho, String eventoId, MultipartFile file, RedirectAttributes redirect) {
+	public Submissao configuraSubmissao(Submissao submissao, Evento evento){
+		Date dataDeEnvio = new Date(System.currentTimeMillis());
+		submissao.setDataSubmissao(dataDeEnvio);
+		if(evento.getPrazoSubmissaoInicial().before(dataDeEnvio) &&
+				   evento.getPrazoRevisaoInicial().after(dataDeEnvio)){
+			submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
+		}else if(evento.getPrazoRevisaoFinal().before(dataDeEnvio) &&
+			evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+			submissao.setTipoSubmissao(TipoSubmissao.FINAL);
+		}
+		return submissao; 
+	}
+	
+	public String adicionarTrabalho(Trabalho trabalho, Evento evento, Submissao submissao, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);
 		
-		Submissao submissao = new Submissao();
-		
-		Date data = new Date(System.currentTimeMillis());  
-
-		submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
 		submissao.setTrabalho(trabalho);
-		submissao.setDataSubmissao(data);
-		
-		String nomeDoArquivo = new StringBuilder("CONT-").append(eventoId).toString();		
+
+		String nomeDoArquivo = new StringBuilder("CONT-").append(evento.getId()).toString();		
 		trabalho.setPath(storageService.store(file, nomeDoArquivo));
 		
 		submissaoService.adicionarOuEditar(submissao);

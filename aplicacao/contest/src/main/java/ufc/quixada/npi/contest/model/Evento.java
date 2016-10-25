@@ -16,7 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.print.attribute.standard.DateTimeAtCompleted;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -191,6 +190,7 @@ public class Evento {
 	public void setTrilhas(List<Trilha> trilhas) {
 		this.trilhas = trilhas;
 	}
+
 	
 	public boolean isPeriodoInicial(){
 		Date dataAtual = new Date();
