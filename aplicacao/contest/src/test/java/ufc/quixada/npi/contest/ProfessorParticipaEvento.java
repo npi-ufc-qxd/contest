@@ -11,8 +11,12 @@ import java.util.ArrayList;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -22,6 +26,7 @@ import cucumber.api.java.gl.E;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Quando;
+import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.controller.RevisorController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
@@ -37,6 +42,9 @@ public class ProfessorParticipaEvento {
 
 	@InjectMocks
 	private RevisorController revisorController;
+	
+	@InjectMocks
+	private EventoControllerOrganizador eventoOrganizadorController;
 
 	@Mock
 	private EventoService eventoService;
@@ -59,8 +67,10 @@ public class ProfessorParticipaEvento {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.mockMvc = MockMvcBuilders.standaloneSetup(revisorController).build();
+		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoOrganizadorController).build();
 		participacaoEvento = new ParticipacaoEvento();
+		revisorLogado = new Pessoa();
+		revisorLogado.setParticipacoesEvento(new ArrayList<ParticipacaoEvento>());
 	}
 
 	/**
@@ -68,12 +78,16 @@ public class ProfessorParticipaEvento {
 	 */
 	@Dado("^Estou logado no sistema como professor$")
 	public void logadoComoProfessor() {
-		revisorLogado = new Pessoa();
 		revisorLogado.setPapelLdap("DOCENTE");
 		revisorLogado.setId(Long.valueOf(5));
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("123");
 		
-		pessoaService.getClass();
-		when(revisorController.getRevisorLogado()).thenReturn(revisorLogado);
+		SecurityContextHolder.setContext(context);
+		
+		when(eventoOrganizadorController.getOrganizadorLogado()).thenReturn(revisorLogado);
 	}
 	
 	@E("^Realizo uma busca por eventos ativos no sistema$")
@@ -96,7 +110,7 @@ public class ProfessorParticipaEvento {
 		when(eventoService.buscarEventoPorId(Long.valueOf(id))).thenReturn(evento);
 		when(participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento)).thenReturn(true);
 		
-		action = mockMvc.perform(post("/revisor/participarevento")
+		action = mockMvc.perform(post("/eventoOrganizador/participarevento")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("idEvento", id));
 	
@@ -111,7 +125,7 @@ public class ProfessorParticipaEvento {
 	@E("^Deve ser mostrado uma mensagem de feedback$")
 	public void mostrarMensagemFeedback() throws Exception{
 		messageService.getClass();
-		action.andExpect(redirectedUrl("/revisor"))
+		action.andExpect(redirectedUrl("/eventoOrganizador"))
 		.andExpect(model().attributeDoesNotExist("eventoVazioError", "eventoInexistenteError"));
 	}
 	
@@ -122,15 +136,15 @@ public class ProfessorParticipaEvento {
 	
 	@Quando("^Realizo uma busca por eventos ativos$")
 	public void buscarEventosAtivos() throws Exception{
-		action = mockMvc.perform(get("/revisor")
+		action = mockMvc.perform(get("/eventoOrganizador/ativos")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
 		
-		verify(eventoService).eventosParaParticipar(revisorLogado.getId());
+		verify(eventoService).getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
 	}
 	
 	@Entao("^Deve ser mostrado apenas eventos públicos$")
 	public void mostrarEventosPublicos(){
-		verify(eventoService).eventosParaParticipar(revisorLogado.getId());
+		verify(eventoService).getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
 	}
 	
 	/**

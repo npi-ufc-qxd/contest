@@ -38,31 +38,41 @@
         </div>
         
       </div>
-      <div class="row" th:switch="${!#lists.isEmpty(eventosInativos)}">
-        <h2>Lista de Eventos Inativos</h2>    
-
-        <div th:case="${true}">
-      
-        <div th:each="participacaoEventoInativos : ${eventosInativos}" class="col m6 s12">
+      <div class="row">
+        <h2>Lista de Eventos Inativos</h2>
+        
+        <div th:each="eventoOrganizo : ${eventosQueOrganizo}" class="col m6 s12">
           <div class="card">
-            <div class="card-content"><span class="card-title" th:text="${participacaoEventoInativos.evento.nome}"></span>
-              <p th:text="|Organizador: ${participacaoEventoInativos.pessoa.nome}|"></p>
-              <p th:text="|Visibilidade: ${participacaoEventoInativos.evento.visibilidade.visibilidade}|"></p>
+              
+            <div class="card-content"><span class="card-title" th:text="${eventoOrganizo.nome}"></span>
+              <p th:text="|Organizador: ${eventoOrganizo.participacoes[0].pessoa.nome}|"></p>
+              <p th:text="|Visibilidade: ${eventoOrganizo.visibilidade.visibilidade}|"></p>
             </div>
             <div class="card-action">
-              <a th:href="@{'/eventoOrganizador/ativar/' + ${participacaoEventoInativos.evento.id}}"  class="btn white-text waves-effect waves-light">Ativar</a>
-              <a th:href="@{'/eventoOrganizador/editar/' + ${participacaoEventoInativos.evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
+              <a th:href="@{'/eventoOrganizador/ativar/' + ${eventoOrganizo.id}}"  class="btn white-text waves-effect waves-light">Ativar</a>
+              <a th:href="@{'/eventoOrganizador/editar/' + ${eventoOrganizo.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
             </div>
+              
           </div>
-         </div>
+        </div>    
+		<div th:each="evento : ${eventosInativos}" class="col m6 s12">
+            <div class="card">
+              <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
+                <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+                <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
+              </div>
+              <div class="card-action">
+                <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}"  class="btn white-text waves-effect waves-light  blue-grey">Detalhes</a>
+              </div>
+            </div>
         </div>
-         
-        <div class="col m4 s12" th:case="${false}">
-          <p>Não há eventos inativos</p>
-        </div> 
+        
+        <div class="col m4 s12" th:if="${!existeEventos}">
+          <p>Não há eventos Inativos</p>
+        </div>
+      </div>
         
         
-        </div>
                 <div class="row col s12 center">
                   <ul class="pagination">
                     <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
@@ -74,92 +84,5 @@
 
       </div>
     <div th:include="fragments/footer :: footer"></div>
-    <script type="text/javascript">
-      $(document).ready(function(){
-        //Inicialização dos elementos no JS
-        //Parallax BG
-        $('.parallax').parallax();
-        
-        //sideNav
-        $(".button-collapse").sideNav();
-        
-        //Tooltips
-        $('.tooltipped').tooltip({delay: 50});
-        
-        //select_initializer
-        $('select').material_select();
-        
-        //datepicker
-        $('.datepicker').pickadate({
-          selectMonths: true, // Creates a dropdown to control month
-          selectYears: 15, // Creates a dropdown of 15 years to control year
-          //Persnonalizando nomes dos meses do ano
-          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
-          //Persnonalizando nomes dos dias da semana
-          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
-          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
-          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
-          today: 'Hoje',
-          clear: 'Limpar',
-          close: 'Fechar'
-        });
-        
-        //Trata as datas na tela org_editar_eventos 
-        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
-        var calendarioSubmissaoFinal = "#prazo_submissao_final";
-        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
-        var calendarioRevisaoFinal = "#prazo_revisao_final";
-        
-        function habilitarCalendario(calendario){
-          $(calendario).removeAttr( "disabled" );
-        }
-        
-        function desabilitarCalendario(calendario){
-          $(calendario).attr( "disabled", true );
-          $(calendario).pickadate("clear");
-        }
-        
-        function definirDataMinimaCalendario(calendario, dataMin){
-          var picker = getPicker(calendario);
-          picker.set("min", dataMin);
-        }
-        
-        function getPicker(idCalendario){
-          var $input = $(idCalendario).pickadate();
-          var picker = $input.pickadate("picker");
-          return picker;
-        }
-        
-        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
-          var picker = getPicker(idCalendarioInicial);
-          var dataAtual = picker.get();
-          var umDia = 1;
-          
-          var dataMinima = new Date(dataAtual);
-          dataMinima.setDate(dataMinima.getDate()+umDia);
-                
-          if (dataAtual.length == 0) {
-            desabilitarCalendario(idCalendarioFinal);
-          } else {
-            habilitarCalendario(idCalendarioFinal);       
-            
-            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
-          }
-        }
-        
-        $(calendarioSubmissaoInicial).on("change",function(){
-          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
-        });
-        
-        $(calendarioSubmissaoFinal).on("change",function(){
-          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
-        });
-        
-        $(calendarioRevisaoInicial).on("change",function(){
-          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
-        });
-        
-      });
-    </script>
   </body>
 </html>
