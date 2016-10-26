@@ -77,31 +77,31 @@ public class AutorController {
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
-	
+
 	@Autowired
 	private EventoService eventoService;
-	
+
 	@Autowired
 	private MessageService messageService;
-	
+
 	@Autowired
 	private PessoaService pessoaService;
-	
+
 	@Autowired
 	private RevisaoService revisaoService;
-	
+
 	@Autowired
 	private SubmissaoService submissaoService;
-	
+
 	@Autowired
 	private TrabalhoService trabalhoService;
-	
+
 	@Autowired
 	private TrabalhoValidator trabalhoValidator;
-	
+
 	@Autowired
 	private TrilhaService trilhaService;
-	
+
 	@Autowired
 	private StorageService storageService;
 
@@ -151,7 +151,7 @@ public class AutorController {
 			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
 			return "redirect:/autor/participarEvento";
 		}
-		
+
 		Pessoa autorLogado = getAutorLogado();
 		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
 		
@@ -163,18 +163,20 @@ public class AutorController {
 				participacaoEvento.setPapel(Papel.AUTOR);
 				
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
-				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO, messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));
-			}else{
-				redirect.addFlashAttribute(PARTICIPAR_EVENTO_INATIVO_ERROR, messageService.getMessage(PARTICIPAR_EVENTO_INATIVO));
+				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO,
+						messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));
+			} else {
+				redirect.addFlashAttribute(PARTICIPAR_EVENTO_INATIVO_ERROR,
+						messageService.getMessage(PARTICIPAR_EVENTO_INATIVO));
 				return "redirect:/autor";
 			}
-		}else{
+		} else {
 			redirect.addFlashAttribute(EVENTO_INEXISTENTE_ERROR, messageService.getMessage(EVENTO_NAO_EXISTE));
 			return "redirect:/autor";
 		}
-		return "redirect:/autor/enviarTrabalhoForm/"+idEvento;
+		return "redirect:/autor/enviarTrabalhoForm/" + idEvento;
 	}
-	
+
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa autorLogado = getAutorLogado();
@@ -259,7 +261,7 @@ public class AutorController {
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
-				if(submissao.getTipoSubmissao() == TipoSubmissao.PARCIAL){
+				if(evento.isPeriodoInicial() || evento.isPeriodoFinal()){
 					return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 				}else{
 					redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
@@ -284,7 +286,7 @@ public class AutorController {
 				Submissao submissao = configuraSubmissao(submissaoService.getSubmissaoByTrabalho(trabalho), evento);
 				
 				if(validarArquivo(file)){		
-					if(submissao.getTipoSubmissao() != null){
+					if(evento.isPeriodoInicial() || evento.isPeriodoFinal()){
 						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 					}else{
 						redirect.addFlashAttribute("FORA_DA_DATA_DE_SUBMISSAO", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
@@ -388,11 +390,9 @@ public class AutorController {
 	public Submissao configuraSubmissao(Submissao submissao, Evento evento){
 		Date dataDeEnvio = new Date(System.currentTimeMillis());
 		submissao.setDataSubmissao(dataDeEnvio);
-		if(evento.getPrazoSubmissaoInicial().before(dataDeEnvio) &&
-				   evento.getPrazoRevisaoInicial().after(dataDeEnvio)){
+		if(evento.isPeriodoInicial()){
 			submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
-		}else if(evento.getPrazoRevisaoFinal().before(dataDeEnvio) &&
-			evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+		}else if(evento.isPeriodoFinal()){
 			submissao.setTipoSubmissao(TipoSubmissao.FINAL);
 		}
 		return submissao; 

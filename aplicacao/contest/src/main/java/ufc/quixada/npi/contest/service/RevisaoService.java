@@ -28,4 +28,9 @@ public class RevisaoService {
 	public Boolean existeTrabalhoEmRevisao(Long trabalhoId){
 		return revisaoRepository.existRevisaoByTrabalhoId(trabalhoId);
 	}
+	
+	public void adicionarOuAtualizarRevisao(Revisao revisao) {
+		revisaoRepository.save(revisao);
+	}
+
 }
