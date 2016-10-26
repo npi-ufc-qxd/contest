@@ -14,7 +14,9 @@ $(document).ready(function(){
 	//select_initializer
 	$('select').material_select();
 	
-	$( "#listaRevisores" ).scroll(function(){});
+	$(".listaRevisores" ).each(function(index){
+		this.scroll(function(){});
+	});
 	
 	trabalho_atual = function(e){
 		$('.collection-item').attr('trabalho',e.id);
@@ -25,24 +27,28 @@ $(document).ready(function(){
 	});
 	
 	add = function(e,modal) {//vai receber o Objeto vindo da linkRevisor
-	    var listaescolhidos = $("#listaEscolhidos");
+	    
+		var seletor_lista = "#"+modal +" div.listaEscolhidos.collection";
+		
+		var listaescolhidos = $(seletor_lista);
 	    
 	    var trabalhoId = $(e).attr('trabalho');
 	    
-	    var seletor = '#'+modal+'_'+$(e).attr('id');
+	    var seletor = $(e).attr('id');
 	    
-	    if ($(seletor).length>0){
+	    var seletorRevisorEscolhido = "#esc_"+ seletor;
+	    
+	    if (listaescolhidos.find(seletorRevisorEscolhido).length > 0){
 	    	Materialize.toast('O mesmo organizador não pode ser alocado mais de uma vez no mesmo evento', 4000)
 	    }else{
 	      var a = $(e).clone(true);              
 	      a.attr('onclick',"remover(this,'"+modal+"');");
-	      a.attr("id", modal+'_'+$(e).attr('id'));
-	      
+	      a.attr("id", "esc_"+seletor);
 	      
 	      var token = $("meta[name='_csrf']").attr("content");
 	      
 	      var data = {
-		      		  	'revisorId': 	$(e).attr('id'),
+		      		  	'revisorId': 	seletor.substr(seletor.lastIndexOf("_") + 1),
 		    		  	'trabalhoId': 	trabalhoId,
 		    		  };
 	
@@ -56,7 +62,7 @@ $(document).ready(function(){
 	    	  processData: false, 
 	    	  data: JSON.stringify(data),
 	    	  success: function (data) {
-	    		  		  listaescolhidos.append(a);	
+	    		  		  listaescolhidos.append(a);
 	        			},
 	          error: function (data, error) {
 	        	}
@@ -64,9 +70,10 @@ $(document).ready(function(){
 	    }
 	  }
 	
-	remover = function(e,modal){
-		modal = modal+'_';
-		var idRevisor = $(e).attr('id').replace(modal,'');
+	remover = function(e){		
+		var idRevisor = $(e).attr('id');
+		idRevisor = idRevisor.substr(idRevisor.lastIndexOf("_") + 1);
+		
 		var idTrabalho = $(e).attr('trabalho');
 		var token = $("meta[name='_csrf']").attr("content");
 		
@@ -75,7 +82,7 @@ $(document).ready(function(){
 			'trabalhoId': 	idTrabalho,
 		};
 		
-		$(e).remove();
+		
 		
 		$.ajax({
 	  	  contentType: 'application/json;charset=UTF-8',
@@ -87,8 +94,8 @@ $(document).ready(function(){
 	  	  processData: false, 
 	  	  data: JSON.stringify(data),
 	  	  success: function (data) {
-	  		  		  listaescolhidos.append(a);	
-	      			},
+	  		$(e).remove();
+	      },
 	      error: function (data, error) {
 	      }
 	  	});
