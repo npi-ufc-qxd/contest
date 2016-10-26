@@ -76,7 +76,7 @@
            	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
 	              <div class="card-action">
 	                <div class="row">
-	                  <div class="file-field input-field col m6 s6">
+	                  <div th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" class="file-field input-field col m6 s6">
 	                    <div class="btn right"><span>Escolher...</span>
 	                      <input type="file" name="file" class="multiple"/>
 	                    </div>
@@ -87,9 +87,9 @@
 	                  <div class="input-field col m6 s6">
 	                  	<small>Opções</small>
 	                  	<br/>
-	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
+	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
 	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
-						<a th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
+						<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
 	              </div>
