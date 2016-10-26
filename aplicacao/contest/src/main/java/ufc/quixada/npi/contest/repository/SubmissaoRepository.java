@@ -17,5 +17,6 @@ public interface SubmissaoRepository extends CrudRepository<Submissao, Long>{
 			+ "FROM Submissao as s, Trabalho as t  WHERE s.trabalho.id = t.id and t.evento.id = :idEvento")
 	public boolean existTrabalhoNesseEvento(@Param("idEvento") Long idEvento);
 	
+	public Submissao findSubmissaoByTrabalhoId(Long idTrabalho);
 	public Submissao findByTrabalho(Trabalho trabalho);
 }
