@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ufc.quixada.npi.contest.model.Submissao;
+import ufc.quixada.npi.contest.model.Trabalho;
 
 @Repository
 @Transactional
@@ -17,4 +18,5 @@ public interface SubmissaoRepository extends CrudRepository<Submissao, Long>{
 	public boolean existTrabalhoNesseEvento(@Param("idEvento") Long idEvento);
 	
 	public Submissao findSubmissaoByTrabalhoId(Long idTrabalho);
+	public Submissao findByTrabalho(Trabalho trabalho);
 }

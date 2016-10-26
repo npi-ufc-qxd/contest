@@ -166,7 +166,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
 		boolean existeEventos = true;
 		

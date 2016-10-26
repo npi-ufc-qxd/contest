@@ -17,33 +17,21 @@
 	media="screen,projection" />
 </head>
 <body>
-	<nav role="navigation" class="purple darken-4">
-		<div class="nav-wrapper container">
-			<a href="#"><img src="../imgs/logotipo_white.png" alt="Contest"
-				width="200px" /></a>
-			<ul class="white-text right hide-on-med-and-down">
-				<li><a href="#">Link 01</a></li>
-				<li><a href="#">Link 02</a></li>
-			</ul>
-			<ul id="nav-mobile" class="side-nav">
-				<li><a href="#">Link 01</a></li>
-				<li><a href="#">Link 02</a></li>
-			</ul>
-			<a href="#" data-activates="nav-mobile" class="button-collapse"><i
-				class="material-icons">menu</i></a>
-		</div>
-	</nav>
+	<div th:include="fragments/header :: header"></div>
 	<div class="container page">
 		<br />
-		<div class="row opcoes">
-			<a href="revisor_index.html">Eventos Ativos</a>
-		</div>
 		<div class="row">
 			<h1 th:text="${evento.nome}"></h1>
 			<h2>Lista de Artigos para Revisão</h2>
 			<div>
-				<div id="error_area" class="row chip red white-text">
-					"Mensagem de Erro"<i class="material-icons">close</i>
+				<div id="success_area" class="row chip green white-text" th:if="${trabalhoRevisado}">
+				<span th:text="${trabalhoRevisado}"></span><i class="material-icons">close</i>
+				</div>
+				<div id="error_area" class="row chip red white-text" th:if="${trabalhoInexistenteError}">
+				<span th:text="${trabalhoInexistenteError}"></span><i class="material-icons">close</i>
+				</div>
+				<div id="error_area" class="row chip red white-text" th:if="${eventoInexistenteError}">
+				<span th:text="${eventoInexistenteError}"></span><i class="material-icons">close</i>
 				</div>
 			</div>
 			<div class="row" th:if="${not #lists.isEmpty(trabalhos)}">
@@ -54,9 +42,10 @@
 								<span class="card-title" th:text="${trabalho.titulo}"></span>
 								<h6 th:text="'Trilha: ' + ${trabalho.trilha.nome}"></h6>
 							</div>
-							<div class="card-action">
-								<a th:href="@{'/revisor/' + ${evento.id} + '/' + ${trabalho.id} + '/revisar'}"
+							<div class="card-action" th:switch="${#lists.contains(trabalhosRevisados, trabalho.id)}">
+								<a th:case='false' th:href="@{'/revisor/' + ${evento.id} + '/' + ${trabalho.id} + '/revisar'}"
 									class="btn white-text waves-effect waves-light btn-large">REVISAR</a>
+								<a th:case='true' class="btn white-text waves-effect waves-light btn-large light-green darken-2" th:disabled="${true}">REVISADO</a>
 							</div>
 						</div>
 					</div>

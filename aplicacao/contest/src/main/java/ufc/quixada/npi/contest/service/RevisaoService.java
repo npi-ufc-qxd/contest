@@ -12,6 +12,10 @@ public class RevisaoService {
 	@Autowired
 	private RevisaoRepository revisaoRepository;
 	
+	public void addOrUpdate(Revisao revisao) {
+		revisaoRepository.save(revisao);
+	}
+	
 	public boolean existeTrabalhoNesseEvento(Long id){
 		return revisaoRepository.existTrabalhoNesseEvento(id);
 	}
