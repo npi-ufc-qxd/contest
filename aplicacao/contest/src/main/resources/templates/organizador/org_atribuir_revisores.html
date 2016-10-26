@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <div th:include="fragments/head :: head"></div>
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page"><br/>
+      <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
+      <div class="row">
+        <h2>Lista de Trabalhos</h2>
+
+        <div>
+          <div class="col s12">
+            <div class="col s4" th:each="trabalho,count : ${trabalhos}">
+	            <div class="card horizontal small">
+	              <div class="card-stacked">
+	                <div>
+	                	<div class="card-content">
+	                		<span class="card-title" th:text="${trabalho.titulo}"></span>
+	                  		<p th:text="'Autor: ' + ${trabalho.participacoes[0].pessoa.nome}"></p>
+	                  		<p th:each="revisor : ${trabalho.participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:text="|Revisor: ${revisor.pessoa.nome}"></p>
+	                   	</div>
+	                   	<div class="card-action">
+	              			<a th:id="${trabalho.id}" th:attr="href='#modalRevisor' + ${count.index}" onclick="trabalho_atual(this)" class="btn white-text waves-effect waves-light blue-grey modal-trigger">Atribuir Revisor</a>
+	              		</div>
+	                </div>
+	              </div>
+	            </div>
+	            
+	            
+	            
+	      <form action="#" th:action="@{/eventoOrganizador/evento/1/revisores}" method="post">
+	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal" data-keyboard="">
+	      		<div class="modal-content">
+	      			<h4 class="block">Nome do Trabalho</h4>
+	      			<div class="row">
+	      				<input id="eventoID" type="hidden" th:value="${evento.id}" />
+	      				<div class="input-field col m6 s6">
+	      					<i class="material-icons large prefix">search</i>
+	      					<input id="nome_do_revisor" type="text" />
+	                		<label for="nome_do_revisor">Nome do Revisor</label>
+	                		<div id="listaRevisores" class="collection">
+	                			<a th:each="revisor : ${revisores}" th:id="${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item" th:text="${revisor.nome}"> 
+	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
+	                			</a>
+	                		</div>
+	      				</div>
+	      				<div class="col m6 s6">
+                			<h5 id="listaEscolhidosTitulo">Revisores Selecionados</h5>
+                			<div id="listaEscolhidos" class="collection" >
+                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|modalRevisor${count.index}_${revisor.pessoa.id}|" th:onclick="'remover(this,\'modalRevisor'+${count.index}+'\')'" class="collection-item" th:text="${revisor.pessoa.nome}"> 
+	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
+	                			</a>
+	                	    </div>
+                		</div>
+	      			</div>
+	      		</div>
+	      		<div class="modal-footer block">
+	            	<a href="#" onclick="location.reload()" class="modal-action modal-close waves-effect btn-flat">Fechar  </a>
+	            </div>
+	      	</div>
+      	</form>
+	            
+          </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+	<div th:include="fragments/footer :: footer"></div>
+	<script  type="text/javascript" th:src="@{/js/atribuir_revisores.js}"></script>
+  </body>
+</html>

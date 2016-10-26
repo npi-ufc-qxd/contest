@@ -75,31 +75,31 @@ public class AutorController {
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
-	
+
 	@Autowired
 	private EventoService eventoService;
-	
+
 	@Autowired
 	private MessageService messageService;
-	
+
 	@Autowired
 	private PessoaService pessoaService;
-	
+
 	@Autowired
 	private RevisaoService revisaoService;
-	
+
 	@Autowired
 	private SubmissaoService submissaoService;
-	
+
 	@Autowired
 	private TrabalhoService trabalhoService;
-	
+
 	@Autowired
 	private TrabalhoValidator trabalhoValidator;
-	
+
 	@Autowired
 	private TrilhaService trilhaService;
-	
+
 	@Autowired
 	private StorageService storageService;
 
@@ -125,7 +125,7 @@ public class AutorController {
 			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
 			return "redirect:/autor/participarEvento";
 		}
-		
+
 		Pessoa autorLogado = getAutorLogado();
 		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
 		
@@ -137,18 +137,20 @@ public class AutorController {
 				participacaoEvento.setPapel(Papel.AUTOR);
 				
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
-				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO, messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));
-			}else{
-				redirect.addFlashAttribute(PARTICIPAR_EVENTO_INATIVO_ERROR, messageService.getMessage(PARTICIPAR_EVENTO_INATIVO));
+				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO,
+						messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));
+			} else {
+				redirect.addFlashAttribute(PARTICIPAR_EVENTO_INATIVO_ERROR,
+						messageService.getMessage(PARTICIPAR_EVENTO_INATIVO));
 				return "redirect:/autor";
 			}
-		}else{
+		} else {
 			redirect.addFlashAttribute(EVENTO_INEXISTENTE_ERROR, messageService.getMessage(EVENTO_NAO_EXISTE));
 			return "redirect:/autor";
 		}
-		return "redirect:/autor/enviarTrabalhoForm/"+idEvento;
+		return "redirect:/autor/enviarTrabalhoForm/" + idEvento;
 	}
-	
+
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa autorLogado = getAutorLogado();

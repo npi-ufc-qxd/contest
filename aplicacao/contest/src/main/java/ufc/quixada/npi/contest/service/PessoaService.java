@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.PessoaRepository;
 
@@ -65,7 +67,18 @@ public class PessoaService {
 		return pessoaRepository.getPossiveisOrganizadoresDoEvento(idEvento);
 	}
 	
-	public List<Pessoa> pessoasPorPapelNoEvento(Papel papel, Long idEvento){
-		return pessoaRepository.pessoasPorPapelNoEvento(papel.getPapel(), idEvento);
+	public List<Pessoa> pessoasPorPapelNoEvento(PapelLdap.Tipo papel, Long idEvento){
+		return pessoaRepository.pessoasPorPapelNoEvento(papel, idEvento);
+	}
+	
+	public List<Pessoa> revisoresNoEvento(Long idEvento){
+		List<Pessoa> revisores = new ArrayList<Pessoa>();
+		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.DOCENTE, idEvento));
+		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.STA, idEvento));
+		return revisores;
+	}
+	
+	public List<Pessoa> getRevisoresDoEventoQueNaoParticipaDoTrabalho(Long idEvento){
+		return pessoaRepository.findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoId(Papel.REVISOR, idEvento);
 	}
 }
