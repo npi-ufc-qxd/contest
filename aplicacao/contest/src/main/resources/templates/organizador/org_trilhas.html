@@ -43,8 +43,8 @@
                 </thead>
                 <tbody >             
                   <tr th:each="itemTrilha : ${trilhas}">
-                    <td><p th:text="${itemTrilha.nome}"></p></td>
-                    <td>Numero de Submissoes</td>
+                    <td><p class="center" th:text="${itemTrilha.nome}"></p></td>
+                    <td> <p class="center" th:text="${itemTrilha.numeroTrabalhos}"></p></td>
                     <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} +'/'+ ${evento.id}}">Ver Trilha</a></td>
                   </tr>
                 </tbody>

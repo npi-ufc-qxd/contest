@@ -94,5 +94,8 @@ public class Trilha {
 	public String toString() {
 		return "Trilha [id=" + id + ", nome=" + nome + ", evento=" + evento + "]";
 	}
+	public int getNumeroTrabalhos(){
+		return this.trabalhos.size();
+	}
 
 }
