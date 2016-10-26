@@ -111,9 +111,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
 		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
 		
-		int trabalhosPorEvento = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
+		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
 		
-		model.addAttribute("numeroTrabalhos", trabalhosPorEvento);
+		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
+		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
+		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
+		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 	

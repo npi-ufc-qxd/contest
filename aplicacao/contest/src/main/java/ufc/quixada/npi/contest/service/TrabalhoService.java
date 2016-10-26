@@ -72,4 +72,15 @@ public class TrabalhoService {
 	public int buscarQuantidadeTrabalhosPorEvento(Evento evento){
 		return getTrabalhosEvento(evento).size();
 	}
+	
+	public int buscarQuantidadeTrabalhosNaoRevisadosPorEvento(Evento evento){
+		int naoRevisados = 0;
+		List<Trabalho> trabalhos = getTrabalhosEvento(evento);
+		for (int i = 0; i < trabalhos.size(); i++) {
+			if (trabalhos.get(i).getRevisoes().isEmpty()) {
+				naoRevisados++;
+			}
+		}
+		return naoRevisados;
+	}
 }
