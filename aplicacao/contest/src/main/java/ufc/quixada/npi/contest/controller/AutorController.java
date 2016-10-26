@@ -235,7 +235,7 @@ public class AutorController {
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
-				if(submissao.getTipoSubmissao() == TipoSubmissao.PARCIAL){
+				if(evento.isPeriodoInicial() || evento.isPeriodoFinal()){
 					return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 				}else{
 					redirect.addFlashAttribute("foraDoPrazoDeSubmissao", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
@@ -260,7 +260,7 @@ public class AutorController {
 				Submissao submissao = configuraSubmissao(submissaoService.getSubmissaoByTrabalho(trabalho), evento);
 				
 				if(validarArquivo(file)){		
-					if(submissao.getTipoSubmissao() != null){
+					if(evento.isPeriodoInicial() || evento.isPeriodoFinal()){
 						return adicionarTrabalho(trabalho, evento, submissao, file, redirect);
 					}else{
 						redirect.addFlashAttribute("FORA_DA_DATA_DE_SUBMISSAO", messageService.getMessage(FORA_DA_DATA_DE_SUBMISSAO));
@@ -364,11 +364,9 @@ public class AutorController {
 	public Submissao configuraSubmissao(Submissao submissao, Evento evento){
 		Date dataDeEnvio = new Date(System.currentTimeMillis());
 		submissao.setDataSubmissao(dataDeEnvio);
-		if(evento.getPrazoSubmissaoInicial().before(dataDeEnvio) &&
-				   evento.getPrazoRevisaoInicial().after(dataDeEnvio)){
+		if(evento.isPeriodoInicial()){
 			submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
-		}else if(evento.getPrazoRevisaoFinal().before(dataDeEnvio) &&
-			evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+		}else if(evento.isPeriodoFinal()){
 			submissao.setTipoSubmissao(TipoSubmissao.FINAL);
 		}
 		return submissao; 
