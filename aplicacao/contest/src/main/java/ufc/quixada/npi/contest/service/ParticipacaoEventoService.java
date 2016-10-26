@@ -58,4 +58,8 @@ public class ParticipacaoEventoService {
 	public int buscarQuantidadeRevisoresPorEvento(Long idEvento){
 		return getParticipacaoComoRevisorPorEvento(idEvento).size();
 	}
+
+	public List<ParticipacaoEvento> getRevisoresNoEvento(Long id){
+		return participacaoEventoRepository.findByEventoIdAndPapel(id, Papel.REVISOR);
+	}
 }

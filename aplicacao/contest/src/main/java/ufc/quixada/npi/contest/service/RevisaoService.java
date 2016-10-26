@@ -19,4 +19,9 @@ public class RevisaoService {
 	public boolean existeTrabalhoNesseEvento(Long id){
 		return revisaoRepository.existTrabalhoNesseEvento(id);
 	}
+	
+	public void adicionarOuAtualizarRevisao(Revisao revisao) {
+		revisaoRepository.save(revisao);
+	}
+
 }

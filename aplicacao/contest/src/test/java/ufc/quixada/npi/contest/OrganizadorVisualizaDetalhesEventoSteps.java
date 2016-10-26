@@ -21,7 +21,6 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -98,7 +97,7 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	
 	@E("^Deve ser mostrado a quantidade de Revisores no evento$")
 	public void mostrarQuantidadeDeRevisoresNoEvento(){
-		verify(pessoaService.pessoasPorPapelNoEvento(Papel.REVISOR, EVENTO_ID));
+		verify(pessoaService.getPossiveisOrganizadores());
 	}
 	
 	@E("^Deve ser mostrado a quantidade de Trabalhos submetidos, revisados e não revisados no evento$")
