@@ -9,6 +9,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.Pessoa;
 
 @Repository
@@ -22,12 +24,14 @@ public interface PessoaRepository extends CrudRepository<Pessoa, Long>{
 			+ "p.papelLdap = ufc.quixada.npi.contest.model.PapelLdap$Tipo.STA ")
 	public List<Pessoa> getPossiveisOrganizadores();
 	
-	@Query("SELECT pe FROM Pessoa pe, ParticipacaoEvento pa WHERE pe.papelLdap.nome = :papel AND pa.evento.id = :idEvento")
-	public List<Pessoa> pessoasPorPapelNoEvento(@Param("papel")String papel, @Param("idEvento")Long idEvento);
+	@Query("SELECT pe FROM Pessoa pe, ParticipacaoEvento pa WHERE pe.papelLdap = :papel AND pa.evento.id = :idEvento")
+	public List<Pessoa> pessoasPorPapelNoEvento(@Param("papel")PapelLdap.Tipo papel, @Param("idEvento")Long idEvento);
 	
 	@Query("select p from Pessoa p where p.id not in "
 			+ "(select DISTINCT pe.pessoa.id from ParticipacaoEvento pe where pe.evento.id = :idEvento AND "
 			+ " pe.papel = ufc.quixada.npi.contest.model.Papel.ORGANIZADOR) AND "
 			+ "(p.papelLdap <> ufc.quixada.npi.contest.model.PapelLdap$Tipo.DISCENTE)")	
 	public List<Pessoa> getPossiveisOrganizadoresDoEvento(@Param("idEvento")Long idEvento);
+	
+	public List<Pessoa> findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoId(Papel papel, Long id);
 }
