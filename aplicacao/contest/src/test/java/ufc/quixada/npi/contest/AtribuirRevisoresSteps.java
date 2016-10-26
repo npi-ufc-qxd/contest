@@ -7,15 +7,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import cucumber.api.java.Before;
 import cucumber.api.java.pt.Dado;
-import cucumber.api.java.pt.E;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
@@ -47,6 +50,8 @@ public class AtribuirRevisoresSteps {
 	private Trabalho trabalho;
 	private ParticipacaoTrabalho participacaoTrabalho;
 	private RevisaoJsonWrapper dadosRevisao;
+	private Pessoa organizadorLogado;
+	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -69,24 +74,21 @@ public class AtribuirRevisoresSteps {
 		trabalho.setTitulo("Meu Trabalho");
 
 	}
-	@Dado("^que existe um organizador$")
+	@Dado("^que sou organizador$")
 	public void exitesUmEvento() throws Throwable {
-	}
-
-	@E("^que existe um evento$")
-	public void existeEvento(){
+		organizadorLogado = new Pessoa();
+		organizadorLogado.setPapelLdap("DOCENTE");
+		organizadorLogado.setId(5L);
 		
-	}
-
-	@E("^que o evento possui trilhas de submissão cadastradas$")
-	public void existeTrilhasDeSubmissaoCadastradas(){
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("123");
 		
+		SecurityContextHolder.setContext(context);
+		
+		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(organizadorLogado);
 	}
-	@E("^a trilha possui um trabalho cadastrado$")
-	public void trilhaPossuiTrabalhoCadastrados(){
-	}
-
-
 	@Quando("^o organizador seleciona atribuir um revisor para um trabalho$")
 	public void organizadorAtribuiRevisoresAoTrabalho() throws Exception{
 		when(pessoaService.get(dadosRevisao.getRevisorId())).thenReturn(pessoa);
@@ -108,14 +110,8 @@ public class AtribuirRevisoresSteps {
 		verify(participacaoTrabalhoService).adicionarOuEditar(participacaoTrabalho);
 		action.andExpect(status().isOk());
 	}
-	
-	@Quando("^o trabalho tem um revisor$")
-	public void trabalhoTemRevisor() throws Exception{
-
-	}
-	
-	@E("^o organizador seleciona esse revisor para ser removido do trabalho$")
-	public void SelecionaRevisorParaSerRemovido() throws Exception{
+	@Quando("^o organizador seleciona esse revisor para ser removido do trabalho$")
+	public void selecionaRevisorParaSerRemovido() throws Exception{
 		when(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(pessoa.getId(), trabalho.getId())).thenReturn(participacaoTrabalho);
 
 		String json = String.format("{\"revisorId\": \"1\",\"trabalhoId\": \"3\"}");
@@ -126,7 +122,7 @@ public class AtribuirRevisoresSteps {
 	}
 
 	@Então("^o revisor selecionado é removido da lista de revisores do trabalho selecionado$")
-	public void e() throws Exception{
+	public void revisorERemovidoDaLista() throws Exception{
 		verify(participacaoTrabalhoService).remover(participacaoTrabalho);
 		action.andExpect(status().isOk());
 	}

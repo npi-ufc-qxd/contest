@@ -1,10 +1,9 @@
 package ufc.quixada.npi.contest.model;
 
 public class RevisaoJsonWrapper {
-	Long revisorId, trabalhoId;
-	public RevisaoJsonWrapper() {
-		// TODO Auto-generated constructor stub
-	}
+	private Long revisorId;
+	private Long trabalhoId;
+
 	public Long getRevisorId() {
 		return revisorId;
 	}

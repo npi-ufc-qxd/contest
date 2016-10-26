@@ -20,14 +20,8 @@ public class RevisaoService {
 		return revisaoRepository.existTrabalhoNesseEvento(id);
 	}
 	
-	public boolean adicionarOuAtualizarRevisao(Revisao revisao) {
-		if (podeAdicionarOuAtualizar(revisao)) {
-			revisaoRepository.save(revisao);
-		}
-		return false;
+	public void adicionarOuAtualizarRevisao(Revisao revisao) {
+		revisaoRepository.save(revisao);
 	}
-	
-	private boolean podeAdicionarOuAtualizar(Revisao revisao){
-		return true;
-	}
+
 }
