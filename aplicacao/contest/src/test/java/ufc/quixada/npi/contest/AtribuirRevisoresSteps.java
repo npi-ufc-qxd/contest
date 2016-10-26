@@ -58,7 +58,7 @@ public class AtribuirRevisoresSteps {
 	private ParticipacaoTrabalho participacaoTrabalho;
 	private RevisaoJsonWrapper dadosRevisao;
 	private Notificacao notificacao;
-	private Evento evento;
+	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -70,7 +70,7 @@ public class AtribuirRevisoresSteps {
 		notificacao = new Notificacao();
 		dadosRevisao.setRevisorId(1L);
 		dadosRevisao.setTrabalhoId(3L);
-		evento = new Evento();
+		Evento evento = new Evento();
 		
 		Calendar dataInicialRevisao = Calendar.getInstance();
 		dataInicialRevisao.set(2016, Calendar.DECEMBER, 30);

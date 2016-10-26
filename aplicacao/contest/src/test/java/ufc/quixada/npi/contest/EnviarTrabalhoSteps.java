@@ -159,7 +159,7 @@ public class EnviarTrabalhoSteps {
 		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
-		MultipartFile file = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);;
+		MultipartFile file = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
 		String nomeDoArquivo = new StringBuilder("CONT-").append(evento.getId()).toString();
 		when(storageService.store(file, nomeDoArquivo)).thenReturn("caminho/certo");
 		
