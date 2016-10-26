@@ -33,7 +33,10 @@
               <div class="card">
                 <div class="card-content">
 	              <span class="card-title" th:text="${evento.nome}" ></span>
-	              <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+	              <p>Organizador(es):</p>
+	              <blockquote>
+	              	<p th:each="participacao : ${evento.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'ORGANIZADOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
+	              </blockquote>
 	              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
                 </div>
                 <div class="card-action">
@@ -49,7 +52,6 @@
 	              	  <div class="col m4 s4">
 	              	    <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}" class="purple-text">Detalhes</a>
 	              	  </div>
-              	  
               	  </div>
                 </div>
               </div>
@@ -73,8 +75,11 @@
               <div class="card">
                 <div class="card-content">
 	              <span class="card-title" th:text="${eventoParticipo.nome}" ></span>
-	              <p >Participando</p>
-	              <p th:text="|Organizador: ${eventoParticipo.participacoes[0].pessoa.nome}|"></p>
+	              <p>Participando</p>
+	              <p>Organizador(es):</p>
+	              <blockquote>
+	              	<p th:each="participacao : ${eventoParticipo.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'ORGANIZADOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
+	              </blockquote>
 	              <p th:text="|Visibilidade: ${eventoParticipo.visibilidade.visibilidade}|"></p>
                 </div>
                 <div class="card-action">
@@ -96,10 +101,6 @@
         
         
         </div>
-        
-        
-        
-        
         
         
                 <div class="row col s12 center">

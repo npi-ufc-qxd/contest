@@ -11,10 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
-import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.validator.EventoValidator;
@@ -28,9 +26,6 @@ public class EventoGenericoController {
 	private static final String EVENTO = "evento";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
-
-	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
 
 	@Autowired
 	private EventoService eventoService;
