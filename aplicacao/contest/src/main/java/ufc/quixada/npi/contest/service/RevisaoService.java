@@ -1,5 +1,7 @@
 package ufc.quixada.npi.contest.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,8 @@ public class RevisaoService {
 		return revisaoRepository.existTrabalhoNesseEvento(id);
 	}
 	
-	public Revisao getRevisaoByTrabalho(Trabalho trabalho){
+	public List<Revisao> getRevisaoByTrabalho(Trabalho trabalho){
 		return revisaoRepository.findRevisaoByTrabalho(trabalho);
-	}
-	
-	public Boolean existeTrabalhoEmRevisao(Long trabalhoId){
-		return revisaoRepository.existRevisaoByTrabalhoId(trabalhoId);
 	}
 	
 	public void adicionarOuAtualizarRevisao(Revisao revisao) {

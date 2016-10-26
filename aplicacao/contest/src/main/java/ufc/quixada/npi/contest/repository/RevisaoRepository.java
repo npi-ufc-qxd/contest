@@ -1,5 +1,7 @@
 package ufc.quixada.npi.contest.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.Query;
@@ -19,13 +21,9 @@ public interface RevisaoRepository extends CrudRepository<Revisao, Long>{
 	public boolean existTrabalhoNesseEvento(@Param("idEvento") Long idEvento);
 	
 	@Query("select case when count(*) > 0 then true else false end "
-			+ "FROM Revisao as r, Trabalho as t  WHERE r.trabalho.id = :trabalhoId")
-	public boolean existRevisaoByTrabalhoId(@Param("trabalhoId") Long trabalhoId);
-
-	@Query("select case when count(*) > 0 then true else false end "
 			+ "FROM Revisao as r WHERE r.trabalho.id = :idTrabalho")
 	public boolean trabalhoEstaRevisado(@Param("idTrabalho") Long idTrabalho);
 	
-	public Revisao findRevisaoByTrabalho(Trabalho trabalho);
+	public List<Revisao> findRevisaoByTrabalho(Trabalho trabalho);
 	
 }

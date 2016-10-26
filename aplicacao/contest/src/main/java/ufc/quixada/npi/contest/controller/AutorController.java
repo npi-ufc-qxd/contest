@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -114,26 +115,28 @@ public class AutorController {
 	}
 	
 	@RequestMapping(value="/revisao", method = RequestMethod.GET)
-	public String verRevisao(@RequestParam("trabalhoId") String trabalhoId, Model model){
+	public String verRevisao(@RequestParam("trabalhoId") String trabalhoId, Model model, RedirectAttributes redirect){
 		Long idTrabalho = Long.parseLong(trabalhoId);
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		Revisao revisao = revisaoService.getRevisaoByTrabalho(trabalho);
-		RevisaoJSON revisaoJson = new RevisaoJSON();
+		List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
+		Evento evento = trabalho.getEvento();
 		
-		if(revisaoService.existeTrabalhoEmRevisao(idTrabalho)){
-			model.addAttribute("titulo", revisao.getTrabalho().getTitulo());
-			model.addAttribute("originalidade", revisaoJson.fromJson(revisao.getConteudo(), "originalidade"));
-			model.addAttribute("clareza", revisaoJson.fromJson(revisao.getConteudo(), "clareza"));
-			model.addAttribute("avaliacao_geral", revisaoJson.fromJson(revisao.getConteudo(), "avaliacao_geral"));
-			model.addAttribute("relevancia", revisaoJson.fromJson(revisao.getConteudo(), "relevancia"));
-			model.addAttribute("comentarios_autores", revisaoJson.fromJson(revisao.getConteudo(), "comentarios_autores"));
-			model.addAttribute("merito", revisaoJson.fromJson(revisao.getConteudo(), "merito"));
-			model.addAttribute("qualidade", revisaoJson.fromJson(revisao.getConteudo(), "qualidade"));
-			model.addAttribute("avaliacao_final", revisao.getAvaliacao());
+		if(!revisoes.isEmpty() && evento.isPeriodoFinal()){
+			model.addAttribute("titulo", trabalho.getTitulo());
+			List<Map<String, String>> revisoesWrappers = new ArrayList<>();
+			for(Revisao revisao: revisoes){
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+			}
+			model.addAttribute("revisoes", revisoesWrappers);
 			return Constants.TEMPLATE_REVISAO_AUTOR;
 		}
-		model.addAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
-		return Constants.TEMPLATE_REVISAO_AUTOR;
+		redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+		return "redirect:/autor/listarTrabalhos/" + evento.getId();
 
 	}
 	

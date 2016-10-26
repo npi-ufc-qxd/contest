@@ -1,10 +1,15 @@
 package ufc.quixada.npi.contest.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONObject;
+
+import ufc.quixada.npi.contest.model.Revisao;
 
 public class RevisaoJSON {
 
-	public String toJson(String formatacao, String originalidade, String merito, 
+	public static String toJson(String formatacao, String originalidade, String merito, 
 			String clareza, String qualidade, String relevancia, String auto_avaliacao,
 			String comentarios_autores, String avaliacao_geral, String avaliacao_final, String indicar){
 		
@@ -24,9 +29,15 @@ public class RevisaoJSON {
 		return json.toString();
 	}
 	
-	public String fromJson(String conteudo, String chave){
-		JSONObject json = new JSONObject(conteudo);
-		return json.getString(chave);
+	public static Map<String, String> fromJson(Revisao revisao){
+		
+		Map<String, String> revisaoWrapper = new HashMap<>();
+		JSONObject json = new JSONObject(revisao.getConteudo());
+		for(String key : json.keySet()){
+			revisaoWrapper.put(key, json.getString(key));
+		}
+		return revisaoWrapper;
+		
 	}
 	
 }
