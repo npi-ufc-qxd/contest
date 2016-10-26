@@ -10,6 +10,7 @@
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
     <link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
 	<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -47,26 +48,45 @@
             <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content" th:if="${evento.prazoSubmissaoInicial}">
-                  <div class="row" >
-                  <span class="card-title">Datas do Evento</span></div>
-                  <div class="row" >
-                    <div class="col s3">
-                      <p>Prazo de Submissão - Inicio</p>
-                      <p th:text="${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-                    </div>
-                    <div class="col s3">
-                      <p>Prazo de Submissão - Final</p>
-                      <p th:text="${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
-                    </div>
-                    <div class="col s3">
-                      <p>Prazo de Revisão - Inicio</p>
-                      <p th:text="${#dates.format(evento.prazoRevisaoInicial,'dd/MM/yyyy')}"></p>
-                    </div>
-                    <div class="col s3">
-                      <p>Prazo de Revisão - Final</p>
-                      <p th:text="${#dates.format(evento.prazoRevisaoFinal,'dd/MM/yyyy')}"></p>
-                    </div>
-                  </div>
+                  <section class="cd-horizontal-timeline">
+				  	<span class="card-title">Datas importantes</span>
+				  	<div class="timeline">
+						<div class="events-wrapper">
+							<div class="events">
+								<ol>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}" class="selected" th:text="${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMM')}">16 Jan</a></li>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoInicial},'dd MMM')}">28 Feb</a></li>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMM')}">20 Mar</a></li>
+									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMM')}">20 Mar</a></li>
+								</ol>
+								<span class="filling-line" aria-hidden="true"></span>
+							</div>
+						</div>
+						<ul class="cd-timeline-navigation">
+							<li><a href="#0" class="prev inactive">Prev</a></li>
+							<li><a href="#0" class="next">Next</a></li>
+						</ul>
+					</div>
+					<div class="events-content">
+						<ol>
+							<li class="selected" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}">
+								<em>Começa o período de submissão dos artigos</em>
+							</li>
+							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
+								<em>Terminou o periodo de subissão, hora de começar as Revisões</em>
+							</li>
+				
+							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
+								<em>Terminaram as revisões, hora de submeter a versão final</em>
+							</li>
+							
+							<li href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}">
+								<em>Ultimo dia para submeter a versão final do artigo</em>
+							</li>
+						</ol>
+					</div>
+				 </section>
+                  
                 </div>
               </div>
             </div>
@@ -125,6 +145,8 @@
       </div>
     </div>
 	<div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
     <script type="text/javascript">
     $(document).ready(function() {
     	$('select').material_select();

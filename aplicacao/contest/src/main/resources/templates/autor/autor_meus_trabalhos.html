@@ -39,15 +39,21 @@
             <div class="card-stacked">
               <div class="card-content">
                 <h5 th:text="${evento.nome}"></h5>
-                <p th:text="${evento.descricao}"></p>
-                <p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
+                <p th:text="'Descrição: ' + ${evento.descricao}"></p>
+                <p th:text="'Início da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
+                <p th:text="'Início da revisão: ' + ${#dates.format(evento.prazoRevisaoInicial,'dd/MM/yyyy')}"></p>                
+            	<p th:text="'Fim da revisão: ' + ${#dates.format(evento.prazoRevisaoFinal,'dd/MM/yyyy')}"></p>
+                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>                
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
-                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+                  <a th:if="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:unless="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" class="btn grey white-text">Fora do Prazo de Envio de Trabalho</a>
+               	  
                	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                 </div>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'TEM_REVISAO'">
-                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+                  <a th:if="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:unless="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" class="btn grey white-text">Fora do Prazo de Envio de Trabalho</a>
+               	  
                	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                   <a href="#" class="waves-effect waves-light btn blue">Ver Revisao</a>
                 </div>

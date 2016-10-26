@@ -22,7 +22,7 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :idEvento AND t.id in(SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
 			+ " pt where pt.pessoa.id = :idRevisor)")
 	public List<Trabalho> getTrabalhosParaRevisar(@Param("idRevisor") Long idRevisor, @Param("idEvento") Long idEvento);
-
+	
 	@Query("SELECT p FROM Pessoa p WHERE p.id in "
 			+ "(SELECT pt.pessoa.id FROM ParticipacaoTrabalho pt WHERE pt.trabalho.id = :idTrabalho AND "
 			+ "pt.papel = ufc.quixada.npi.contest.model.Papel.AUTOR)")

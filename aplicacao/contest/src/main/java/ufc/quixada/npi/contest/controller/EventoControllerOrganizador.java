@@ -167,11 +167,10 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return "{\"result\":\"ok\"}";
 	}
 	
-	@RequestMapping(value = "/evento/trabalho/removerRevisor", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/evento/trabalho/removerRevisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String removerRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao){
 		ParticipacaoTrabalho participacao = participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
 		participacaoTrabalhoService.remover(participacao);
-		
 		return "{\"result\":\"ok\"}";
 	}
 	
@@ -185,7 +184,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
 		boolean existeEventos = true;
 		

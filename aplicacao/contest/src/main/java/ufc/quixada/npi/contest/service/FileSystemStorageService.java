@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.stream.Stream;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -36,7 +37,7 @@ public class FileSystemStorageService implements StorageService{
     }
     
    
-	@Override
+    @Override
 	public String store(MultipartFile arquivoUpload, String pastaDeDestino) {
 		 try {
 			 
@@ -64,7 +65,7 @@ public class FileSystemStorageService implements StorageService{
 	            		.append(".pdf")
 	            		.toString();
 	            
-				Files.copy(arquivoUpload.getInputStream(), Paths.get(caminhoDoArquivo));
+				Files.copy(arquivoUpload.getInputStream(), Paths.get(caminhoDoArquivo), REPLACE_EXISTING);
 				return caminhoDoArquivo;
 				
 	        } catch (IOException e) {
@@ -72,7 +73,7 @@ public class FileSystemStorageService implements StorageService{
 	        }
 	}
 
-	@Override
+    @Override
 	public Stream<Path> loadAll() {
 		try {
             return Files.walk(this.rootLocation, 1)
@@ -116,5 +117,6 @@ public class FileSystemStorageService implements StorageService{
 		File file = new File(path);
 		return file;
 	}
+
 
 }
