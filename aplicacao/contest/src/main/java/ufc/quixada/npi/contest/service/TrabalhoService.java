@@ -68,4 +68,8 @@ public class TrabalhoService {
 	public void remover(Long id){
 		trabalhoRepository.delete(id);
 	}
+	
+	public int buscarQuantidadeTrabalhosPorEvento(Evento evento){
+		return getTrabalhosEvento(evento).size();
+	}
 }
