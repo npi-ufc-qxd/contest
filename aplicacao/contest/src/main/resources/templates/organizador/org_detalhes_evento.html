@@ -73,7 +73,7 @@
 								<em>Começa o período de submissão dos artigos</em>
 							</li>
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
-								<em>Terminou o periodo de subissão, hora de começar as Revisões</em>
+								<em>Terminou o periodo de submissão, hora de começar as Revisões</em>
 							</li>
 				
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
@@ -97,7 +97,7 @@
             <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content"><span class="card-title">Trilhas</span>
-                  <p th:text="'Cadastradas: '+ ${qtdTrilhas}"></p>
+                  <p th:text="'Cadastradas: '+ ${numeroTrilhas}"></p>
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
@@ -111,7 +111,7 @@
               <div class="card-stacked">
                 <div class="card-content">
                   <span class="card-title">Revisores</span>
-                  <p th:text="'Cadastrados: '+ ${qtdTrilhas}"></p>
+                  <p th:text="'Cadastrados: '+ ${numeroRevisores}"></p>
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
