@@ -24,7 +24,6 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
-import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 
@@ -38,21 +37,16 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 
 	@Mock
 	private PessoaService pessoaService;
-
-	@Mock
-	private MessageService messageService;
 	
 	@Mock
 	private TrabalhoService trabalhoService;
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
-	private Pessoa organizadorLogado;
 	private Long EVENTO_ID = 1L;
 	private Long EVENTO_ID_INEXISTENTE = 2L;
 	private Long EVENTO_ID_INATIVO = 3L;
-	private Evento eventoAtivo;
-	private Pessoa organizador;
+	private Evento eventoAtivo; 
 	
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
@@ -61,7 +55,6 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	private static final String PAGINA_DETALHES_EVENTO_INEXISTENTE = "/eventoOrganizador/detalhes-evento/2";
 	private static final String PAGINA_DETALHES_EVENTO_ID_1 = "/eventoOrganizador/detalhes-evento/1";
 	private static final String PAGINA_DETALHES_EVENTO = "/eventoOrganizador/detalhes-evento/{id}";
-	private static final String ID_PESSOA = "2";
 	
 	@Before
 	public void setup() {
@@ -70,12 +63,7 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 		eventoAtivo = new Evento();
 		eventoAtivo.setId(EVENTO_ID);
 		eventoAtivo.setEstado(EstadoEvento.ATIVO);
-		organizador = new Pessoa();
 		
-		organizador.setCpf("123");
-		organizador.setEmail("a@a");
-		organizador.setId(Long.valueOf(ID_PESSOA));
-		organizador.setNome("Joao");
 	}
 
 	/**
@@ -83,6 +71,7 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	 */
 	@Dado("^Dado Estou logado no sistema como organizador$")
 	public void logadoComoOrganizador() {
+		Pessoa organizadorLogado;
 		organizadorLogado = new Pessoa();
 		organizadorLogado.setPapelLdap("DOCENTE");
 		organizadorLogado.setId(Long.valueOf(5));

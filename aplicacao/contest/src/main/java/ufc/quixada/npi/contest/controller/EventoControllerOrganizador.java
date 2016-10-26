@@ -122,7 +122,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
 		boolean existeEventos = true;
 		
@@ -264,9 +264,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){
 		long id = Long.parseLong(eventoId);
-		if(trilha.getNome().isEmpty()){
-			return "redirect:/eventoOrganizador/trilhas/" + eventoId;
-		}
 		if (trilhaService.exists(trilha.getNome(), id)) {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage("TRILHA_NOME_JA_EXISTE"));
 			return "redirect:/eventoOrganizador/trilhas/" + eventoId;

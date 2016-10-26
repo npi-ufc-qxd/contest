@@ -15,51 +15,100 @@
     <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
       <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
-      <h2 th:text="${nomeEvento}"></h2>
+      <h2 th:text="'Evento:' + ${nomeEvento}"></h2>
       
       <div>
-        <div class="row chip red white-text green" id="error_area" th:if="${trabalhoExcluido}">
-          <span class="white-text" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}"></span>
+		<div th:if="${trabalhoExcluido}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}">
           <i class="material-icons">close</i>
         </div>
         
-        <br/>
+        <div th:if="${sucessoEnviarTrabalho}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_ENVIADO}">
+          <i class="material-icons">close</i>
+        </div>
         
-        <div class="row chip red white-text green" id="error_area" th:if="${erroExcluir}">
-          <span class="white-text" th:text="#{FORA_DO_PRAZO_SUBMISSAO}"></span>
+        <div th:if="${FORA_DA_DATA_DE_SUBMISSAO}" id="error_area" class="row chip red white-text" th:text="#{FORA_DA_DATA_DE_SUBMISSAO}">
+	          <i class="material-icons">close</i>
+	    </div>
+	    
+	    <div th:if="${ERRO_TRABALHO_EVENTO}" id="error_area" class="row chip red white-text" th:text="#{ERRO_TRABALHO_EVENTO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${ERRO_REENVIAR}" id="error_area" class="row chip red white-text" th:text="#{ERRO_REENVIAR}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${erroExcluir}" id="error_area" class="row chip red white-text" th:text="#{ERRO_EXCLUIR_TRABALHO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${arquivoInvalido}" id="error_area" class="row chip red white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}">
           <i class="material-icons">close</i>
         </div>
       </div>
       
-      
       <div class="col s12">
         
         <div th:if="${not #lists.isEmpty(listaTrabalhos)}" class="col s4">
-          <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal small">
+          <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal ">
         	<div class="card-stacked">
         	  
-        	  <div class="card-content"><span class="card-title" th:text="${trabalho.titulo}"></span>
-                <p>Nome do Orientador</p>
-                <p>Email do Orientador</p>
-                <p>Trilha do Evento</p>
-                <p>Data de envio</p>
-              </div>
-              <div class="card-action">
+        	  <div class="card-content"><span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span>
                 <div class="row">
-                  <div class="file-field input-field col m6 s6">
-                    <div class="btn right"><span>Escolher...</span>
-                      <input type="file" class="multiple"/>
-                    </div>
-                    <div class="file-path-wrapper">
-                      <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
-                    </div>
-                  </div>
-                  <div class="input-field col m6 s6">
-                    <a th:attr="href='#modal' + ${trabalho.id}" class="btn right white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
-                    <a href="#modal" class="btn right white-text waves-effect waves-light confirmar modal-trigger">Reenviar</a>
-                  </div>
+                <div class="col s4">
+                	<p><b>Autor(es):</b></p>
+	                <div th:each="participacao : ${trabalho.participacoes}">
+	                	<p th:text="${participacao.pessoa.nome}"></p>
+	                </div>
                 </div>
+                
+                <div class="col s4">
+                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
+                </div>
+                
+                <div class="col s4">
+                	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(0).dataSubmissao,'dd/MM/yyyy')} "></span></p>
+                </div>
+                </div>
+                 
               </div>
+              
+           	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
+	              <div class="card-action">
+	                <div class="row">
+	                  <div class="file-field input-field col m6 s6">
+	                    <div class="btn right"><span>Escolher...</span>
+	                      <input type="file" name="file" class="multiple"/>
+	                    </div>
+	                    <div class="file-path-wrapper">
+	                      <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
+	                    </div>
+	                  </div>
+	                  <div class="input-field col m6 s6">
+	                  	<small>Opções</small>
+	                  	<br/>
+	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
+	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
+						<a th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
+	                  </div>
+	                </div>
+	              </div>
+	              
+	            <div th:attr="id='reenviar' + ${trabalho.id}" class="modal">
+			        <div class="modal-content">
+			          <h4>Reenviar Trabalho</h4>
+			          <p>Tem certeza que quer reenviar este trabalho?</p>
+			        </div>
+		       
+		        	<input type="hidden" name="trabalhoId" th:value="${trabalho.id}"/>
+					<input type="hidden" name="eventoId" th:value="${eventoId}"/>
+			        <div class="modal-footer">
+			          <button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+			          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+			        </div>
+      			</div>
+	         </form>
+              
         	  
         	</div>
         	
@@ -80,6 +129,8 @@
 				</div>
 			  </form>
 		    </div>
+		    
+		   
         	
           </div>
         </div>
@@ -95,18 +146,98 @@
                 <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
               </ul>
             </div>
-      <div id="modal" class="modal">
-        <div class="modal-content">
-          <h4>Reenviar Trabalho</h4>
-          <h5>"Nome do trabalho".</h5>
-          <p>Tem certeza que quer participar reenviar este trabalho?</p>
-        </div>
-        <div class="modal-footer">
-          <a href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a>
-          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-        </div>
-      </div>
+
     </div>
     <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //Inicialização dos elementos no JS
+        //Parallax BG
+        $('.parallax').parallax();
+        
+        //sideNav
+        $(".button-collapse").sideNav();
+        
+        //Tooltips
+        $('.tooltipped').tooltip({delay: 50});
+        
+        //select_initializer
+        $('select').material_select();
+        
+        //datepicker
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 15, // Creates a dropdown of 15 years to control year
+          //Persnonalizando nomes dos meses do ano
+          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+          //Persnonalizando nomes dos dias da semana
+          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+          today: 'Hoje',
+          clear: 'Limpar',
+          close: 'Fechar'
+        });
+        
+        //Trata as datas na tela org_editar_eventos 
+        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
+        var calendarioSubmissaoFinal = "#prazo_submissao_final";
+        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
+        var calendarioRevisaoFinal = "#prazo_revisao_final";
+        
+        function habilitarCalendario(calendario){
+          $(calendario).removeAttr( "disabled" );
+        }
+        
+        function desabilitarCalendario(calendario){
+          $(calendario).attr( "disabled", true );
+          $(calendario).pickadate("clear");
+        }
+        
+        function definirDataMinimaCalendario(calendario, dataMin){
+          var picker = getPicker(calendario);
+          picker.set("min", dataMin);
+        }
+        
+        function getPicker(idCalendario){
+          var $input = $(idCalendario).pickadate();
+          var picker = $input.pickadate("picker");
+          return picker;
+        }
+        
+        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
+          var picker = getPicker(idCalendarioInicial);
+          var dataAtual = picker.get();
+          var umDia = 1;
+          
+          var dataMinima = new Date(dataAtual);
+          dataMinima.setDate(dataMinima.getDate()+umDia);
+                
+          if (dataAtual.length == 0) {
+            desabilitarCalendario(idCalendarioFinal);
+          } else {
+            habilitarCalendario(idCalendarioFinal);       
+            
+            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
+          }
+        }
+        
+        $(calendarioSubmissaoInicial).on("change",function(){
+          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
+        });
+        
+        $(calendarioSubmissaoFinal).on("change",function(){
+          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
+        });
+        
+        $(calendarioRevisaoInicial).on("change",function(){
+          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
+        });
+        
+        //Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();
+        
+      });
+    </script>
   </body>
 </html>

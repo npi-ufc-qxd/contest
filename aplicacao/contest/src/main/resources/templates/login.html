@@ -54,7 +54,7 @@
             <div class="input-field">
               <i class="material-icons prefix">account_circle</i>
               <input type="text" id="user" th:name="username" />
-              <label for="user">Usuário</label>
+              <label for="user">Usuário (CPF)</label>
             </div>
 
             <div class="input-field">
@@ -68,6 +68,22 @@
       </div>
     </div>
   </div>
-<div th:include="fragments/footer :: footer"></div>
+
+  <footer class="page-footer purple darken-4">
+    <div class="footer-copyright">
+      <div class="container">
+        Desenvolvido por <a class="orange-text text-lighten-3" th:href="@{http://www.npi.quixada.ufc.br}" target="_blank">NPI - Núcleo de Práticas em Informática</a>
+      </div>
+    </div>
+  </footer>
+
+  <!--  Scripts-->
+  <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+  <script>
+    $(document).ready(function(){
+	  $('.parallax').parallax();
+    });
+  </script>
 </body>
 </html>
