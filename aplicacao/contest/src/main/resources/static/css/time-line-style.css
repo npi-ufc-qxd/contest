@@ -44,7 +44,7 @@ Main Components
 }
 .cd-horizontal-timeline .timeline {
   position: relative;
-  height: 70px;
+  height: 60px;
   width: 90%;
   max-width: 800px;
   margin: 0 auto;
@@ -70,7 +70,7 @@ Main Components
   position: absolute;
   z-index: 1;
   left: 0;
-  top: 49px;
+  top: 45px;
   height: 2px;
   /* width will be set using JavaScript */
   background: #dfdfdf;
@@ -106,7 +106,7 @@ Main Components
   bottom: 0;
   z-index: 2;
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1rem;
   padding-bottom: 15px;
   color: #383838;
   /* fix bug on Safari - text flickering while timeline translates */
@@ -153,7 +153,7 @@ Main Components
 }
 @media only screen and (min-width: 1100px) {
   .cd-horizontal-timeline {
-    margin: 6em auto;
+    margin: 0.5em auto;
   }
   .cd-horizontal-timeline::before {
     /* never visible - this is used in jQuery to check the current MQ */
@@ -229,7 +229,7 @@ Main Components
 .cd-horizontal-timeline .events-content {
   position: relative;
   width: 100%;
-  margin: 2em 0;
+  margin: 1em 0;
   overflow: hidden;
   -webkit-transition: height 0.4s;
   -moz-transition: height 0.4s;
@@ -286,15 +286,14 @@ Main Components
   margin: 0 auto;
 }
 .cd-horizontal-timeline .events-content h5 {
-  font-weight: bold;
-  font-size: 1rem;
+  font-size: 10px;
   font-family: "Playfair Display", serif;
   font-weight: 500;
   line-height: 1;
 }
 .cd-horizontal-timeline .events-content em {
   display: block;
-  font-style: italic;
+  font-size: 10px;
   margin: 10px auto;
 }
 .cd-horizontal-timeline .events-content em::before {
@@ -312,7 +311,7 @@ Main Components
     font-size: 2rem;
   }
   .cd-horizontal-timeline .events-content em {
-    font-size: 2rem;
+    font-size: 20px;
   }
   .cd-horizontal-timeline .events-content p {
     font-size: 1.8rem;
