@@ -21,8 +21,12 @@ public class RevisaoJSON {
 		json.put("avaliacao_final", avaliacao_final);
 		json.put("indicacao", indicar);
 		
-		
 		return json.toString();
+	}
+	
+	public String fromJson(String conteudo, String chave){
+		JSONObject json = new JSONObject(conteudo);
+		return json.getString(chave);
 	}
 	
 }
