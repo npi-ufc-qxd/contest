@@ -18,7 +18,7 @@ public interface RevisaoRepository extends CrudRepository<Revisao, Long>{
 	public boolean existTrabalhoNesseEvento(@Param("idEvento") Long idEvento);
 
 	@Query("select case when count(*) > 0 then true else false end "
-			+ "FROM Revisao as r WHERE r.trabalho.id = :idTrabalho")
-	public boolean trabalhoEstaRevisado(@Param("idTrabalho") Long idTrabalho);
+			+ "FROM Revisao as r WHERE r.trabalho.id = :idTrabalho AND r.revisor.id = :idRevisor")
+	public boolean trabalhoEstaRevisadoPeloRevisor(@Param("idTrabalho") Long idTrabalho, @Param("idRevisor") Long idRevisor);
 	
 }

@@ -51,7 +51,7 @@ public class TrabalhoService {
 		List<Trabalho> trabalhosParaRevisar = this.getTrabalhosParaRevisar(idRevisor, idEvento);
 		List<Long> trabalhosRevisados = new ArrayList<Long>();
 		for(Trabalho trabalho : trabalhosParaRevisar){
-			if(revisaoRepository.trabalhoEstaRevisado(trabalho.getId())){
+			if(revisaoRepository.trabalhoEstaRevisadoPeloRevisor(trabalho.getId(), idRevisor)){
 				trabalhosRevisados.add(trabalho.getId());
 			}
 		}
