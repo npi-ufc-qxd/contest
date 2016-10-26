@@ -149,7 +149,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return "{\"result\":\"ok\"}";
 	}
 	
-	@RequestMapping(value = "/evento/trabalho/removerRevisor", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/evento/trabalho/removerRevisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String removerRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao){
 		ParticipacaoTrabalho participacao = participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
 		participacaoTrabalhoService.remover(participacao);
