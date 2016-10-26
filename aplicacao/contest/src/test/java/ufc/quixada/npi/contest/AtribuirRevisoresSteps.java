@@ -50,7 +50,6 @@ public class AtribuirRevisoresSteps {
 	private Trabalho trabalho;
 	private ParticipacaoTrabalho participacaoTrabalho;
 	private RevisaoJsonWrapper dadosRevisao;
-	private Pessoa organizadorLogado;
 	
 	@Before
 	public void setup() {
@@ -70,16 +69,12 @@ public class AtribuirRevisoresSteps {
 		pessoa.setCpf("123");
 		pessoa.setNome("Kuririn");
 		pessoa.setEmail("teste@teste.com");
-		
+		pessoa.setPapelLdap("DOCENTE");
 		trabalho.setTitulo("Meu Trabalho");
 
 	}
 	@Dado("^que sou organizador$")
 	public void exitesUmEvento() throws Throwable {
-		organizadorLogado = new Pessoa();
-		organizadorLogado.setPapelLdap("DOCENTE");
-		organizadorLogado.setId(5L);
-		
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		Authentication auth = Mockito.mock(Authentication.class);
 		when(context.getAuthentication()).thenReturn(auth);
@@ -87,7 +82,7 @@ public class AtribuirRevisoresSteps {
 		
 		SecurityContextHolder.setContext(context);
 		
-		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(organizadorLogado);
+		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(pessoa);
 	}
 	@Quando("^o organizador seleciona atribuir um revisor para um trabalho$")
 	public void organizadorAtribuiRevisoresAoTrabalho() throws Exception{
