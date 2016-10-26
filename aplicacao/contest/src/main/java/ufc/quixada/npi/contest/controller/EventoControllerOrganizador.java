@@ -46,14 +46,13 @@ import ufc.quixada.npi.contest.util.Constants;
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController{
 
-	private static final String EVENTO_QUE_PARTICIPO = "eventoQueParticipo";
+	
 	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
-	private static final String EVENTOS_ATIVOS = "eventosAtivos";
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
@@ -178,19 +177,31 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
+		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
+		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
+				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
+				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		boolean existeEventos = true;
 		
-		for(Evento e : eventosQueReviso){
-			eventos.remove(e);
-		}
-		if(eventos.isEmpty() && eventosQueReviso.isEmpty())
+		if(eventosAtivos.isEmpty())
 			existeEventos = false;
 		
+		List<Long> eventosComoRevisor = new ArrayList<>();
+		List<Long> eventosComoOrganizador = new ArrayList<>();
+		
+		for(ParticipacaoEvento participacaoEvento : participacoesComoRevisor){
+			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
+		}
+		
+		for(ParticipacaoEvento participacaoEvento : participacoesComoOrganizador){
+			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
+		}
+		
 		model.addAttribute("existeEventos", existeEventos);
-		model.addAttribute(EVENTOS_ATIVOS, eventos);
-		model.addAttribute(EVENTO_QUE_PARTICIPO, eventosQueReviso);
+		model.addAttribute("eventosAtivos", eventosAtivos);
+		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
+		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 

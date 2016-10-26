@@ -41,13 +41,12 @@
                 </div>
                 <div class="card-action">
               	  <div class="row">
-              	  
-	              	  <div class="col m4 s4">
-	              	  	<a th:href="@{'/eventoOrganizador/editar/' + ${evento.id}}" class="purple-text">Editar</a>
+	              	  <div class="col m4 s4" th:switch="${#lists.contains(eventosComoOrganizador, evento.id)}">
+	              	  	<a th:case="true" th:href="@{'/eventoOrganizador/editar/' + ${evento.id}}" class="purple-text">Editar</a>
 	              	  </div>
-	              	  <div class="col m4 s4">
-	              	  	<a th:attr="href='#modal' + ${evento.id}" 
-	              	  	class="purple-text modal-trigger">Revisar</a>
+	              	  <div class="col m4 s4" th:switch="${#lists.contains(eventosComoRevisor, evento.id)}">
+	              	  	<a th:case="true" class="purple-text">Revisando</a>
+	              	  	<a th:case="false" th:attr="href='#modal' + ${evento.id}" class="purple-text modal-trigger">Revisar</a>
 	              	  </div>
 	              	  <div class="col m4 s4">
 	              	    <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}" class="purple-text">Detalhes</a>
@@ -69,37 +68,6 @@
 				</form>	
         	  </div>
              </div>
-        
-        
-        	<div th:each="eventoParticipo : ${eventoQueParticipo}" class="col m6 s12">
-              <div class="card">
-                <div class="card-content">
-	              <span class="card-title" th:text="${eventoParticipo.nome}" ></span>
-	              <p>Participando</p>
-	              <p>Organizador(es):</p>
-	              <blockquote>
-	              	<p th:each="participacao : ${eventoParticipo.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'ORGANIZADOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
-	              </blockquote>
-	              <p th:text="|Visibilidade: ${eventoParticipo.visibilidade.visibilidade}|"></p>
-                </div>
-                <div class="card-action">
-              	  
-            	  <a href="#" class="blue-text">Revisando</a>
-            	  <a th:href="@{'/eventoOrganizador/evento/' + ${eventoParticipo.id}}" class="purple-text">Detalhes</a>
-              	  
-                </div>
-              </div>
-        		
-        	<div class="col m4 s12" th:if="${!existeEventos}">
-              <p>Não há eventos Ativos</p>
-            </div>
-        		
-        	</div>
-        
-        
-        
-        
-        
         </div>
         
         
