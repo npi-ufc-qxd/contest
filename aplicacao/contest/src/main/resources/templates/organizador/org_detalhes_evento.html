@@ -93,11 +93,12 @@
           </div>
         </div>
         <div>
-          <div class="col s4">
-            <div class="card horizontal small">
+          <div class="col s3">
+            <div class="card horizontal">
               <div class="card-stacked">
-                <div class="card-content"><span class="card-title">Trilhas do Evento</span>
-                  <p th:text="'Número de trilhas:'+ ${qtdTrilhas}"></p>
+                <div class="card-content"><span class="card-title">Trilhas</span>
+                  <p th:text="'Cadastradas: '+ ${qtdTrilhas}"></p>
+                  <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
                   <a th:href="@{'/eventoOrganizador/trilhas/' + ${evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trilhas</a>
@@ -105,18 +106,13 @@
               </div>
             </div>
           </div>
-          <div class="col s4">
-            <div class="card horizontal small">
+          <div class="col s3">
+            <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content">
-                  <span class="card-title">Revisores do Evento</span>
-                  <div class="scrollable">
-	                  <div  th:each="revisor : ${evento.participacoes}">
-	                  	<div th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}">
-	                  	  <p th:text="${revisor.pessoa.nome}"></p>
-	                  	</div>
-	                  </div>
-	              </div>
+                  <span class="card-title">Revisores</span>
+                  <p th:text="'Cadastrados: '+ ${qtdTrilhas}"></p>
+                  <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
                   <a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a>
@@ -124,16 +120,28 @@
               </div>
             </div>
           </div>
-          <div class="col s4">
-            <div class="card horizontal small">
+          <div class="col s3">
+            <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content">
-                  <span class="card-title">Trabalhos do Evento</span>
-                  <div class="scrollable">
-	                  <div  th:each="trilha : ${trilhasEvento}">
-	                  	<p th:text="|${trilha.nome} : ${#arrays.length(trilha.trabalhos)}|"></p>
-	                  </div>
-	              </div>
+                  <span class="card-title">Trabalhos</span>
+                  <p th:text="'Submetidos: '+ ${qtdTrilhas}"></p>
+                  <p th:text="'Revisados: '+ ${qtdTrilhas}"></p>
+                  <p th:text="'Não Revisados: '+ ${qtdTrilhas}"></p>
+                </div>
+                <div class="card-action" th:if="${organizaEvento}">
+                  <a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col s3">
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div class="card-content">
+                  <span class="card-title">Revisões</span>
+                  <p th:text="'Comentáios: '+ ${qtdTrilhas}"></p>
+                  <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
                   <a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a>
