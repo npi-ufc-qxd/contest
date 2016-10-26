@@ -361,9 +361,10 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				organizadores.add(pessoaService.get(Long.parseLong(id)));
 			}
 			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
-			ParticipacaoEvento participacao = new ParticipacaoEvento();
+			
 			
 			for(Pessoa p : organizadores){
+				ParticipacaoEvento participacao = new ParticipacaoEvento();
 				participacao.setEvento(evento);
 				participacao.setPessoa(p);
 				participacao.setPapel(Papel.ORGANIZADOR);
