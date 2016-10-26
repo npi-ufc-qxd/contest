@@ -69,22 +69,18 @@
 					<div class="events-content">
 						<ol>
 							<li class="selected" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}">
-								<h5>Começa o período de submissão dos artigos</h5>
-								<em th:text="${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMMM YYYY')}"></em>
+								<em>Começa o período de submissão dos artigos</em>
 							</li>
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
-								<h5>Terminou o periodo de subissão, hora de começar as Revisões</h5>
-								<em th:text="${#calendars.format({evento.PrazoRevisaoInicial},'dd MMMM YYYY')}"></em>
+								<em>Terminou o periodo de subissão, hora de começar as Revisões</em>
 							</li>
 				
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
-								<h5>Terminaram as revisões, hora de submeter a versão final</h5>
-								<em th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMMM YYYY')}"></em>
+								<em>Terminaram as revisões, hora de submeter a versão final</em>
 							</li>
 							
 							<li href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}">
-								<h5>Ultimo dia para submeter a versão final do artigo</h5>
-								<em th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMMM YYYY')}"></em>
+								<em>Ultimo dia para submeter a versão final do artigo</em>
 							</li>
 						</ol>
 					</div>
