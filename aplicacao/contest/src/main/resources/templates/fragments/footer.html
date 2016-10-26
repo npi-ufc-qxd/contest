@@ -15,6 +15,38 @@
 		</footer>
 		<script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
     	<script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    	<script type="text/javascript">
+    	 $(document).ready(function(){
+    	removerNotificacao = function(e){
+    		var idNotificacao = $(e).attr('id');
+    		var token = $("meta[name='_csrf']").attr("content");
+    		
+    		var data = {
+    	    	'notificacaoId': 	idNotificacao,
+    		};
+    		
+    		$(e).remove();
+    		
+    		$.ajax({
+    	  	  contentType: 'application/json;charset=UTF-8',
+    	  	  url: '/notificacao/removerNotificacao',
+    	  	  dataType: 'json',
+    	  	  headers: {"X-CSRF-TOKEN":token},
+    	  	  type: 'POST',
+    	  	  cache: false, 
+    	  	  processData: false, 
+    	  	  data: JSON.stringify(data),
+    	  	  success: function (data) {
+    	  		  		  listaescolhidos.append(a);	
+    	      			},
+    	      error: function (data, error) {
+    	    	  alert();
+    	      }
+    	  	});
+    	}
+    });
+    	</script>
+    
     </div>
 </body>
 </html>
