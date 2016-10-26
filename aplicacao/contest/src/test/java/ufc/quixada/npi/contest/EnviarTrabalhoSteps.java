@@ -96,10 +96,10 @@ public class EnviarTrabalhoSteps {
 		dataInicialSubmissao.set(2016, Calendar.SEPTEMBER, 30);
 		
 		Calendar dataInicialRevisao = Calendar.getInstance();
-		dataInicialSubmissao.set(2016, Calendar.DECEMBER, 30);
+		dataInicialRevisao.set(2016, Calendar.DECEMBER, 30);
 		
 		Calendar dataFinalRevisao = Calendar.getInstance();
-		dataInicialSubmissao.set(2017, Calendar.FEBRUARY, 17);
+		dataFinalRevisao.set(2017, Calendar.FEBRUARY, 17);
 		
 		Calendar dataFinalSubmissao = Calendar.getInstance();
 		dataFinalSubmissao.set(2017, Calendar.SEPTEMBER, 1);
