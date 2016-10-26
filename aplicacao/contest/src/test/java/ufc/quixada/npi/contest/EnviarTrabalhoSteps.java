@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.neo4j.kernel.api.impl.index.LabelScanStorageStrategy.StorageService;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -24,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.multipart.MultipartFile;
 
 import cucumber.api.java.Before;
 import cucumber.api.java.pt.Dado;
@@ -39,6 +39,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
@@ -68,7 +69,7 @@ public class EnviarTrabalhoSteps {
 	@Mock
 	private TrilhaService trilhaService;
 	@Mock
-	private StorageService storage;
+	private StorageService storageService;
 	
 	@Mock
 	private TrabalhoValidator trabalhoValidator;
@@ -158,7 +159,9 @@ public class EnviarTrabalhoSteps {
 		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
-		
+		MultipartFile file = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);;
+		String nomeDoArquivo = new StringBuilder("CONT-").append(evento.getId()).toString();
+		when(storageService.store(file, nomeDoArquivo)).thenReturn("caminho/certo");
 		
 		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
 
@@ -172,7 +175,7 @@ public class EnviarTrabalhoSteps {
 	}
 	@Então("^o autor deve ser redirecionado para a página meusTrabalhos com uma mensagem de sucesso$")
 	public void mensagemDeSucesso() throws Exception{
-		action.andExpect(redirectedUrl("/autor/enviarTrabalhoForm/"+ evento.getId()))
+		action.andExpect(redirectedUrl(PAGINA_AUTOR_MEUS_TRABALHOS))
 			  .andExpect(status().isFound());
 	}
 	
