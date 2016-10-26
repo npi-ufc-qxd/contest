@@ -81,7 +81,7 @@
           <h4>Excluir Trilha</h4>
           <p>Tem certeza que quer excluir essa Trilha?</p>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar </a></div>
+        <div class="modal-footer"><a th:href="@{'/eventoOrganizador/trilha/excluir/' + ${trilha.id} + '/' + ${trilha.evento.id}}" class="modal-action modal-close waves-effect btn-flat">Confirmar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar </a></div>
       </div>
       <div id="modalTrilha" class="modal">
         <div class="modal-content">
@@ -99,7 +99,6 @@
 	        </div>
 	    </form>
         </div>
-        <div class="modal-footer"><a href="#" class="modal-action modal-close waves-effect btn-flat">Alterar</a><a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a></div>
       </div>
     </div>
     <div th:include="fragments/footer :: footer"></div>

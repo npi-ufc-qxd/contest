@@ -40,6 +40,10 @@
 						<div class="card-stacked">
 							<div class="card-content">
 								<span class="card-title" th:text="${trabalho.titulo}"></span>
+								<p>Revisor(es): </p>
+								<blockquote>
+	              					<p th:each="participacao : ${trabalho.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'REVISOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
+	              				</blockquote>
 								<h6 th:text="'Trilha: ' + ${trabalho.trilha.nome}"></h6>
 							</div>
 							<div class="card-action" th:switch="${#lists.contains(trabalhosRevisados, trabalho.id)}">
