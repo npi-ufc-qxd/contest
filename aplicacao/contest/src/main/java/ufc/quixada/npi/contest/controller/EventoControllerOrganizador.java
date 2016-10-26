@@ -119,6 +119,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
 		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
 		
+		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 	
