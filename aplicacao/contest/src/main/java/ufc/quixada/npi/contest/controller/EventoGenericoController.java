@@ -52,9 +52,8 @@ public class EventoGenericoController {
             Long idEvento = Long.valueOf(id);
             Evento evento = eventoService.buscarEventoPorId(idEvento);
             if (evento != null){
-                ParticipacaoEvento participacao = participacaoEventoService.findByEventoId(evento.getId());
-                model.addAttribute(EVENTO, participacao.getEvento());
-                model.addAttribute(ID_PESSOA, participacao.getPessoa().getId());
+                model.addAttribute(EVENTO, evento);
+                model.addAttribute(ID_PESSOA, evento.getParticipacoes().get(0).getId());
                 return viewSucesso;
             }else{
                 redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
