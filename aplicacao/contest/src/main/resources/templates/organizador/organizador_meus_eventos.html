@@ -45,7 +45,7 @@
         
         <div class="row" th:if="${not #lists.isEmpty(eventos)}">
           <div class="row" th:each="evento : ${eventos}">
-            <div class="card horizontal medium">
+            <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
                   <p th:text="${evento.descricao}">
