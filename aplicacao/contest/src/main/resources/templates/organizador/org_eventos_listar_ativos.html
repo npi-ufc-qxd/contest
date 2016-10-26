@@ -40,7 +40,7 @@
               	  <div class="row">
               	  
 	              	  <div class="col m4 s4">
-	              	  	<a href="#" class="purple-text">Inativar</a>
+	              	  	<a th:href="@{'/eventoOrganizador/editar/' + ${evento.id}}" class="purple-text">Editar</a>
 	              	  </div>
 	              	  <div class="col m4 s4">
 	              	  	<a th:attr="href='#modal' + ${evento.id}" 
