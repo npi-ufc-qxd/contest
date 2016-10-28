@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -135,6 +136,26 @@ public class Trabalho {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	
+	public List<Pessoa> getAutoresDoTrabalho() {
+		List<Pessoa> autores = new ArrayList<Pessoa>();
+		for (ParticipacaoTrabalho p : getParticipacoes()) {
+			if (p.getPapel() == Papel.AUTOR)
+				autores.add(p.getPessoa());
+		}
+
+		return autores;
+	}
+
+	public List<Pessoa> getCoAutoresDoTrabalho() {
+		List<Pessoa> coAutores = new ArrayList<Pessoa>();
+		for (ParticipacaoTrabalho p : getParticipacoes()) {
+			if (p.getPapel() == Papel.COAUTOR)
+				coAutores.add(p.getPessoa());
+		}
+
+		return coAutores;
 	}
 
 	@Override
