@@ -18,14 +18,8 @@
       <div class="row">
         <h2>Lista de Eventos Ativos</h2>
         
-        <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}"> 
-          <div th:case="${true}">
-
-           </div>
-           <div class="col m4 s12" th:case="${false}">
-            <p>Não há eventos ativos</p>
-           </div> 
-          </div>
+        <div class="row" > 
+            <h4 th:if="${#lists.isEmpty(eventosAtivos)}">Não há eventos ativos</h4>
         </div>
         
         <div class="row">
