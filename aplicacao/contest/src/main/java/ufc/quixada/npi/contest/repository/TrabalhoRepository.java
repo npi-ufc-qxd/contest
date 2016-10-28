@@ -20,7 +20,7 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	public List<Trabalho> findByEvento(Evento evento);
 	
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :idEvento AND t.id in(SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
-			+ " pt where pt.pessoa.id = :idRevisor)")
+			+ " pt where pt.pessoa.id = :idRevisor AND pt.papel = ufc.quixada.npi.contest.model.Papel.REVISOR)")
 	public List<Trabalho> getTrabalhosParaRevisar(@Param("idRevisor") Long idRevisor, @Param("idEvento") Long idEvento);
 	
 	@Query("SELECT p FROM Pessoa p WHERE p.id in "
