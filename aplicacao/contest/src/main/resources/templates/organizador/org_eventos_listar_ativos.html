@@ -33,10 +33,7 @@
               <div class="card">
                 <div class="card-content">
 	              <span class="card-title" th:text="${evento.nome}" ></span>
-	              <p>Organizador(es):</p>
-	              <blockquote>
-	              	<p th:each="participacao : ${evento.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'ORGANIZADOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
-	              </blockquote>
+				  	<div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
 	              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
                 </div>
                 <div class="card-action">

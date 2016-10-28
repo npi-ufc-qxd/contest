@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+</head>
+<body>
+    <div th:fragment="listar(label, participantes)">
+		<p><b th:text="${label}"></b></p>
+		<blockquote>
+			<p th:each="participante : ${participantes}" th:text="${participante.nome}">Nome de participante</p>
+		</blockquote>
+	</div>
+</body>
+</html>
+	
+	
+	
+	
+	
