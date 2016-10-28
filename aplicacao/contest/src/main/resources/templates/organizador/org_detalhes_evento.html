@@ -17,10 +17,6 @@
     <div class="container page"><br/>
       <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
       <div class="row">
-        <h2>Detalhes do Evento: 
-        	<span class="card-title" th:text="${evento.nome}" ></span>
-        </h2>
-        <p th:text="${evento.descricao}"></p>
        	<div th:if="${organizaEvento}">
        		<form th:action="@{/eventoOrganizador/addOrganizadores}"  method="post">
 	       	  <div class="input-field col s10">
@@ -46,49 +42,7 @@
         <div >
           <div class="col s12">
             <div class="card horizontal">
-              <div class="card-stacked">
-                <div class="card-content" th:if="${evento.prazoSubmissaoInicial}">
-                  <section class="cd-horizontal-timeline">
-				  	<span class="card-title">Datas importantes</span>
-				  	<div class="timeline">
-						<div class="events-wrapper">
-							<div class="events">
-								<ol>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}" class="selected" th:text="${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMM')}">16 Jan</a></li>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoInicial},'dd MMM')}">28 Feb</a></li>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMM')}">20 Mar</a></li>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMM')}">20 Mar</a></li>
-								</ol>
-								<span class="filling-line" aria-hidden="true"></span>
-							</div>
-						</div>
-						<ul class="cd-timeline-navigation">
-							<li><a href="#0" class="prev inactive">Prev</a></li>
-							<li><a href="#0" class="next">Next</a></li>
-						</ul>
-					</div>
-					<div class="events-content">
-						<ol>
-							<li class="selected" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}">
-								<em>Começa o período de submissão dos artigos</em>
-							</li>
-							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
-								<em>Terminou o periodo de submissão, hora de começar as Revisões</em>
-							</li>
-				
-							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
-								<em>Terminaram as revisões, hora de submeter a versão final</em>
-							</li>
-							
-							<li href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}">
-								<em>Ultimo dia para submeter a versão final do artigo</em>
-							</li>
-						</ol>
-					</div>
-				 </section>
-                  
-                </div>
-              </div>
+               <div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
             </div>
           </div>
         </div>
