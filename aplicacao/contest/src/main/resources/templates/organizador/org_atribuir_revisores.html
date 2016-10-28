@@ -30,7 +30,9 @@
 	                <div>
 	                	<div class="card-content">
 	                		<span class="card-title" th:text="${trabalho.titulo}"></span>
-	                  		<p th:text="'Autor: ' + ${trabalho.participacoes[0].pessoa.nome}"></p>
+	                		<p><b>Autor(es):</b></p>
+	                  		<p th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}"></p>
+	                  		<p><b>Revisor(es):</b></p>
 	                  		<p th:each="revisor : ${trabalho.participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:text="|Revisor: ${revisor.pessoa.nome}"></p>
 	                   	</div>
 	                   	<div class="card-action">
@@ -44,12 +46,17 @@
 	            
 	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal" data-keyboard="">
 	      		<div class="modal-content">
-	      			<h4 class="block">Nome do Trabalho</h4>
+	      			<h4 class="block" th:text="${trabalho.titulo}">Nome do Trabalho</h4>
+	      			<p><b>Autor(es):</b></p>
+	                  		<p th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}"></p>
 	      			<div class="row">
-	      				<div class="input-field col m6 s6">
+	      				<div class="col m6 s6">
+	      				<!-- 
 	      					<i class="material-icons large prefix">search</i>
 	      					<input id="nome_do_revisor" type="text" />
 	                		<label for="nome_do_revisor">Nome do Revisor</label>
+	                	 -->
+	                		<h5 id="listaEscolhidosTitulo">Revisores do evento</h5>
 	                		<div class="listaRevisores collection">
 	                			<a th:each="revisor : ${revisores}" th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item" th:text="${revisor.nome}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
