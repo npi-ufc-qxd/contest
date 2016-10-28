@@ -28,12 +28,12 @@
           <div class="col s12 card">
             <div class="card-content"><span class="card-title" th:text="${trabalho.titulo}">Titulo do trabalho</span>
               <p>Autores: </p>
-              <ul class="collection" th:if="${not #lists.isEmpty(autores)}">
-      			<li th:each="autor : ${autores}" th:text="${autor.nome}" class="collection-item" >Nome Autor</li>
+              <ul class="collection" th:if="${not #lists.isEmpty(trabalho.autoresDoTrabalho)}">
+      			<li th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}" class="collection-item" >Nome Autor</li>
     		  </ul>
               <p>Co-Autores: </p>
-              <ul class="collection" th:if="${not #lists.isEmpty(coAutores)}">
-      			<li th:each="coAutor : ${coAutores}" th:text="${coAutor.nome}" class="collection-item" >Nome Co-Autor</li>
+              <ul class="collection" th:if="${not #lists.isEmpty(trabalho.CoAutoresDoTrabalho)}">
+      			<li th:each="coAutor : ${trabalho.CoAutoresDoTrabalho}" th:text="${coAutor.nome}" class="collection-item" >Nome Co-Autor</li>
     		  </ul>
             </div>
             <div class="card-action">
