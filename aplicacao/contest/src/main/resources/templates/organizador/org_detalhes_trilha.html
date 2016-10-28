@@ -18,17 +18,17 @@
       <div class="row">
         <h2 th:text="'Detalhes da Trilha :' + ${trilha.nome}"></h2>
       </div>
+      <div class="row">
+        <div class="input-field col m4 s5">  <a href="#modalTrilha" class="waves-effect waves-light btn white-text modal-trigger">Alterar nome da Trilha<i aria-hidden="true" class="fa fa-pencil left"></i></a></div>
+        <div class="input-field col m5 s5"> <a href="#modalExcluir" class="waves-effect waves-light btn white-text modal-trigger">Excluir Trilha<i aria-hidden="true" class="fa fa-trash left">        </i></a></div>
+      </div>
       <div th:if="${#lists.isEmpty(trabalhos)}">
         <div class="row">
           <h4> Não há Trabalhos nessa trilha</h4>
         </div>
       </div>
-      <div class="row">
-        <div class="input-field col m4 s5">  <a href="#modalTrilha" class="waves-effect waves-light btn white-text modal-trigger">Alterar nome da Trilha<i aria-hidden="true" class="fa fa-pencil left"></i></a></div>
-        <div class="input-field col m5 s5"> <a href="#modalExcluir" class="waves-effect waves-light btn white-text modal-trigger">Excluir Trilha<i aria-hidden="true" class="fa fa-trash left">        </i></a></div>
-      </div>
       <div th:if="${not #lists.isEmpty(trabalhos)}">
-        <h4 th:text="|Trabalhos inscritos nessa Trilha (${#arrays.length(trabalhos)})|"></h4>
+        <h4 th:text="|Trabalhos inscritos (${#arrays.length(trabalhos)})|"></h4>
         <div class="row">
           <div class="input-field col m12 s6">
             <table class="striped centered">
@@ -51,7 +51,7 @@
           </div>
         </div>   
       </div>
-
+<!-- 
       <div id="paginacao">         
                 <div class="row col s12 center">
                   <ul class="pagination">
@@ -62,6 +62,7 @@
                   </ul>
                 </div>
       </div>
+       -->
       <div id="modalRevisor" class="modal">
         <div class="modal-content">
           <h4>Selecione o Revisor desejado</h4>
