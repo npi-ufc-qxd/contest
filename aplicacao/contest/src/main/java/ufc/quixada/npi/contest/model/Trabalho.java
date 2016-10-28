@@ -144,18 +144,12 @@ public class Trabalho {
 			if (p.getPapel() == Papel.AUTOR)
 				autores.add(p.getPessoa());
 		}
-
-		return autores;
-	}
-
-	public List<Pessoa> getCoAutoresDoTrabalho() {
-		List<Pessoa> coAutores = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
 			if (p.getPapel() == Papel.COAUTOR)
-				coAutores.add(p.getPessoa());
+				autores.add(p.getPessoa());
 		}
 
-		return coAutores;
+		return autores;
 	}
 
 	@Override

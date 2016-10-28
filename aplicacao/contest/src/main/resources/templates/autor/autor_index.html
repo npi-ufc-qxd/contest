@@ -10,6 +10,7 @@
 		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
 		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
 		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+		<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 <body>
 	<div th:include="fragments/header :: header"></div>
@@ -50,20 +51,13 @@
 			<div class="col s12 m7" th:each="evento : ${eventosParaParticipar}">
 				<div class="card horizontal">
 					<div class="card-stacked">
-						<div class="card-content">
-							<h5 th:text="${evento.nome}"></h5>
-							<p th:text="${evento.descricao}"></p>
-							<p
-								th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início
-								da Submissão</p>
-							<p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
-						</div>
+						<div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
 						<div class="card-action" >
 							<a th:if="${evento.isPeriodoInicial()}"
 								th:attr="href='#modal' + ${evento.id}"
 								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
 							<a th:unless="${evento.isPeriodoInicial()}"
-								class="btn white-text grey">Periodo Encerrado</a>
+								class="btn disabled white-text grey">Período de inscrição encerrado</a>
 						</div>
 					</div>
 				</div>
@@ -88,14 +82,9 @@
 		<div class="col s12 m7" th:if="${!#lists.isEmpty(eventoParticipando)}">
 			<div class="card horizontal" th:each="evento : ${eventoParticipando}">
 				<div class="card-stacked">
-					<div class="card-content">
-						<h5 th:text="${evento.nome}"></h5>
-						<p th:text="${evento.descricao}"></p>
-						<p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-						<p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
-					</div>
+					<div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
 					<div class="card-action">
-						<a class="waves-effect waves-light btn">Participando</a>
+						<a class="purple-text">Participando</a>
 					</div>
 				</div>
 			</div>
@@ -112,6 +101,8 @@
 	</div>
 	<!-- footer -->
 	<div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
     <script type="text/javascript">
 		$(document)
 				.ready(
