@@ -63,8 +63,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	
-	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
-
 	@Autowired
 	private PessoaService pessoaService;
 
