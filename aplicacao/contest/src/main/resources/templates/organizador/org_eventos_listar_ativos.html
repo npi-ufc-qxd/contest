@@ -17,10 +17,11 @@
       <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
       <div class="row">
         <h2>Lista de Eventos Ativos</h2>
-        
-        <div class="row" > 
-            <h4 th:if="${#lists.isEmpty(eventosAtivos)}">Não há eventos ativos</h4>
-        </div>
+	  </div>
+	          
+      <div class="row" > 
+          <h4 th:if="${#lists.isEmpty(eventosAtivos)}">Não há eventos ativos</h4>
+      </div>
         
         <div class="row">
            <div th:each="evento : ${eventosAtivos}" class="col m6 s12">
