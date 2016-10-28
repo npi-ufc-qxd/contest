@@ -115,7 +115,7 @@
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
-                  <a th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisores'}" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a>
+                  <a th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisores'}" class="btn white-text waves-effect waves-light blue-grey">Atribuir Revisores</a>
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@
                   <p th:text="'Não Revisados: '+ ${numeroTrabalhosNaoRevisados}"></p>
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
-                  <a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a>
+                  <a href="#" class="btn disabled white-text waves-effect waves-light blue-grey">Ver todos</a>
                 </div>
               </div>
             </div>
@@ -144,7 +144,7 @@
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
-                  <a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trabalhos</a>
+                  <a href="#" class="btn disabled white-text waves-effect waves-light blue-grey">Ver todas</a>
                 </div>
               </div>
             </div>
