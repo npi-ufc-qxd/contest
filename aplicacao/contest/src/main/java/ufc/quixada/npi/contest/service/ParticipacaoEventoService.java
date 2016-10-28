@@ -50,14 +50,22 @@ public class ParticipacaoEventoService {
 		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Papel.ORGANIZADOR, id);
 		return listaParticipacaoEventos;
 	}
-	
+
 	public List<ParticipacaoEvento> getEventosDoRevisor(EstadoEvento estado, Long id){
 		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
 		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Papel.REVISOR, id);
 		return listaParticipacaoEventos;
 	}
+
+	public List<ParticipacaoEvento> getParticipacaoComoRevisorPorEvento(Long idEvento){
+		return participacaoEventoRepository.findByEventoIdAndPapel(idEvento, Papel.REVISOR);
+	}
 	
+	public int buscarQuantidadeRevisoresPorEvento(Long idEvento){
+		return getParticipacaoComoRevisorPorEvento(idEvento).size();
+	}
+
 	public List<ParticipacaoEvento> getRevisoresNoEvento(Long id){
-		return participacaoEventoRepository.findByPapelAndEventoId(Papel.REVISOR, id);
+		return participacaoEventoRepository.findByEventoIdAndPapel(id, Papel.REVISOR);
 	}
 }

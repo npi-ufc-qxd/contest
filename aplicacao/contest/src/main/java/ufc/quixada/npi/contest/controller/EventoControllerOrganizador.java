@@ -63,6 +63,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	
+	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
 
 	@Autowired
 	private PessoaService pessoaService;
@@ -116,8 +117,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
-		model.addAttribute("qtdTrabalhos", trabalhoService.buscarQtdTrabalhosPorEvento(eventoId));
+		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
+		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
+		
+		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
+		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
+		
+		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
+		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
+		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
+		
+		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 	
