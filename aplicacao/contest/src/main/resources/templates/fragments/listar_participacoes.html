@@ -10,6 +10,11 @@
 			<p th:each="participante : ${participantes}" th:text="${participante.nome}">Nome de participante</p>
 		</blockquote>
 	</div>
+	
+	<div th:fragment="listar-clean(label, participantes)">
+		<p><b th:text="${label}"></b></p>
+			<p th:each="participante : ${participantes}" th:text="${participante.nome}">Nome de participante</p>
+	</div>
 </body>
 </html>
 	
