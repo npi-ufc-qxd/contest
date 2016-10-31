@@ -121,15 +121,10 @@ public class AutorController {
 		List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
 		Evento evento = trabalho.getEvento();
 		
-		if(!revisoes.isEmpty() && evento.isPeriodoFinal()){
+		if(!revisoes.isEmpty()){
 			model.addAttribute("titulo", trabalho.getTitulo());
 			List<Map<String, String>> revisoesWrappers = new ArrayList<>();
 			for(Revisao revisao: revisoes){
-				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
-				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
-				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
-				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
-				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
 				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
 			}
 			model.addAttribute("revisoes", revisoesWrappers);
@@ -137,7 +132,6 @@ public class AutorController {
 		}
 		redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
 		return "redirect:/autor/listarTrabalhos/" + evento.getId();
-
 	}
 	
 	@RequestMapping(value="/participarEvento", method = RequestMethod.GET)
