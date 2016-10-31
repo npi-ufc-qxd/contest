@@ -20,6 +20,8 @@ public interface StorageService {
     void deleteAll();
     
     File getFile(String path);
+    
+    void deleteArquivo(String path);
 
 }
  

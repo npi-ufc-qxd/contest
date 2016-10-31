@@ -334,7 +334,10 @@ public class AutorController {
 				Date dataDeEnvio = new Date(System.currentTimeMillis());
 				
 				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+					Trabalho t = trabalhoService.getTrabalhoById(idTrabalho);
+					storageService.deleteArquivo(t.getPath());
 					trabalhoService.remover(Long.parseLong(trabalhoId));
+					
 					redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
 					return "redirect:/autor/listarTrabalhos/"+eventoId;
 				}else{

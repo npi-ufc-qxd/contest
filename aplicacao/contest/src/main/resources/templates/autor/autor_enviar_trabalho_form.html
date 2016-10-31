@@ -48,7 +48,7 @@
           
           <div id="coautores" class="coautores" th:each ="pessoa,count : ${trabalho.participacoes}" >
 	          <div class="input-field col m5 s5">
-	            <input id="nome_do_coautor" type="text" th:name="|participacoes[${count.index}].pessoa.nome|" th:value="${pessoa.getPessoa().getNome()}" />
+	            <input id="nome_do_coautor"  type="text" th:name="|participacoes[${count.index}].pessoa.nome|" th:value="${pessoa.getPessoa().getNome()}" />
 	            <label for="nome_do_coautor">Autor</label>
 	          </div>
 	          <div class="input-field col m5 s5">
