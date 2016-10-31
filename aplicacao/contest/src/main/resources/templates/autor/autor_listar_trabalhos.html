@@ -37,6 +37,10 @@
         <div th:if="${arquivoInvalido}" id="error_area" class="row chip red white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}">
           <i class="material-icons">close</i>
         </div>
+        
+        <div th:if="${revisao_inexistente}" id="error_area" class="row chip red white-text" th:text="#{REVISAO_INEXISTENTE}">
+          <i class="material-icons">close</i>
+        </div>
       </div>
       
       <div class="col s12">
@@ -80,7 +84,8 @@
 	                  	<small>Opções</small>
 	                  	<br/>
 	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
-	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
+	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver arquivo</a>
+	                    <a th:href="@{|/autor/revisao?trabalhoId=${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisao</a>
 						<a th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
