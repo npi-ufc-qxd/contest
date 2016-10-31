@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.mockito.InjectMocks;
@@ -81,48 +80,14 @@ public class AlunoRecebeAvaliacaoSteps {
 		trabalho.setParticipacoes(new ArrayList<>());
 		trabalho.setEvento(evento);
 		
-		revisao = new Revisao();
-		revisao.setId(10L);
-		revisao.setConteudo("conteudo");
-		
 		revisoes = new ArrayList<Revisao>();
-		revisoes.add(revisao);
 		
-		revisao.setId(11L);
-		revisao.setConteudo("conteudo");
-		revisoes.add(revisao);
+		trabalho.setRevisoes(revisoes);
 		
 	}
 	
-	@Quando("^tenta ver a revisão em período de submissão inicial$")
-	public void revisaoEmPeriodoInicial() throws Throwable{
-		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2016, 9, 1).getTime());
-		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2017, 11, 30).getTime());
-		
-		evento.setPrazoRevisaoInicial(new GregorianCalendar(2017, 11, 27).getTime());
-		evento.setPrazoRevisaoFinal(new GregorianCalendar(2017, 11, 28).getTime());
-		
-		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
-		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
-		action = mockMvc
-				.perform(get("/autor/revisao")
-						.param("trabalhoId", trabalho.getId().toString())
-				);
-	}
-	
-	@Então("^deve obter acesso a revisão$")
-	public void obtemAcesso() throws Throwable{
-		action.andExpect(view().name(Constants.TEMPLATE_REVISAO_AUTOR));
-	}
-	
-	@Quando("^tenta enviar em período de revisão$")
-	public void revisaoEmPeriodoRevisaol() throws Throwable{
-		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2016, 9, 1).getTime());
-		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2016, 10, 31).getTime());
-		
-		evento.setPrazoRevisaoInicial(new GregorianCalendar(2016, 10, 20).getTime());
-		evento.setPrazoRevisaoFinal(new GregorianCalendar(2016, 10, 28).getTime());
-		
+	@Quando("^não há revisões$")
+	public void naoExisteRevisao() throws Throwable{
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
 
@@ -138,22 +103,34 @@ public class AlunoRecebeAvaliacaoSteps {
 		 .andExpect(flash().attribute("REVISAO_INEXISTENTE", messageService.getMessage("REVISAO_INEXISTENTE")));
 	}
 	
-	@Quando("^tenta ver a revisão em período de submissão final$")
-	public void revisaoEmPeriodoFinal() throws Throwable{
-		evento.setPrazoSubmissaoInicial(new GregorianCalendar(2016, 10, 1).getTime());
-		evento.setPrazoSubmissaoFinal(new GregorianCalendar(2016, 10, 30).getTime());
+	@Quando("^há uma ou mais revisões$")
+	public void existeRevisao() throws Throwable{
+
+		revisao = new Revisao();
+		revisao.setId(10L);
+		revisao.setConteudo("{originalidade:FRACO}");
 		
-		evento.setPrazoRevisaoInicial(new GregorianCalendar(2016, 10, 5).getTime());
-		evento.setPrazoRevisaoFinal(new GregorianCalendar(2016, 10, 10).getTime());
+		revisoes = new ArrayList<Revisao>();
+		revisoes.add(revisao);
 		
+		revisao.setId(11L);
+		revisoes.add(revisao);
+		
+		trabalho.setRevisoes(revisoes);
+
 		
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
-
+		
 		action = mockMvc
 				.perform(get("/autor/revisao")
 						.param("trabalhoId", trabalho.getId().toString())
 				);
+	}
+	
+	@Então("^deve obter acesso as revisões$")
+	public void sucesso() throws Throwable{
+		action.andExpect(view().name(Constants.TEMPLATE_REVISAO_AUTOR));
 	}
 
 }

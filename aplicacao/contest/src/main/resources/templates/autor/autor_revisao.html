@@ -28,7 +28,7 @@
     <div th:each="revisao,iterStat : ${revisoes}">
     	<div th:id="'revisao'+ ${iterStat.count}" class="col s12">
     	
-    		<p th:text="'revisao'+ ${iterStat.count}"></p>
+    		
        <div class="col m6 s6">
          <div>
            <h5 th:text="'Originalidade: ' + ${revisao.originalidade}"></h5>
