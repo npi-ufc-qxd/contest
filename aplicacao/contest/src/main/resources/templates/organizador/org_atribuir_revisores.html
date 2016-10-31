@@ -1,19 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-	<!-- default header name is X-CSRF-TOKEN -->
-	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-	
-    <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <!-- CSS-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <div th:include="fragments/head :: head"></div>
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -42,26 +30,24 @@
 	            
 	            
 	            
-	      <form action="#" th:action="@{/eventoOrganizador/evento/1/revisores}" method="post">
 	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal" data-keyboard="">
 	      		<div class="modal-content">
 	      			<h4 class="block">Nome do Trabalho</h4>
 	      			<div class="row">
-	      				<input id="eventoID" type="hidden" th:value="${evento.id}" />
 	      				<div class="input-field col m6 s6">
 	      					<i class="material-icons large prefix">search</i>
 	      					<input id="nome_do_revisor" type="text" />
 	                		<label for="nome_do_revisor">Nome do Revisor</label>
-	                		<div id="listaRevisores" class="collection">
-	                			<a th:each="revisor : ${revisores}" th:id="${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item" th:text="${revisor.nome}"> 
+	                		<div class="listaRevisores collection">
+	                			<a th:each="revisor : ${revisores}" th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item" th:text="${revisor.nome}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                		</div>
 	      				</div>
 	      				<div class="col m6 s6">
                 			<h5 id="listaEscolhidosTitulo">Revisores Selecionados</h5>
-                			<div id="listaEscolhidos" class="collection" >
-                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|modalRevisor${count.index}_${revisor.pessoa.id}|" th:onclick="'remover(this,\'modalRevisor'+${count.index}+'\')'" class="collection-item" th:text="${revisor.pessoa.nome}"> 
+                			<div class="listaEscolhidos collection" >
+                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|esc_modalRevisor${count.index}_${revisor.pessoa.id}|" th:onclick="'remover(this)'" class="collection-item" th:text="${revisor.pessoa.nome}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                	    </div>
@@ -72,7 +58,6 @@
 	            	<a href="#" onclick="location.reload()" class="modal-action modal-close waves-effect btn-flat">Fechar  </a>
 	            </div>
 	      	</div>
-      	</form>
 	            
           </div>
           </div>

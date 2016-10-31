@@ -242,7 +242,10 @@ public class AutorController {
 			trilha = trilhaService.get(idTrilha,idEvento);
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
-			
+			if(evento == null || trilha == null){
+				redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
+				return "redirect:/autor/meusTrabalhos";
+			}
 			submissao = configuraSubmissao(new Submissao(), evento);		
 
 		}catch(NumberFormatException e){

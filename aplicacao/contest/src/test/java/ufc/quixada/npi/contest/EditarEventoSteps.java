@@ -9,6 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -76,7 +79,9 @@ public class EditarEventoSteps {
 		evento.setNome("teste");
 		evento.setDescricao("descricao");
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
-
+		
+		List<ParticipacaoEvento> participacoes = new ArrayList<>();
+		
 		org.setCpf("123");
 		org.setEmail("a@a");
 		org.setId(Long.valueOf(ID_PESSOA));
@@ -86,10 +91,14 @@ public class EditarEventoSteps {
 		participacao.setId(Long.valueOf(ID_PARTICIPACAO_EVENTO));
 		participacao.setPapel(Papel.ORGANIZADOR);
 		participacao.setPessoa(org);
+		participacoes.add(participacao);
+		
+		evento.setParticipacoes(participacoes);
 	}
 	
 	@Dado("^que o administrador deseja alterar um evento$")
 	public void desejaAlterarEvento() throws Throwable{
+		when(eventoService.buscarEventoPorId(Long.valueOf(ID_EVENTO))).thenReturn(evento);
 		when(eventoService.buscarEventoPorId(Long.valueOf(ID_EVENTO))).thenReturn(evento);
 		when(participacaoEventoService.findByEventoId(evento.getId())).thenReturn(participacao);
 		mockMvc.perform(get(TEMPLATE_EDITAR_EVENTO,Long.valueOf(ID_EVENTO))).andExpect(view().name(PAGINA_CADASTRAR));
