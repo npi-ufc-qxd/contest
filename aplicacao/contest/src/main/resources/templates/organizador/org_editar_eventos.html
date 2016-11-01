@@ -50,89 +50,69 @@
             <textarea id="descricao_evento" class="materialize-textarea" th:field="*{descricao}"></textarea>
           </div>
           <div class="col s12">
-          
-                      
-            <div th:if="${existeSubmissao}">
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Submissão - Inicial</span>
+          	 <div class="col s3" th:if="${existeSubmissao}">
+               <div class="card-content">
+                 <span class="card-title tooltipped" data-position="bottom" data-delay="50" data-tooltip="Esta data não pode ser alterada, porque possui uma submissão."> 
+                 	Prazo de Submissão - Inicial
+                 	<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                 </span>
                  <label type="text" th:text="*{prazoSubmissaoInicial}"></label>
-                 <input type="hidden" th:field="*{prazoSubmissaoInicial}"/>
+                 <input type="hidden" th:field="*{prazoSubmissaoInicial}" id="prazo_submissao_inicial"/>
                </div>
              </div>
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Revisão - Inicial</span>
+             <div class="col s3" th:unless="${existeSubmissao}">
+               <div class="card-content">
+                 <span class="card-title"> 
+                 	Prazo de Submissão - Inicial
+                 </span>
+                 <input type="date" th:field="*{prazoSubmissaoInicial}" id="prazo_submissao_inicial" class="datepicker"/>
+               </div>
+             </div>
+             
+             <div class="col s3" th:if="${existeSubmissaoRevisao}">
+               <div class="card-content">
+                 <span class="card-title tooltipped" data-position="bottom" data-delay="50" data-tooltip="Esta data não pode ser alterada, porque possui uma submissão."> 
+                 	Prazo de Revisão - Inicial
+                 	<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                 </span>
                  <label type="text" th:text="*{prazoRevisaoInicial}"></label>
-               	 <input type="hidden" th:field="*{prazoRevisaoInicial}"/>
+                 <input type="hidden" th:field="*{prazoRevisaoInicial}" id="prazo_revisao_inicial"/>
                </div>
              </div>
+             <div class="col s3" th:unless="${existeSubmissaoRevisao}">
+               <div class="card-content">
+                 <span class="card-title"> 
+                 	Prazo de Revisão - Inicial
+                 </span>
+                 <input type="date" th:field="*{prazoRevisaoInicial}" id="prazo_revisao_inicial" class="datepicker"/>
+               </div>
+             </div>
+                      
+             <div class="col s3" th:if="${existeSubmissaoFinal}">
+               <div class="card-content">
+                 <span class="card-title tooltipped" data-position="bottom" data-delay="50" data-tooltip="Esta data não pode ser alterada, porque possui uma versão final de um trabalho."> 
+                 	Prazo de Revisão - Final
+                 	<i class="fa fa-exclamation-circle" aria-hidden="true"></i><br />
+                 </span>
+                 <label type="text" th:text="*{prazoRevisaoInicial}"></label>
+                 <input type="hidden" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final"/>
+               </div>
+             </div>
+             <div class="col s3" th:unless="${existeSubmissaoFinal}">
+               <div class="card-content">
+                 <span class="card-title"> 
+                 	Prazo de Revisão - Final
+                 </span>
+                 <input type="date" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final" class="datepicker"/>
+               </div>
+             </div>         
+                      
              <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Revisão  - Final</span>
-                 <label type="text" th:text="*{prazoRevisaoFinal}"></label>
-                 <input type="hidden" th:field="*{prazoRevisaoFinal}"/>
-               </div>
-             </div>
-              <div class="col s3">
                 <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
                   <input type="date" th:field="*{prazoSubmissaoFinal}" id="prazo_submissao_final" class="datepicker"/>
                 </div>
-              </div>
-            
-            </div>
-          
-           <div th:if="${existeSubmissaoRevisao}">
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Submissão - Inicial</span>
-                 <label type="text" th:text="*{prazoSubmissaoInicial}"></label>
-                 <input type="hidden" th:field="*{prazoSubmissaoInicial}"/>
-               </div>
-             </div>
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Revisão - Inicial</span>
-                 <label type="text" th:text="*{prazoRevisaoInicial}"></label>
-                 <input type="hidden" th:field="*{prazoRevisaoInicial}"/>
-               </div>
-             </div>
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Revisão  - Final</span>
-                 <input type="date" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final" class="datepicker"/>
-               </div>
-             </div>
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
-                 <label type="text" th:text="*{prazoSubmissaoFinal}"></label>
-                 <input type="hidden" th:field="*{prazoSubmissaoFinal}"/>
-               </div>
-             </div>
-           </div>
-          
-           <div th:if="${eventoAtivo}">
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Submissão - Inicial</span>
-                 <label type="text" th:text="*{prazoSubmissaoInicial}"></label>
-                 <input type="hidden" th:field="*{prazoSubmissaoInicial}"/>
-               </div>
-             </div>
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Revisão - Inicial</span>
-                 <label type="text" th:text="*{prazoRevisaoInicial}"></label>
-               	 <input type="hidden" th:field="*{prazoRevisaoInicial}"/>
-               </div>
-             </div>
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Revisão  - Final</span>
-                 <label type="text" th:text="*{prazoRevisaoFinal}"></label>
-                 <input type="hidden" th:field="*{prazoRevisaoFinal}"/>
-               </div>
-             </div>
-             <div class="col s3">
-               <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
-                 <label type="text" th:text="*{prazoSubmissaoFinal}"></label>
-                 <input type="hidden" th:field="*{prazoSubmissaoFinal}"/>
-               </div>
-             </div>
-            
-           </div>
-          
+              </div>         
+                      
            <div th:if="${eventoInativo}">
             
              <div class="col s3">

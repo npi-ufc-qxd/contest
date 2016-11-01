@@ -52,6 +52,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
+	private static final String SUBMISSAO_FINAL = "existeSubmissaoFinal";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
@@ -227,14 +228,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect){
-		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
-		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
+		Long eventoId = Long.valueOf(id);
+		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(eventoId);
+		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(eventoId);
+		boolean existeSubmissaoFinal = submissaoService.existeTrabalhoFinalNesseEvento(eventoId);
 		
 		if(exiteSubmissao){
+			model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
 			if(existeRevisao){
 				model.addAttribute(SUBMISSAO_REVISAO, exiteSubmissao);
-			}else{
-				model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
+				if (existeSubmissaoFinal) {
+					model.addAttribute(SUBMISSAO_FINAL, existeSubmissaoFinal);
+				}
 			}
 		}else{
 			Evento evento = eventoService.buscarEventoPorId(Long.valueOf(id));
