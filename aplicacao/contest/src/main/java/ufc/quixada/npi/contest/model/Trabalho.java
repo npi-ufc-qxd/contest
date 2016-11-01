@@ -1,6 +1,7 @@
 package ufc.quixada.npi.contest.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.hibernate.loader.plan.exec.process.spi.ReturnReader;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -106,6 +108,9 @@ public class Trabalho implements Comparable<Trabalho> {
 	}
 
 	public List<ParticipacaoTrabalho> getParticipacoes() {
+		if(participacoes == null){
+			return new ArrayList<ParticipacaoTrabalho>();
+		}
 		return participacoes;
 	}
 
