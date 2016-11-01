@@ -186,7 +186,7 @@ public class AutorController {
 			if(eventoService.existeEvento(idEvento)){
 				List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
 				Trabalho trabalho = new Trabalho();
-				ParticipacaoTrabalho part = null;
+				ParticipacaoTrabalho part = new ParticipacaoTrabalho();
 				List<ParticipacaoTrabalho> partipacoes = new ArrayList<>();
 				partipacoes.add(part);
 				trabalho.setParticipacoes(partipacoes);

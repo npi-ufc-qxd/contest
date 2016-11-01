@@ -61,7 +61,7 @@
           
           
           <div id="coautores" class="coautores" th:each ="pessoa,count : ${trabalho.participacoes}" >
-	          <div th:if="${pessoa} != null">
+	          <div th:if="${pessoa.pessoa} != null">
 		          <div class="input-field col m5 s5">
 		            <input id="nome_do_coautor"  type="text" th:name="|participacoes[${count.index}].pessoa.nome|" th:value="${pessoa.pessoa.nome}" />
 		            <label for="nome_do_coautor">Autor</label>
