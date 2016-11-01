@@ -150,6 +150,10 @@ public class Trabalho implements Comparable<Trabalho> {
 		return pessoa;
 	}
 	
+	public Pessoa getAutor() {
+		return getParticipacaoPapelTrabalho(Papel.AUTOR).get(0);
+	}
+	
 	public List<Pessoa> getAutoresDoTrabalho() {
 		return getParticipacaoPapelTrabalho(Papel.AUTOR, Papel.COAUTOR);
 	}

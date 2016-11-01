@@ -72,6 +72,7 @@ public class AutorController {
 	private static final String PARTICIPAR_EVENTO_INATIVO_ERROR = "participarEventoInativoError";
 	private static final String ERRO_TRABALHO_EVENTO = "ERRO_TRABALHO_EVENTO";
 	private static final String ERRO_REENVIAR = "ERRO_REENVIAR";
+	private static final String AUTOR_SEM_PERMISSAO = "AUTOR_SEM_PERMISSAO";
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -335,11 +336,15 @@ public class AutorController {
 				
 				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
 					Trabalho t = trabalhoService.getTrabalhoById(idTrabalho);
-					storageService.deleteArquivo(t.getPath());
-					trabalhoService.remover(Long.parseLong(trabalhoId));
-					
-					redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
-					return "redirect:/autor/listarTrabalhos/"+eventoId;
+					Pessoa autor = getAutorLogado();
+					if(autor.equals(t.getAutor())){
+						storageService.deleteArquivo(t.getPath());
+						trabalhoService.remover(Long.parseLong(trabalhoId));					
+						redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						return "redirect:/autor/listarTrabalhos/"+eventoId;
+					} 
+					model.addAttribute("erroExcluir", messageService.getMessage(AUTOR_SEM_PERMISSAO));
+					return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 				}else{
 					redirect.addFlashAttribute("erroExcluir", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
 					return "redirect:/autor/listarTrabalhos/"+evento.getId();
