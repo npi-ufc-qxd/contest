@@ -15,7 +15,7 @@ $(document).ready(function(){
 	$('select').material_select();
 	
 	$(".listaRevisores" ).each(function(index){
-		this.scroll(function(){});
+		$(this).scroll(function(){});
 	});
 	
 	trabalho_atual = function(e){
