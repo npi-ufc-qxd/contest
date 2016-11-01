@@ -2,7 +2,9 @@ h1, h2, h3 {
   font-weight: lighter;
   color:#37474f ;
 }
-
+.card .card-content .card-title{
+	line-height: 28px;
+}
 .page{
   min-height: 650px;
 }
