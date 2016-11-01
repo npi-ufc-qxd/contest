@@ -35,4 +35,6 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	public List<Trabalho> findByTrilha(Trilha trilha);
 	
 	public List<Trabalho> findByParticipacoesPessoaAndEvento(Pessoa pessoa,Evento evento);
+	
+	public List<Trabalho> findAllByEventoId(Long eventoID);
 }

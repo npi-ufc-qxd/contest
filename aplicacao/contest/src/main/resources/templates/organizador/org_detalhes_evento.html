@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <!-- CSS-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-	<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <div th:include="fragments/head :: head"></div>
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -45,10 +36,11 @@
        	</div>
         <div >
           <div class="col s12">
-            <div class="card horizontal small">
+            <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content" th:if="${evento.prazoSubmissaoInicial}">
                   <section class="cd-horizontal-timeline">
+				  	<span class="card-title">Datas importantes</span>
 				  	<div class="timeline">
 						<div class="events-wrapper">
 							<div class="events">
@@ -69,22 +61,18 @@
 					<div class="events-content">
 						<ol>
 							<li class="selected" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}">
-								<h5>Começa o período de submissão dos artigos</h5>
-								<em th:text="${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMMM YYYY')}"></em>
+								<em>Começa o período de submissão dos artigos</em>
 							</li>
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
-								<h5>Terminou o periodo de subissão, hora de começar as Revisões</h5>
-								<em th:text="${#calendars.format({evento.PrazoRevisaoInicial},'dd MMMM YYYY')}"></em>
+								<em>Terminou o periodo de subissão, hora de começar as Revisões</em>
 							</li>
 				
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
-								<h5>Terminaram as revisões, hora de submeter a versão final</h5>
-								<em th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMMM YYYY')}"></em>
+								<em>Terminaram as revisões, hora de submeter a versão final</em>
 							</li>
 							
 							<li href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}">
-								<h5>Ultimo dia para submeter a versão final do artigo</h5>
-								<em th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMMM YYYY')}"></em>
+								<em>Ultimo dia para submeter a versão final do artigo</em>
 							</li>
 						</ol>
 					</div>
@@ -122,7 +110,7 @@
 	              </div>
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
-                  <a href="#" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a>
+                  <a th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisores'}" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Revisores</a>
                 </div>
               </div>
             </div>
@@ -150,13 +138,5 @@
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-    	$('select').material_select();
-
-      //Inicialização do Modal excluir Evento
-      $('.modal-trigger').leanModal();
-    });
-  </script>
   </body>
 </html>

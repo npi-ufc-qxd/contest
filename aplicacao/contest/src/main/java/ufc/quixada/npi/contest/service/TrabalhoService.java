@@ -50,7 +50,7 @@ public class TrabalhoService {
 		List<Trabalho> trabalhosParaRevisar = this.getTrabalhosParaRevisar(idRevisor, idEvento);
 		List<Long> trabalhosRevisados = new ArrayList<Long>();
 		for(Trabalho trabalho : trabalhosParaRevisar){
-			if(revisaoRepository.trabalhoEstaRevisado(trabalho.getId())){
+			if(revisaoRepository.trabalhoEstaRevisadoPeloRevisor(trabalho.getId(), idRevisor)){
 				trabalhosRevisados.add(trabalho.getId());
 			}
 		}
@@ -67,5 +67,9 @@ public class TrabalhoService {
 	}
 	public void remover(Long id){
 		trabalhoRepository.delete(id);
+	}
+	
+	public int buscarQtdTrabalhosPorEvento(Long eventoID){
+		return trabalhoRepository.findAllByEventoId(eventoID).size();
 	}
 }

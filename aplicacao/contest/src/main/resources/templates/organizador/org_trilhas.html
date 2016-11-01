@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Constest - Controle de Eventos de Submissão</title>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-		<!-- CSS  -->
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+   <div th:include="fragments/head :: head"></div>
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -43,8 +35,8 @@
                 </thead>
                 <tbody >             
                   <tr th:each="itemTrilha : ${trilhas}">
-                    <td><p th:text="${itemTrilha.nome}"></p></td>
-                    <td>Numero de Submissoes</td>
+                    <td><p class="center" th:text="${itemTrilha.nome}"></p></td>
+                    <td> <p class="center" th:text="${itemTrilha.numeroTrabalhos}"></p></td>
                     <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} +'/'+ ${evento.id}}">Ver Trilha</a></td>
                   </tr>
                 </tbody>
@@ -81,10 +73,5 @@
       </form>
     </div>
     <div th:include="fragments/footer :: footer"></div>
-    <script type="text/javascript">
-      $(document).ready(function(){
-        $('.modal-trigger').leanModal();
-      });
-    </script>
   </body>
 </html>

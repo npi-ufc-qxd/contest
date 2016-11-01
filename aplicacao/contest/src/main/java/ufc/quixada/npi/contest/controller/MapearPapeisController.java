@@ -47,4 +47,7 @@ public class MapearPapeisController {
 		Pessoa autorLogado = pessoaService.getByCpf(cpf);
 		return autorLogado;
 	}
+	
+
+	
 }
