@@ -106,9 +106,6 @@ public class Trabalho implements Comparable<Trabalho> {
 	}
 
 	public List<ParticipacaoTrabalho> getParticipacoes() {
-		if(participacoes == null){
-			return new ArrayList<ParticipacaoTrabalho>();
-		}
 		return participacoes;
 	}
 
