@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "trabalho")
-public class Trabalho {
+public class Trabalho implements Comparable<Trabalho> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -163,4 +163,17 @@ public class Trabalho {
 		return "Trabalho [id=" + id + ", titulo=" + titulo + ", evento=" + evento + ", trilha=" + trilha
 				+ ", participacoes=" + participacoes + "]";
 	}
+
+	@Override
+	public int compareTo(Trabalho o) {
+		if(this.getRevisores().size() < o.getRevisores().size()){
+			return -1;
+		}
+		if(this.getRevisores().size() > o.getRevisores().size()){
+			return 1;
+		}
+		return 0;
+	}
+	
+	
 }

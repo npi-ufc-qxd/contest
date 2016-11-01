@@ -25,13 +25,14 @@
         <div>
           <div class="col s12">
             <div class="col s4" th:each="trabalho,count : ${trabalhos}">
-	            <div class="card horizontal small">
+	            <div class="card horizontal small" th:classappend="${#lists.size(trabalho.revisores)} ? 'green white-text'">
 	              <div class="card-stacked">
 	                <div>
 	                	<div class="card-content">
-	                		<span class="card-title" th:text="${trabalho.titulo}"></span>
+	                		<h6 th:text="${trabalho.titulo}"></h6>
 	                		<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
 	                		<div th:include="fragments/listar_participacoes :: listar-clean('Revisor(es):', ${trabalho.revisores})"></div>
+	                		<a  th:href= "@{|/autor/file?path=${trabalho.path}|}" class="right confirmar modal-trigger">Ver Arquivo</a>
 	                   	</div>
 	                   	<div class="card-action">
 	              			<a th:id="${trabalho.id}" th:attr="href='#modalRevisor' + ${count.index}" onclick="trabalho_atual(this)" class="btn white-text waves-effect waves-light blue-grey modal-trigger">Atribuir Revisor</a>
@@ -42,21 +43,25 @@
 	            
 	            
 	            
-	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal" data-keyboard="">
+	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal modal-fixed-footer" data-keyboard="">
 	      		<div class="modal-content">
 	      			<h4 class="block" th:text="${trabalho.titulo}">Nome do Trabalho</h4>
 	      			<p><b>Autor(es):</b></p>
 	                  		<p th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}"></p>
 	      			<div class="row">
-	      				<div class="col m6 s6">
-	      				<!-- 
-	      					<i class="material-icons large prefix">search</i>
-	      					<input id="nome_do_revisor" type="text" />
+	      			<!-- 
+	      				<div class="input-field col s12">
+	      					<i class="material-icons prefix">search</i>
+	      					<input id="nome_do_revisor" type="text" onInput="buscar()" />
 	                		<label for="nome_do_revisor">Nome do Revisor</label>
-	                	 -->
+						</div>
+					 -->							                		
+	      				<div class="col m6 s6">
 	                		<h5 id="listaEscolhidosTitulo">Revisores do evento</h5>
 	                		<div class="listaRevisores collection">
-	                			<a th:each="revisor : ${revisores}" th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item" th:text="${revisor.nome}"> 
+	                			<a th:each="revisor : ${revisores}" 
+	                			th:with="conteudo=${revisor.getNumeroTrabalhosRevisar(trabalho.evento)} ? ${revisor.nome} + ' - ' + ${revisor.getNumeroTrabalhosRevisar(trabalho.evento)} :  ${revisor.nome}"  
+	                			th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item filter" th:text="${conteudo}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                		</div>
@@ -84,5 +89,28 @@
     </div>
 	<div th:include="fragments/footer :: footer"></div>
 	<script  type="text/javascript" th:src="@{/js/atribuir_revisores.js}"></script>
+	
+	<script type="text/javascript">
+	/*
+	$(document).ready(function(){
+		
+		buscar = function() {
+			var filtro = document.getElementById('nome_do_revisor');
+			var cards = document.getElementsByClassName('collection-item filter');
+			//var actions = document.getElementsByClassName('card-action');
+			var nomeFiltro = filtro.value;
+			
+			console.log(cards);
+			for (var i = cards.length - 1; i >=0; i--) {
+				var conteudoBusca = cards[i].firstElementChild.innerHTML;
+				var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+				cards[i].style.display = corresponde ? '' : 'none';
+				console.log(corresponde);
+			//	actions[i].style.display = corresponde ? '' : 'none';
+		    }
+			
+		};
+	});*/
+	</script>
   </body>
 </html>

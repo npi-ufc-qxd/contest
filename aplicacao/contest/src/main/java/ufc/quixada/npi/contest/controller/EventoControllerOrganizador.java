@@ -1,6 +1,7 @@
 package ufc.quixada.npi.contest.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -136,6 +137,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
+		
+		Collections.sort(trabalhos);
+		
 		model.addAttribute("revisores", pessoaService.getRevisoresDoEventoQueNaoParticipaDoTrabalho(eventoId));
 		model.addAttribute("evento", evento);
 		model.addAttribute("trabalhos", trabalhos);
