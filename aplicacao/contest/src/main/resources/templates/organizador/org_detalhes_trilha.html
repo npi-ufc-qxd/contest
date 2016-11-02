@@ -26,10 +26,9 @@
             <table class="striped centered">
               <thead>
                 <tr> 
-                  <th>Trilha</th>
+                  <th>Trabalhos</th>
                   <th>Aluno</th>
                   <th>Revisado</th>
-                  <th>Revisor</th>
                 </tr>
               </thead>
               <tbody>             
@@ -38,7 +37,6 @@
                   <td th:text="${trabalho.participacoes[0].pessoa.nome}"></td>
                   <td th:if="${#lists.isEmpty(trabalho.revisoes)}">Não</td>
                   <td th:if="${not #lists.isEmpty(trabalho.revisoes)}">Sim</td>
-                  <td> <a href="#modalRevisor" class="modal-trigger">Atribuir Revisor</a></td>
                 </tr>
               </tbody>
             </table>
