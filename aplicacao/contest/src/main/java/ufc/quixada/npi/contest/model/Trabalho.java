@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -34,6 +35,7 @@ public class Trabalho {
 	private Trilha trilha;
 	
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
+	@OrderBy("data_submissao")
 	private List<Submissao> submissoes;
 	
 
