@@ -111,7 +111,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		when(criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
 				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(true);
 		
-		when(revisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
+		when(RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
 				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'OTIMO','clareza':'OTIMO',"
 						+ "'avaliacao_geral':'OTIMO','qualidade':'OTIMO','formatacao':'Problemas com a formatação',"
 						+ "'relevancia':'Especialista','comentarios':'Bom Trabalho',"
