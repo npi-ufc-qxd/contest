@@ -224,12 +224,5 @@ public class Evento {
 		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
 	}
 	
-	//Se o valor de dias for negativo a quantidade sera subtraida
-	private Date alterarDataEmDias(Date date, int dias)
-    {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, dias);
-        return cal.getTime();
-    }
+	
 }
