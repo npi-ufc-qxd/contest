@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
@@ -42,6 +45,7 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
+
 
 @Controller
 @RequestMapping("/eventoOrganizador")
@@ -90,6 +94,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	private JRDataSource jrDataSource;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -412,6 +418,21 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 		
 		return "redirect:/eventoOrganizador";
+	}
+	
+	@RequestMapping(value = "/gerarPdfOrganizador/{idEvento}", method = RequestMethod.GET)
+	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model) throws JRException{
+		
+		
+		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(Long.parseLong(idEvento));
+		
+		if(listaOrganizadores != null){
+			jrDataSource  = new JRBeanCollectionDataSource(listaOrganizadores);
+			model.addAttribute("datasource", jrDataSource);
+			model.addAttribute("format", "pdf");
+		}
+		
+		return "PDF_ORGANIZADOR";
 	}
 	
 	public Pessoa getOrganizadorLogado() {
