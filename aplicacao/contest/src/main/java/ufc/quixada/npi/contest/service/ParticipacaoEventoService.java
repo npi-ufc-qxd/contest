@@ -10,6 +10,7 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.ParticipacaoEventoRepository;
 
 @Service
@@ -67,5 +68,14 @@ public class ParticipacaoEventoService {
 
 	public List<ParticipacaoEvento> getRevisoresNoEvento(Long id){
 		return participacaoEventoRepository.findByEventoIdAndPapel(id, Papel.REVISOR);
+	}
+	
+	public boolean isOrganizadorDoEvento(Pessoa organizador, Long idEvento){
+		for(ParticipacaoEvento participacaoEvento : organizador.getParticipacoesEvento()){
+			if(participacaoEvento.getEvento().getId() == idEvento && 
+					participacaoEvento.getPapel() == Papel.ORGANIZADOR) return true;
+		}
+		
+		return false;
 	}
 }

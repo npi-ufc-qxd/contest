@@ -390,4 +390,5 @@ public class ProfessorRevisaTrabalhoSteps {
 	public void erroPermissaoRevisor() throws Exception{
 		action.andExpect(view().name("revisor/erro_permissao_de_revisor"));
 	}
+	
 }
