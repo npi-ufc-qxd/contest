@@ -434,16 +434,22 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		
 		return "PDF_ORGANIZADOR";
 	}
-	
-	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.GET)
-	public String gerarCertificadoTrabalhos(Model model){
-		//@RequestParam String idTrabalhos
-		String idTrabalhos = "13,15,16";
-		if(idTrabalhos != null){
-			String ids[] = idTrabalhos.split(Pattern.quote(","));
+
+	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
+	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model){
+		Long id = Long.parseLong(idEvento);
+		Evento e = eventoService.buscarEventoPorId(id);
+		List<Trabalho> listaTrabalhos = trabalhoService.getTrabalhosEvento(e);
+		model.addAttribute("trabalhos", listaTrabalhos);
+		return Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO;
+	}
+
+	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.POST)
+	public String gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model){
+		if(trabalhosIds != null){
 			List<Trabalho> trabalhos = new ArrayList<>();
-			for(String id : ids){
-				trabalhos.add(trabalhoService.getTrabalhoById(Long.parseLong(id)));
+			for(Long id : trabalhosIds){
+				trabalhos.add(trabalhoService.getTrabalhoById(id));
 			}
 			if(trabalhos != null){
 				jrDataSource  = new JRBeanCollectionDataSource(trabalhos);

@@ -22,6 +22,7 @@ public class Constants {
 	public static final String TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG = "organizador/org_eventos_listar_ativos";
 	public static final String TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG = "organizador/org_eventos_listar_inativos";
 	public static final String TEMPLATE_MEUS_EVENTOS_ORG = "organizador/organizador_meus_eventos";
+	public static final String TEMPLATE_GERAR_CERTIFICADOS_TRABALHO = "organizador/org_gerar_certificados_trabalhos";
 	
 	public static final String TEMPLATE_LISTAR_TRILHAS_ORG = "organizador/org_trilhas";
 	public static final String TEMPLATE_DETALHES_TRILHA_ORG = "organizador/org_detalhes_trilha";
