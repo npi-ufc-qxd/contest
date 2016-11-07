@@ -5,8 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -32,6 +30,7 @@ import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
@@ -39,7 +38,7 @@ import ufc.quixada.npi.contest.service.TrilhaService;
 public class AlunoSubmeteVersaoFinalSteps {
 
 	private static final String PAGINA_AUTOR_MEUS_TRABALHOS = "/autor/meusTrabalhos";
-	private static final String CAMINHO_ARQUIVO_VALIDO = "/home/allef.lobo/Documentos/certificado.pdf";
+	private static final byte[] CONTEUDO = "Ola Mundo".getBytes();
 
 	@InjectMocks
 	private AutorController autorController;
@@ -55,6 +54,8 @@ public class AlunoSubmeteVersaoFinalSteps {
 	private TrilhaService trilhaService;
 	@Mock
 	private TrabalhoService trabalhoService;
+	@Mock
+	private StorageService storageService;
 	
 
 	private MockMvc mockMvc;
@@ -112,10 +113,9 @@ public class AlunoSubmeteVersaoFinalSteps {
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(submissaoService.getSubmissaoByTrabalho(trabalho)).thenReturn(submissao);
 		
-		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
-		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
-
-        action = mockMvc.perform(MockMvcRequestBuilders.fileUpload("/autor/reenviarTrabalho")
+		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
+        
+		action = mockMvc.perform(MockMvcRequestBuilders.fileUpload("/autor/reenviarTrabalho")
                         .file(multipartFile)
                         .param("trabalhoId", trabalho.getId().toString())
                         .param("eventoId", evento.getId().toString()));
@@ -144,8 +144,7 @@ public class AlunoSubmeteVersaoFinalSteps {
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(submissaoService.getSubmissaoByTrabalho(trabalho)).thenReturn(submissao);
 		
-		FileInputStream fi2 = new FileInputStream(new File(CAMINHO_ARQUIVO_VALIDO));
-		final MockMultipartFile  multipartFile = new MockMultipartFile("file", "certificado.pdf","multipart/form-data",fi2);
+		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
 
         action = mockMvc.perform(MockMvcRequestBuilders.fileUpload("/autor/reenviarTrabalho")
                         .file(multipartFile)

@@ -77,7 +77,7 @@ public class ProfessorRevisaTrabalhoSteps {
 			avaliacao_geral = "OTIMO", indicar = "Digno de indicação aos melhores trabalhos",
 			avaliacao_final="APROVADO";
 	
-	String idTrabalho = "2";
+	private String idTrabalho = "2";
 	
 	@Before
 	public void setup() {
@@ -111,7 +111,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		when(criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
 				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(true);
 		
-		when(revisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
+		when(RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
 				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'OTIMO','clareza':'OTIMO',"
 						+ "'avaliacao_geral':'OTIMO','qualidade':'OTIMO','formatacao':'Problemas com a formatação',"
 						+ "'relevancia':'Especialista','comentarios':'Bom Trabalho',"
@@ -236,7 +236,7 @@ public class ProfessorRevisaTrabalhoSteps {
 	
 	@Entao("^A revisão não é registrada$")
 	public void revisaoNaoRegistrada(){
-		verify(revisaoService, never()).addOrUpdate(revisao);;
+		verify(revisaoService, never()).addOrUpdate(revisao);
 	}
 	
 	@E("^Um erro no sistema deve ser mostrado$")
