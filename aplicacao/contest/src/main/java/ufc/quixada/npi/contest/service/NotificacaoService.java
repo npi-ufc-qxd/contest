@@ -15,6 +15,14 @@ public class NotificacaoService {
 	private NotificacaoRepository notificacaoRepository;
 	
 	public List<Notificacao> listaNotificacaoDePessoa(Pessoa pessoa){
-		return notificacaoRepository.findByPessoa(pessoa);
+		return notificacaoRepository.findNotificacaoByNovaAndPessoa(true, pessoa);
 	} 
+	
+	public void adicionarNotificacao(Notificacao notificacao) {
+		notificacaoRepository.save(notificacao);
+	}
+
+	public Notificacao getNotificacaoById(Long id){
+		return notificacaoRepository.findById(id);
+	}
 }
