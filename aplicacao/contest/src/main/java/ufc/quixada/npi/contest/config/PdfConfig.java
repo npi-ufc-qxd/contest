@@ -14,4 +14,11 @@ public class PdfConfig extends WebMvcConfigurerAdapter{
     	report.setUrl("classpath:CertificadoEU2016Organizacao.jrxml");
     	return report;
     }
+	
+	@Bean(name = "PDF_TRABALHOS")
+	public JasperReportsMultiFormatView reportPdfTrabalhos() {
+    	JasperReportsMultiFormatView report = new JasperReportsMultiFormatView();
+    	report.setUrl("classpath:CertificadoEUTrabalhos.jrxml");
+    	return report;
+    }
 }

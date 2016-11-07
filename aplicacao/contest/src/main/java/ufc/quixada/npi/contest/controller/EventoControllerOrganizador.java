@@ -420,7 +420,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return "redirect:/eventoOrganizador";
 	}
 	
-	@RequestMapping(value = "/gerarPdfOrganizador/{idEvento}", method = RequestMethod.GET)
+	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model) throws JRException{
 		
 		
@@ -434,6 +434,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		
 		return "PDF_ORGANIZADOR";
 	}
+	
+	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.GET)
+	public String gerarCertificadoTrabalhos(Model model){
+		//@RequestParam String idTrabalhos
+		String idTrabalhos = "13,15,16";
+		if(idTrabalhos != null){
+			String ids[] = idTrabalhos.split(Pattern.quote(","));
+			List<Trabalho> trabalhos = new ArrayList<>();
+			for(String id : ids){
+				trabalhos.add(trabalhoService.getTrabalhoById(Long.parseLong(id)));
+			}
+			if(trabalhos != null){
+				jrDataSource  = new JRBeanCollectionDataSource(trabalhos);
+				model.addAttribute("datasource", jrDataSource);
+				model.addAttribute("format", "pdf");
+			}
+		}
+		return "PDF_TRABALHOS";
+	}
+	
 	
 	public Pessoa getOrganizadorLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

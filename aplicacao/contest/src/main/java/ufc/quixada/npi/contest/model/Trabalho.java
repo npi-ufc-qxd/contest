@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -48,6 +49,9 @@ public class Trabalho implements Comparable<Trabalho> {
 
 	@Column(name="path")
 	private String path;
+	
+	@Transient
+	private String coautoresInString;
 	
 	public Long getId() {
 		return id;
@@ -148,6 +152,22 @@ public class Trabalho implements Comparable<Trabalho> {
 			}
 		}
 		return pessoa;
+	}
+	
+	public String getCoautoresInString(){
+		List<Pessoa> lista = this.getAutoresDoTrabalho();
+		if(lista!=null){
+			StringBuilder nomes = new StringBuilder();
+			for (Pessoa p : lista) {
+				if(lista.indexOf(p)!=(lista.size()-1)){
+					nomes.append(p.getNome()+", ");
+				} else{
+					nomes.append(p.getNome());
+				}
+			}
+			return nomes.toString();
+		}
+		return "";
 	}
 	
 	public Pessoa getAutor() {
