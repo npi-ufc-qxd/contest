@@ -326,8 +326,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String convidarPorEmail(@RequestParam("nomeConvidado") String nome,@RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, 
 			Model model, RedirectAttributes redirect) {
-		if(EstadoEvento.ATIVO.equals(eventoService.buscarEventoPorId(eventoId).getEstado())){
 			Evento evento = eventoService.buscarEventoPorId(eventoId);
+
+		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
 			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " +evento.getNome() + " como " + funcao;
 			
