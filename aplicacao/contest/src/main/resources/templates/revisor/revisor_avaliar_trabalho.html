@@ -24,10 +24,6 @@
               <ul class="collection" th:if="${not #lists.isEmpty(trabalho.autoresDoTrabalho)}">
       			<li th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}" class="collection-item" >Nome Autor</li>
     		  </ul>
-              <p>Co-Autores: </p>
-              <ul class="collection" th:if="${not #lists.isEmpty(trabalho.CoAutoresDoTrabalho)}">
-      			<li th:each="coAutor : ${trabalho.CoAutoresDoTrabalho}" th:text="${coAutor.nome}" class="collection-item" >Nome Co-Autor</li>
-    		  </ul>
             </div>
             <div class="card-action">
               <a id="baixar-trabalho" th:href="@{'/revisor/trabalho/' + ${trabalho.id}}" name="baixar-trabalho" class="btn waves-effect waves-light white-text">Fazer Download do Trabalho<i aria-hidden="true" class="fa fa-download left"></i></a>

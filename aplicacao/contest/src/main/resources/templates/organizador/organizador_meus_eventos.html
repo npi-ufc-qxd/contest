@@ -81,7 +81,10 @@
 					</div>
 				 </section>
                 </div>
-                <div class="card-action"><a th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
+                <div class="card-action">
+                	<a th:if="${evento.isPeriodoRevisao()}" th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a>
+                    <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}" class="purple-text">Detalhes</a>
+                </div>
               </div>
             </div>
           </div>
