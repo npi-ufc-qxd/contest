@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Constest - Controle de Eventos de Submissão</title>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-		<!-- CSS  -->
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+   	<div th:include="fragments/head :: head"></div>
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -39,17 +31,22 @@
             <div class="card-stacked">
               <div class="card-content">
                 <h5 th:text="${evento.nome}"></h5>
-                <p th:text="${evento.descricao}"></p>
-                <p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
+                <p th:text="'Descrição: ' + ${evento.descricao}"></p>
+                <p th:text="'Início da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
+                <p th:text="'Início da revisão: ' + ${#dates.format(evento.prazoRevisaoInicial,'dd/MM/yyyy')}"></p>                
+            	<p th:text="'Fim da revisão: ' + ${#dates.format(evento.prazoRevisaoFinal,'dd/MM/yyyy')}"></p>
+                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>                
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
-                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+                  <a th:if="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:unless="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" class="btn grey white-text">Fora do Prazo de Envio de Trabalho</a>
+               	  
                	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                 </div>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'TEM_REVISAO'">
-                  <a th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+                  <a th:if="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:unless="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" class="btn grey white-text">Fora do Prazo de Envio de Trabalho</a>
+               	  
                	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
-                  <a href="#" class="waves-effect waves-light btn blue">Ver Revisao</a>
                 </div>
               </div>
             </div>

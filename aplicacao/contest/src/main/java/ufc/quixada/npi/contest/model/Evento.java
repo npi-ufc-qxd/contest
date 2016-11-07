@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -189,4 +190,46 @@ public class Evento {
 	public void setTrilhas(List<Trilha> trilhas) {
 		this.trilhas = trilhas;
 	}
+
+	
+	public boolean isPeriodoInicial(){
+		Date dataAtual = new Date();
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(prazoRevisaoInicial);
+        cal.add(Calendar.SECOND, -1);
+		Date diaAntesDoInicioDaRevisao = cal.getTime();
+		return (dataAtual.compareTo(diaAntesDoInicioDaRevisao) <= 0);
+	}
+	
+	public boolean isPeriodoRevisao(){
+		Date dataAtual = new Date();
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(prazoRevisaoFinal);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        cal.add(Calendar.SECOND, -1);
+		Date dataFinalRevisao = cal.getTime();		
+		boolean comecaNoDiaOuAposInicioRevisao = (dataAtual.compareTo(prazoRevisaoInicial)>= 0);
+		boolean terminaNoDiaOuAntesFinalRevisao = (dataAtual.compareTo(dataFinalRevisao)<= 0);
+		return (comecaNoDiaOuAposInicioRevisao && terminaNoDiaOuAntesFinalRevisao);
+	}
+	
+	public boolean isPeriodoFinal(){
+		Date dataAtual = new Date();
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(prazoRevisaoFinal);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date diaAposRevisaoFinal = cal.getTime();
+		boolean comecaAposRevisaoFinal = (dataAtual.compareTo(diaAposRevisaoFinal)>= 0);
+		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(prazoSubmissaoFinal)<= 0);
+		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
+	}
+	
+	//Se o valor de dias for negativo a quantidade sera subtraida
+	private Date alterarDataEmDias(Date date, int dias)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, dias);
+        return cal.getTime();
+    }
 }

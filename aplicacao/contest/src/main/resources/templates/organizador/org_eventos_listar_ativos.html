@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Constest - Controle de Eventos de Submissão</title>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-		<!-- CSS  -->
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <div th:include="fragments/head :: head"></div>
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -17,10 +9,7 @@
       <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
       <div class="row">
         <h2>Lista de Eventos Ativos</h2>
-		<div th:if="${organizadorError}" class="chip red darken-1">
-        	<span class="white-text" th:text= "${organizadorError}"></span>
-        	<i class="material-icons">close</i>
-        </div>
+        
         <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}"> 
           <div th:case="${true}">
 
@@ -36,14 +25,17 @@
               <div class="card">
                 <div class="card-content">
 	              <span class="card-title" th:text="${evento.nome}" ></span>
-	              <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+	              <p>Organizador(es):</p>
+	              <blockquote>
+	              	<p th:each="participacao : ${evento.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'ORGANIZADOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
+	              </blockquote>
 	              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
                 </div>
                 <div class="card-action">
               	  <div class="row">
               	  
 	              	  <div class="col m4 s4">
-	              	  	<a href="#" class="purple-text">Inativar</a>
+	              	  	<a th:href="@{'/eventoOrganizador/editar/' + ${evento.id}}" class="purple-text">Editar</a>
 	              	  </div>
 	              	  <div class="col m4 s4">
 	              	  	<a th:attr="href='#modal' + ${evento.id}" 
@@ -51,9 +43,6 @@
 	              	  </div>
 	              	  <div class="col m4 s4">
 	              	    <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}" class="purple-text">Detalhes</a>
-	              	  </div>
-	              	   <div class="col m4 s4">
-	              	    <a th:href="@{'/eventoOrganizador/convidar/'+ ${evento.id}}" class="purple-text">Convidar</a>
 	              	  </div>
               	  
               	  </div>
@@ -79,8 +68,11 @@
               <div class="card">
                 <div class="card-content">
 	              <span class="card-title" th:text="${eventoParticipo.nome}" ></span>
-	              <p >Participando</p>
-	              <p th:text="|Organizador: ${eventoParticipo.participacoes[0].pessoa.nome}|"></p>
+	              <p>Participando</p>
+	              <p>Organizador(es):</p>
+	              <blockquote>
+	              	<p th:each="participacao : ${eventoParticipo.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'ORGANIZADOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
+	              </blockquote>
 	              <p th:text="|Visibilidade: ${eventoParticipo.visibilidade.visibilidade}|"></p>
                 </div>
                 <div class="card-action">
@@ -106,6 +98,6 @@
                   </ul>
                 </div>
       </div>
-     <div th:include="fragments/footer :: footer"></div>
+    <div th:include="fragments/footer :: footer"></div>
   </body>
 </html>

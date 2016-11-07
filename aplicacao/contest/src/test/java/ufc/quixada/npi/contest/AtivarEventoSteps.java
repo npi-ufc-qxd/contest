@@ -44,11 +44,11 @@ public class AtivarEventoSteps {
 	@Mock
 	private MessageService messageService;
 	@Mock
-	private EventoValidator eventoValidator;
-	@Mock
 	private RevisaoService revisaoService;
 	@Mock
 	private SubmissaoService submissaoService;
+	@Mock
+	private EventoValidator eventoValidator;
 	
 	private static final String TEMPLATE_ADD_OR_EDIT_EVENTO_ORG = "organizador/org_ativar_eventos";
 	private static final String PAGINA_ATIVAR_EVENTO_GET = "/eventoOrganizador/ativar/{id}";

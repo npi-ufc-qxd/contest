@@ -9,12 +9,12 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Email;
+import ufc.quixada.npi.contest.util.Constants;
 
 @Service
 public class EnviarEmailService {
 
 	private Email email;
-	private String emailCONTEST = "naoresponda@contest.com";
 	private SimpleMailMessage templateMessage;
 	private JavaMailSender javaMailSender;
 	
@@ -40,7 +40,7 @@ public class EnviarEmailService {
 
         msg.setText(email.getCorpo());
         msg.setSubject(email.getAssunto());
-        msg.setFrom(emailCONTEST);
+        msg.setFrom(Constants.ENDERECO_EMAIL_CONTEST);
         msg.setTo(enderecos);
         
 		try {

@@ -42,11 +42,15 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 			if (!pessoaService.autentica(pessoa, cpf, password))
 				throw new BadCredentialsException(messageService.getMessage("LOGIN_INVALIDO"));
 		} else if (usuarioService.autentica(cpf, password)) { // Pessoa não existe, então tenta autenticar via LDAP
+			
 			Usuario usuario = usuarioService.getByCpf(cpf);
-
-			pessoa = new Pessoa();
+			
+			pessoa = pessoaService.getByEmail(usuario.getEmail());
+			if(pessoa == null){
+				pessoa = new Pessoa();
+				pessoa.setEmail(usuario.getEmail());
+			}
 			pessoa.setCpf(cpf);
-			pessoa.setEmail(usuario.getEmail());
 			pessoa.setNome(usuario.getNome());
 			pessoa.setPassword(pessoaService.encodePassword(password));
 			pessoa.setPapelLdap(usuario.getAuthorities().get(0).getNome());

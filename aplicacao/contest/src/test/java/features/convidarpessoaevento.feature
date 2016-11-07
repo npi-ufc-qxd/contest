@@ -22,6 +22,6 @@ Funcionalidade:  O organizador convida participantes
         
      Cenário: O organizador convida pessoas para participarem de um evento inativo
         Dado que existe um evento inativo
-        Então a mensagem de PARTICIPAR_EVENTO_INATIVO_OU_FINALIZADO de impedimento é retornada para o organizador 
+        Então a mensagem de impedimento é retornada para o organizador 
 	
 	  	 

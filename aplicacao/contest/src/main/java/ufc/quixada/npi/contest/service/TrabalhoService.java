@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.repository.RevisaoRepository;
 import ufc.quixada.npi.contest.repository.TrabalhoRepository;
 
 @Service
@@ -16,6 +18,9 @@ public class TrabalhoService {
 	
 	@Autowired
 	private TrabalhoRepository trabalhoRepository;
+	
+	@Autowired
+	private RevisaoRepository revisaoRepository;
 	
 	public Trabalho getTrabalhoById(Long idTrabalho){
 		return trabalhoRepository.findOne(idTrabalho);
@@ -33,13 +38,24 @@ public class TrabalhoService {
 		return trabalhoRepository.findByTrilha(trilha);
 	}
 	
-	
 	public void adicionarTrabalho(Trabalho trabalho){
 		trabalhoRepository.save(trabalho);
 	}
 	
 	public List<Trabalho> getTrabalhosParaRevisar(Long idRevisor, Long idEvento){
 		return trabalhoRepository.getTrabalhosParaRevisar(idRevisor, idEvento);
+	}
+	
+	public List<Long> getTrabalhosRevisadosDoRevisor(Long idRevisor, Long idEvento){
+		List<Trabalho> trabalhosParaRevisar = this.getTrabalhosParaRevisar(idRevisor, idEvento);
+		List<Long> trabalhosRevisados = new ArrayList<Long>();
+		for(Trabalho trabalho : trabalhosParaRevisar){
+			if(revisaoRepository.trabalhoEstaRevisadoPeloRevisor(trabalho.getId(), idRevisor)){
+				trabalhosRevisados.add(trabalho.getId());
+			}
+		}
+		
+		return trabalhosRevisados;
 	}
 	
 	public List<Pessoa> getAutoresDoTrabalho(Long idTrabalho){
@@ -51,5 +67,9 @@ public class TrabalhoService {
 	}
 	public void remover(Long id){
 		trabalhoRepository.delete(id);
+	}
+	
+	public int buscarQtdTrabalhosPorEvento(Long eventoID){
+		return trabalhoRepository.findAllByEventoId(eventoID).size();
 	}
 }

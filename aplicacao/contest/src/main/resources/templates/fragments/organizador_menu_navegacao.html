@@ -9,6 +9,7 @@
 		    <a th:href="@{/eventoOrganizador}">Meus Eventos</a>
 	        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
 	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+	       	<a th:if="${evento}" th:href="@{'/eventoOrganizador/convidar/'+ ${evento.id}}">Convidar Participante por E-mail</a>
 	    </div>
 	</div>
 </body>

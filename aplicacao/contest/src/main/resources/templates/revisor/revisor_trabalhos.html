@@ -1,49 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Constest - Controle de Eventos de Submissão</title>
-<link rel="stylesheet"
-	href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-<!-- CSS-->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-	rel="stylesheet" />
-<link
-	th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}"
-	type="text/css" rel="stylesheet" media="screen,projection" />
-<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
-	media="screen,projection" />
+	<div th:include="fragments/head :: head"></div>
 </head>
 <body>
-	<nav role="navigation" class="purple darken-4">
-		<div class="nav-wrapper container">
-			<a href="#"><img src="../imgs/logotipo_white.png" alt="Contest"
-				width="200px" /></a>
-			<ul class="white-text right hide-on-med-and-down">
-				<li><a href="#">Link 01</a></li>
-				<li><a href="#">Link 02</a></li>
-			</ul>
-			<ul id="nav-mobile" class="side-nav">
-				<li><a href="#">Link 01</a></li>
-				<li><a href="#">Link 02</a></li>
-			</ul>
-			<a href="#" data-activates="nav-mobile" class="button-collapse"><i
-				class="material-icons">menu</i></a>
-		</div>
-	</nav>
+	<div th:include="fragments/header :: header"></div>
 	<div class="container page">
-		<br />
-		<div class="row opcoes">
-			<a href="revisor_index.html">Eventos Ativos</a>
-		</div>
+		 <div th:include="fragments/revisor_menu_navegacao :: revisor_menu_navegacao"></div>
 		<div class="row">
 			<h1 th:text="${evento.nome}"></h1>
 			<h2>Lista de Artigos para Revisão</h2>
 			<div>
-				<div id="error_area" class="row chip red white-text">
-					"Mensagem de Erro"<i class="material-icons">close</i>
+				<div id="success_area" class="row chip green white-text" th:if="${trabalhoRevisado}">
+				<span th:text="${trabalhoRevisado}"></span><i class="material-icons">close</i>
+				</div>
+				<div id="error_area" class="row chip red white-text" th:if="${trabalhoInexistenteError}">
+				<span th:text="${trabalhoInexistenteError}"></span><i class="material-icons">close</i>
+				</div>
+				<div id="error_area" class="row chip red white-text" th:if="${eventoInexistenteError}">
+				<span th:text="${eventoInexistenteError}"></span><i class="material-icons">close</i>
 				</div>
 			</div>
 			<div class="row" th:if="${not #lists.isEmpty(trabalhos)}">
@@ -52,11 +27,16 @@
 						<div class="card-stacked">
 							<div class="card-content">
 								<span class="card-title" th:text="${trabalho.titulo}"></span>
+								<p>Revisor(es): </p>
+								<blockquote>
+	              					<p th:each="participacao : ${trabalho.participacoes}" th:if="${#strings.equalsIgnoreCase(participacao.papel, 'REVISOR')}" th:text="|${participacao.pessoa.nome}|"></p>	
+	              				</blockquote>
 								<h6 th:text="'Trilha: ' + ${trabalho.trilha.nome}"></h6>
 							</div>
-							<div class="card-action">
-								<a th:href="@{'/revisor/' + ${evento.id} + '/' + ${trabalho.id} + '/revisar'}"
+							<div class="card-action" th:switch="${#lists.contains(trabalhosRevisados, trabalho.id)}">
+								<a th:case='false' th:href="@{'/revisor/' + ${evento.id} + '/' + ${trabalho.id} + '/revisar'}"
 									class="btn white-text waves-effect waves-light btn-large">REVISAR</a>
+								<a th:case='true' class="btn white-text waves-effect waves-light btn-large light-green darken-2" th:disabled="${true}">REVISADO</a>
 							</div>
 						</div>
 					</div>
@@ -73,6 +53,6 @@
 			</div>
 		</div>
 	</div>
-	<div th:include="fragments/footer :: footer"></div>
+	  <div th:include="fragments/footer :: footer"></div>
 </body>
 </html>
