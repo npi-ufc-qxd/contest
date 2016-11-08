@@ -34,8 +34,14 @@
 			</div>
 			
 			<div th:if="${particapacaoEventoSucesso != null}" id="success_area" class="row chip green white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${particapacaoEventoSucesso}">
-			<i class="material-icons">close</i>
+				<i class="material-icons">close</i>
 			</div>
+			
+			<div id="error_area" class="row chip red white-text" th:if="${periodoRevisaoError}">
+          		<span th:text="${periodoRevisaoError}"></span>
+          		<i class="material-icons">close</i>
+          	</div>
+			
         </div>
         <div class="row">
           <div class="input-field">
