@@ -4,12 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <!-- CSS-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
     <link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <!-- recursos para paginação  -->
+	<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -49,7 +50,8 @@
           </div>
         </div>
         
-        <div class="row" th:if="${not #lists.isEmpty(eventos)}">
+        <div th:unless="${#lists.isEmpty(eventos)}" class="row holder center"></div>
+        <div class="row" id="itemContainer" th:if="${not #lists.isEmpty(eventos)}">
           <div class="row" th:each="evento : ${eventos}">
             <div class="card horizontal">
               <div class="card-stacked">
@@ -103,16 +105,7 @@
             </div>
           </div>
         </div>
-<!--         
-        <div class="row col s12 center">
-        	<ul class="pagination">
-            	<li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-            	<li class="active"><a href="#">1</a></li>
-             	<li class="waves-effect"><a href="#">2</a></li>
-             <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-            </ul>
-        </div>
--->       
+        <div th:unless="${#lists.isEmpty(eventos)}" class="row holder center"></div>
       </div>
     </div>
     <footer class="page-footer purple darken-4">
@@ -124,12 +117,18 @@
     <script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
-    
+    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
     <script type="text/javascript">
       $(document).ready(function(){
 
         //Inicialização do Modal excluir Evento
         $('.modal-trigger').leanModal();
+        
+      	//Inicialização do Jpages para realizar a paginação
+        $("div.holder").jPages({
+        	containerID : "itemContainer",
+        	perPage: 2 //Quantidade de elementos exibidos por página.
+        });
         
       });
     </script>
