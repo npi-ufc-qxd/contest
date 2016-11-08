@@ -138,20 +138,26 @@ public class Trabalho {
 		return true;
 	}
 	
-	public List<Pessoa> getAutoresDoTrabalho() {
-		List<Pessoa> autores = new ArrayList<Pessoa>();
+	private List<Pessoa> getParticipacaoPapelTrabalho(Papel... papeis) {
+		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
-			if (p.getPapel() == Papel.AUTOR)
-				autores.add(p.getPessoa());
+			for(Papel papel : papeis){
+				if (p.getPapel() == papel){
+					pessoa.add(p.getPessoa());
+				}
+			}
 		}
-		for (ParticipacaoTrabalho p : getParticipacoes()) {
-			if (p.getPapel() == Papel.COAUTOR)
-				autores.add(p.getPessoa());
-		}
-
-		return autores;
+		return pessoa;
 	}
-
+	
+	public List<Pessoa> getAutoresDoTrabalho() {
+		return getParticipacaoPapelTrabalho(Papel.AUTOR, Papel.COAUTOR);
+	}
+	
+	public List<Pessoa> getRevisores(){
+		return getParticipacaoPapelTrabalho(Papel.REVISOR);
+	}
+	
 	@Override
 	public String toString() {
 		return "Trabalho [id=" + id + ", titulo=" + titulo + ", evento=" + evento + ", trilha=" + trilha
