@@ -2,6 +2,7 @@
 <html>
 <head>
 	<div th:include="fragments/head :: head"></div>
+	<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 <body>
 	<div th:include="fragments/header :: header"></div>
@@ -21,7 +22,8 @@
 				<span th:text="${eventoInexistenteError}"></span><i class="material-icons">close</i>
 				</div>
 			</div>
-			<div class="row" th:switch="${#lists.isEmpty(trabalhos)}">
+			<div th:unless="${#lists.isEmpty(trabalhos)}" class="row holder center"></div>
+			<div id="itemContainer" class="row" th:switch="${#lists.isEmpty(trabalhos)}">
 				<div class="row" th:case="true">
 								<h4 class="card-title">Nenhum artigo para revisar até o momento.</h4>
 				</div>
@@ -42,18 +44,22 @@
 					</div>
 				</div>
 			</div>
-			<!-- 
-			<div class="row col s12 center">
-				<ul class="pagination">
-					<li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-					<li class="active"><a href="#">1</a></li>
-					<li class="waves-effect"><a href="#">2</a></li>
-					<li class="waves-effect"><a href="#"><i	class="material-icons">chevron_right</i></a></li>
-				</ul>
-			</div>
-			 -->
+			<div th:unless="${#lists.isEmpty(trabalhos)}" class="row holder center"></div>
+			
 		</div>
 	</div>
 	  <div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+		
+		//Inicialização do Jpages para realizar a paginação
+        $("div.holder").jPages({
+        	containerID : "itemContainer",
+        	perPage: 3
+        });
+	</script>
 </body>
 </html>
