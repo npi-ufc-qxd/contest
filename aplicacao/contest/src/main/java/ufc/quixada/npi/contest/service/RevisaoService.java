@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.repository.RevisaoRepository;
@@ -25,6 +26,10 @@ public class RevisaoService {
 	
 	public List<Revisao> getRevisaoByTrabalho(Trabalho trabalho){
 		return revisaoRepository.findRevisaoByTrabalho(trabalho);
+	}
+	
+	public List<Revisao> getRevisaoByEvento(Long evento){
+		return revisaoRepository.revisoesEvento(evento);
 	}
 	
 	public void adicionarOuAtualizarRevisao(Revisao revisao) {

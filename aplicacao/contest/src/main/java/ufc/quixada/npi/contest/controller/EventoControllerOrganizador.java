@@ -3,7 +3,9 @@ package ufc.quixada.npi.contest.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.validation.Valid;
@@ -31,6 +33,7 @@ import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -45,6 +48,7 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.util.RevisaoJSON;
 
 @Controller
 @RequestMapping("/eventoOrganizador")
@@ -136,6 +140,24 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
 		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+	}
+	
+	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
+	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		Long eventoId = Long.parseLong(id);
+		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
+		
+		if(!revisoes.isEmpty()){
+			List<Map<String, String>> revisoesWrappers = new ArrayList<>();
+			Map<String, String> titulo = new HashMap<>();
+			for(Revisao revisao: revisoes){
+				revisao.setConteudo(RevisaoJSON.fromJson(revisao).get("comentarios_autores"));
+			}
+			model.addAttribute("revisoes", revisoes);
+			return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
+		}
+		redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+		return "redirect:/eventoOrganizador/evento/" + eventoId;
 	}
 	
 	@RequestMapping(value = "/evento/{id}/revisores", method = RequestMethod.GET)
