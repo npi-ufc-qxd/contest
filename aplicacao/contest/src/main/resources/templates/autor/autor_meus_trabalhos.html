@@ -21,7 +21,7 @@
         <div th:if="${sucessoEnviarTrabalho}" id="success_area" class="row chip green white-text" th:text="#{TRABALHO_ENVIADO}">
           <i class="material-icons">close</i>
         </div>
-        <div th:if="${erroExcluir}" id="success_area" class="row chip green white-text" th:text="#{ERRO_EXCLUIR_TRABALHO}">
+        <div th:if="${erroExcluir}" id="error_area" class="row chip red white-text" th:text="${erroExcluir}">
           <i class="material-icons">close</i>
         </div>
       </div>
