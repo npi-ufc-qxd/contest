@@ -3,7 +3,6 @@
   <head>
    	<div th:include="fragments/head :: head"></div>
 	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-	<!-- recursos para paginação  -->
 	<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
@@ -52,11 +51,20 @@
         </div>
         
       </div>
+
        <div th:unless="${#lists.isEmpty(eventosAtivos)}" class="row holder center"></div>
     </div>
    	<div th:include="fragments/footer :: footer"></div>
    	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
-    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>    
+    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("div.holder").jPages({
+        	containerID : "itemContainer",
+        	perPage: 2
+        });
+      });
+    </script>    
   </body>
 </html>
