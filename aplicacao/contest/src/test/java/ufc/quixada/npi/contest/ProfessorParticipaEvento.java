@@ -139,12 +139,12 @@ public class ProfessorParticipaEvento {
 		action = mockMvc.perform(get("/eventoOrganizador/ativos")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
 		
-		verify(eventoService).getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+		verify(eventoService).buscarEventoPorEstado(EstadoEvento.ATIVO);
 	}
 	
 	@Entao("^Deve ser mostrado apenas eventos públicos$")
 	public void mostrarEventosPublicos(){
-		verify(eventoService).getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+		verify(eventoService).buscarEventoPorEstado(EstadoEvento.ATIVO);
 	}
 	
 	/**

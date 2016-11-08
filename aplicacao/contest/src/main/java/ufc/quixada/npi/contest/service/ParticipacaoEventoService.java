@@ -71,9 +71,11 @@ public class ParticipacaoEventoService {
 	}
 	
 	public boolean isOrganizadorDoEvento(Pessoa organizador, Long idEvento){
-		for(ParticipacaoEvento participacaoEvento : organizador.getParticipacoesEvento()){
-			if(participacaoEvento.getEvento().getId() == idEvento && 
-					participacaoEvento.getPapel() == Papel.ORGANIZADOR) return true;
+		if(organizador.getParticipacoesEvento() != null){
+			for(ParticipacaoEvento participacaoEvento : organizador.getParticipacoesEvento()){
+				if(participacaoEvento.getEvento().getId() == idEvento && 
+						participacaoEvento.getPapel() == Papel.ORGANIZADOR) return true;
+			}
 		}
 		
 		return false;

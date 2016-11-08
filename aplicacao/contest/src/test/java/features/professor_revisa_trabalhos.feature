@@ -37,4 +37,4 @@ Funcionalidade: Professor revisa trabalhos submetidos
 	  	
 	  Cenário: Professor tenta baixar um trabalho em que não é revisor e nem organizador do evento do trabalho
 	  	E Tento baixar um trabalho em que não sou revisor e nem organizador do evento do trabalho
-	  	Então um erro deve ser mostrado
+		Então um erro deve ser mostrado
