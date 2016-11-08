@@ -23,8 +23,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/css/**", "/js/**", "/img/**", "/webjars/**", "/notificacao/**").permitAll()
-				.antMatchers("/autor/**").hasRole("DISCENTE")
+				.antMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
+				.antMatchers("/autor/file**").hasAnyRole("DISCENTE", "DOCENTE")
+				.antMatchers("/autor/**").hasAnyRole("DISCENTE")
 				.antMatchers("/evento/**").hasRole("ADMIN")
 				.antMatchers("/eventoOrganizador/**").hasAnyRole("DOCENTE", "STA", "ADMIN")
 				.antMatchers("/revisor/**").hasRole("DOCENTE")

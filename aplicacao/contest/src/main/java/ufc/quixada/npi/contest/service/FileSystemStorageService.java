@@ -52,10 +52,8 @@ public class FileSystemStorageService implements StorageService{
 	            }
 	            
 	            File pasta = new File(caminho);
-	            if(!pasta.exists()){
-	            	if(!pasta.mkdirs()){
-	            		throw new RuntimeException("Não foi possível criar pasta de destino");
-	            	}	            	
+	            if(!pasta.exists() && !pasta.mkdirs()){
+            		throw new RuntimeException("Destino inexistente");
 	            }
 	            SimpleDateFormat dataFormat = new SimpleDateFormat("-ddMMyy-HHmmss-SSS");
 	            
@@ -116,6 +114,13 @@ public class FileSystemStorageService implements StorageService{
 	public File getFile(String path) {
 		File file = new File(path);
 		return file;
+	}
+
+
+	@Override
+	public void deleteArquivo(String path) {
+		File caminho = new File(path);
+		caminho.delete();
 	}
 
 

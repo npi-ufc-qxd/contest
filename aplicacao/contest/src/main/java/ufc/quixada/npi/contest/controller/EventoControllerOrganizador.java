@@ -24,16 +24,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ufc.quixada.npi.contest.model.Email;
+import ufc.quixada.npi.contest.model.Email.EmailBuilder;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Notificacao;
 import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.NotificacaoService;
@@ -50,14 +54,15 @@ import ufc.quixada.npi.contest.util.Constants;
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController{
 
-	private static final String EVENTO_QUE_PARTICIPO = "eventoQueParticipo";
+	private static final String ERRO_ENVIO_EMAIL = "ERRO_ENVIO_EMAIL";
+	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
-	private static final String EVENTOS_ATIVOS = "eventosAtivos";
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
@@ -67,6 +72,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String PARTICIPAR_EVENTO_INATIVO = "PARTICIPAR_EVENTO_INATIVO";
 	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
+	private static final String CONVIDAR_EVENTO_INATIVO = "CONVIDAR_EVENTO_INATIVO";
 	
 
 	@Autowired
@@ -124,8 +130,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
-		model.addAttribute("qtdTrabalhos", trabalhoService.buscarQtdTrabalhosPorEvento(eventoId));
+		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
+		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
+		
+		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
+		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
+		
+		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
+		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
+		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
+		
+		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 	
@@ -183,19 +200,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
-		boolean existeEventos = true;
+		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
+		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
+				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
+				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		
-		for(Evento e : eventosQueReviso){
-			eventos.remove(e);
+		List<Long> eventosComoRevisor = new ArrayList<>();
+		List<Long> eventosComoOrganizador = new ArrayList<>();
+		
+		for(ParticipacaoEvento participacaoEvento : participacoesComoRevisor){
+			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
 		}
-		if(eventos.isEmpty() && eventosQueReviso.isEmpty())
-			existeEventos = false;
+	
+		for(ParticipacaoEvento participacaoEvento : participacoesComoOrganizador){
+			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
+		}
 		
-		model.addAttribute("existeEventos", existeEventos);
-		model.addAttribute(EVENTOS_ATIVOS, eventos);
-		model.addAttribute(EVENTO_QUE_PARTICIPO, eventosQueReviso);
+		model.addAttribute("eventosAtivos", eventosAtivos);
+		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
+		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
@@ -296,7 +320,45 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
 		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
+	
+	@RequestMapping(value = "/convidar/{id}", method = RequestMethod.GET)
+	public String convidarPessoasPorEmail(@PathVariable String id, Model model,  RedirectAttributes redirect) {
+		Long eventoId = Long.parseLong(id);
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		Pessoa professorLogado = getOrganizadorLogado();
+		
+		if(EstadoEvento.ATIVO.equals(evento.getEstado()) && PapelLdap.Tipo.DOCENTE.equals(professorLogado.getPapelLdap()) ){
+			model.addAttribute("eventoId", eventoId);			
+			return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG;
+			
+		}else{
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
+			return "redirect:/eventoOrganizador/evento" + eventoId;
+		}
+    }
+	
+	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
+	public String convidarPorEmail(@RequestParam("nomeConvidado") String nome,@RequestParam("email") String email,
+			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, 
+			Model model, RedirectAttributes redirect) {
+			Evento evento = eventoService.buscarEventoPorId(eventoId);
 
+		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
+			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
+			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " +evento.getNome() + " como " + funcao;
+			
+			EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo);
+			Email mail = builder.build();
+			EnviarEmailService serviceEmail = new EnviarEmailService(mail);
+			if(!serviceEmail.enviarEmail()){
+				redirect.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+			}
+		}else{
+			redirect.addAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO)); 
+		}
+		return "redirect:/eventoOrganizador/evento/" + eventoId;	
+	}
+	
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){
 		long id = Long.parseLong(eventoId);

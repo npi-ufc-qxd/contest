@@ -37,6 +37,10 @@
         <div th:if="${arquivoInvalido}" id="error_area" class="row chip red white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}">
           <i class="material-icons">close</i>
         </div>
+        
+        <div th:if="${revisao_inexistente}" id="error_area" class="row chip red white-text" th:text="#{REVISAO_INEXISTENTE}">
+          <i class="material-icons">close</i>
+        </div>
       </div>
       
       <div class="col s12">
@@ -49,9 +53,7 @@
                 <div class="row">
                 <div class="col s4">
                 	<p><b>Autor(es):</b></p>
-	                <div th:each="participacao : ${trabalho.participacoes}">
-	                	<p th:text="${participacao.pessoa.nome}"></p>
-	                </div>
+                	<p th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}" class="collection-item" >Nome Autor</p>
                 </div>
                 
                 <div class="col s4">
@@ -59,7 +61,8 @@
                 </div>
                 
                 <div class="col s4">
-                	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(0).dataSubmissao,'dd/MM/yyyy')} "></span></p>
+                <p><b>Número total de submissões: </b><span th:text="${#lists.size(trabalho.submissoes)}"></span></p>
+                	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(#lists.size(trabalho.submissoes) - 1).dataSubmissao,'dd/MM/yyyy')} "></span></p>
                 </div>
                 </div>
                  
@@ -68,7 +71,7 @@
            	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
 	              <div class="card-action">
 	                <div class="row">
-	                  <div class="file-field input-field col m6 s6">
+	                  <div th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" class="file-field input-field col m6 s6">
 	                    <div class="btn right"><span>Escolher...</span>
 	                      <input type="file" name="file" class="multiple"/>
 	                    </div>
@@ -79,9 +82,10 @@
 	                  <div class="input-field col m6 s6">
 	                  	<small>Opções</small>
 	                  	<br/>
-	                    <a th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
+	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
 	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
-						<a th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
+				<a th:href="@{|/autor/revisao?trabalhoId=${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisao</a>
+				<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
 	              </div>
@@ -130,6 +134,7 @@
         	<p>Você não enviou trabalhos para esse evento</p>
         </div>
       </div>
+      <!-- 
             <div class="row col s12 center">
               <ul class="pagination">
                 <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
@@ -138,8 +143,98 @@
                 <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
               </ul>
             </div>
-
+ -->
     </div>
     <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //Inicialização dos elementos no JS
+        //Parallax BG
+        $('.parallax').parallax();
+        
+        //sideNav
+        $(".button-collapse").sideNav();
+        
+        //Tooltips
+        $('.tooltipped').tooltip({delay: 50});
+        
+        //select_initializer
+        $('select').material_select();
+        
+        //datepicker
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 15, // Creates a dropdown of 15 years to control year
+          //Persnonalizando nomes dos meses do ano
+          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+          //Persnonalizando nomes dos dias da semana
+          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+          today: 'Hoje',
+          clear: 'Limpar',
+          close: 'Fechar'
+        });
+        
+        //Trata as datas na tela org_editar_eventos 
+        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
+        var calendarioSubmissaoFinal = "#prazo_submissao_final";
+        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
+        var calendarioRevisaoFinal = "#prazo_revisao_final";
+        
+        function habilitarCalendario(calendario){
+          $(calendario).removeAttr( "disabled" );
+        }
+        
+        function desabilitarCalendario(calendario){
+          $(calendario).attr( "disabled", true );
+          $(calendario).pickadate("clear");
+        }
+        
+        function definirDataMinimaCalendario(calendario, dataMin){
+          var picker = getPicker(calendario);
+          picker.set("min", dataMin);
+        }
+        
+        function getPicker(idCalendario){
+          var $input = $(idCalendario).pickadate();
+          var picker = $input.pickadate("picker");
+          return picker;
+        }
+        
+        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
+          var picker = getPicker(idCalendarioInicial);
+          var dataAtual = picker.get();
+          var umDia = 1;
+          
+          var dataMinima = new Date(dataAtual);
+          dataMinima.setDate(dataMinima.getDate()+umDia);
+                
+          if (dataAtual.length == 0) {
+            desabilitarCalendario(idCalendarioFinal);
+          } else {
+            habilitarCalendario(idCalendarioFinal);       
+            
+            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
+          }
+        }
+        
+        $(calendarioSubmissaoInicial).on("change",function(){
+          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
+        });
+        
+        $(calendarioSubmissaoFinal).on("change",function(){
+          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
+        });
+        
+        $(calendarioRevisaoInicial).on("change",function(){
+          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
+        });
+        
+        //Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();
+        
+      });
+    </script>
   </body>
 </html>

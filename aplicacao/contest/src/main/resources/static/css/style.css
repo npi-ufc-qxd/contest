@@ -3,8 +3,16 @@ h1, h2, h3 {
   color:#37474f ;
 }
 
+.tabs .indicator {
+    background-color: #009688;
+}
+
 .page{
   min-height: 650px;
+}
+
+.card.small{
+	min-height: 400px;
 }
 
 .opcoes{

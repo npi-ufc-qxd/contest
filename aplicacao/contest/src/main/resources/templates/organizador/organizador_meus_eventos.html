@@ -25,8 +25,14 @@
 			</div>
 			
 			<div th:if="${particapacaoEventoSucesso != null}" id="success_area" class="row chip green white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${particapacaoEventoSucesso}">
-			<i class="material-icons">close</i>
+				<i class="material-icons">close</i>
 			</div>
+			
+			<div id="error_area" class="row chip red white-text" th:if="${periodoRevisaoError}">
+          		<span th:text="${periodoRevisaoError}"></span>
+          		<i class="material-icons">close</i>
+          	</div>
+			
         </div>
         <div class="row">
           <div class="input-field">
@@ -67,7 +73,7 @@
 								<em>Começa o período de submissão dos trabalhos</em>
 							</li>
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
-								<em>Terminou o periodo de submissão, hora de começar as Revisões</em>
+								<em>Terminou o periodo de submissão inicial, hora de começar as Revisões</em>
 							</li>
 				
 							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
@@ -81,11 +87,15 @@
 					</div>
 				 </section>
                 </div>
-                <div class="card-action"><a th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a></div>
+                <div class="card-action">
+                	<a th:if="${evento.isPeriodoRevisao()}" th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a>
+                    <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}" class="purple-text">Detalhes</a>
+                </div>
               </div>
             </div>
           </div>
         </div>
+<!--         
         <div class="row col s12 center">
         	<ul class="pagination">
             	<li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
@@ -94,6 +104,7 @@
              <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
             </ul>
         </div>
+-->       
       </div>
     </div>
     <div th:include="fragments/footer :: footer"></div>

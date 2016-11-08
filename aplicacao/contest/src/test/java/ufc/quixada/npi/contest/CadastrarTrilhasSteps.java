@@ -70,7 +70,9 @@ public class CadastrarTrilhasSteps {
 
 	@Quando("^o organizador cadastra uma trilha de submissão (.*)$")
 	public void cadastraSubmissao(String nomeTrilha) throws Throwable {
+		Trilha trilha = new Trilha();
 		trilha.setNome(nomeTrilha);
+		trilha.setId(3L);
 		
 		when(trilhaService.exists(trilha.getNome(), evento.getId())).thenReturn(false);
 		when(eventoService.existeEvento(evento.getId())).thenReturn(true);
