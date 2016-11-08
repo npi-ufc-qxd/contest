@@ -6,6 +6,10 @@ h1, h2, h3 {
 	line-height: 28px;
 }
 
+.tabs .indicator {
+    background-color: #009688;
+}
+
 .page{
   min-height: 650px;
 }
