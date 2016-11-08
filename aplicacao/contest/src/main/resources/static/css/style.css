@@ -3,6 +3,10 @@ h1, h2, h3 {
   color:#37474f ;
 }
 
+.card .card-content .card-title{
+	line-height: 28px;
+}
+
 .tabs .indicator {
     background-color: #009688;
 }

@@ -186,4 +186,14 @@ public class Pessoa implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+	
+	public int getNumeroTrabalhosRevisar(Evento evento){
+		int trabalhosRevisar = 0;
+		for(ParticipacaoTrabalho participacao: participacoesTrabalho){
+			if(participacao.getPapel() == Papel.REVISOR && participacao.getTrabalho().getEvento().equals(evento)){
+				trabalhosRevisar++;
+			}
+		}
+		return trabalhosRevisar;
+	}
 }

@@ -33,5 +33,5 @@ public interface PessoaRepository extends CrudRepository<Pessoa, Long>{
 			+ "(p.papelLdap <> ufc.quixada.npi.contest.model.PapelLdap$Tipo.DISCENTE)")	
 	public List<Pessoa> getPossiveisOrganizadoresDoEvento(@Param("idEvento")Long idEvento);
 	
-	public List<Pessoa> findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoId(Papel papel, Long id);
+	public List<Pessoa> findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoIdOrderByParticipacoesEventoPessoaNome(Papel papel, Long id);
 }
