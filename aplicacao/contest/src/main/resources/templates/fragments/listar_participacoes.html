@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+</head>
+<body>
+    <div th:fragment="listar(label, participantes)">
+		<p th:unless="${#lists.isEmpty(participantes)}"><b th:text="${label}"></b></p>
+		<blockquote>
+			<p th:each="participante : ${participantes}" th:text="${participante.nome}">Nome de participante</p>
+		</blockquote>
+	</div>
+	
+	<div th:fragment="listar-clean(label, participantes)">
+		<p th:unless="${#lists.isEmpty(participantes)}"><b th:text="${label}"></b></p>
+		<p th:each="participante : ${participantes}" th:text="${participante.nome}">Nome de participante</p>
+	</div>
+</body>
+</html>
+	
+	
+	
+	
+	

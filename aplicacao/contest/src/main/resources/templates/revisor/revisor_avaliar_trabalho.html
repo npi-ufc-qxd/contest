@@ -19,15 +19,9 @@
         </div>
         <div>
           <div class="col s12 card">
-            <div class="card-content"><span class="card-title" th:text="${trabalho.titulo}">Titulo do trabalho</span>
-              <p>Autores: </p>
-              <ul class="collection" th:if="${not #lists.isEmpty(autores)}">
-      			<li th:each="autor : ${autores}" th:text="${autor.nome}" class="collection-item" >Nome Autor</li>
-    		  </ul>
-              <p>Co-Autores: </p>
-              <ul class="collection" th:if="${not #lists.isEmpty(coAutores)}">
-      			<li th:each="coAutor : ${coAutores}" th:text="${coAutor.nome}" class="collection-item" >Nome Co-Autor</li>
-    		  </ul>
+            <div class="card-content">
+            	<span class="card-title" th:text="${trabalho.titulo}">Titulo do trabalho</span>
+            	<div th:include="fragments/listar_participacoes :: listar('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
             </div>
             <div class="card-action">
               <a id="baixar-trabalho" th:href="@{'/revisor/trabalho/' + ${trabalho.id}}" name="baixar-trabalho" class="btn waves-effect waves-light white-text">Fazer Download do Trabalho<i aria-hidden="true" class="fa fa-download left"></i></a>

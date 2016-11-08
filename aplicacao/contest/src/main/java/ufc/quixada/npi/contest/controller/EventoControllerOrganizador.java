@@ -50,14 +50,13 @@ import ufc.quixada.npi.contest.util.Constants;
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController{
 
-	private static final String EVENTO_QUE_PARTICIPO = "eventoQueParticipo";
+	
 	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
-	private static final String EVENTOS_ATIVOS = "eventosAtivos";
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
@@ -68,7 +67,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	
-
 	@Autowired
 	private PessoaService pessoaService;
 	
@@ -124,8 +122,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
-		model.addAttribute("qtdTrabalhos", trabalhoService.buscarQtdTrabalhosPorEvento(eventoId));
+		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
+		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
+		
+		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
+		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
+		
+		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
+		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
+		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
+		
+		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 	
@@ -183,19 +192,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
-		boolean existeEventos = true;
+		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
+		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
+				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
+				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		
-		for(Evento e : eventosQueReviso){
-			eventos.remove(e);
+		List<Long> eventosComoRevisor = new ArrayList<>();
+		List<Long> eventosComoOrganizador = new ArrayList<>();
+		
+		for(ParticipacaoEvento participacaoEvento : participacoesComoRevisor){
+			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
 		}
-		if(eventos.isEmpty() && eventosQueReviso.isEmpty())
-			existeEventos = false;
 		
-		model.addAttribute("existeEventos", existeEventos);
-		model.addAttribute(EVENTOS_ATIVOS, eventos);
-		model.addAttribute(EVENTO_QUE_PARTICIPO, eventosQueReviso);
+		for(ParticipacaoEvento participacaoEvento : participacoesComoOrganizador){
+			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
+		}
+		
+		model.addAttribute("eventosAtivos", eventosAtivos);
+		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
+		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 

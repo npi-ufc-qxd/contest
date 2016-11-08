@@ -2,6 +2,7 @@
 <html>
   <head>
    	<div th:include="fragments/head :: head"></div>
+	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -29,14 +30,8 @@
         <div class="col s12 m7" th:each="evento,iter : ${eventos}">
           <div class="card horizontal">
             <div class="card-stacked">
-              <div class="card-content">
-                <h5 th:text="${evento.nome}"></h5>
-                <p th:text="'Descrição: ' + ${evento.descricao}"></p>
-                <p th:text="'Início da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-                <p th:text="'Início da revisão: ' + ${#dates.format(evento.prazoRevisaoInicial,'dd/MM/yyyy')}"></p>                
-            	<p th:text="'Fim da revisão: ' + ${#dates.format(evento.prazoRevisaoFinal,'dd/MM/yyyy')}"></p>
-                <p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>                
-                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
+              <div th:include="fragments/evento_timeline :: evento-timeline(${evento})"></div>
+              <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
                   <a th:if="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
                	  <a th:unless="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" class="btn grey white-text">Fora do Prazo de Envio de Trabalho</a>
                	  
@@ -64,5 +59,7 @@
             </div>
     </div>
    	<div th:include="fragments/footer :: footer"></div>
+   	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
   </body>
 </html>
