@@ -22,9 +22,9 @@
 			<a href="#" onclick="removerTodos()">Não selecionar todos</a>
 			<div class="col m12 s12">
 			    <br/>
-				<form th:action="@{/eventoOrganizador/gerarCertificadosOrganizadores}" method="POST">
-					<div th:each="pessoa,count : ${organizadores}">
-	      				<input type="checkbox" th:id="${count.index}"  name="organizadoresIds" th:value="${pessoa.id}"/>
+				<form th:action="@{/eventoOrganizador/gerarCertificadosRevisores}" method="POST">
+					<div th:each="pessoa,count : ${revisores}">
+	      				<input type="checkbox" th:id="${count.index}"  name="revisoresIds" th:value="${pessoa.id}"/>
 	      				<label class="black-text" th:for="${count.index}" th:text="${pessoa.nome}" ></label>
 					</div>
 					<br/>

@@ -2,39 +2,37 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CertificadoEUTrablahos" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3288b535-4ad9-4539-98f9-4bf171914412">
 	<property name="ireport.zoom" value="0.6209213230591552"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="59"/>
+	<property name="ireport.y" value="0"/>
 	<field name="titulo" class="java.lang.String"/>
-	<field name="getCoautoresInString" class="java.lang.String"/>
+	<field name="coautoresInString" class="java.lang.String"/>
 	<background>
 		<band height="555" splitType="Stretch">
 			<image>
 				<reportElement x="12" y="0" width="802" height="555" uuid="f0d49160-1f4e-40cb-9a43-a5c6a7ea75a2"/>
-				<imageExpression><![CDATA["/home/lucas.vieira/Downloads/_Certificados EU 2016 - Encontros Universitários 2016-01.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["./static/img/CertificadosEU16-AUTOR.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</background>
-	<title>
-		<band height="238" splitType="Stretch">
+	<detail>
+		<band height="258" splitType="Stretch">
 			<textField>
-				<reportElement x="325" y="209" width="168" height="29" uuid="fb8030d3-4cb3-4c6c-9d8f-07eb52ebc428"/>
-				<textElement>
-					<font size="16"/>
+				<reportElement x="172" y="188" width="459" height="66" forecolor="#2F608C" uuid="fb8030d3-4cb3-4c6c-9d8f-07eb52ebc428"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
 			</textField>
 		</band>
-	</title>
-	<detail>
-		<band height="125" splitType="Stretch">
+		<band height="166">
 			<textField>
-				<reportElement x="236" y="10" width="364" height="23" uuid="f5b8f7c5-9710-4b7a-b765-1c5bb4fd7e63"/>
-				<textElement>
-					<font size="16"/>
+				<reportElement x="84" y="0" width="640" height="81" forecolor="#2F608C" uuid="f5b8f7c5-9710-4b7a-b765-1c5bb4fd7e63"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="15"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{coautoresInString}]]></textFieldExpression>
 			</textField>
 			<break>
-				<reportElement x="0" y="33" width="100" height="1" uuid="993777f6-686d-42d4-bd64-c1246357f327"/>
+				<reportElement x="0" y="81" width="100" height="1" uuid="993777f6-686d-42d4-bd64-c1246357f327"/>
 			</break>
 		</band>
 	</detail>

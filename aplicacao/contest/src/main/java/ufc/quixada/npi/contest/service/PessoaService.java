@@ -78,6 +78,10 @@ public class PessoaService {
 		return revisores;
 	}
 	
+	public List<Pessoa> getRevisoresEvento(Long idEvento){
+		return pessoaRepository.findPessoaByParticipacoesEventoEventoIdAndParticipacoesEventoPapel(idEvento, Papel.REVISOR);
+	}
+	
 	public List<Pessoa> getRevisoresDoEventoQueNaoParticipaDoTrabalho(Long idEvento){
 		return pessoaRepository.findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoIdOrderByParticipacoesEventoPessoaNome(Papel.REVISOR, idEvento);
 	}
