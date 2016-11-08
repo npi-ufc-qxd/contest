@@ -13,4 +13,6 @@ import ufc.quixada.npi.contest.model.Pessoa;
 @Transactional
 public interface NotificacaoRepository extends CrudRepository<Notificacao, Long>{
 	public List<Notificacao> findByPessoa(Pessoa pessoa);
+	public Notificacao findById(Long id);
+	public List<Notificacao> findNotificacaoByNovaAndPessoa(boolean nova, Pessoa pessoa);
 }

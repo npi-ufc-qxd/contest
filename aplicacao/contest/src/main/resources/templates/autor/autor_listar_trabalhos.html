@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <!-- CSS-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+   <div th:include="fragments/head :: head"></div>
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -43,6 +35,10 @@
         </div>
         
         <div th:if="${arquivoInvalido}" id="error_area" class="row chip red white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${revisao_inexistente}" id="error_area" class="row chip red white-text" th:text="#{REVISAO_INEXISTENTE}">
           <i class="material-icons">close</i>
         </div>
       </div>
@@ -87,8 +83,9 @@
 	                  	<small>Opções</small>
 	                  	<br/>
 	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
-	                    <a th:href="@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
-						<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
+	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
+				<a th:href="@{|/autor/revisao?trabalhoId=${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisao</a>
+				<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
 	              </div>
