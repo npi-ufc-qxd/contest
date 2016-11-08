@@ -18,13 +18,13 @@
 		<div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
     	<h2>Gerar Certificados Dos  Trabalhos</h2>
 		<div class="row">
-			<a href="#" onclick="selecionarTodos()">Teste selecionar todos</a>
-			<a href="#" onclick="removerTodos()">remover todos</a>
+			<a href="#" onclick="selecionarTodos()">Selecionar todos</a>
+			<a href="#" onclick="removerTodos()">Não selecionar todos</a>
 			<div class="col m12 s12">
 				<form th:action="@{/eventoOrganizador/gerarCertificadosTrabalho}" method="POST">
 					<div th:each="trabalho,count : ${trabalhos}">
 						<p>
-		      				<input class="checkbox"  type="checkbox" th:id="${count.index}" name="trabalhosIds" th:value="${trabalho.id}"/>
+		      				<input type="checkbox" th:id="${count.index}"  name="trabalhosIds" th:value="${trabalho.id}"/>
 		      				<label class="black-text" th:for="${count.index}" th:text="${trabalho.titulo}" ></label>
 		    			</p>
 					</div>
@@ -35,16 +35,6 @@
 		</div>
 	</div>
    <div th:include="fragments/footer :: footer"></div>
-   <script>
-	   $(document).ready(function(){
-		   selecionarTodos = function (){
-			   $(".checkbox").attr("checked", "checked");
-		   }
-		   
-		   removerTodos = function(){
-			   $(".checkbox").removeAttr("checked");
-		   }
-	   });
-   </script>
+   <script  type="text/javascript" th:src="@{/js/selecionar_trabalhos_pdf.js}"></script>
   </body>
 </html>
