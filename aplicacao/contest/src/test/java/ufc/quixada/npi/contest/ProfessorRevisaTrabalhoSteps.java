@@ -1,8 +1,8 @@
 package ufc.quixada.npi.contest;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -155,6 +155,13 @@ public class ProfessorRevisaTrabalhoSteps {
 						+ "'relevancia':'Especialista','comentarios':'Bom Trabalho',"
 						+ "'merito':'OTIMO','avaliacao_final':'APROVADO'}");
 		
+		
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("92995454310");
+		SecurityContextHolder.setContext(context);
+		
+		when(pessoaService.get(1L)).thenReturn(revisor);
+		
 		revisao = new Revisao();
 		revisao.setConteudo("conteudo");
 		revisao.setObservacoes(comentarios_organizacao);
@@ -295,7 +302,7 @@ public class ProfessorRevisaTrabalhoSteps {
 	
 	@Entao("^A revisão não é registrada$")
 	public void revisaoNaoRegistrada(){
-		verify(revisaoService, never()).addOrUpdate(revisao);;
+		verify(revisaoService, never()).addOrUpdate(revisao);
 	}
 	
 	@E("^Um erro no sistema deve ser mostrado$")

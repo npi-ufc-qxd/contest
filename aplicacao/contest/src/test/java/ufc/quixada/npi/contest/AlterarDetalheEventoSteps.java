@@ -8,12 +8,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,6 +35,7 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
@@ -36,6 +43,8 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.validator.EventoValidator;
 
 public class AlterarDetalheEventoSteps {
@@ -60,6 +69,10 @@ public class AlterarDetalheEventoSteps {
 	@Mock
 	private RevisaoService revisaoService;
 	@Mock
+	private TrilhaService trilhaService;
+	@Mock
+	private TrabalhoService trabalhoService;
+	@Mock
 	private SubmissaoService submissaoService;
 	
 	private static final String TEMPLATE_EDIT_EVENTO_ORG = "organizador/org_editar_eventos";
@@ -71,7 +84,9 @@ public class AlterarDetalheEventoSteps {
 	private ResultActions action;
 	private Evento evento;
 	private ParticipacaoEvento participacao;
-	
+	private List<Trilha> trilhas;
+	private List<Pessoa> pessoas;
+	private Pessoa org;
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -79,30 +94,46 @@ public class AlterarDetalheEventoSteps {
 		evento = new Evento();
 		participacao = new ParticipacaoEvento();
 		Pessoa pessoa = new Pessoa();
-		
+		trilhas = new ArrayList<>();
+		pessoas = new ArrayList<>();
+		org = new Pessoa();
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setNome("teste");
 		evento.setDescricao("descricao");
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		evento.setId(9L);
-		
+		List<ParticipacaoEvento> participacoes = new ArrayList<>();
 		pessoa.setId(2L);
 		
 		participacao.setId(1L);
 		participacao.setPessoa(pessoa);
+		participacao.setEvento(evento);
+		
+		participacoes.add(participacao);
+		
+		evento.setParticipacoes(participacoes);
 		
 		eventoValidator.toString();//enganando o codacy
 		pessoaService.toString();//enganando o codacy
-		
 	}
 	
 	@Dado("^que existe um evento com submissões e revisões realizadas$")
 	public void existeEventoComSubmissoesERevisoes() throws Throwable {
-		when(submissaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(true);
-		when(revisaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(true);
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("92995454310");
+		SecurityContextHolder.setContext(context);
+		
+		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(org);
+		
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(participacaoEventoService.findByEventoId(Mockito.anyLong())).thenReturn(participacao);
-
+		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
+		when(trilhaService.buscarTrilhas(evento.getId())).thenReturn(trilhas);
+		when(pessoaService.getPossiveisOrganizadoresDoEvento(evento.getId())).thenReturn(pessoas);
+		when(trilhaService.buscarQtdTrilhasPorEvento(evento.getId())).thenReturn(12);
+		when(trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento)).thenReturn(10);
+		
 		action = mockMvc.perform(
 				get(PAGINA_EDITAR_EVENTO_GET, Long.valueOf(evento.getId())))
 				.andExpect(view().name(TEMPLATE_EDIT_EVENTO_ORG));
