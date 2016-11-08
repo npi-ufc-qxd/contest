@@ -24,16 +24,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ufc.quixada.npi.contest.model.Email;
+import ufc.quixada.npi.contest.model.Email.EmailBuilder;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Notificacao;
 import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.NotificacaoService;
@@ -50,7 +54,9 @@ import ufc.quixada.npi.contest.util.Constants;
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController{
 
-	
+	private static final String ERRO_ENVIO_EMAIL = "ERRO_ENVIO_EMAIL";
+	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	private static final String EVENTO_ATIVO = "eventoAtivo";
@@ -66,7 +72,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String PARTICIPAR_EVENTO_INATIVO = "PARTICIPAR_EVENTO_INATIVO";
 	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
+	private static final String CONVIDAR_EVENTO_INATIVO = "CONVIDAR_EVENTO_INATIVO";
 	
+
 	@Autowired
 	private PessoaService pessoaService;
 	
@@ -204,7 +212,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		for(ParticipacaoEvento participacaoEvento : participacoesComoRevisor){
 			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
 		}
-		
+	
 		for(ParticipacaoEvento participacaoEvento : participacoesComoOrganizador){
 			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
 		}
@@ -312,7 +320,45 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
 		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
+	
+	@RequestMapping(value = "/convidar/{id}", method = RequestMethod.GET)
+	public String convidarPessoasPorEmail(@PathVariable String id, Model model,  RedirectAttributes redirect) {
+		Long eventoId = Long.parseLong(id);
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		Pessoa professorLogado = getOrganizadorLogado();
+		
+		if(EstadoEvento.ATIVO.equals(evento.getEstado()) && PapelLdap.Tipo.DOCENTE.equals(professorLogado.getPapelLdap()) ){
+			model.addAttribute("eventoId", eventoId);			
+			return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG;
+			
+		}else{
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
+			return "redirect:/eventoOrganizador/evento" + eventoId;
+		}
+    }
+	
+	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
+	public String convidarPorEmail(@RequestParam("nomeConvidado") String nome,@RequestParam("email") String email,
+			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, 
+			Model model, RedirectAttributes redirect) {
+			Evento evento = eventoService.buscarEventoPorId(eventoId);
 
+		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
+			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
+			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " +evento.getNome() + " como " + funcao;
+			
+			EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo);
+			Email mail = builder.build();
+			EnviarEmailService serviceEmail = new EnviarEmailService(mail);
+			if(!serviceEmail.enviarEmail()){
+				redirect.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+			}
+		}else{
+			redirect.addAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO)); 
+		}
+		return "redirect:/eventoOrganizador/evento/" + eventoId;	
+	}
+	
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){
 		long id = Long.parseLong(eventoId);
