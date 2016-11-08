@@ -412,8 +412,13 @@ public class AutorController {
 		participacaoAutor.setPapel(Papel.AUTOR);
 		participacaoAutor.setTrabalho(trabalho);
 		participacaoAutor.setPessoa(getAutorLogado());
-		
-		List<ParticipacaoTrabalho> participacaoTrabalhos = trabalho.getParticipacoes();
+
+		List<ParticipacaoTrabalho> participacaoTrabalhos = null;
+		if(trabalho.getParticipacoes() != null){
+			participacaoTrabalhos = trabalho.getParticipacoes();
+		} else {
+			participacaoTrabalhos = new ArrayList<ParticipacaoTrabalho>();
+		}
 		participacaoTrabalhos.add(participacaoAutor);
 		trabalho.setParticipacoes(participacaoTrabalhos);
 
@@ -429,14 +434,16 @@ public class AutorController {
 	}
 	
 	public void definePapelParticipantes(Trabalho trabalho){
-		List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
-		for(int i = 0; i < lista.size(); i++){
-			ParticipacaoTrabalho p = lista.get(i);
-			p.setTrabalho(trabalho);
-			lista.get(i).setPapel(Papel.COAUTOR);
-			Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
-			if(autor != null){
-				p.setPessoa(autor);
+		if(trabalho.getParticipacoes() != null){
+			List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
+			for(int i = 0; i < lista.size(); i++){
+				ParticipacaoTrabalho p = lista.get(i);
+				p.setTrabalho(trabalho);
+				lista.get(i).setPapel(Papel.COAUTOR);
+				Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
+				if(autor != null){
+					p.setPessoa(autor);
+				}
 			}
 		}
 	}
