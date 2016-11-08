@@ -421,15 +421,27 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
-	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model) throws JRException{
+	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model){
+		Long id = Long.parseLong(idEvento);
+		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(id);
+		model.addAttribute("organizadores", listaOrganizadores);
+		return Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES;
+	}
+	
+	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
+	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model) throws JRException{
 		
-		
-		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(Long.parseLong(idEvento));
-		
-		if(listaOrganizadores != null){
-			jrDataSource  = new JRBeanCollectionDataSource(listaOrganizadores);
-			model.addAttribute("datasource", jrDataSource);
-			model.addAttribute("format", "pdf");
+		if(organizadoresIds != null){
+			List<Pessoa> pessoas = new ArrayList<>();
+			for(Long id : organizadoresIds){
+				pessoas.add(pessoaService.get(id));
+			}
+			
+			if(pessoas != null){
+				jrDataSource  = new JRBeanCollectionDataSource(pessoas);
+				model.addAttribute("datasource", jrDataSource);
+				model.addAttribute("format", "pdf");
+			}
 		}
 		
 		return "PDF_ORGANIZADOR";

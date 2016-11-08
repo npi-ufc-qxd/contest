@@ -21,11 +21,11 @@
 			<a href="#" onclick="selecionarTodos()">Selecionar todos</a>
 			<a href="#" onclick="removerTodos()">Não selecionar todos</a>
 			<div class="col m12 s12">
-				<br/>
-				<form th:action="@{/eventoOrganizador/gerarCertificadosTrabalho}" method="POST">
-					<div th:each="trabalho,count : ${trabalhos}">
-	      				<input type="checkbox" th:id="${count.index}"  name="trabalhosIds" th:value="${trabalho.id}"/>
-	      				<label class="black-text" th:for="${count.index}" th:text="${trabalho.titulo}" ></label>
+			    <br/>
+				<form th:action="@{/eventoOrganizador/gerarCertificadosOrganizadores}" method="POST">
+					<div th:each="pessoa,count : ${pessoas}">
+	      				<input type="checkbox" th:id="${count.index}"  name="organizadoresIds" th:value="${pessoa.id}"/>
+	      				<label class="black-text" th:for="${count.index}" th:text="${pessoa.nome}" ></label>
 					</div>
 					<br/>
 					<button type="submit" class="waves-effect waves-light btn white-text">Gerar PDF</button>		

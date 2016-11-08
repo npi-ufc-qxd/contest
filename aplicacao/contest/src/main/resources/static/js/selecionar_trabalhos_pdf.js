@@ -1,9 +1,9 @@
 $(document).ready(function(){
 	selecionarTodos = function (){
-		$("[name=trabalhosIds]").prop("checked", true);
+		$("[type=checkbox]").prop("checked", true);
 	}
    
 	removerTodos = function(){
-		$("[name=trabalhosIds]").prop("checked",false);
+		$("[type=checkbox]").prop("checked",false);
 	}
 });
