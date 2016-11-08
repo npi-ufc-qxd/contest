@@ -3,9 +3,7 @@ package ufc.quixada.npi.contest.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.validation.Valid;
@@ -48,7 +46,6 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
-import ufc.quixada.npi.contest.util.RevisaoJSON;
 
 @Controller
 @RequestMapping("/eventoOrganizador")
