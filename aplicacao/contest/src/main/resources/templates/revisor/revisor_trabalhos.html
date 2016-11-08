@@ -38,8 +38,8 @@
 				<div class="row" th:case="true">
 								<h4 class="card-title">Nenhum artigo para revisar até o momento.</h4>
 				</div>
-				<div class="row" th:case="false" th:each="trabalho : ${trabalhos}">
-					<div class="card horizontal">
+				<div class="row" th:case="false" >
+					<div class="card horizontal" th:each="trabalho : ${trabalhos}">
 						<div class="card-stacked">
 							<div class="card-content">
 								<span class="card-title" th:text="${trabalho.titulo}"></span>

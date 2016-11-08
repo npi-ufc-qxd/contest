@@ -72,6 +72,7 @@ public class AutorController {
 	private static final String PARTICIPAR_EVENTO_INATIVO_ERROR = "participarEventoInativoError";
 	private static final String ERRO_TRABALHO_EVENTO = "ERRO_TRABALHO_EVENTO";
 	private static final String ERRO_REENVIAR = "ERRO_REENVIAR";
+	private static final String AUTOR_SEM_PERMISSAO = "AUTOR_SEM_PERMISSAO";
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -185,10 +186,8 @@ public class AutorController {
 			
 			if(eventoService.existeEvento(idEvento)){
 				List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
-				Pessoa p = getAutorLogado();
 				Trabalho trabalho = new Trabalho();
 				ParticipacaoTrabalho part = new ParticipacaoTrabalho();
-				part.setPessoa(p);
 				List<ParticipacaoTrabalho> partipacoes = new ArrayList<>();
 				partipacoes.add(part);
 				trabalho.setParticipacoes(partipacoes);
@@ -196,6 +195,7 @@ public class AutorController {
 				model.addAttribute("trabalho", trabalho);
 				model.addAttribute("eventoId", id);
 				model.addAttribute("trilhas", trilhas);
+				model.addAttribute("autor", getAutorLogado());
 				return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;	
 			}
 			return "redirect:/autor/meusTrabalhos";
@@ -229,9 +229,10 @@ public class AutorController {
 		
 		trabalhoValidator.validate(trabalho, result);
 		if(result.hasErrors()){
-			List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(trilhaId));
+			List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(eventoId));
 			model.addAttribute("eventoId", eventoId);
 			model.addAttribute("trilhas", trilhas);
+			model.addAttribute("autor", getAutorLogado());
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
@@ -335,11 +336,15 @@ public class AutorController {
 				
 				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
 					Trabalho t = trabalhoService.getTrabalhoById(idTrabalho);
-					storageService.deleteArquivo(t.getPath());
-					trabalhoService.remover(Long.parseLong(trabalhoId));
-					
-					redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
-					return "redirect:/autor/listarTrabalhos/"+eventoId;
+					Pessoa autor = getAutorLogado();
+					if(autor.equals(t.getAutor())){
+						storageService.deleteArquivo(t.getPath());
+						trabalhoService.remover(Long.parseLong(trabalhoId));					
+						redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						return "redirect:/autor/listarTrabalhos/"+eventoId;
+					} 
+					model.addAttribute("erroExcluir", messageService.getMessage(AUTOR_SEM_PERMISSAO));
+					return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 				}else{
 					redirect.addFlashAttribute("erroExcluir", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
 					return "redirect:/autor/listarTrabalhos/"+evento.getId();
@@ -377,6 +382,20 @@ public class AutorController {
 	public String adicionarTrabalho(Trabalho trabalho, Evento evento, Submissao submissao, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);
 		
+		ParticipacaoTrabalho participacaoAutor = new ParticipacaoTrabalho();
+		participacaoAutor.setPapel(Papel.AUTOR);
+		participacaoAutor.setTrabalho(trabalho);
+		participacaoAutor.setPessoa(getAutorLogado());
+
+		List<ParticipacaoTrabalho> participacaoTrabalhos = null;
+		if(trabalho.getParticipacoes() != null){
+			participacaoTrabalhos = trabalho.getParticipacoes();
+		} else {
+			participacaoTrabalhos = new ArrayList<ParticipacaoTrabalho>();
+		}
+		participacaoTrabalhos.add(participacaoAutor);
+		trabalho.setParticipacoes(participacaoTrabalhos);
+
 		submissao.setTrabalho(trabalho);
 
 		String nomeDoArquivo = new StringBuilder("CONT-").append(evento.getId()).toString();		
@@ -389,18 +408,16 @@ public class AutorController {
 	}
 	
 	public void definePapelParticipantes(Trabalho trabalho){
-		List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
-		for(int i = 0; i < lista.size(); i++){
-			ParticipacaoTrabalho p = lista.get(i);
-			p.setTrabalho(trabalho);
-			if(i == 0){
-				lista.get(i).setPapel(Papel.AUTOR);
-			}else{
+		if(trabalho.getParticipacoes() != null){
+			List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
+			for(int i = 0; i < lista.size(); i++){
+				ParticipacaoTrabalho p = lista.get(i);
+				p.setTrabalho(trabalho);
 				lista.get(i).setPapel(Papel.COAUTOR);
-			}
-			Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
-			if(autor != null){
-				p.setPessoa(autor);
+				Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
+				if(autor != null){
+					p.setPessoa(autor);
+				}
 			}
 		}
 	}

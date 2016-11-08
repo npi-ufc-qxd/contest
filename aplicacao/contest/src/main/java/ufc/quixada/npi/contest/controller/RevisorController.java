@@ -1,13 +1,7 @@
 package ufc.quixada.npi.contest.controller;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.AvaliacaoTrabalho;
@@ -75,12 +68,16 @@ public class RevisorController {
 	private static final String PARTICIPAR_EVENTO_INATIVO = "PARTICIPAR_EVENTO_INATIVO";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	private static final String CRITERIOS_REVISAO_VAZIO = "CRITERIOS_REVISAO_VAZIO";
-	private static final String TRABALHO_NAO_EXISTE = "TRABALHO_NAO_EXISTE";
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
+	private static final String FORA_PERIODO_REVISAO = "FORA_PERIODO_REVISAO";
 
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(!evento.isPeriodoRevisao()){
+			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+			return "redirect:/eventoOrganizador";
+		}
 		
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
@@ -96,15 +93,20 @@ public class RevisorController {
 	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
 			@PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-		if(trabalho == null || !eventoService.existeEvento(Long.valueOf(idEvento))){
+		
+		if(evento!=null && trabalho!=null){
+			if(!evento.isPeriodoRevisao()){
+				redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+				return "redirect:/eventoOrganizador";
+			}
+		}else{
 			return "redirect:/error";
 		}
 		
 		Pessoa revisor = getRevisorLogado();
 		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
-			
-			Evento evento = eventoService.buscarEventoPorId(idEvento);
 			
 			model.addAttribute("nomeEvento", evento.getNome());
 			model.addAttribute("idEvento", evento.getId());
@@ -136,8 +138,15 @@ public class RevisorController {
 			HttpSession session) {
 		
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-		if(trabalho == null || !eventoService.existeEvento(Long.valueOf(idEvento))){
+		Evento evento = eventoService.buscarEventoPorId(Long.valueOf(idEvento));
+		
+		if(trabalho == null){
 			return "redirect:/error";
+		}else if(evento == null){
+			return "redirect:/error";
+		}else if(!evento.isPeriodoRevisao()){
+			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+			return "redirect:/eventoOrganizador";
 		}
 		
 		Pessoa revisor = getRevisorLogado();
@@ -186,39 +195,6 @@ public class RevisorController {
 		}
 		return REVISOR_SEM_PERMISSAO;
 	}
- 
-	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
-	public String validaTrabalho(HttpSession session, @PathVariable("trabalhoID") String idTrabalho, 
-			HttpServletResponse response,
-			RedirectAttributes redirect) throws IOException {
-		
-		if (trabalhoService.existeTrabalho(Long.valueOf(idTrabalho))) {
-			Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-			baixarTrabalho(response, trabalho);
-			
-			session.setAttribute("ID_TRABALHO_REVISOR", idTrabalho);
-			return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") 
-										+ "/" + idTrabalho + "/revisar";
-		}
-		
-		
-		redirect.addFlashAttribute("trabalhoNaoExisteError", messageService.getMessage(TRABALHO_NAO_EXISTE));
-		return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") + "/" 
-									+ session.getAttribute("ID_TRABALHO_REVISOR") 
-									+ "/revisar";
-	}
-
-	@ResponseBody
-	public void baixarTrabalho(HttpServletResponse response, Trabalho trabalho) throws IOException {
-		String titulo = trabalho.getTitulo();
-		titulo = titulo.replaceAll("\\s", "_");
-		String src = trabalho.getPath();
-		response.setContentType("application/pdf");
-		response.setHeader("Content-Disposition", "attachment; filename = " + titulo + ".pdf");
-		InputStream is = new FileInputStream(src);
-		IOUtils.copy(is, response.getOutputStream());
-		response.flushBuffer();
-	}
 
 	@RequestMapping(value = "/participarevento", method = RequestMethod.POST)
 	public String professorParticipa(@RequestParam String idEvento, Model model, RedirectAttributes redirect) {
@@ -251,13 +227,11 @@ public class RevisorController {
 
 		return "redirect:/revisor";
 	}
-
+	
 	public Pessoa getRevisorLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String cpf = auth.getName();
 		Pessoa autorLogado = pessoaService.getByCpf(cpf);
 		return autorLogado;
 	}
-
-	
 }
