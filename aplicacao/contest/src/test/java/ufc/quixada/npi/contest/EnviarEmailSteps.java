@@ -32,7 +32,6 @@ import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
-import ufc.quixada.npi.contest.service.PessoaService;
 
 public class EnviarEmailSteps {
 	
@@ -44,8 +43,7 @@ public class EnviarEmailSteps {
 	private EnviarEmailService emailService;
 	@Mock
 	private MessageService messageService;
-	@Mock
-	private PessoaService pessoaService;
+	
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
