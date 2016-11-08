@@ -218,11 +218,10 @@
           
 		  dataMinima.setDate(dataMinima.getDate()+umDia);
           
-          if (dataAtual.length == 0) {
+          if (dataAtual.length == 1) {
             desabilitarCalendario(idCalendarioFinal);
           } else {
             habilitarCalendario(idCalendarioFinal);       
-            
             definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
           }
         }
