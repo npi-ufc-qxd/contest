@@ -39,6 +39,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
@@ -106,6 +107,9 @@ public class AutorController {
 
 	@Autowired
 	private StorageService storageService;
+	
+	@Autowired
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
 	@RequestMapping
 	public String index(Model model){
@@ -328,25 +332,40 @@ public class AutorController {
 		}
 	}
    
-	@RequestMapping(value="/file", method=RequestMethod.GET, produces = "application/pdf")
-	public void downloadPDFFile(@RequestParam("path") String path,  HttpServletResponse response)
+	@RequestMapping(value="/file/{trabalho}", method=RequestMethod.GET, produces = "application/pdf")
+	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho,  HttpServletResponse response)
 	        throws IOException {
-
-            try{
-            	Path file = Paths.get(path);
-                response.setContentType("application/pdf");
-                response.addHeader("Content-Disposition", "attachment; filename="+path);
-                Files.copy(file, response.getOutputStream());
-                response.getOutputStream().flush();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-                response.reset();
-                response.sendRedirect("/error/404");
-                response.addHeader("Status", "404 Not Found");
-                response.getOutputStream().flush();
-            }
-
+			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+			if(trabalho==null){
+				response.reset();
+				response.sendRedirect("/error/500");
+				response.getOutputStream().flush();
+			}else{
+				Pessoa autor = getAutorLogado();
+				Long idEvento = trabalho.getEvento().getId();
+				if(participacaoEventoService.isOrganizadorDoEvento(autor, idEvento) ||
+						participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, autor.getId())){
+					try{
+		            	String path = trabalho.getPath();
+		            	Path file = Paths.get(path);
+		                response.setContentType("application/pdf");
+		                response.addHeader("Content-Disposition", "attachment; filename="+path);
+		                Files.copy(file, response.getOutputStream());
+		                response.getOutputStream().flush();
+		            }
+		            catch (IOException e) {
+		                e.printStackTrace();
+		                response.reset();
+		                response.sendRedirect("/error/404");
+		                response.addHeader("Status", "404 Not Found");
+		                response.getOutputStream().flush();
+		            }
+				}else{
+					response.reset();
+					response.sendRedirect("/error/500");
+					response.getOutputStream().flush();
+				}
+			}
 	}
 	
 	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)
