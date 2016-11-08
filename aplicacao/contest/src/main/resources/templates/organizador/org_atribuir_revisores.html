@@ -39,7 +39,7 @@
 	      					<input id="nome_do_revisor" type="text" oninput="buscar(this,'nome-revisor')" />
 	                		<label for="nome_do_revisor">Nome do Revisor</label>
 	                		<div class="listaRevisores collection">
-	                			<a th:each="revisor : ${revisores}" th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item nome-revisor" th:text="${revisor.nome}"> 
+	                			<a th:each="revisor : ${revisores}" th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item nome-revisor" th:text="${revisor.nome}" style="cursor:pointer;"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                		</div>
@@ -47,7 +47,7 @@
 	      				<div class="col m6 s6">
                 			<h5 id="listaEscolhidosTitulo">Revisores Selecionados</h5>
                 			<div class="listaEscolhidos collection" >
-                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|esc_modalRevisor${count.index}_${revisor.pessoa.id}|" th:onclick="'remover(this)'" class="collection-item" th:text="${revisor.pessoa.nome}"> 
+                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|esc_modalRevisor${count.index}_${revisor.pessoa.id}|" th:onclick="'remover(this)'" class="collection-item" th:text="${revisor.pessoa.nome}" style="cursor:pointer;"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                	    </div>
@@ -74,17 +74,27 @@
 			var filtro = e;
 			var componente = componente;
 			
-			var nomeFiltro = filtro.value.toLowerCase();
+			var nomeFiltro = removerAcentos(filtro.value.toLowerCase());
 			var elemento = document.getElementsByClassName(componente);
 			 
 			 for (var i = elemento.length - 1; i >=0; i--){
-				var conteudoBusca = elemento[i].innerHTML;
+				var conteudoBusca = removerAcentos(elemento[i].innerHTML);
+				console.log(conteudoBusca);
 				var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
 				elemento[i].style.display = corresponde ? '' : 'none';
 		    }  
 			
 		};
 	});
+	
+	/**
+	 * Remove acentos de strings
+	 * @param  {String} string acentuada
+	 * @return {String} string sem acento
+	 */
+	var map={"â":"a","Â":"A","à":"a","À":"A","á":"a","Á":"A","ã":"a","Ã":"A","ê":"e","Ê":"E","è":"e","È":"E","é":"e","É":"E","î":"i","Î":"I","ì":"i","Ì":"I","í":"i","Í":"I","õ":"o","Õ":"O","ô":"o","Ô":"O","ò":"o","Ò":"O","ó":"o","Ó":"O","ü":"u","Ü":"U","û":"u","Û":"U","ú":"u","Ú":"U","ù":"u","Ù":"U","ç":"c","Ç":"C"};
+
+	function removerAcentos(s){ return s.replace(/[\W\[\] ]/g,function(a){return map[a]||a}) };
 	</script>
   </body>
 </html>
