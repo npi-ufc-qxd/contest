@@ -84,8 +84,8 @@
 	                  	<br/>
 	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
 	                    <a th:href= "@{|/autor/file?path=${trabalho.path}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
-				<a th:href="@{|/autor/revisao?trabalhoId=${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisao</a>
-				<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
+						<a th:href="@{|/autor/revisao?trabalhoId=${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisao</a>
+						<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
 	              </div>
