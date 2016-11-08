@@ -36,10 +36,10 @@
 	      			<div class="row">
 	      				<div class="input-field col m6 s6">
 	      					<i class="material-icons large prefix">search</i>
-	      					<input id="nome_do_revisor" type="text" />
+	      					<input id="nome_do_revisor" type="text" oninput="buscar(this,'nome-revisor')" />
 	                		<label for="nome_do_revisor">Nome do Revisor</label>
 	                		<div class="listaRevisores collection">
-	                			<a th:each="revisor : ${revisores}" th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item" th:text="${revisor.nome}"> 
+	                			<a th:each="revisor : ${revisores}" th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item nome-revisor" th:text="${revisor.nome}"> 
 	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
 	                			</a>
 	                		</div>
@@ -67,5 +67,24 @@
     </div>
 	<div th:include="fragments/footer :: footer"></div>
 	<script  type="text/javascript" th:src="@{/js/atribuir_revisores.js}"></script>
+	 <script type="text/javascript">
+	$(document).ready(function(){
+		
+		buscar = function(e,componente) {
+			var filtro = e;
+			var componente = componente;
+			
+			var nomeFiltro = filtro.value.toLowerCase();
+			var elemento = document.getElementsByClassName(componente);
+			 
+			 for (var i = elemento.length - 1; i >=0; i--){
+				var conteudoBusca = elemento[i].innerHTML;
+				var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+				elemento[i].style.display = corresponde ? '' : 'none';
+		    }  
+			
+		};
+	});
+	</script>
   </body>
 </html>

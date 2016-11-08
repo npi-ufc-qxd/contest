@@ -29,7 +29,7 @@
 			<div class="col s12">
 				<div class="input-field row">
 					<input placeholder="Procurando um evento especifico?"
-						id="filtro-nome" type="text" onkeyup="buscar()" class="col s11 validate" /><a
+						id="filtro-nome" type="text" oninput="buscar(this,'card-stacked')" class="col s11 validate" /><a
 						class="btn-floating btn-large waves-effect waves-light right">
 						<i class="material-icons">search</i>
 					</a>
@@ -104,26 +104,24 @@
 	</div>
 	<!-- footer -->
 	<div th:include="fragments/footer :: footer"></div>
-	<script type="text/javascript">
-	$(document).ready(function(){
-		var filtro = document.getElementById('filtro-nome');
-		var cards = document.getElementsByClassName('card-content');
-		var actions =document.getElementsByClassName('card-action');
-		
-		
-		buscar = function() {
-			var nomeFiltro = filtro.value;
+	 <script type="text/javascript">
+		$(document).ready(function(){
 			
-			for (var i = cards.length - 1; i >=0; i--) {
-				var conteudoBusca = cards[i].firstElementChild.innerHTML;
-				var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
-				console.log(corresponde);
-				cards[i].style.display = corresponde ? '' : 'none';
-				actions[i].style.display = corresponde ? '' : 'none';
-		    }
-			
-		};
-	});
+			buscar = function(e,componente) {
+				var filtro = e;
+				var componente = componente;
+				
+				var nomeFiltro = filtro.value.toLowerCase();
+				var elemento = document.getElementsByClassName(componente);
+				
+				 for (var i = elemento.length - 1; i >=0; i--){
+					var conteudoBusca = elemento[i].children[0].firstElementChild.innerHTML;
+					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+					elemento[i].style.display = corresponde ? '' : 'none';
+			    } 
+				
+			};
+		});
 	</script>
 </body>
 </html>

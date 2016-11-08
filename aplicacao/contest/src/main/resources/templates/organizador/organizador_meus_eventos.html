@@ -30,7 +30,7 @@
         </div>
         <div class="row">
           <div class="input-field">
-            <input id="pesquisar" type="text" class="col s11"/>
+            <input id="pesquisar" type="text" oninput="buscar(this,'card-stacked')" class="col s11"/>
             <label for="pesquisar">Procurando um evento específico?</label><a class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">search</i></a>
           </div>
         </div>
@@ -99,5 +99,24 @@
     <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			
+			buscar = function(e,componente) {
+				var filtro = e;
+				var componente = componente;
+				
+				var nomeFiltro = filtro.value.toLowerCase();
+				var elemento = document.getElementsByClassName(componente);
+				
+				 for (var i = elemento.length - 1; i >=0; i--){
+					var conteudoBusca = elemento[i].children[0].firstElementChild.innerHTML;
+					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+					elemento[i].style.display = corresponde ? '' : 'none';
+			    } 
+				
+			};
+		});
+	</script>
   </body>
 </html>
