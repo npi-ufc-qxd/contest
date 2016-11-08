@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -34,6 +36,7 @@ public class Trabalho {
 	private Trilha trilha;
 	
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
+	@OrderBy("data_submissao")
 	private List<Submissao> submissoes;
 	
 
@@ -134,7 +137,27 @@ public class Trabalho {
 			return false;
 		return true;
 	}
-
+	
+	private List<Pessoa> getParticipacaoPapelTrabalho(Papel... papeis) {
+		List<Pessoa> pessoa = new ArrayList<Pessoa>();
+		for (ParticipacaoTrabalho p : getParticipacoes()) {
+			for(Papel papel : papeis){
+				if (p.getPapel() == papel){
+					pessoa.add(p.getPessoa());
+				}
+			}
+		}
+		return pessoa;
+	}
+	
+	public List<Pessoa> getAutoresDoTrabalho() {
+		return getParticipacaoPapelTrabalho(Papel.AUTOR, Papel.COAUTOR);
+	}
+	
+	public List<Pessoa> getRevisores(){
+		return getParticipacaoPapelTrabalho(Papel.REVISOR);
+	}
+	
 	@Override
 	public String toString() {
 		return "Trabalho [id=" + id + ", titulo=" + titulo + ", evento=" + evento + ", trilha=" + trilha

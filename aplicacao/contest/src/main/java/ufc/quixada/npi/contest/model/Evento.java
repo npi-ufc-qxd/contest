@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -224,12 +225,15 @@ public class Evento {
 		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
 	}
 	
-	//Se o valor de dias for negativo a quantidade sera subtraida
-	private Date alterarDataEmDias(Date date, int dias)
-    {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, dias);
-        return cal.getTime();
-    }
+	
+	public List<Pessoa> getOrganizadores(){
+		List<Pessoa> organizadores = new ArrayList<Pessoa>();
+		for(ParticipacaoEvento participacao : participacoes){
+			if(participacao.getPapel() == Papel.ORGANIZADOR){
+				organizadores.add(participacao.getPessoa());
+			}
+		}
+		return organizadores;
+	}
+	
 }

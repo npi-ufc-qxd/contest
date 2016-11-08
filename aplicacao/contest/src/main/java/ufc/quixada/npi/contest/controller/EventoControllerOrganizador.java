@@ -132,8 +132,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("qtdTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
-		model.addAttribute("qtdTrabalhos", trabalhoService.buscarQtdTrabalhosPorEvento(eventoId));
+		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
+		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
+		
+		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
+		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
+		
+		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
+		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
+		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
+		
+		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 	
@@ -191,19 +202,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
-		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		List<Evento> eventosQueReviso= eventoService.buscarEventosParticapacaoRevisor(p.getId());
-		boolean existeEventos = true;
+		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
+		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
+				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
+				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		
-		for(Evento e : eventosQueReviso){
-			eventos.remove(e);
+		List<Long> eventosComoRevisor = new ArrayList<>();
+		List<Long> eventosComoOrganizador = new ArrayList<>();
+		
+		for(ParticipacaoEvento participacaoEvento : participacoesComoRevisor){
+			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
 		}
-		if(eventos.isEmpty() && eventosQueReviso.isEmpty())
-			existeEventos = false;
+	
+		for(ParticipacaoEvento participacaoEvento : participacoesComoOrganizador){
+			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
+		}
 		
-		model.addAttribute("existeEventos", existeEventos);
-		model.addAttribute(EVENTOS_ATIVOS, eventos);
-		model.addAttribute(EVENTO_QUE_PARTICIPO, eventosQueReviso);
+		model.addAttribute("eventosAtivos", eventosAtivos);
+		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
+		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
@@ -283,7 +301,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 			return "redirect:/eventoOrganizador/evento" + id;
 		}
-
 	}
 	
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
@@ -458,5 +475,4 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		String cpf = auth.getName();
 		return pessoaService.getByCpf(cpf);
 	}
-
 }

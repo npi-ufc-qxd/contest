@@ -283,7 +283,7 @@ public class AutorController {
 				
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
 				Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-				Submissao submissao = configuraSubmissao(submissaoService.getSubmissaoByTrabalho(trabalho), evento);
+				Submissao submissao = configuraSubmissao(new Submissao(), evento);
 				
 				if(validarArquivo(file)){		
 					if(evento.isPeriodoInicial() || evento.isPeriodoFinal()){
@@ -388,8 +388,7 @@ public class AutorController {
 	}
 	
 	public Submissao configuraSubmissao(Submissao submissao, Evento evento){
-		Date dataDeEnvio = new Date(System.currentTimeMillis());
-		submissao.setDataSubmissao(dataDeEnvio);
+		submissao.setDataSubmissao(new Date(System.currentTimeMillis()));
 		if(evento.isPeriodoInicial()){
 			submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
 		}else if(evento.isPeriodoFinal()){

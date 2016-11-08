@@ -39,7 +39,7 @@
          <div th:each="evento : ${eventosInativos}" class="col m6 s12">
           <div class="card">
             <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
-              <p th:text="|Organizador: ${evento.participacoes[0].pessoa.nome}|"></p>
+              <div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
               <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
             </div>
             <div class="card-action">
@@ -67,10 +67,9 @@
          </div>
         </div>
         
-        <div class="col m4 s12" th:case="${false}">
-          <p>Não há eventos inativos</p>
-        </div>
-        
+        <h4 th:if="${false}">Não há eventos Ativos</h4>
+
+<!--         
         <div class="center">
           <ul class="pagination">
             <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
@@ -79,7 +78,7 @@
             <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
           </ul>
         </div>
-        
+-->
         
         <div id="modal" class="modal">
           <div class="modal-content">
