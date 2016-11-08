@@ -1,5 +1,7 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Notificacao;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
@@ -33,6 +36,7 @@ import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
+import ufc.quixada.npi.contest.service.NotificacaoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -65,6 +69,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@Autowired
 	private PessoaService pessoaService;
+	
+	@Autowired
+	private NotificacaoService notificacaoService;
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -152,6 +159,16 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		participacaoTrabalho.setPapel(Papel.REVISOR);
 		participacaoTrabalho.setPessoa(revisor);
 		participacaoTrabalho.setTrabalho(trabalho);
+		
+		Notificacao notificacao = new Notificacao();
+		
+		notificacao.setTitulo(trabalho.getTitulo());
+		notificacao.setNova(true);
+		notificacao.setPessoa(revisor);
+		final DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		notificacao.setDescricao("Você foi alocado como revisor deste tralho. Com prazo de revisão inicial para: "+ df.format(trabalho.getEvento().getPrazoRevisaoInicial()));
+		
+		notificacaoService.adicionarNotificacao(notificacao);
 
 		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalho);
 		
@@ -180,10 +197,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
 		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
 				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
-		boolean existeEventos = true;
-		
-		if(eventosAtivos.isEmpty())
-			existeEventos = false;
 		
 		List<Long> eventosComoRevisor = new ArrayList<>();
 		List<Long> eventosComoOrganizador = new ArrayList<>();
@@ -196,7 +209,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
 		}
 		
-		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute("eventosAtivos", eventosAtivos);
 		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
