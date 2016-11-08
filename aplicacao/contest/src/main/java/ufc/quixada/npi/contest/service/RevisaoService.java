@@ -23,5 +23,9 @@ public class RevisaoService {
 	public void adicionarOuAtualizarRevisao(Revisao revisao) {
 		revisaoRepository.save(revisao);
 	}
+	
+	public boolean isTrabalhoRevisadoPeloRevisor(Long idTrabalho, Long idRevisor){
+		return revisaoRepository.trabalhoEstaRevisadoPeloRevisor(idTrabalho, idRevisor);
+	}
 
 }
