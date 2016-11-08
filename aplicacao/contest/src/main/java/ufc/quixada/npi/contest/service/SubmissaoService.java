@@ -17,6 +17,10 @@ public class SubmissaoService {
 		return submissaoRepository.existTrabalhoNesseEvento(id);
 	}
 	
+	public boolean existeTrabalhoFinalNesseEvento(Long id){
+		return submissaoRepository.existTrabalhoFinalNesseEvento(id);
+	}
+	
 	public Submissao getSubmissaoByTrabalho(Trabalho trabalho){
 		return submissaoRepository.findByTrabalho(trabalho);
 	}
