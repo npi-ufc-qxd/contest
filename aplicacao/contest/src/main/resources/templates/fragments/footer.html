@@ -15,6 +15,31 @@
 		</footer>
 		<script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/dist/jquery.min.js}"></script>
     	<script type="text/javascript" th:src="@{/webjars/materialize/0.97.6/dist/js/materialize.min.js}"></script>
+    	<script  type="text/javascript" th:src="@{/js/remover_notificacao.js}"></script>
+    	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							//Inicialização dos elementos no JS
+							//Parallax BG
+							$('.parallax').parallax();
+
+							//sideNav
+							$(".button-collapse").sideNav();
+
+							//Tooltips
+							$('.tooltipped').tooltip({
+								delay : 50
+							});
+
+							//select_initializer
+							$('select').material_select();
+
+							//Inicialização do Modal excluir Evento
+							$('.modal-trigger').leanModal();
+
+						});
+		</script>
     </div>
 </body>
 </html>

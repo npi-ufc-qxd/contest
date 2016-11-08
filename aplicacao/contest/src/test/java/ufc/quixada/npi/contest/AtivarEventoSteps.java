@@ -29,6 +29,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.validator.EventoValidator;
 
 public class AtivarEventoSteps {
 	
@@ -46,6 +47,8 @@ public class AtivarEventoSteps {
 	private RevisaoService revisaoService;
 	@Mock
 	private SubmissaoService submissaoService;
+	@Mock
+	private EventoValidator eventoValidator;
 	
 	private static final String TEMPLATE_ADD_OR_EDIT_EVENTO_ORG = "organizador/org_ativar_eventos";
 	private static final String PAGINA_ATIVAR_EVENTO_GET = "/eventoOrganizador/ativar/{id}";
