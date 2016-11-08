@@ -148,11 +148,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
 		
 		if(!revisoes.isEmpty()){
-			List<Map<String, String>> revisoesWrappers = new ArrayList<>();
-			Map<String, String> titulo = new HashMap<>();
-			for(Revisao revisao: revisoes){
-				revisao.setConteudo(RevisaoJSON.fromJson(revisao).get("comentarios_autores"));
-			}
 			model.addAttribute("revisoes", revisoes);
 			return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
 		}
