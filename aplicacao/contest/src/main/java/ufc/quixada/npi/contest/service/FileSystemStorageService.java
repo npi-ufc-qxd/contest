@@ -117,4 +117,11 @@ public class FileSystemStorageService implements StorageService{
 	}
 
 
+	@Override
+	public void deleteArquivo(String path) {
+		File caminho = new File(path);
+		caminho.delete();
+	}
+
+
 }

@@ -26,4 +26,12 @@ Funcionalidade: Professor revisa trabalhos submetidos
 		E O Trabalho a ser revisado não existe
 		Então A revisão não é registrada
 		E Um erro no sistema deve ser mostrado
+		
+	  Cenário: Professor tenta revisar um trabalho fora do prazo de revisão
+	  	E Tento revisar um trabalho existente fora do prazo de revisão
+	  	Então uma mensagem informativa deve ser mostrada
+	  	
+	  Cenário: Professor tenta revisar um trabalho em que não é revisor
+	  	E Tento revisar um trabalho que não sou revisor
+	  	Então uma mensagem de erro de permissão deve ser mostrada
 	  	

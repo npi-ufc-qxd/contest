@@ -11,6 +11,10 @@ h1, h2, h3 {
   min-height: 650px;
 }
 
+.card.small{
+	min-height: 400px;
+}
+
 .opcoes{
 	padding-top: 20px;
 }
