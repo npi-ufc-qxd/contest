@@ -4,7 +4,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -51,8 +50,6 @@ public class EnviarEmailSteps {
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
-	private EstadoEvento ativo_estado = EstadoEvento.ATIVO;
-	private EstadoEvento inativo_estado = EstadoEvento.INATIVO;
 	private Pessoa pessoa;
 	private String papelConvidado;
 	private Long EVENTO_ID = 1L;
@@ -66,7 +63,7 @@ public class EnviarEmailSteps {
 		evento = new Evento();
 		evento.setId(Long.valueOf(1));
 		evento.setNome("NomeEvento");
-		evento.setEstado(ativo_estado);
+		evento.setEstado(EstadoEvento.ATIVO);
 		VisibilidadeEvento visibilidade = VisibilidadeEvento.PUBLICO;
 		evento.setVisibilidade(visibilidade);
 		
@@ -105,10 +102,10 @@ public class EnviarEmailSteps {
     public void casoTesteQuandoCenario1(String nomeConvidado, String enderecoEmail) throws Throwable {
 		when(emailService.enviarEmail()).thenReturn(true);
 		when(eventoService.buscarEventoPorId(Long.valueOf(EVENTO_ID))).thenReturn(evento);
-		evento.setEstado(ativo_estado);
+		evento.setEstado(EstadoEvento.ATIVO);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
-				.param("eventoId", evento.getNome())
+				.param("eventoId", evento.getId().toString())
 				.param("nomeConvidado", nomeConvidado)
 				.param("funcao", papelConvidado)
 				.param("email", enderecoEmail));
@@ -123,7 +120,7 @@ public class EnviarEmailSteps {
 	@Dado("^que existe um evento com estado ativo$")
     public void casoTesteDadoCenario2() throws Throwable {
 		when(eventoService.buscarEventoPorId(EVENTO_ID)).thenReturn(evento);
-		evento.setEstado(ativo_estado);
+		evento.setEstado(EstadoEvento.ATIVO);
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		Authentication auth = Mockito.mock(Authentication.class);
 		
@@ -148,38 +145,39 @@ public class EnviarEmailSteps {
 		when(emailService.enviarEmail()).thenReturn(false);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
-				.param("nomeEvento", evento.getNome())
+				.param("eventoId", evento.getId().toString())
 				.param("nomeConvidado", nomeConvidado)
 				.param("funcao", papelConvidado)
 				.param("email", enderecoEmail)
 				);
     }
-	@Então("^uma mensagem de erro (.*) de impedimento é retornada$")
-    public void casoTesteEntao1Cenario2(String mensagemErro) throws Throwable {
-		action.andExpect(redirectedUrl(URL_DETALHES_EVENTO_ORGANIZADOR))
+	@Então("^uma mensagem de erro de impedimento é retornada$")
+    public void casoTesteEntao1Cenario2() throws Throwable {
+		action.andExpect(redirectedUrl(URL_DETALHES_EVENTO_ORGANIZADOR+EVENTO_ID))
 		      .andExpect(flash().attribute("organizadorError", messageService.getMessage("ERRO_ENVIO_EMAIL")));
     }
-	
-/*	O organizador convida pessoas para participarem de um evento inativo*/	
+	/*O organizador convida pessoas para participarem de um evento inativo*/	
 	
 	@Dado("^que existe um evento inativo$")
     public void casoTesteDadoCenario3() throws Throwable {
-		evento.setEstado(inativo_estado);
+		evento.setEstado(EstadoEvento.INATIVO);
 		when(eventoService.buscarEventoPorId(Long.valueOf(EVENTO_ID))).thenReturn(evento);
-		
+
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		Authentication auth = Mockito.mock(Authentication.class);
 		
 		when(context.getAuthentication()).thenReturn(auth);
 		when(auth.getName()).thenReturn("123");
 		SecurityContextHolder.setContext(context);
+		
 		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(pessoa);
 
 		action = mockMvc.perform(get("/eventoOrganizador/convidar/{id}", EVENTO_ID))
-				.andExpect(redirectedUrl("/eventoOrganizador/evento/"+EVENTO_ID));
+				        .andExpect(redirectedUrl( "/eventoOrganizador/evento"+EVENTO_ID));
     }
 	@Então("^a mensagem de impedimento é retornada para o organizador$")
     public void casoTesteEntaoCenario3() throws Throwable {
-		action.andExpect(model().attribute("organizadorError", "CONVIDA_EVENTO_INATIVO"));
+		action.andExpect(redirectedUrl( "/eventoOrganizador/evento"+EVENTO_ID))
+			  .andExpect(flash().attribute("organizadorError", messageService.getMessage("CONVIDAR_EVENTO_INATIVO")));
     }
 }

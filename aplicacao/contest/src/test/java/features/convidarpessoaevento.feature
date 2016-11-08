@@ -18,7 +18,7 @@ Funcionalidade:  O organizador convida participantes
         E que existe um organizador cadastrado
         E que o organizador adiciona o papel de ORIENTADOR para o convidado
         Quando o organizador tenta convidar uma pessoa com nome FULANO o email invalido inválido@@gmail.com
-        Então uma mensagem de erro ERRO_ENVIO_EMAIL de impedimento é retornada
+        Então uma mensagem de erro de impedimento é retornada
         
      Cenário: O organizador convida pessoas para participarem de um evento inativo
         Dado que existe um evento inativo

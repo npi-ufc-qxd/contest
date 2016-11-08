@@ -317,7 +317,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG;
 			
 		}else{
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage("PARTICIPAR_EVENTO_INATIVO_OU_FINALIZADO"));
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
 			return "redirect:/eventoOrganizador/evento" + eventoId;
 		}
     }
