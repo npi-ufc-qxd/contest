@@ -2,6 +2,7 @@
 <html>
   <head>
     <div th:include="fragments/head :: head"></div>
+    <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -13,7 +14,10 @@
 
       <h2>Considerações dos Revisores</h2>
       
-      <div th:each="revisao : ${revisoes}">
+      <div th:unless="${#lists.isEmpty(revisoes)}" class="row holder center"></div>
+      <div id="itemContainer" class="col s12" th:if="${not #lists.isEmpty(revisoes)}">
+    
+      	<div th:each="revisao : ${revisoes}">
 	      	<div class="col s12">
 	        <div class="col s12 m7">
 	          <div class="card horizontal">
@@ -30,20 +34,23 @@
 	          </div>
 	        </div>
 	      </div>
-      </div>
+      	</div>
+
+	</div> 
+	
+	<div th:unless="${#lists.isEmpty(revisoes)}" class="row holder center"></div>    
       
-      
-      <div id="paginacao">
-                <div class="row col s12 center">
-                  <ul class="pagination">
-                    <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li class="waves-effect"><a href="#">2</a></li>
-                    <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-                  </ul>
-                </div>
-      </div>
     </div>
     <div th:include="fragments/footer :: footer"></div>
+    
+     <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+      <script type="text/javascript">
+	      $(document).ready(function(){
+	        $("div.holder").jPages({
+	        	containerID : "itemContainer",
+	        	perPage: 4
+	        });
+	      });
+	  </script>
   </body>
 </html>
