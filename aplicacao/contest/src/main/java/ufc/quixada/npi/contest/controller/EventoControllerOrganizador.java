@@ -332,7 +332,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String listaTrilhas(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try{
 			Long eventoId = Long.valueOf(id);
-			model.addAttribute("trilhas", trilhaService.buscarTrilhas(eventoId));
 			model.addAttribute("trilha", new Trilha());
 			model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
