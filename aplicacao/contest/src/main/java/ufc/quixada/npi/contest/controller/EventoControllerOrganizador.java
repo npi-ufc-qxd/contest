@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -62,6 +63,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
+	private static final String SUBMISSAO_FINAL = "existeSubmissaoFinal";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
@@ -151,6 +153,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
+		
+		Collections.sort(trabalhos);
+		
 		model.addAttribute("revisores", pessoaService.getRevisoresDoEventoQueNaoParticipaDoTrabalho(eventoId));
 		model.addAttribute("evento", evento);
 		model.addAttribute("trabalhos", trabalhos);
@@ -247,14 +252,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect){
-		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
-		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(Long.valueOf(id));
+		Long eventoId = Long.valueOf(id);
+		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(eventoId);
+		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(eventoId);
+		boolean existeSubmissaoFinal = submissaoService.existeTrabalhoFinalNesseEvento(eventoId);
 		
 		if(exiteSubmissao){
+			model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
 			if(existeRevisao){
 				model.addAttribute(SUBMISSAO_REVISAO, exiteSubmissao);
-			}else{
-				model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
+				if (existeSubmissaoFinal) {
+					model.addAttribute(SUBMISSAO_FINAL, existeSubmissaoFinal);
+				}
 			}
 		}else{
 			Evento evento = eventoService.buscarEventoPorId(Long.valueOf(id));

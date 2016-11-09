@@ -39,6 +39,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
@@ -75,6 +76,7 @@ public class AutorController {
 	private static final String PARTICIPAR_EVENTO_INATIVO_ERROR = "participarEventoInativoError";
 	private static final String ERRO_TRABALHO_EVENTO = "ERRO_TRABALHO_EVENTO";
 	private static final String ERRO_REENVIAR = "ERRO_REENVIAR";
+	private static final String AUTOR_SEM_PERMISSAO = "AUTOR_SEM_PERMISSAO";
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -105,6 +107,9 @@ public class AutorController {
 
 	@Autowired
 	private StorageService storageService;
+	
+	@Autowired
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
 	@RequestMapping
 	public String index(Model model){
@@ -327,25 +332,40 @@ public class AutorController {
 		}
 	}
    
-	@RequestMapping(value="/file", method=RequestMethod.GET, produces = "application/pdf")
-	public void downloadPDFFile(@RequestParam("path") String path,  HttpServletResponse response)
+	@RequestMapping(value="/file/{trabalho}", method=RequestMethod.GET, produces = "application/pdf")
+	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho,  HttpServletResponse response)
 	        throws IOException {
-
-            try{
-            	Path file = Paths.get(path);
-                response.setContentType("application/pdf");
-                response.addHeader("Content-Disposition", "attachment; filename="+path);
-                Files.copy(file, response.getOutputStream());
-                response.getOutputStream().flush();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-                response.reset();
-                response.sendRedirect("/error/404");
-                response.addHeader("Status", "404 Not Found");
-                response.getOutputStream().flush();
-            }
-
+			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+			if(trabalho==null){
+				response.reset();
+				response.sendRedirect("/error/500");
+				response.getOutputStream().flush();
+			}else{
+				Pessoa autor = getAutorLogado();
+				Long idEvento = trabalho.getEvento().getId();
+				if(participacaoEventoService.isOrganizadorDoEvento(autor, idEvento) ||
+						participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, autor.getId())){
+					try{
+		            	String path = trabalho.getPath();
+		            	Path file = Paths.get(path);
+		                response.setContentType("application/pdf");
+		                response.addHeader("Content-Disposition", "attachment; filename="+path);
+		                Files.copy(file, response.getOutputStream());
+		                response.getOutputStream().flush();
+		            }
+		            catch (IOException e) {
+		                e.printStackTrace();
+		                response.reset();
+		                response.sendRedirect("/error/404");
+		                response.addHeader("Status", "404 Not Found");
+		                response.getOutputStream().flush();
+		            }
+				}else{
+					response.reset();
+					response.sendRedirect("/error/500");
+					response.getOutputStream().flush();
+				}
+			}
 	}
 	
 	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)
@@ -361,11 +381,15 @@ public class AutorController {
 				
 				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
 					Trabalho t = trabalhoService.getTrabalhoById(idTrabalho);
-					storageService.deleteArquivo(t.getPath());
-					trabalhoService.remover(Long.parseLong(trabalhoId));
-					
-					redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
-					return "redirect:/autor/listarTrabalhos/"+eventoId;
+					Pessoa autor = getAutorLogado();
+					if(autor.equals(t.getAutor())){
+						storageService.deleteArquivo(t.getPath());
+						trabalhoService.remover(Long.parseLong(trabalhoId));					
+						redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						return "redirect:/autor/listarTrabalhos/"+eventoId;
+					} 
+					model.addAttribute("erroExcluir", messageService.getMessage(AUTOR_SEM_PERMISSAO));
+					return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 				}else{
 					redirect.addFlashAttribute("erroExcluir", messageService.getMessage(FORA_DO_PRAZO_SUBMISSAO));
 					return "redirect:/autor/listarTrabalhos/"+evento.getId();
@@ -407,8 +431,13 @@ public class AutorController {
 		participacaoAutor.setPapel(Papel.AUTOR);
 		participacaoAutor.setTrabalho(trabalho);
 		participacaoAutor.setPessoa(getAutorLogado());
-		
-		List<ParticipacaoTrabalho> participacaoTrabalhos = trabalho.getParticipacoes();
+
+		List<ParticipacaoTrabalho> participacaoTrabalhos = null;
+		if(trabalho.getParticipacoes() != null){
+			participacaoTrabalhos = trabalho.getParticipacoes();
+		} else {
+			participacaoTrabalhos = new ArrayList<ParticipacaoTrabalho>();
+		}
 		participacaoTrabalhos.add(participacaoAutor);
 		trabalho.setParticipacoes(participacaoTrabalhos);
 
@@ -424,14 +453,16 @@ public class AutorController {
 	}
 	
 	public void definePapelParticipantes(Trabalho trabalho){
-		List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
-		for(int i = 0; i < lista.size(); i++){
-			ParticipacaoTrabalho p = lista.get(i);
-			p.setTrabalho(trabalho);
-			lista.get(i).setPapel(Papel.COAUTOR);
-			Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
-			if(autor != null){
-				p.setPessoa(autor);
+		if(trabalho.getParticipacoes() != null){
+			List<ParticipacaoTrabalho> lista = trabalho.getParticipacoes();
+			for(int i = 0; i < lista.size(); i++){
+				ParticipacaoTrabalho p = lista.get(i);
+				p.setTrabalho(trabalho);
+				lista.get(i).setPapel(Papel.COAUTOR);
+				Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
+				if(autor != null){
+					p.setPessoa(autor);
+				}
 			}
 		}
 	}
