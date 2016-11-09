@@ -35,3 +35,7 @@ Funcionalidade: Professor revisa trabalhos submetidos
 	  	E Tento revisar um trabalho que não sou revisor
 	  	Então uma mensagem de erro de permissão deve ser mostrada
 	  	
+	  Cenário: Professor tenta revisar um trabalho que já foi revisado por ele
+	  	E Tento revisar um trabalho que já revisei
+	  	Então uma mensagem informando um erro deve ser mostrada
+	  	

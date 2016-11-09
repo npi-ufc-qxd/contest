@@ -152,6 +152,8 @@ public class RevisorController {
 		}else if(!evento.isPeriodoRevisao()){
 			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 			return "redirect:/eventoOrganizador";
+		}else if(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())){
+			return TRABALHO_REVISAO_PELO_REVISOR;
 		}
 		
 		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
