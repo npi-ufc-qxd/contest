@@ -9,7 +9,18 @@
 		    <a th:href="@{/eventoOrganizador}">Meus Eventos</a>
 	        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
 	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
-	       	<a th:if="${evento}" th:href="@{'/eventoOrganizador/convidar/'+ ${evento.id}}">Convidar Participante por E-mail</a>
+	       
+	       <!-- Dropdown Structure -->
+			<ul th:if="${evento}" id='dropdown1' class='dropdown-content'>
+			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Certificados para Organização</a></li>
+			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosRevisores/${evento.id}|}">Certificados para Revisores</a></li>
+			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosTrabalho/${evento.id}|}">Certificados para Trabalhos</a></li>
+			</ul>
+	       	<!-- Dropdown Trigger -->
+ 			<a th:if="${evento}" class='dropdown-button' href='#' data-activates='dropdown1'>Certificados</a>
+ 			
+ 			
+	       
 	       	<a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
 	       		Voltar
 	       	</a>

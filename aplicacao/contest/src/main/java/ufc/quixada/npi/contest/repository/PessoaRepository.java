@@ -19,6 +19,7 @@ public interface PessoaRepository extends CrudRepository<Pessoa, Long>{
 	public Pessoa findByCpf(String cpf);
 	public Pessoa findByEmail(String email);
 	public Pessoa findByCpfAndPassword(String cpf, String password);
+	public List<Pessoa> findPessoaByParticipacoesEventoEventoIdAndParticipacoesEventoPapel(Long id, Papel papel);
 	
 	@Query("select p from Pessoa p where p.papelLdap = ufc.quixada.npi.contest.model.PapelLdap$Tipo.DOCENTE or "
 			+ "p.papelLdap = ufc.quixada.npi.contest.model.PapelLdap$Tipo.STA ")
