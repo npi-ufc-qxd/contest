@@ -120,23 +120,27 @@ public class AutorController {
 	}
 	
 	@RequestMapping(value="/revisao", method = RequestMethod.GET)
-	public String verRevisao(@RequestParam("trabalhoId") String trabalhoId, Model model, RedirectAttributes redirect){
+	public String verRevisao(@RequestParam("trabalho") String trabalhoId, Model model, RedirectAttributes redirect){
 		Long idTrabalho = Long.parseLong(trabalhoId);
-		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
-		Evento evento = trabalho.getEvento();
+		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);		
+		Pessoa autorLogado = getAutorLogado();
 		
-		if(!revisoes.isEmpty()){
-			model.addAttribute("titulo", trabalho.getTitulo());
-			List<Map<String, String>> revisoesWrappers = new ArrayList<>();
-			for(Revisao revisao: revisoes){
-				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+		if(trabalho.getAutor().equals(autorLogado)){
+			List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
+			Evento evento = trabalho.getEvento();
+			if(!revisoes.isEmpty()){
+				model.addAttribute("titulo", trabalho.getTitulo());
+				List<Map<String, String>> revisoesWrappers = new ArrayList<>();
+				for(Revisao revisao: revisoes){
+					revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+				}
+				model.addAttribute("revisoes", revisoesWrappers);
+				return Constants.TEMPLATE_REVISAO_AUTOR;
 			}
-			model.addAttribute("revisoes", revisoesWrappers);
-			return Constants.TEMPLATE_REVISAO_AUTOR;
-		}
-		redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
-		return "redirect:/autor/listarTrabalhos/" + evento.getId();
+			redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+			return "redirect:/autor/listarTrabalhos/" + evento.getId();
+		}		
+		return "/error/404";
 	}
 	
 	@RequestMapping(value="/participarEvento", method = RequestMethod.GET)
