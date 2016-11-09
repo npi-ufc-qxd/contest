@@ -75,6 +75,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	private static final String CONVIDAR_EVENTO_INATIVO = "CONVIDAR_EVENTO_INATIVO";
+	private static final String EMAIL_ENVIADO_SUCESSO = "EMAIL_ENVIADO_SUCESSO";
 	
 
 	@Autowired
@@ -360,11 +361,12 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			Email mail = builder.build();
 			EnviarEmailService serviceEmail = new EnviarEmailService(mail);
 			if(!serviceEmail.enviarEmail()){
-				redirect.addAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
 			}
 		}else{
-			redirect.addAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO)); 
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO)); 
 		}
+		redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
 		return "redirect:/eventoOrganizador/evento/" + eventoId;	
 	}
 	
