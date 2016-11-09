@@ -276,6 +276,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 		return "redirect:/eventoOrganizador/inativos";
 	}
+	
+	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
+	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
+		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
+	}
 
 	@RequestMapping(value = "/trilhas/{id}", method = RequestMethod.GET)
 	public String listaTrilhas(@PathVariable String id, Model model, RedirectAttributes redirect) {
@@ -306,10 +311,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 	}
 
-	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
-	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
-		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
-	}
 
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model, RedirectAttributes redirect){
