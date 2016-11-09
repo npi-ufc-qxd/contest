@@ -162,6 +162,21 @@ public class Trabalho implements Comparable<Trabalho> {
 		return getParticipacaoPapelTrabalho(Papel.REVISOR);
 	}
 	
+	public boolean isRevisado(){
+		return (revisoes != null && revisoes.size() > 0) ? true : false;
+	}
+	
+	public boolean isIndicadoMelhoresTrabalhos(){
+		if(this.isRevisado()){
+			for(Revisao revisao : revisoes){
+				String conteudo = revisao.getConteudo();
+				if(conteudo.contains("indicacao")) return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return "Trabalho [id=" + id + ", titulo=" + titulo + ", evento=" + evento + ", trilha=" + trilha

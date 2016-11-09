@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <div th:include="fragments/head :: head"></div>
+    <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page"><br/>
+      <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
+      <div class="row">
+        <h2>Evento: Forró das antigas</h2>
+        <h3>Lista de Trabalhos</h3>
+        <h3 th:if="${#lists.isEmpty(trabalhos)}">Não existem Trabalhos</h3>
+
+        <div>
+          <div th:unless="${#lists.isEmpty(trabalhos)}" class="row holder center"></div>
+          <div id="itemContainer" class="col s12">
+            <div class="col s12" th:each="trabalho,count : ${trabalhos}">
+	            <div class="card horizontal">
+	              <div class="card-stacked">
+	                <div>
+	                	<div class="card-content">
+	                		<span class="card-title" th:text="${trabalho.titulo}"></span>
+	                		<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
+	                		<div th:include="fragments/listar_participacoes :: listar-clean('Revisor(es):', ${trabalho.revisores})"></div>
+	                   	</div>
+	                   	<div class="card-action">
+	              			<div class="chip  yellow lighten-1" th:if="${trabalho.isIndicadoMelhoresTrabalhos()}">
+    							<i class="fa fa-star" aria-hidden="true"></i>
+    							<em>Best Paper</em>
+  							</div>
+  							<div class="chip light-green accent-2" th:if="${trabalho.isRevisado()}">
+    							<i class="fa fa-check-circle" aria-hidden="true"></i>
+    							Revisado
+  							</div>
+	              		</div>
+	                </div>
+	              </div>
+	            </div>
+	            
+	            
+	            
+	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal modal-fixed-footer" data-keyboard="">
+	      		<div class="modal-content">
+	      			<h4 class="block" th:text="${trabalho.titulo}">Nome do Trabalho</h4>
+	      					<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
+	      			<div class="row">
+	      			<!-- 
+	      				<div class="input-field col s12">
+	      					<i class="material-icons prefix">search</i>
+	      					<input id="nome_do_revisor" type="text" onInput="buscar()" />
+	                		<label for="nome_do_revisor">Nome do Revisor</label>
+						</div>
+					 -->							                		
+	      				<div class="col m6 s6">
+	                		<h5 id="listaEscolhidosTitulo">Revisores do evento</h5>
+	                		<div class="listaRevisores collection">
+	                			<a th:each="revisor : ${revisores}" 
+	                			th:with="conteudo=${revisor.getNumeroTrabalhosRevisar(trabalho.evento)} ? ${revisor.nome} + ' - ' + ${revisor.getNumeroTrabalhosRevisar(trabalho.evento)} :  ${revisor.nome}"  
+	                			th:attr="id='modalRevisor' + ${count.index} + '_' + ${revisor.id}" th:onclick="'add(this,\'modalRevisor'+${count.index}+'\');'" class="collection-item filter" th:text="${conteudo}"> 
+	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
+	                			</a>
+	                		</div>
+	      				</div>
+	      				<div class="col m6 s6">
+                			<h5 id="listaEscolhidosTitulo">Revisores Selecionados</h5>
+                			<div class="listaEscolhidos collection" >
+                			    <a th:each="revisor : ${trabalhos[count.index].participacoes}" th:if="${#strings.equalsIgnoreCase(revisor.papel, 'REVISOR')}" th:id="|esc_modalRevisor${count.index}_${revisor.pessoa.id}|" th:onclick="'remover(this)'" class="collection-item" th:text="${revisor.pessoa.nome}"> 
+	                				<span data-position="bottom" data-delay="50" data-tooltip="Trabalhos Atribuidos a Esteve Revisor" class="title badge tooltipped">1</span>
+	                			</a>
+	                	    </div>
+                		</div>
+	      			</div>
+	      		</div>
+	      		<div class="modal-footer block">
+	            	<a href="#" onclick="location.reload()" class="modal-action modal-close waves-effect btn-flat">Fechar  </a>
+	            </div>
+	      	</div>
+	            
+          </div>
+          </div>
+          <div th:unless="${#lists.isEmpty(trabalhos)}" class="row holder center"></div>
+        </div>
+
+      </div>
+    </div>
+	<div th:include="fragments/footer :: footer"></div>
+	<script  type="text/javascript" th:src="@{/js/atribuir_revisores.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<script type="text/javascript">
+	/*
+	$(document).ready(function(){
+		
+		buscar = function() {
+			var filtro = document.getElementById('nome_do_revisor');
+			var cards = document.getElementsByClassName('collection-item filter');
+			//var actions = document.getElementsByClassName('card-action');
+			var nomeFiltro = filtro.value;
+			
+			console.log(cards);
+			for (var i = cards.length - 1; i >=0; i--) {
+				var conteudoBusca = cards[i].firstElementChild.innerHTML;
+				var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+				cards[i].style.display = corresponde ? '' : 'none';
+				console.log(corresponde);
+			//	actions[i].style.display = corresponde ? '' : 'none';
+		    }
+			
+		};
+	});*/
+	</script>
+  </body>
+</html>
