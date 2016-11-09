@@ -96,4 +96,6 @@ public class EventoService {
 		return eventoRepository.findEventoByEstadoAndVisibilidade(estado, VisibilidadeEvento.PUBLICO);
 	}
 	
+	
+	
 }

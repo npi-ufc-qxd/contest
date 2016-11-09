@@ -2,6 +2,7 @@
 <html>
   <head>
    <div th:include="fragments/head :: head"></div>
+   <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -32,7 +33,9 @@
       </div>
       <div class="row">
         <h2>Lista de Eventos Inativos</h2>
-        
+      </div>
+      <div th:if="${#lists.size(eventosQueOrganizo) > 6}" class="row holder center"></div>
+      <div class="row" id="itemContainer">
         <div th:each="eventoOrganizo : ${eventosQueOrganizo}" class="col m6 s12">
           <div class="card">
               
@@ -61,18 +64,19 @@
         
           <h4 th:if="${!existeEventos}">Não há eventos Inativos</h4>
       </div>
-        
-<!--         
-                <div class="row col s12 center">
-                  <ul class="pagination">
-                    <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li class="waves-effect"><a href="#">2</a></li>
-                    <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-                  </ul>
-                </div>
- -->
+      <div th:if="${#lists.size(eventosQueOrganizo) > 6}" class="row holder center"></div>
+
    </div>
     <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+      	//Inicialização do Jpages para realizar a paginação
+        $("div.holder").jPages({
+        	containerID : "itemContainer",
+        	perPage: 6 //Quantidade de elementos exibidos por página.
+        });
+      });
+    </script>
   </body>
 </html>
