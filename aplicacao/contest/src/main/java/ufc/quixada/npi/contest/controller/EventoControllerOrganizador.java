@@ -25,8 +25,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import ufc.quixada.npi.contest.model.Email;
 import ufc.quixada.npi.contest.model.Email.EmailBuilder;
+
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Notificacao;
@@ -108,6 +112,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	private JRDataSource jrDataSource;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -221,6 +227,10 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
 		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
 				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
+		boolean existeEventos = true;
+		
+		if(eventosAtivos.isEmpty())
+			existeEventos = false;
 		
 		List<Long> eventosComoRevisor = new ArrayList<>();
 		List<Long> eventosComoOrganizador = new ArrayList<>();
@@ -233,6 +243,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
 		}
 		
+		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute("eventosAtivos", eventosAtivos);
 		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
@@ -340,7 +351,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect){
 		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos", Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
-	
+
 	@RequestMapping(value = "/convidar/{id}", method = RequestMethod.GET)
 	public String convidarPessoasPorEmail(@PathVariable String id, Model model,  RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
@@ -487,6 +498,79 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		
 		return "redirect:/eventoOrganizador";
 	}
+	
+	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
+	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model){
+		Long id = Long.parseLong(idEvento);
+		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(id);
+		model.addAttribute("organizadores", listaOrganizadores);
+		return Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES;
+	}
+	
+	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
+	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model) throws JRException{
+		
+		criarDadosPdf(organizadoresIds, model);
+		
+		return "PDF_ORGANIZADOR";
+	}
+	
+	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
+	public String gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, Model model){
+		Long id = Long.parseLong(idEvento);
+		List<Pessoa> listaRevisores = pessoaService.getRevisoresEvento(id);
+		model.addAttribute("revisores", listaRevisores);
+		return Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES;
+	}
+	
+	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
+	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model) throws JRException{
+		
+		criarDadosPdf(revisoresIds, model);
+		
+		return "PDF_REVISORES";
+	}
+	
+	public void criarDadosPdf(Long[] ids, Model model){
+		if(ids != null){
+			List<Pessoa> pessoas = new ArrayList<>();
+			for(Long id : ids){
+				pessoas.add(pessoaService.get(id));
+			}
+			
+			if(pessoas != null){
+				jrDataSource  = new JRBeanCollectionDataSource(pessoas);
+				model.addAttribute("datasource", jrDataSource);
+				model.addAttribute("format", "pdf");
+			}
+		}
+	}
+	
+	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
+	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model){
+		Long id = Long.parseLong(idEvento);
+		Evento e = eventoService.buscarEventoPorId(id);
+		List<Trabalho> listaTrabalhos = trabalhoService.getTrabalhosEvento(e);
+		model.addAttribute("trabalhos", listaTrabalhos);
+		return Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO;
+	}
+
+	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.POST)
+	public String gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model){
+		if(trabalhosIds != null){
+			List<Trabalho> trabalhos = new ArrayList<>();
+			for(Long id : trabalhosIds){
+				trabalhos.add(trabalhoService.getTrabalhoById(id));
+			}
+			if(trabalhos != null){
+				jrDataSource  = new JRBeanCollectionDataSource(trabalhos);
+				model.addAttribute("datasource", jrDataSource);
+				model.addAttribute("format", "pdf");
+			}
+		}
+		return "PDF_TRABALHOS";
+	}
+	
 	
 	public Pessoa getOrganizadorLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -66,7 +66,8 @@ public class RevisorController {
 	private static final String REVISOR_TRABALHOS_REVISAO = "revisor/revisor_trabalhos";
 	private static final String REVISOR_AVALIAR_TRABALHO = "revisor/revisor_avaliar_trabalho";
 	private static final String REVISOR_SEM_PERMISSAO = "revisor/erro_permissao_de_revisor";
-
+	private static final String TRABALHO_REVISAO_PELO_REVISOR = "revisor/erro_trabalho_ja_revisado";
+	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
 	private static final String PARTICAPACAO_EVENTO_SUCESSO = "particapacaoEventoSucesso";
@@ -103,17 +104,20 @@ public class RevisorController {
 		
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
+		Pessoa revisor = getRevisorLogado();
 		
 		if(evento!=null && trabalho!=null){
 			if(!evento.isPeriodoRevisao()){
 				redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 				return "redirect:/eventoOrganizador";
+			}else if(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())){
+				return TRABALHO_REVISAO_PELO_REVISOR;
 			}
 		}else{
 			return "redirect:/error";
 		}
 		
-		Pessoa revisor = getRevisorLogado();
+		
 		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
 			
 			
@@ -149,6 +153,7 @@ public class RevisorController {
 		
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 		Evento evento = eventoService.buscarEventoPorId(Long.valueOf(idEvento));
+		Pessoa revisor = getRevisorLogado();
 		
 		if(trabalho == null){
 			return "redirect:/error";
@@ -157,9 +162,10 @@ public class RevisorController {
 		}else if(!evento.isPeriodoRevisao()){
 			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 			return "redirect:/eventoOrganizador";
+		}else if(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())){
+			return TRABALHO_REVISAO_PELO_REVISOR;
 		}
 		
-		Pessoa revisor = getRevisorLogado();
 		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
 		
 			session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
@@ -174,8 +180,7 @@ public class RevisorController {
 				return "redirect:/revisor/" + idEvento + "/" + idTrabalho + "/revisar";
 			}
 	
-			RevisaoJSON revisaoJson = new RevisaoJSON();
-			String conteudo = revisaoJson.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
+			String conteudo = RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
 					auto_avaliacao, comentarios_autores, avaliacao_geral, avaliacao_final, indicar);
 	
 			Revisao revisao = new Revisao();
