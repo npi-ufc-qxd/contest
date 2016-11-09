@@ -27,7 +27,9 @@ public class EnviarEmailService {
 	}
 
 	public boolean enviarEmail() {
+		
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
+		
 		Map<String, String> destinatariosHash;
 		  int i = 0;
 		 destinatariosHash = this.email.getEnderecosDestinatarios();
@@ -45,12 +47,12 @@ public class EnviarEmailService {
         
 		try {
 			javaMailSender.send(msg);
-			return true;
 
 		} catch (MailException e) {
 			e.printStackTrace();
 			return false;
 		}
+		return true;
 		
 	}
 }
