@@ -77,6 +77,7 @@ public class AutorController {
 	private static final String ERRO_TRABALHO_EVENTO = "ERRO_TRABALHO_EVENTO";
 	private static final String ERRO_REENVIAR = "ERRO_REENVIAR";
 	private static final String AUTOR_SEM_PERMISSAO = "AUTOR_SEM_PERMISSAO";
+	private static final String AUTOR_SEM_PERMISSAO_REVISAO = "autor/erro_permissao_de_autor";
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -119,15 +120,15 @@ public class AutorController {
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 	
-	@RequestMapping(value="/revisao", method = RequestMethod.GET)
-	public String verRevisao(@RequestParam("trabalho") String trabalhoId, Model model, RedirectAttributes redirect){
+	@RequestMapping(value="/revisao/trabalho/{trabalhoId}", method = RequestMethod.GET)
+	public String verRevisao(@PathVariable String trabalhoId, Model model, RedirectAttributes redirect){
 		Long idTrabalho = Long.parseLong(trabalhoId);
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);		
 		Pessoa autorLogado = getAutorLogado();
+		Evento evento = trabalho.getEvento();
 		
 		if(trabalho.getAutor().equals(autorLogado)){
-			List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
-			Evento evento = trabalho.getEvento();
+			List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);			
 			if(!revisoes.isEmpty()){
 				model.addAttribute("titulo", trabalho.getTitulo());
 				List<Map<String, String>> revisoesWrappers = new ArrayList<>();
@@ -140,7 +141,7 @@ public class AutorController {
 			redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
 			return "redirect:/autor/listarTrabalhos/" + evento.getId();
 		}		
-		return "/error/404";
+		return AUTOR_SEM_PERMISSAO_REVISAO;
 	}
 	
 	@RequestMapping(value="/participarEvento", method = RequestMethod.GET)
