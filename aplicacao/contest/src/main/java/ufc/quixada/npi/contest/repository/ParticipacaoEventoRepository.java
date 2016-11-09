@@ -17,6 +17,5 @@ public interface ParticipacaoEventoRepository extends CrudRepository<Participaca
 	public ParticipacaoEvento findByEventoId(Long idEvento);
 	//public List<ParticipacaoEvento> findDistinctByEventoEstadoAndPapel(EstadoEvento estadoEvento, Papel papel);
 	public List<ParticipacaoEvento> findByEventoEstadoAndPapelAndPessoaId(EstadoEvento estadoEvento, Papel papel, Long id);
-	
-	public List<ParticipacaoEvento> findByPapelAndEventoId(Papel papel, Long id);
+	public List<ParticipacaoEvento> findByEventoIdAndPapel(Long id, Papel papel);
 }

@@ -208,10 +208,8 @@ public class AutorController {
 			
 			if(eventoService.existeEvento(idEvento)){
 				List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
-				Pessoa p = getAutorLogado();
 				Trabalho trabalho = new Trabalho();
 				ParticipacaoTrabalho part = new ParticipacaoTrabalho();
-				part.setPessoa(p);
 				List<ParticipacaoTrabalho> partipacoes = new ArrayList<>();
 				partipacoes.add(part);
 				trabalho.setParticipacoes(partipacoes);
@@ -219,6 +217,7 @@ public class AutorController {
 				model.addAttribute("trabalho", trabalho);
 				model.addAttribute("eventoId", id);
 				model.addAttribute("trilhas", trilhas);
+				model.addAttribute("autor", getAutorLogado());
 				return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;	
 			}
 			return "redirect:/autor/meusTrabalhos";
@@ -255,9 +254,10 @@ public class AutorController {
 		
 		trabalhoValidator.validate(trabalho, result);
 		if(result.hasErrors()){
-			List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(trilhaId));
+			List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(eventoId));
 			model.addAttribute("eventoId", eventoId);
 			model.addAttribute("trilhas", trilhas);
+			model.addAttribute("autor", getAutorLogado());
 			return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;
 		}else{
 			if(validarArquivo(file)){
@@ -283,7 +283,7 @@ public class AutorController {
 				
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
 				Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-				Submissao submissao = configuraSubmissao(submissaoService.getSubmissaoByTrabalho(trabalho), evento);
+				Submissao submissao = configuraSubmissao(new Submissao(), evento);
 				
 				if(validarArquivo(file)){		
 					if(evento.isPeriodoInicial() || evento.isPeriodoFinal()){
@@ -360,7 +360,10 @@ public class AutorController {
 				Date dataDeEnvio = new Date(System.currentTimeMillis());
 				
 				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+					Trabalho t = trabalhoService.getTrabalhoById(idTrabalho);
+					storageService.deleteArquivo(t.getPath());
 					trabalhoService.remover(Long.parseLong(trabalhoId));
+					
 					redirect.addFlashAttribute("trabalhoExcluido", messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
 					return "redirect:/autor/listarTrabalhos/"+eventoId;
 				}else{
@@ -388,8 +391,7 @@ public class AutorController {
 	}
 	
 	public Submissao configuraSubmissao(Submissao submissao, Evento evento){
-		Date dataDeEnvio = new Date(System.currentTimeMillis());
-		submissao.setDataSubmissao(dataDeEnvio);
+		submissao.setDataSubmissao(new Date(System.currentTimeMillis()));
 		if(evento.isPeriodoInicial()){
 			submissao.setTipoSubmissao(TipoSubmissao.PARCIAL);
 		}else if(evento.isPeriodoFinal()){
@@ -401,6 +403,15 @@ public class AutorController {
 	public String adicionarTrabalho(Trabalho trabalho, Evento evento, Submissao submissao, MultipartFile file, RedirectAttributes redirect) {
 		definePapelParticipantes(trabalho);
 		
+		ParticipacaoTrabalho participacaoAutor = new ParticipacaoTrabalho();
+		participacaoAutor.setPapel(Papel.AUTOR);
+		participacaoAutor.setTrabalho(trabalho);
+		participacaoAutor.setPessoa(getAutorLogado());
+		
+		List<ParticipacaoTrabalho> participacaoTrabalhos = trabalho.getParticipacoes();
+		participacaoTrabalhos.add(participacaoAutor);
+		trabalho.setParticipacoes(participacaoTrabalhos);
+
 		submissao.setTrabalho(trabalho);
 
 		String nomeDoArquivo = new StringBuilder("CONT-").append(evento.getId()).toString();		
@@ -417,11 +428,7 @@ public class AutorController {
 		for(int i = 0; i < lista.size(); i++){
 			ParticipacaoTrabalho p = lista.get(i);
 			p.setTrabalho(trabalho);
-			if(i == 0){
-				lista.get(i).setPapel(Papel.AUTOR);
-			}else{
-				lista.get(i).setPapel(Papel.COAUTOR);
-			}
+			lista.get(i).setPapel(Papel.COAUTOR);
 			Pessoa autor= pessoaService.getByEmail(p.getPessoa().getEmail());
 			if(autor != null){
 				p.setPessoa(autor);

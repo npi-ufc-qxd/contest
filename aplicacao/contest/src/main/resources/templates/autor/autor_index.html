@@ -2,6 +2,7 @@
 <html>
 <head>
 	<div th:include="fragments/head :: head"></div>
+	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 <body>
 	<div th:include="fragments/header :: header"></div>
@@ -42,20 +43,13 @@
 			<div class="col s12 m7" th:each="evento : ${eventosParaParticipar}">
 				<div class="card horizontal">
 					<div class="card-stacked">
-						<div class="card-content">
-							<h5 th:text="${evento.nome}"></h5>
-							<p th:text="${evento.descricao}"></p>
-							<p
-								th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}">Início
-								da Submissão</p>
-							<p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
-						</div>
+						<div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
 						<div class="card-action" >
 							<a th:if="${evento.isPeriodoInicial()}"
 								th:attr="href='#modal' + ${evento.id}"
 								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
 							<a th:unless="${evento.isPeriodoInicial()}"
-								class="btn white-text grey">Periodo Encerrado</a>
+								class="btn disabled white-text grey">Período de inscrição encerrado</a>
 						</div>
 					</div>
 				</div>
@@ -80,18 +74,14 @@
 		<div class="col s12 m7" th:if="${!#lists.isEmpty(eventoParticipando)}">
 			<div class="card horizontal" th:each="evento : ${eventoParticipando}">
 				<div class="card-stacked">
-					<div class="card-content">
-						<h5 th:text="${evento.nome}"></h5>
-						<p th:text="${evento.descricao}"></p>
-						<p th:text="'Inicio da Submissão: ' + ${#dates.format(evento.prazoSubmissaoInicial,'dd/MM/yyyy')}"></p>
-						<p th:text="'Fim da Submissão: ' + ${#dates.format(evento.prazoSubmissaoFinal,'dd/MM/yyyy')}"></p>
-					</div>
+					<div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
 					<div class="card-action">
-						<a class="waves-effect waves-light btn">Participando</a>
+						<a class="purple-text">Participando</a>
 					</div>
 				</div>
 			</div>
 		</div>
+<!-- 		
 		<div class="row col s12 center">
 			<ul class="pagination">
 				<li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
@@ -101,9 +91,12 @@
 						class="material-icons">chevron_right</i></a></li>
 			</ul>
 		</div>
+ -->		
 	</div>
 	<!-- footer -->
 	<div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
 	 <script type="text/javascript">
 		$(document).ready(function(){
 			
@@ -115,7 +108,7 @@
 				var elemento = document.getElementsByClassName(componente);
 				
 				 for (var i = elemento.length - 1; i >=0; i--){
-					var conteudoBusca = removerAcentos(elemento[i].children[0].firstElementChild.innerHTML);
+					var conteudoBusca = removerAcentos(elemento[i].children[0].children[0].firstElementChild.innerHTML);
 					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
 					elemento[i].style.display = corresponde ? '' : 'none';
 			    } 
@@ -131,6 +124,9 @@
 		var map={"â":"a","Â":"A","à":"a","À":"A","á":"a","Á":"A","ã":"a","Ã":"A","ê":"e","Ê":"E","è":"e","È":"E","é":"e","É":"E","î":"i","Î":"I","ì":"i","Ì":"I","í":"i","Í":"I","õ":"o","Õ":"O","ô":"o","Ô":"O","ò":"o","Ò":"O","ó":"o","Ó":"O","ü":"u","Ü":"U","û":"u","Û":"U","ú":"u","Ú":"U","ù":"u","Ù":"U","ç":"c","Ç":"C"};
 
 		function removerAcentos(s){ return s.replace(/[\W\[\] ]/g,function(a){return map[a]||a}) };
+		
+		
 	</script>
+	
 </body>
 </html>

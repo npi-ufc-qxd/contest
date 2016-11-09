@@ -3,8 +3,6 @@ package ufc.quixada.npi.contest.controller;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,13 +25,13 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
-import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
@@ -55,6 +53,9 @@ public class RevisorController {
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
+	
+	@Autowired
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
 	@Autowired
 	private TrabalhoService trabalhoService;
@@ -64,6 +65,7 @@ public class RevisorController {
 
 	private static final String REVISOR_TRABALHOS_REVISAO = "revisor/revisor_trabalhos";
 	private static final String REVISOR_AVALIAR_TRABALHO = "revisor/revisor_avaliar_trabalho";
+	private static final String REVISOR_SEM_PERMISSAO = "revisor/erro_permissao_de_revisor";
 
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
@@ -75,10 +77,15 @@ public class RevisorController {
 	private static final String CRITERIOS_REVISAO_VAZIO = "CRITERIOS_REVISAO_VAZIO";
 	private static final String TRABALHO_NAO_EXISTE = "TRABALHO_NAO_EXISTE";
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
+	private static final String FORA_PERIODO_REVISAO = "FORA_PERIODO_REVISAO";
 
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(!evento.isPeriodoRevisao()){
+			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+			return "redirect:/eventoOrganizador";
+		}
 		
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
@@ -93,18 +100,34 @@ public class RevisorController {
 	@RequestMapping(value = "/{idEvento}/{idTrabalho}/revisar", method = RequestMethod.GET)
 	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
 			@PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
-		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+		
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 		
-		model.addAttribute("nomeEvento", evento.getNome());
-		model.addAttribute("idEvento", evento.getId());
-		model.addAttribute("trabalho", trabalho);
-		model.addAttribute("autores", getAutoresDoTrabalho(trabalho));
-		model.addAttribute("coAutores", getCoAutoresDoTrabalho(trabalho));
+		if(evento!=null && trabalho!=null){
+			if(!evento.isPeriodoRevisao()){
+				redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+				return "redirect:/eventoOrganizador";
+			}
+		}else{
+			return "redirect:/error";
+		}
 		
-		session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
-		session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
-		return REVISOR_AVALIAR_TRABALHO;
+		Pessoa revisor = getRevisorLogado();
+		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
+			
+			
+			
+			model.addAttribute("nomeEvento", evento.getNome());
+			model.addAttribute("idEvento", evento.getId());
+			model.addAttribute("trabalho", trabalho);
+			
+			session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
+			session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
+			return REVISOR_AVALIAR_TRABALHO;
+		}
+		return REVISOR_SEM_PERMISSAO;
+		
 	}
 
 	@RequestMapping(value = "/avaliar", method = RequestMethod.POST)
@@ -125,49 +148,62 @@ public class RevisorController {
 			HttpSession session) {
 		
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-		if(trabalho == null || !eventoService.existeEvento(Long.valueOf(idEvento))){
+		Evento evento = eventoService.buscarEventoPorId(Long.valueOf(idEvento));
+		
+		if(trabalho == null){
 			return "redirect:/error";
+		}else if(evento == null){
+			return "redirect:/error";
+		}else if(!evento.isPeriodoRevisao()){
+			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+			return "redirect:/eventoOrganizador";
 		}
 		
-		session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
-		session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
+		Pessoa revisor = getRevisorLogado();
+		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
 		
-		CriteriosRevisaoValidator criterios = new CriteriosRevisaoValidator();
-		boolean validacao = criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
-				comentarios_autores, avaliacao_geral, avaliacao_final);
-
-		if (!validacao) {
-			redirect.addFlashAttribute("criterioRevisaoVazioError", messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
-			return "redirect:/revisor/" + idEvento + "/" + idTrabalho + "/revisar";
+			session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
+			session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
+			
+			CriteriosRevisaoValidator criterios = new CriteriosRevisaoValidator();
+			boolean validacao = criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
+					comentarios_autores, avaliacao_geral, avaliacao_final);
+	
+			if (!validacao) {
+				redirect.addFlashAttribute("criterioRevisaoVazioError", messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
+				return "redirect:/revisor/" + idEvento + "/" + idTrabalho + "/revisar";
+			}
+	
+			RevisaoJSON revisaoJson = new RevisaoJSON();
+			String conteudo = revisaoJson.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
+					auto_avaliacao, comentarios_autores, avaliacao_geral, avaliacao_final, indicar);
+	
+			Revisao revisao = new Revisao();
+			revisao.setConteudo(conteudo);
+			revisao.setRevisor(getRevisorLogado());
+			revisao.setTrabalho(trabalho);
+			revisao.setObservacoes(comentarios_organizacao);
+			
+			switch (avaliacao_final) {
+				case "APROVADO":
+					revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.APROVADO);
+					break;
+				case "RESSALVAS":
+					revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.RESSALVAS);
+					break;
+				case "REPROVADO":
+					revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.REPROVADO);
+					break;
+				default:
+					break;
+			}
+			
+			revisaoService.addOrUpdate(revisao);
+			
+			redirect.addFlashAttribute("trabalhoRevisado", messageService.getMessage(TRABALHO_REVISADO));
+			return "redirect:/revisor/" + idEvento + "/trabalhosRevisao";
 		}
-
-		String conteudo = RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
-				auto_avaliacao, comentarios_autores, avaliacao_geral, avaliacao_final, indicar);
-
-		Revisao revisao = new Revisao();
-		revisao.setConteudo(conteudo);
-		revisao.setRevisor(getRevisorLogado());
-		revisao.setTrabalho(trabalho);
-		revisao.setObservacoes(comentarios_organizacao);
-		
-		switch (avaliacao_final) {
-			case "APROVADO":
-				revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.APROVADO);
-				break;
-			case "RESSALVAS":
-				revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.RESSALVAS);
-				break;
-			case "REPROVADO":
-				revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.REPROVADO);
-				break;
-			default:
-				break;
-		}
-		
-		revisaoService.addOrUpdate(revisao);
-		
-		redirect.addFlashAttribute("trabalhoRevisado", messageService.getMessage(TRABALHO_REVISADO));
-		return "redirect:/revisor/" + idEvento + "/trabalhosRevisao";
+		return REVISOR_SEM_PERMISSAO;
 	}
  
 	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
@@ -242,24 +278,5 @@ public class RevisorController {
 		return autorLogado;
 	}
 
-	public List<Pessoa> getAutoresDoTrabalho(Trabalho trabalho) {
-		List<Pessoa> autores = new Vector<Pessoa>();
-		for (ParticipacaoTrabalho p : trabalho.getParticipacoes()) {
-			if (p.getPapel() == Papel.AUTOR)
-				autores.add(p.getPessoa());
-		}
-
-		return autores;
-	}
-
-	public List<Pessoa> getCoAutoresDoTrabalho(Trabalho trabalho) {
-		List<Pessoa> coAutores = new Vector<Pessoa>();
-		for (ParticipacaoTrabalho p : trabalho.getParticipacoes()) {
-			if (p.getPapel() == Papel.COAUTOR)
-				coAutores.add(p.getPessoa());
-		}
-
-		return coAutores;
-	}
 	
 }
