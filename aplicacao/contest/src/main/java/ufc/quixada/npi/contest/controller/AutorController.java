@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Submissao;
 import ufc.quixada.npi.contest.model.TipoSubmissao;
 import ufc.quixada.npi.contest.model.Trabalho;
@@ -37,6 +39,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.StorageService;
@@ -44,6 +47,7 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.util.RevisaoJSON;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
 
@@ -103,6 +107,9 @@ public class AutorController {
 
 	@Autowired
 	private StorageService storageService;
+	
+	@Autowired
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
 	@RequestMapping
 	public String index(Model model){
@@ -110,6 +117,26 @@ public class AutorController {
 		model.addAttribute("eventosParaParticipar", eventoService.eventosParaParticipar(autorLogado.getId()));
 		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
+	}
+	
+	@RequestMapping(value="/revisao", method = RequestMethod.GET)
+	public String verRevisao(@RequestParam("trabalhoId") String trabalhoId, Model model, RedirectAttributes redirect){
+		Long idTrabalho = Long.parseLong(trabalhoId);
+		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+		List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
+		Evento evento = trabalho.getEvento();
+		
+		if(!revisoes.isEmpty()){
+			model.addAttribute("titulo", trabalho.getTitulo());
+			List<Map<String, String>> revisoesWrappers = new ArrayList<>();
+			for(Revisao revisao: revisoes){
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));
+			}
+			model.addAttribute("revisoes", revisoesWrappers);
+			return Constants.TEMPLATE_REVISAO_AUTOR;
+		}
+		redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+		return "redirect:/autor/listarTrabalhos/" + evento.getId();
 	}
 	
 	@RequestMapping(value="/participarEvento", method = RequestMethod.GET)
@@ -219,7 +246,10 @@ public class AutorController {
 			trilha = trilhaService.get(idTrilha,idEvento);
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
-			
+			if(evento == null || trilha == null){
+				redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
+				return "redirect:/autor/meusTrabalhos";
+			}
 			submissao = configuraSubmissao(new Submissao(), evento);		
 
 		}catch(NumberFormatException e){
@@ -302,25 +332,40 @@ public class AutorController {
 		}
 	}
    
-	@RequestMapping(value="/file", method=RequestMethod.GET, produces = "application/pdf")
-	public void downloadPDFFile(@RequestParam("path") String path,  HttpServletResponse response)
+	@RequestMapping(value="/file/{trabalho}", method=RequestMethod.GET, produces = "application/pdf")
+	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho,  HttpServletResponse response)
 	        throws IOException {
-
-            try{
-            	Path file = Paths.get(path);
-                response.setContentType("application/pdf");
-                response.addHeader("Content-Disposition", "attachment; filename="+path);
-                Files.copy(file, response.getOutputStream());
-                response.getOutputStream().flush();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-                response.reset();
-                response.sendRedirect("/error/404");
-                response.addHeader("Status", "404 Not Found");
-                response.getOutputStream().flush();
-            }
-
+			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+			if(trabalho==null){
+				response.reset();
+				response.sendRedirect("/error/500");
+				response.getOutputStream().flush();
+			}else{
+				Pessoa autor = getAutorLogado();
+				Long idEvento = trabalho.getEvento().getId();
+				if(participacaoEventoService.isOrganizadorDoEvento(autor, idEvento) ||
+						participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, autor.getId())){
+					try{
+		            	String path = trabalho.getPath();
+		            	Path file = Paths.get(path);
+		                response.setContentType("application/pdf");
+		                response.addHeader("Content-Disposition", "attachment; filename="+path);
+		                Files.copy(file, response.getOutputStream());
+		                response.getOutputStream().flush();
+		            }
+		            catch (IOException e) {
+		                e.printStackTrace();
+		                response.reset();
+		                response.sendRedirect("/error/404");
+		                response.addHeader("Status", "404 Not Found");
+		                response.getOutputStream().flush();
+		            }
+				}else{
+					response.reset();
+					response.sendRedirect("/error/500");
+					response.getOutputStream().flush();
+				}
+			}
 	}
 	
 	@RequestMapping(value="/excluirTrabalho", method = RequestMethod.POST)

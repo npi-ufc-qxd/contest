@@ -1,19 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-	<!-- default header name is X-CSRF-TOKEN -->
-	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-	
-    <title>Constest - Controle de Eventos de Submissão</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <!-- CSS-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <div th:include="fragments/head :: head"></div>
+    <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -21,9 +10,11 @@
       <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
       <div class="row">
         <h2>Lista de Trabalhos</h2>
+        <h3 th:if="${#lists.isEmpty(trabalhos)}">Não existem Trabalhos</h3>
 
         <div>
-          <div class="col s12">
+          <div th:unless="${#lists.isEmpty(trabalhos)}" class="row holder center"></div>
+          <div id="itemContainer" class="col s12">
             <div class="col s4" th:each="trabalho,count : ${trabalhos}">
 	            <div class="card horizontal small" th:classappend="${#lists.size(trabalho.revisores)} ? 'green white-text'">
 	              <div class="card-stacked">
@@ -46,8 +37,7 @@
 	      	<div th:attr="id='modalRevisor' + ${count.index}" class="modal modal-fixed-footer" data-keyboard="">
 	      		<div class="modal-content">
 	      			<h4 class="block" th:text="${trabalho.titulo}">Nome do Trabalho</h4>
-	      			<p><b>Autor(es):</b></p>
-	                  		<p th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}"></p>
+	      					<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
 	      			<div class="row">
 	      			<!-- 
 	      				<div class="input-field col s12">
@@ -83,13 +73,14 @@
 	            
           </div>
           </div>
+          <div th:unless="${#lists.isEmpty(trabalhos)}" class="row holder center"></div>
         </div>
 
       </div>
     </div>
 	<div th:include="fragments/footer :: footer"></div>
 	<script  type="text/javascript" th:src="@{/js/atribuir_revisores.js}"></script>
-	
+	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
 	<script type="text/javascript">
 	/*
 	$(document).ready(function(){

@@ -6,8 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -136,15 +138,17 @@ public class ProfessorParticipaEvento {
 	
 	@Quando("^Realizo uma busca por eventos ativos$")
 	public void buscarEventosAtivos() throws Exception{
+		List<Evento> eventos = new ArrayList<>();
+		when(eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO)).thenReturn(eventos);
 		action = mockMvc.perform(get("/eventoOrganizador/ativos")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
 		
-		verify(eventoService).getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+	
 	}
 	
 	@Entao("^Deve ser mostrado apenas eventos públicos$")
-	public void mostrarEventosPublicos(){
-		verify(eventoService).getEventosByEstadoEVisibilidadePublica(EstadoEvento.ATIVO);
+	public void mostrarEventosPublicos() throws Exception{
+		action.andExpect(view().name("organizador/org_eventos_listar_ativos"));
 	}
 	
 	/**

@@ -31,4 +31,9 @@ public class ParticipacaoTrabalhoService {
 		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaIdAndTrabalhoId(Papel.REVISOR, idRevisor, idTrabalho);
 	}
 	
+	public boolean isParticipandoDoTrabalho(Long idTrabalho, Long idPessoa){
+		return participacaoTrabalhoRepository.
+				findParticipacaoTrabalhoByPessoaIdAndTrabalhoId(idPessoa, idTrabalho) != null ?
+						true : false;
+	}
 }

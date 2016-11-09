@@ -1,15 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Constest - Controle de Eventos de Submissão</title>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-		<!-- CSS  -->
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
-		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <div th:include="fragments/head :: head"></div>
+    <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
   </head>
   <body>
     <div th:include="fragments/header :: header"></div>
@@ -17,18 +10,14 @@
       <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
       <div class="row">
         <h2>Lista de Eventos Ativos</h2>
-	  </div>
-	          
-      <div class="row" > 
-          <h4 th:if="${#lists.isEmpty(eventosAtivos)}">Não há eventos ativos</h4>
-      </div>
-        
-        <div class="row">
+        <h4 th:if="${#lists.isEmpty(eventosAtivos)}">Não há eventos ativos</h4>
+        <div th:unless="${#lists.isEmpty(eventosAtivos)}" class="row holder center"></div>
+        <div class="row" id="itemContainer">
            <div th:each="evento : ${eventosAtivos}" class="col m6 s12">
               <div class="card">
                 <div class="card-content">
 	              <span class="card-title" th:text="${evento.nome}" ></span>
-				  	<div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
+				  <div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
 	              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
                 </div>
                 <div class="card-action">
@@ -61,108 +50,19 @@
         	  </div>
              </div>
         </div>
-        
-<!--         
-                <div class="row col s12 center">
-                  <ul class="pagination">
-                    <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li class="waves-effect"><a href="#">2</a></li>
-                    <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
-                  </ul>
-                </div>
- -->               
+        <div th:unless="${#lists.isEmpty(eventosAtivos)}" class="row holder center"></div>
+         
       </div>
+    </div>
     <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
     <script type="text/javascript">
-      $(document).ready(function(){
-        //Inicialização dos elementos no JS
-        //Parallax BG
-        $('.parallax').parallax();
-        
-        //sideNav
-        $(".button-collapse").sideNav();
-        
-        //Tooltips
-        $('.tooltipped').tooltip({delay: 50});
-        
-        //select_initializer
-        $('select').material_select();
-        
-        //datepicker
-        $('.datepicker').pickadate({
-          selectMonths: true, // Creates a dropdown to control month
-          selectYears: 15, // Creates a dropdown of 15 years to control year
-          //Persnonalizando nomes dos meses do ano
-          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
-          //Persnonalizando nomes dos dias da semana
-          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
-          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
-          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
-          today: 'Hoje',
-          clear: 'Limpar',
-          close: 'Fechar'
+    $(document).ready(function(){
+      	//Inicialização do Jpages para realizar a paginação
+        $("div.holder").jPages({
+        	containerID : "itemContainer"
         });
-        
-        //Trata as datas na tela org_editar_eventos 
-        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
-        var calendarioSubmissaoFinal = "#prazo_submissao_final";
-        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
-        var calendarioRevisaoFinal = "#prazo_revisao_final";
-        
-        function habilitarCalendario(calendario){
-          $(calendario).removeAttr( "disabled" );
-        }
-        
-        function desabilitarCalendario(calendario){
-          $(calendario).attr( "disabled", true );
-          $(calendario).pickadate("clear");
-        }
-        
-        function definirDataMinimaCalendario(calendario, dataMin){
-          var picker = getPicker(calendario);
-          picker.set("min", dataMin);
-        }
-        
-        function getPicker(idCalendario){
-          var $input = $(idCalendario).pickadate();
-          var picker = $input.pickadate("picker");
-          return picker;
-        }
-        
-        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
-          var picker = getPicker(idCalendarioInicial);
-          var dataAtual = picker.get();
-          var umDia = 1;
-          
-          var dataMinima = new Date(dataAtual);
-          dataMinima.setDate(dataMinima.getDate()+umDia);
-                
-          if (dataAtual.length == 0) {
-            desabilitarCalendario(idCalendarioFinal);
-          } else {
-            habilitarCalendario(idCalendarioFinal);       
-            
-            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
-          }
-        }
-        
-        $(calendarioSubmissaoInicial).on("change",function(){
-          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
-        });
-        
-        $(calendarioSubmissaoFinal).on("change",function(){
-          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
-        });
-        
-        $(calendarioRevisaoInicial).on("change",function(){
-          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
-        });
-        
-        //Inicialização do Modal excluir Evento
-        $('.modal-trigger').leanModal();
-        
       });
-    </script>
+     </script>
   </body>
 </html>
