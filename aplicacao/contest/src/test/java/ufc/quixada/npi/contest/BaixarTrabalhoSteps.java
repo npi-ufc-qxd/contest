@@ -23,12 +23,9 @@ import ufc.quixada.npi.contest.controller.AutorController;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
-import ufc.quixada.npi.contest.repository.ParticipacaoTrabalhoRepository;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
-import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
-
 
 public class BaixarTrabalhoSteps {
 
@@ -39,16 +36,10 @@ public class BaixarTrabalhoSteps {
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	@Mock
-	private ParticipacaoTrabalhoRepository participacaoTrabalhoRepository;
-	
-	@Mock
 	private ParticipacaoEventoService participacaoEventoService;
 	
 	@Mock
 	private TrabalhoService trabalhoService;
-	
-	@Mock
-	private PessoaService pessoaService;
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
