@@ -39,6 +39,7 @@ import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -152,6 +153,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
 		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+	}
+	
+	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
+	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		Long eventoId = Long.parseLong(id);
+		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
+		
+		Pessoa organizadorLogado = getOrganizadorLogado();
+		
+		if(PapelLdap.Tipo.DOCENTE.equals(organizadorLogado.getPapelLdap())){
+			if(!revisoes.isEmpty()){
+				model.addAttribute("revisoes", revisoes);
+				return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
+			}
+			redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;			
+		}else{
+			redirect.addFlashAttribute("nao_organizador", messageService.getMessage("NAO_ORGANIZADOR"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;
+		}	
 	}
 	
 	@RequestMapping(value = "/evento/{id}/revisores", method = RequestMethod.GET)
