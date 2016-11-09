@@ -159,17 +159,16 @@ public class Trabalho implements Comparable<Trabalho> {
 		if(lista!=null){
 			StringBuilder nomes = new StringBuilder();
 			for (Pessoa p : lista) {
+				nomes.append(p.getNome());
 				if(lista.indexOf(p)!=(lista.size()-1)){
-					nomes.append(p.getNome()+", ");
-				} else{
-					nomes.append(p.getNome());
+					nomes.append(", ");
 				}
 			}
 			return nomes.toString();
 		}
 		return "";
 	}
-	
+
 	public Pessoa getAutor() {
 		return getParticipacaoPapelTrabalho(Papel.AUTOR).get(0);
 	}
@@ -189,8 +188,7 @@ public class Trabalho implements Comparable<Trabalho> {
 	public boolean isIndicadoMelhoresTrabalhos(){
 		if(this.isRevisado()){
 			for(Revisao revisao : revisoes){
-				String conteudo = revisao.getConteudo();
-				if(conteudo.contains("indicacao")) return true;
+				if(revisao.getConteudo().contains("indicacao")) return true;
 			}
 		}
 		

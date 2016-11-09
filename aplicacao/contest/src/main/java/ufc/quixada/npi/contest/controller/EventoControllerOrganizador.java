@@ -173,6 +173,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value="/evento/{id}/trabalhos", method= RequestMethod.GET)
 	public String verTrabalhosDoEvento(@PathVariable("id") Long idEvento, Model model){
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(evento == null){
+			return "redirect:/error";
+		}
 		
 		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
 		model.addAttribute("trabalhos", trabalhosDoEvento);
