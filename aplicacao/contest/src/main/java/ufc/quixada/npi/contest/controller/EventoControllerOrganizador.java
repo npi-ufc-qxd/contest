@@ -431,18 +431,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
 	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model) throws JRException{
 		
-		if(organizadoresIds != null){
-			List<Pessoa> pessoas = new ArrayList<>();
-			for(Long id : organizadoresIds){
-				pessoas.add(pessoaService.get(id));
-			}
-			
-			if(pessoas != null){
-				jrDataSource  = new JRBeanCollectionDataSource(pessoas);
-				model.addAttribute("datasource", jrDataSource);
-				model.addAttribute("format", "pdf");
-			}
-		}
+		criarDadosPdf(organizadoresIds, model);
 		
 		return "PDF_ORGANIZADOR";
 	}
@@ -458,9 +447,15 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
 	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model) throws JRException{
 		
-		if(revisoresIds != null){
+		criarDadosPdf(revisoresIds, model);
+		
+		return "PDF_REVISORES";
+	}
+	
+	public void criarDadosPdf(Long[] ids, Model model){
+		if(ids != null){
 			List<Pessoa> pessoas = new ArrayList<>();
-			for(Long id : revisoresIds){
+			for(Long id : ids){
 				pessoas.add(pessoaService.get(id));
 			}
 			
@@ -470,10 +465,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				model.addAttribute("format", "pdf");
 			}
 		}
-		
-		return "PDF_REVISORES";
 	}
-
+	
 	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model){
 		Long id = Long.parseLong(idEvento);
