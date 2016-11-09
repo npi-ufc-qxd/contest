@@ -108,5 +108,27 @@
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+    	$('select').material_select();
+
+      //Inicialização do Modal excluir Evento
+      $('.modal-trigger').leanModal();
+      
+      $('.dropdown-button').dropdown({
+          inDuration: 300,
+          outDuration: 225,
+          constrain_width: false, // Does not change width of dropdown to that of the activator
+          hover: true, // Activate on hover
+          gutter: 0, // Spacing from edge
+          belowOrigin: false, // Displays dropdown below the button
+          alignment: 'left' // Displays dropdown with edge aligned to the left of button
+        }
+      );
+      
+    });
+    
+    
+  </script>
   </body>
 </html>
