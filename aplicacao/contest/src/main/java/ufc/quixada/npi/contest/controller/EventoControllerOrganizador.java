@@ -152,12 +152,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
 		
-		if(!revisoes.isEmpty()){
-			model.addAttribute("revisoes", revisoes);
-			return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
-		}
-		redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
-		return "redirect:/eventoOrganizador/evento/" + eventoId;
+		Pessoa organizadorLogado = getOrganizadorLogado();
+		
+		if(PapelLdap.Tipo.DOCENTE.equals(organizadorLogado.getPapelLdap())){
+			if(!revisoes.isEmpty()){
+				model.addAttribute("revisoes", revisoes);
+				return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
+			}
+			redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;			
+		}else{
+			redirect.addFlashAttribute("nao_organizador", messageService.getMessage("NAO_ORGANIZADOR"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;
+		}	
 	}
 	
 	@RequestMapping(value = "/evento/{id}/revisores", method = RequestMethod.GET)
