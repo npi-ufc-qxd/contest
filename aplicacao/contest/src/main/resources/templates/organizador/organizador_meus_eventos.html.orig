@@ -47,7 +47,8 @@
           <div class="row" th:each="evento : ${eventos}">
             <div class="card horizontal">
               <div class="card-stacked">
-                <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
+                <div class="card-content">
+                <span class="card-title" th:text="${evento.nome}"></span>
                   <p th:text="${evento.descricao}">
                   </p>
                   
@@ -103,8 +104,8 @@
     <div th:include="fragments/footer :: footer"></div>
     <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
-    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
-     <script type="text/javascript">
+<<<<<<< HEAD
+    <script type="text/javascript">
 		$(document).ready(function(){
 			
 			buscar = function(e,componente) {
@@ -131,8 +132,9 @@
 		var map={"â":"a","Â":"A","à":"a","À":"A","á":"a","Á":"A","ã":"a","Ã":"A","ê":"e","Ê":"E","è":"e","È":"E","é":"e","É":"E","î":"i","Î":"I","ì":"i","Ì":"I","í":"i","Í":"I","õ":"o","Õ":"O","ô":"o","Ô":"O","ò":"o","Ò":"O","ó":"o","Ó":"O","ü":"u","Ü":"U","û":"u","Û":"U","ú":"u","Ú":"U","ù":"u","Ù":"U","ç":"c","Ç":"C"};
 
 		function removerAcentos(s){ return s.replace(/[\W\[\] ]/g,function(a){return map[a]||a}) };
-		
-		
 	</script>
+=======
+    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+>>>>>>> refs/heads/master
   </body>
 </html>

@@ -35,6 +35,6 @@ Funcionalidade: Professor revisa trabalhos submetidos
 	  	E Tento revisar um trabalho que não sou revisor
 	  	Então uma mensagem de erro de permissão deve ser mostrada
 	  	
-	  Cenário: Professor tenta baixar um trabalho em que não é revisor e nem organizador do evento do trabalho
-	  	E Tento baixar um trabalho em que não sou revisor e nem organizador do evento do trabalho
-		Então um erro deve ser mostrado
+	  Cenário: Professor tenta revisar um trabalho que já foi revisado por ele
+	  	E Tento revisar um trabalho que já revisei
+		Então uma mensagem informando um erro deve ser mostrada

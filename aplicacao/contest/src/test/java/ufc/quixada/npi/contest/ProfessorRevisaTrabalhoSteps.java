@@ -398,4 +398,37 @@ public class ProfessorRevisaTrabalhoSteps {
 		action.andExpect(view().name("revisor/erro_permissao_de_revisor"));
 	}
 	
+	/* Cenário: Professor tenta revisar um trabalho que já foi revisado por ele*/
+	@E("^Tento revisar um trabalho que já revisei$")
+	public void trabalhoJaRevisado() throws Exception{
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+				
+		Evento evento = Mockito.mock(Evento.class);
+		evento.setId(1L);
+		
+		trabalho = new Trabalho();
+		trabalho.setId(1L);
+		
+		revisor = new Pessoa();
+		revisor.setId(1L);
+		
+		when(trabalhoService.getTrabalhoById(Long.valueOf(1L))).thenReturn(trabalho);
+		when(eventoService.buscarEventoPorId(1L)).thenReturn(evento);
+		when(evento.isPeriodoRevisao()).thenReturn(true);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("11111111101");
+		SecurityContextHolder.setContext(context);
+		
+		when(revisorController.getRevisorLogado()).thenReturn(revisor);
+		when(revisaoService.isTrabalhoRevisadoPeloRevisor(1L, 1L)).thenReturn(true);
+		
+		action = mockMvc
+				.perform(get("/revisor/1/1/revisar"));
+	}
+	
+	@Entao("^uma mensagem informando um erro deve ser mostrada$")
+	public void informarErro() throws Exception{
+		action.andExpect(view().name("revisor/erro_trabalho_ja_revisado"));
+	}
 }
