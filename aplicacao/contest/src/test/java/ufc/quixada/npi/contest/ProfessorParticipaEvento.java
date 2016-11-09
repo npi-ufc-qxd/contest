@@ -143,6 +143,7 @@ public class ProfessorParticipaEvento {
 		action = mockMvc.perform(get("/eventoOrganizador/ativos")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
 		
+	
 	}
 	
 	@Entao("^Deve ser mostrado apenas eventos públicos$")

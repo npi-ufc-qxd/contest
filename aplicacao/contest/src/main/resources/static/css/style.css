@@ -2,6 +2,9 @@ h1, h2, h3 {
   font-weight: lighter;
   color:#37474f ;
 }
+.card .card-content .card-title{
+	line-height: 28px;
+}
 
 .tabs .indicator {
     background-color: #009688;
@@ -13,6 +16,22 @@ h1, h2, h3 {
 
 .card.small{
 	min-height: 400px;
+}
+.holder a.jp-next, .holder a.jp-previous,.holder a.jp-current, .holder a.jp-hidden {
+	color: rgb(106,27,154) !important; 
+	font-size: 15px;
+}
+
+.holder a.jp-next:hover, .holder a.jp-previous:hover,.holder a.jp-current:hover, .holder a.jp-hidden:hover {
+	background-color: #fff !important;
+}
+
+.holder a:hover{
+	background-color: rgb(106,27,154) !important;
+}
+
+.page{
+  min-height: 650px;
 }
 
 .opcoes{
