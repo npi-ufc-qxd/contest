@@ -37,5 +37,4 @@ Funcionalidade: Professor revisa trabalhos submetidos
 	  	
 	  Cenário: Professor tenta revisar um trabalho que já foi revisado por ele
 	  	E Tento revisar um trabalho que já revisei
-	  	Então uma mensagem informando um erro deve ser mostrada
-	  	
+		Então uma mensagem informando um erro deve ser mostrada

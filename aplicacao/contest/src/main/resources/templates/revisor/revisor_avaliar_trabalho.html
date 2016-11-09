@@ -33,7 +33,7 @@
             	<div th:include="fragments/listar_participacoes :: listar('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
             </div>
             <div class="card-action">
-              <a id="baixar-trabalho" th:href="@{'/autor/file?path=' + ${trabalho.path}}" name="baixar-trabalho" class="btn waves-effect waves-light white-text">Fazer Download do Trabalho<i aria-hidden="true" class="fa fa-download left"></i></a>
+              <a id="baixar-trabalho" th:href="@{'/autor/file/' + ${trabalho.id}}" name="baixar-trabalho" class="btn waves-effect waves-light white-text">Fazer Download do Trabalho<i aria-hidden="true" class="fa fa-download left"></i></a>
             </div>
           </div>
         </div>
