@@ -30,7 +30,7 @@
 			<div class="col s12">
 				<div class="input-field row">
 					<input placeholder="Procurando um evento especifico?"
-						id="first_name" type="text" class="col s11 validate" /><a
+						id="filtro-nome" type="text" oninput="buscar(this,'card-stacked')" class="col s11 validate" /><a
 						class="btn-floating btn-large waves-effect waves-light right">
 						<i class="material-icons">search</i>
 					</a>
@@ -96,125 +96,37 @@
 	<!-- footer -->
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
-    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
-    <script type="text/javascript">
-		$(document)
-				.ready(
-						function() {
-							//Inicialização dos elementos no JS
-							//Parallax BG
-							$('.parallax').parallax();
+	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+	 <script type="text/javascript">
+		$(document).ready(function(){
+			
+			buscar = function(e,componente) {
+				var filtro = e;
+				var componente = componente;
+				
+				var nomeFiltro = removerAcentos(filtro.value.toLowerCase());
+				var elemento = document.getElementsByClassName(componente);
+				
+				 for (var i = elemento.length - 1; i >=0; i--){
+					var conteudoBusca = removerAcentos(elemento[i].children[0].children[0].firstElementChild.innerHTML);
+					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+					elemento[i].style.display = corresponde ? '' : 'none';
+			    } 
+				
+			};
+		});
+		
+		/**
+		 * Remove acentos de strings
+		 * @param  {String} string acentuada
+		 * @return {String} string sem acento
+		 */
+		var map={"â":"a","Â":"A","à":"a","À":"A","á":"a","Á":"A","ã":"a","Ã":"A","ê":"e","Ê":"E","è":"e","È":"E","é":"e","É":"E","î":"i","Î":"I","ì":"i","Ì":"I","í":"i","Í":"I","õ":"o","Õ":"O","ô":"o","Ô":"O","ò":"o","Ò":"O","ó":"o","Ó":"O","ü":"u","Ü":"U","û":"u","Û":"U","ú":"u","Ú":"U","ù":"u","Ù":"U","ç":"c","Ç":"C"};
 
-							//sideNav
-							$(".button-collapse").sideNav();
-
-							//Tooltips
-							$('.tooltipped').tooltip({
-								delay : 50
-							});
-
-							//select_initializer
-							$('select').material_select();
-
-							//datepicker
-							$('.datepicker').pickadate(
-									{
-										selectMonths : true, // Creates a dropdown to control month
-										selectYears : 15, // Creates a dropdown of 15 years to control year
-										//Persnonalizando nomes dos meses do ano
-										monthsFull : [ 'Janeiro', 'Fevereiro',
-												'Março', 'Abril', 'Maio',
-												'Junho', 'Julho', 'Agosto',
-												'Setembro', 'Outubro',
-												'Novembro', 'Dezembro' ],
-										//Persnonalizando nomes dos dias da semana
-										weekdaysFull : [ 'Domingo', 'Segunda',
-												'Terça', 'Quarta', 'Quinta',
-												'Sexta', 'Sábado' ],
-										weekdaysShort : [ 'Dom', 'Seg', 'Ter',
-												'Qua', 'Qui', 'Sex', 'Sab' ],
-										weekdaysLetter : [ 'D', 'S', 'T', 'Q',
-												'Q', 'S', 'S' ],
-										today : 'Hoje',
-										clear : 'Limpar',
-										close : 'Fechar'
-									});
-
-							//Trata as datas na tela org_editar_eventos 
-							var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
-							var calendarioSubmissaoFinal = "#prazo_submissao_final";
-							var calendarioRevisaoInicial = "#prazo_revisao_inicial";
-							var calendarioRevisaoFinal = "#prazo_revisao_final";
-
-							function habilitarCalendario(calendario) {
-								$(calendario).removeAttr("disabled");
-							}
-
-							function desabilitarCalendario(calendario) {
-								$(calendario).attr("disabled", true);
-								$(calendario).pickadate("clear");
-							}
-
-							function definirDataMinimaCalendario(calendario,
-									dataMin) {
-								var picker = getPicker(calendario);
-								picker.set("min", dataMin);
-							}
-
-							function getPicker(idCalendario) {
-								var $input = $(idCalendario).pickadate();
-								var picker = $input.pickadate("picker");
-								return picker;
-							}
-
-							function configurarCalendario(idCalendarioInicial,
-									idCalendarioFinal) {
-								var picker = getPicker(idCalendarioInicial);
-								var dataAtual = picker.get();
-								var umDia = 1;
-
-								var dataMinima = new Date(dataAtual);
-								dataMinima
-										.setDate(dataMinima.getDate() + umDia);
-
-								if (dataAtual.length == 0) {
-									desabilitarCalendario(idCalendarioFinal);
-								} else {
-									habilitarCalendario(idCalendarioFinal);
-
-									definirDataMinimaCalendario(
-											idCalendarioFinal, dataMinima);
-								}
-							}
-
-							$(calendarioSubmissaoInicial).on(
-									"change",
-									function() {
-										configurarCalendario(
-												calendarioSubmissaoInicial,
-												calendarioSubmissaoFinal);
-									});
-
-							$(calendarioSubmissaoFinal).on(
-									"change",
-									function() {
-										configurarCalendario(
-												calendarioSubmissaoFinal,
-												calendarioRevisaoInicial);
-									});
-
-							$(calendarioRevisaoInicial).on(
-									"change",
-									function() {
-										configurarCalendario(
-												calendarioRevisaoInicial,
-												calendarioRevisaoFinal);
-									});
-
-							//Inicialização do Modal excluir Evento
-							$('.modal-trigger').leanModal();
-
-						});
+		function removerAcentos(s){ return s.replace(/[\W\[\] ]/g,function(a){return map[a]||a}) };
+		
+		
 	</script>
+	
 </body>
 </html>
