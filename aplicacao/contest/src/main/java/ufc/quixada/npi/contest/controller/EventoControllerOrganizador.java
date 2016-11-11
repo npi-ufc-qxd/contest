@@ -39,6 +39,7 @@ import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -126,22 +127,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Pessoa pessoa = getOrganizadorLogado();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Pessoa> pessoas = new ArrayList<Pessoa>(); 
-		List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
-		boolean organizaEvento = false;
+		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 		
-		for(ParticipacaoEvento pe : pessoa.getParticipacoesEvento()){
-			if(pe.getEvento().getId() == evento.getId() && pe.getPapel() == Papel.ORGANIZADOR){
-				organizaEvento = true;
-				pessoas = pessoaService.getPossiveisOrganizadoresDoEvento(eventoId);
-			}
-		}
-		
-		model.addAttribute("trilhasEvento", trilhas);
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
-		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
 		
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
 		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
@@ -154,6 +144,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("comentarios", trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
 		
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+	}
+	
+	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
+	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		Long eventoId = Long.parseLong(id);
+		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
+		
+		Pessoa organizadorLogado = getOrganizadorLogado();
+		
+		if(PapelLdap.Tipo.DOCENTE.equals(organizadorLogado.getPapelLdap())){
+			if(!revisoes.isEmpty()){
+				model.addAttribute("revisoes", revisoes);
+				return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
+			}
+			redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;			
+		}else{
+			redirect.addFlashAttribute("nao_organizador", messageService.getMessage("NAO_ORGANIZADOR"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;
+		}	
 	}
 	
 	@RequestMapping(value = "/evento/{id}/revisores", method = RequestMethod.GET)
@@ -327,7 +337,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String listaTrilhas(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try{
 			Long eventoId = Long.valueOf(id);
-			model.addAttribute("trilhas", trilhaService.buscarTrilhas(eventoId));
 			model.addAttribute("trilha", new Trilha());
 			model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;

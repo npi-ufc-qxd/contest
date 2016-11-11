@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
-import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.RevisaoRepository;
@@ -63,8 +62,8 @@ public class TrabalhoService {
 		return trabalhoRepository.getAutoresDoTrabalho(idTrabalho);
 	}
 	
-	public List<Trabalho> getTrabalhosPorAutor(Pessoa pessoa,Evento evento){
-		return trabalhoRepository.findByParticipacoesPessoaAndEvento(pessoa, evento);
+	public List<Trabalho> getTrabalhosDoAutorNoEvento(Pessoa pessoa,Evento evento){
+		return trabalhoRepository.getTrabalhoDoAutorNoEvento(pessoa.getId(), evento.getId());
 	}
 	public void remover(Long id){
 		trabalhoRepository.delete(id);
@@ -75,35 +74,12 @@ public class TrabalhoService {
 	}
 	
 	public int buscarQuantidadeTrabalhosNaoRevisadosPorEvento(Evento evento){
-		int naoRevisados = 0;
-		List<Trabalho> trabalhos = getTrabalhosEvento(evento);
-		for (int i = 0; i < trabalhos.size(); i++) {
-			if (trabalhos.get(i).getRevisoes().isEmpty()) {
-				naoRevisados++;
-			}
-		}
-		return naoRevisados;
+		return getTrabalhosEvento(evento).size() - 
+				trabalhoRepository.getTrabalhoRevisadoEvento(evento.getId()).size();
 	}
 	
 	public int buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(Evento evento){
-		int revisoesComentadas = 0;
-		List<Trabalho> trabalhos = getTrabalhosEvento(evento);
-		for (int i = 0; i < trabalhos.size(); i++) {
-			List<Revisao> revisoes = trabalhos.get(i).getRevisoes();
-			if (!revisoes.isEmpty()) {
-				revisoesComentadas += contarComentarios(revisoes);
-			}
-		}
-		return revisoesComentadas;
+		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento.getId());
 	}
 	
-	private int contarComentarios(List<Revisao> revisoes){
-		int comentarios = 0;
-		for (int i = 0; i < revisoes.size(); i++) {
-			if (revisoes.get(i).getObservacoes() != null) {
-				comentarios++;
-			}
-		}
-		return comentarios;
-	}
 }

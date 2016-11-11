@@ -12,6 +12,11 @@
         	<span class="white-text" th:text= "${organizadorError}"></span>
         	<i class="material-icons">close</i>
       </div>
+      
+       <div th:if="${nao_organizador}" class="chip red darken-1">
+        	<span class="white-text" th:text= "${NAO_ORGANIZADOR}"></span>
+        	<i class="material-icons">close</i>
+      </div>
         <h2>Detalhes do Evento: 
         	<span class="card-title" th:text="${evento.nome}" ></span>
         </h2>
@@ -50,7 +55,7 @@
             <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content"><span class="card-title">Trilhas</span>
-                  <p th:text="'Cadastradas: '+ ${numeroTrilhas}"></p>
+                  <p th:text="'Cadastradas: '+ ${#lists.size(evento.trilhas)}"></p>
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
@@ -64,7 +69,7 @@
               <div class="card-stacked">
                 <div class="card-content">
                   <span class="card-title">Revisores</span>
-                  <p th:text="'Cadastrados: '+ ${numeroRevisores}"></p>
+                  <p th:text="'Cadastrados: '+ ${#lists.size(evento.revisores)}"></p>
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
@@ -97,7 +102,8 @@
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
-                  <a href="#" class="btn disabled white-text waves-effect waves-light blue-grey">Ver todas</a>
+                  <a th:if="${comentarios}" th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisoes'}" class="btn white-text waves-effect waves-light blue-grey">Ver todas</a>
+                  <a th:unless="${comentarios} or ${evento.isPeriodoFinal()}" class="btn disabled white-text waves-effect waves-light blue-grey">Ver todas</a>
                 </div>
               </div>
             </div>

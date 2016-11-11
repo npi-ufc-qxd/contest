@@ -117,7 +117,7 @@ public class RevisorController {
 			return "redirect:/error";
 		}
 		
-		
+
 		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
 			
 			
@@ -178,7 +178,7 @@ public class RevisorController {
 			if (!validacao) {
 				redirect.addFlashAttribute("criterioRevisaoVazioError", messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
 				return "redirect:/revisor/" + idEvento + "/" + idTrabalho + "/revisar";
-			}
+			}						
 	
 			String conteudo = RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
 					auto_avaliacao, comentarios_autores, avaliacao_geral, avaliacao_final, indicar);

@@ -38,37 +38,33 @@ public class FileSystemStorageService implements StorageService{
     
    
     @Override
-	public String store(MultipartFile arquivoUpload, String pastaDeDestino) {
-		 try {
+	public String store(MultipartFile arquivoUpload, String pastaDeDestino) throws IOException {
 			 
-			 	String caminho = new StringBuilder(Constants.CAMINHO_TRABALHOS)
-			 			.append(File.separator)
-			 			.append(pastaDeDestino)
-			 			.append(File.separator)			 			
-			 			.toString();
-			 	
-	            if (arquivoUpload.isEmpty()) {
-	                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
-	            }
-	            
-	            File pasta = new File(caminho);
-	            if(!pasta.exists() && !pasta.mkdirs()){
-            		throw new RuntimeException("Destino inexistente");
-	            }
-	            SimpleDateFormat dataFormat = new SimpleDateFormat("-ddMMyy-HHmmss-SSS");
-	            
-	            String caminhoDoArquivo = new StringBuilder(caminho)
-	            		.append(pastaDeDestino)
-	            		.append(dataFormat.format(new Date()))
-	            		.append(".pdf")
-	            		.toString();
-	            
-				Files.copy(arquivoUpload.getInputStream(), Paths.get(caminhoDoArquivo), REPLACE_EXISTING);
-				return caminhoDoArquivo;
+		 	String caminho = new StringBuilder(Constants.CAMINHO_TRABALHOS)
+		 			.append(File.separator)
+		 			.append(pastaDeDestino)
+		 			.append(File.separator)			 			
+		 			.toString();
+		 	
+            if (arquivoUpload.isEmpty()) {
+                throw new StorageException(messsagemService.getMessage("ARQUIVO_VAZIO"));
+            }
+            
+            File pasta = new File(caminho);
+            if(!pasta.exists() && !pasta.mkdirs()){
+        		throw new RuntimeException("Destino inexistente");
+            }
+            SimpleDateFormat dataFormat = new SimpleDateFormat("-ddMMyy-HHmmss-SSS");
+            
+            String caminhoDoArquivo = new StringBuilder(caminho)
+            		.append(pastaDeDestino)
+            		.append(dataFormat.format(new Date()))
+            		.append(".pdf")
+            		.toString();
+            
+			Files.copy(arquivoUpload.getInputStream(), Paths.get(caminhoDoArquivo), REPLACE_EXISTING);
+			return caminhoDoArquivo;
 				
-	        } catch (IOException e) {
-	        	throw new RuntimeException(e) ;
-	        }
 	}
 
     @Override
