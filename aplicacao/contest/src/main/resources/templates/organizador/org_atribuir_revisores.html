@@ -23,7 +23,7 @@
 	                		<h6 th:text="${trabalho.titulo}"></h6>
 	                		<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
 	                		<div th:include="fragments/listar_participacoes :: listar-clean('Revisor(es):', ${trabalho.revisores})"></div>
-	                		<a  th:href= "@{|/autor/file?path=${trabalho.path}|}" class="right confirmar modal-trigger">Ver Arquivo</a>
+	                		<a  th:href= "@{|/autor/file/${trabalho.id}|}" class="right confirmar modal-trigger">Ver Arquivo</a>
 	                   	</div>
 	                   	<div class="card-action">
 	              			<a th:id="${trabalho.id}" th:attr="href='#modalRevisor' + ${count.index}" onclick="trabalho_atual(this)" class="btn white-text waves-effect waves-light blue-grey modal-trigger">Atribuir Revisor</a>

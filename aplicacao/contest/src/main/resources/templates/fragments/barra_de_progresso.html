@@ -1,0 +1,18 @@
+<div class="progress" th:fragment="barra-revisao(revisao)">
+    <div th:if="${revisao} == RUIM" style="width: 20%" class="determinate"></div>
+    <div th:if="${revisao} == FRACO" style="width: 40%" class="determinate"></div>
+    <div th:if="${revisao} == MEDIO" style="width: 60%" class="determinate"></div>
+    <div th:if="${revisao} == BOM" style="width: 80%" class="determinate"></div>
+    <div th:if="${revisao} == OTIMO" style="width: 100%" class="determinate"></div>
+</div>
+
+<div class="progress" th:fragment="barra-revisao-status(revisao)">
+    <div th:if="${revisao} == REPROVADO" style="width: 0%" class="determinate"></div>
+    <div th:if="${revisao} == RESSALVAS" style="width: 50%" class="determinate"></div>
+    <div th:if="${revisao} == APROVADO" style="width: 100%" class="determinate"></div>
+</div>
+	
+	
+	
+	
+	

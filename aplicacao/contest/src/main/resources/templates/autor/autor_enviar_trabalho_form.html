@@ -52,17 +52,7 @@
           
           
           
-          <div id="coautores" class="coautores" th:each ="pessoa,count : ${trabalho.participacoes}" >
-	          <div th:if="${pessoa.pessoa} != null">
-		          <div class="input-field col m5 s5">
-		            <input id="nome_do_coautor"  type="text" th:name="|participacoes[${count.index}].pessoa.nome|" th:value="${pessoa.pessoa.nome}" />
-		            <label for="nome_do_coautor">Autor</label>
-		          </div>
-		          <div class="input-field col m5 s5">
-		            <input id="email_do_coautor" type="text" th:name="|participacoes[${count.index}].pessoa.email|" th:value="${pessoa.pessoa.email}" />
-		            <label for="email_do_coautor" >Email Autor</label>
-		          </div>
-	          </div>
+          <div id="coautores" class="coautores">
           </div>
           <div class="col m1 s1  adicionar-coautor">
             <a class="btn-floating btn-medium waves-effect waves-light btn tooltipped" data-position="bottom" data-delay="50" data-tooltip="Adicionar Coautor"><i class="material-icons">add</i></a>
@@ -183,7 +173,7 @@
         //Inicialização do Modal excluir Evento
         $('.modal-trigger').leanModal();
         
-        var next=0;
+        var next = 0;
         $('.adicionar-coautor').click(function() {
         	//add div nome
         	var divNome = $("<div />");

@@ -125,22 +125,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Pessoa pessoa = getOrganizadorLogado();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Pessoa> pessoas = new ArrayList<Pessoa>(); 
-		List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
-		boolean organizaEvento = false;
+		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 		
-		for(ParticipacaoEvento pe : pessoa.getParticipacoesEvento()){
-			if(pe.getEvento().getId() == evento.getId() && pe.getPapel() == Papel.ORGANIZADOR){
-				organizaEvento = true;
-				pessoas = pessoaService.getPossiveisOrganizadoresDoEvento(eventoId);
-			}
-		}
-		
-		model.addAttribute("trilhasEvento", trilhas);
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
-		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
 		
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
 		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
