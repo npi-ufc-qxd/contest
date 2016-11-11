@@ -40,6 +40,7 @@
 								<div>
 									<div class="card-content">
 										<span class="card-title" th:text="${trabalho.titulo}"></span>
+										<p><b>Trilha : </b> <span th:text="${trabalho.trilha.nome}"></span></p>
 										<div
 											th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
 										<div
