@@ -195,6 +195,15 @@ public class Trabalho implements Comparable<Trabalho> {
 		return false;
 	}
 	
+	public Avaliacao getStatus(){
+		if(this.isRevisado()){
+			for(Revisao revisao : revisoes){
+				return revisao.getAvaliacao();
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 		return "Trabalho [id=" + id + ", titulo=" + titulo + ", evento=" + evento + ", trilha=" + trilha

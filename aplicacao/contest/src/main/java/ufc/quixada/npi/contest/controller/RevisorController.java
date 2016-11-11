@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ufc.quixada.npi.contest.model.AvaliacaoTrabalho;
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
@@ -191,13 +191,13 @@ public class RevisorController {
 			
 			switch (avaliacao_final) {
 				case "APROVADO":
-					revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.APROVADO);
+					revisao.setAvaliacao(Avaliacao.APROVADO);
 					break;
 				case "RESSALVAS":
-					revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.RESSALVAS);
+					revisao.setAvaliacao(Avaliacao.RESSALVAS);
 					break;
 				case "REPROVADO":
-					revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.REPROVADO);
+					revisao.setAvaliacao(Avaliacao.REPROVADO);
 					break;
 				default:
 					break;

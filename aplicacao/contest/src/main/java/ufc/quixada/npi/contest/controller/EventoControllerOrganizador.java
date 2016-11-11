@@ -28,9 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Email;
 import ufc.quixada.npi.contest.model.Email.EmailBuilder;
-
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Notificacao;
@@ -178,6 +178,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		}
 		
 		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
+		model.addAttribute("evento", evento);
+		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhosDoEvento);
 		return TRABALHOS_DO_EVENTO;
 	}
