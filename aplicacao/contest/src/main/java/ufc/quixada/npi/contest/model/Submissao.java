@@ -35,6 +35,9 @@ public class Submissao {
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Trabalho trabalho;
 
+	public Submissao(){
+		this.setDataSubmissao(new Date());
+	}
 	public Long getId() {
 		return id;
 	}
@@ -65,6 +68,11 @@ public class Submissao {
 
 	public void setTrabalho(Trabalho trabalho) {
 		this.trabalho = trabalho;
+		if(trabalho.getEvento().isPeriodoInicial()){
+			this.setTipoSubmissao(TipoSubmissao.PARCIAL);
+		}else {
+			this.setTipoSubmissao(TipoSubmissao.FINAL);
+		}
 	}
 
 	@Override

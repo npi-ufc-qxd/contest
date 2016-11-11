@@ -27,6 +27,10 @@ public class RevisaoService {
 		return revisaoRepository.findRevisaoByTrabalho(trabalho);
 	}
 	
+	public List<Revisao> getRevisaoByEvento(Long evento){
+		return revisaoRepository.revisoesEvento(evento);
+	}
+	
 	public void adicionarOuAtualizarRevisao(Revisao revisao) {
 		revisaoRepository.save(revisao);
 	}

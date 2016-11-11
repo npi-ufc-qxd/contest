@@ -1,8 +1,8 @@
 package ufc.quixada.npi.contest;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -31,7 +31,7 @@ import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Então;
 import ufc.quixada.npi.contest.controller.RevisorController;
-import ufc.quixada.npi.contest.model.AvaliacaoTrabalho;
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
@@ -149,7 +149,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		when(criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
 				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(true);
 		
-		when(revisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
+		when(RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
 				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'OTIMO','clareza':'OTIMO',"
 						+ "'avaliacao_geral':'OTIMO','qualidade':'OTIMO','formatacao':'Problemas com a formatação',"
 						+ "'relevancia':'Especialista','comentarios':'Bom Trabalho',"
@@ -165,7 +165,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		revisao = new Revisao();
 		revisao.setConteudo("conteudo");
 		revisao.setObservacoes(comentarios_organizacao);
-		revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.REPROVADO);
+		revisao.setAvaliacao(Avaliacao.REPROVADO);
 		revisao.setTrabalho(trabalho);
 		
 		action = mockMvc

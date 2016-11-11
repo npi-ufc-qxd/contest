@@ -45,6 +45,7 @@ public class Trabalho implements Comparable<Trabalho> {
 	private List<Revisao> revisoes;
 
 	@OneToMany(mappedBy = "trabalho", cascade=CascadeType.ALL)
+	@OrderBy("papel")
 	private List<ParticipacaoTrabalho> participacoes;
 
 	@Column(name="path")
@@ -142,6 +143,34 @@ public class Trabalho implements Comparable<Trabalho> {
 		return true;
 	}
 	
+	public void setAutores(Pessoa autor, List<Pessoa> coautores){
+		ParticipacaoTrabalho participacaoAutor = new ParticipacaoTrabalho();
+		participacaoAutor.setPapel(Papel.AUTOR);
+		participacaoAutor.setTrabalho(this);
+		participacaoAutor.setPessoa(autor);
+		
+		participacoes = new ArrayList<ParticipacaoTrabalho>();
+		for (Pessoa pessoa : coautores) {
+			ParticipacaoTrabalho participacaoCoautor = new ParticipacaoTrabalho();
+			participacaoCoautor.setPapel(Papel.COAUTOR);
+			participacaoCoautor.setTrabalho(this);
+			participacaoCoautor.setPessoa(pessoa);
+			participacoes.add(participacaoCoautor);
+		}
+		participacoes.add(participacaoAutor);
+	}
+	
+	public void setCoautores(List<Pessoa> coautores) {
+		
+		for (Pessoa pessoa : coautores) {
+			ParticipacaoTrabalho participacaoCoautor = new ParticipacaoTrabalho();
+			participacaoCoautor.setPapel(Papel.COAUTOR);
+			participacaoCoautor.setTrabalho(this);
+			participacaoCoautor.setPessoa(pessoa);
+			participacoes.add(participacaoCoautor);
+		}
+	}
+	
 	private List<Pessoa> getParticipacaoPapelTrabalho(Papel... papeis) {
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
@@ -159,17 +188,16 @@ public class Trabalho implements Comparable<Trabalho> {
 		if(lista!=null){
 			StringBuilder nomes = new StringBuilder();
 			for (Pessoa p : lista) {
+				nomes.append(p.getNome());
 				if(lista.indexOf(p)!=(lista.size()-1)){
-					nomes.append(p.getNome()+", ");
-				} else{
-					nomes.append(p.getNome());
+					nomes.append(", ");
 				}
 			}
 			return nomes.toString();
 		}
 		return "";
 	}
-	
+
 	public Pessoa getAutor() {
 		return getParticipacaoPapelTrabalho(Papel.AUTOR).get(0);
 	}
@@ -180,6 +208,29 @@ public class Trabalho implements Comparable<Trabalho> {
 	
 	public List<Pessoa> getRevisores(){
 		return getParticipacaoPapelTrabalho(Papel.REVISOR);
+	}
+	
+	public boolean isRevisado(){
+		return (revisoes != null && revisoes.size() > 0) ? true : false;
+	}
+	
+	public boolean isIndicadoMelhoresTrabalhos(){
+		if(this.isRevisado()){
+			for(Revisao revisao : revisoes){
+				if(revisao.getConteudo().contains("indicacao")) return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public Avaliacao getStatus(){
+		if(this.isRevisado()){
+			for(Revisao revisao : revisoes){
+				return revisao.getAvaliacao();
+			}
+		}
+		return null;
 	}
 	
 	@Override
@@ -198,6 +249,8 @@ public class Trabalho implements Comparable<Trabalho> {
 		}
 		return 0;
 	}
+
+	
 	
 	
 }

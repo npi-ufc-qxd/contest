@@ -102,8 +102,10 @@ $(document).ready(function(){
 	}
 
 	//Inicialização do Jpages para realizar a paginação
+	/*
     $("div.holder").jPages({
     	containerID : "itemContainer",
     	perPage: 6 //Quantidade de elementos exibidos por página.
     });
+    */
 });

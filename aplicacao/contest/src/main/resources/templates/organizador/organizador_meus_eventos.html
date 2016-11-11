@@ -38,7 +38,7 @@
         </div>
         <div class="row">
           <div class="input-field">
-            <input id="pesquisar" type="text" class="col s11"/>
+            <input id="pesquisar" type="text" oninput="buscar(this,'card-stacked')" class="col s11"/>
             <label for="pesquisar">Procurando um evento específico?</label><a class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">search</i></a>
           </div>
         </div>
@@ -47,50 +47,10 @@
           <div class="row" th:each="evento : ${eventos}">
             <div class="card horizontal">
               <div class="card-stacked">
-                <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
-                  <p th:text="${evento.descricao}">
-                  </p>
-                  
-                 <section class="cd-horizontal-timeline">
-					<div class="timeline">
-						<div class="events-wrapper">
-							<div class="events">
-								<ol>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}" class="selected" th:text="${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMM')}">16 Jan</a></li>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoInicial},'dd MMM')}">28 Feb</a></li>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoRevisaoFinal},'dd MMM')}">20 Mar</a></li>
-									<li><a href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}" th:text="${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMM')}">20 Mar</a></li>
-								</ol>
-								<span class="filling-line" aria-hidden="true"></span>
-							</div>
-						</div>
-						<ul class="cd-timeline-navigation">
-							<li><a href="#0" class="prev inactive">Prev</a></li>
-							<li><a href="#0" class="next">Next</a></li>
-						</ul>
-					</div>
-					<div class="events-content">
-						<ol>
-							<li class="selected" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')}">
-								<em>Começa o período de submissão dos trabalhos</em>
-							</li>
-							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')}">
-								<em>Terminou o periodo de submissão inicial, hora de começar as Revisões</em>
-							</li>
-				
-							<li th:attr="data-date=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')}">
-								<em>Terminaram as revisões, hora de submeter a versão final</em>
-							</li>
-							
-							<li href="#0" th:attr="data-date=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')}">
-								<em>Último dia para submeter a versão final do trabalho</em>
-							</li>
-						</ol>
-					</div>
-				 </section>
-                </div>
+                <div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
                 <div class="card-action">
                 	<a th:if="${evento.isPeriodoRevisao()}" th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a>
+                	<a  th:if="${evento.isPeriodoFinal()}" class="btn disabled grey white-text">Prazo de revisão encerrado</a>
                     <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id}}" class="purple-text">Detalhes</a>
                 </div>
               </div>
@@ -104,5 +64,35 @@
     <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
     <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+     <script type="text/javascript">
+		$(document).ready(function(){
+			
+			buscar = function(e,componente) {
+				var filtro = e;
+				var componente = componente;
+				
+				var nomeFiltro = removerAcentos(filtro.value.toLowerCase());
+				var elemento = document.getElementsByClassName(componente);
+				
+				 for (var i = elemento.length - 1; i >=0; i--){
+					var conteudoBusca = removerAcentos(elemento[i].children[0].firstElementChild.innerHTML);
+					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+					elemento[i].style.display = corresponde ? '' : 'none';
+			    } 
+				
+			};
+		});
+		
+		/**
+		 * Remove acentos de strings
+		 * @param  {String} string acentuada
+		 * @return {String} string sem acento
+		 */
+		var map={"â":"a","Â":"A","à":"a","À":"A","á":"a","Á":"A","ã":"a","Ã":"A","ê":"e","Ê":"E","è":"e","È":"E","é":"e","É":"E","î":"i","Î":"I","ì":"i","Ì":"I","í":"i","Í":"I","õ":"o","Õ":"O","ô":"o","Ô":"O","ò":"o","Ò":"O","ó":"o","Ó":"O","ü":"u","Ü":"U","û":"u","Û":"U","ú":"u","Ú":"U","ù":"u","Ù":"U","ç":"c","Ç":"C"};
+
+		function removerAcentos(s){ return s.replace(/[\W\[\] ]/g,function(a){return map[a]||a}) };
+		
+		
+	</script>
   </body>
 </html>
