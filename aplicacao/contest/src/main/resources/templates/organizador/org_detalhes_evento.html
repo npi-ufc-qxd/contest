@@ -55,7 +55,7 @@
             <div class="card horizontal">
               <div class="card-stacked">
                 <div class="card-content"><span class="card-title">Trilhas</span>
-                  <p th:text="'Cadastradas: '+ ${numeroTrilhas}"></p>
+                  <p th:text="'Cadastradas: '+ ${#lists.size(evento.trilhas)}"></p>
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
@@ -69,7 +69,7 @@
               <div class="card-stacked">
                 <div class="card-content">
                   <span class="card-title">Revisores</span>
-                  <p th:text="'Cadastrados: '+ ${numeroRevisores}"></p>
+                  <p th:text="'Cadastrados: '+ ${#lists.size(evento.revisores)}"></p>
                   <br /><br />
                 </div>
                 <div class="card-action" th:if="${organizaEvento}">
