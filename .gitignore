@@ -22,6 +22,8 @@ aplicacao/contest/.mvn
 aplicacao/contest/mvnw*
 
 aplicacao/contest/src/main/resources/application.properties
+aplicacao/contest/src/main/resources/application-homologacao.properties
+aplicacao/contest/src/main/resources/application-producao.properties
 
 *.bak
 *.log
