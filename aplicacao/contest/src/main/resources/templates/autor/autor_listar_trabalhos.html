@@ -7,7 +7,7 @@
     <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
       <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
-      <h2 th:text="'Evento:' + ${nomeEvento}"></h2>
+      <h2 th:text="'Evento:' + ${evento.nome}"></h2>
       
       <div>
 		<div th:if="${trabalhoExcluido}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}">
@@ -52,8 +52,7 @@
         	  <div class="card-content"><span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span>
                 <div class="row">
                 <div class="col s4">
-                	<p><b>Autor(es):</b></p>
-                	<p th:each="autor : ${trabalho.autoresDoTrabalho}" th:text="${autor.nome}" class="collection-item" >Nome Autor</p>
+                	<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
                 </div>
                 
                 <div class="col s4">
@@ -97,7 +96,7 @@
 			        </div>
 		       
 		        	<input type="hidden" name="trabalhoId" th:value="${trabalho.id}"/>
-					<input type="hidden" name="eventoId" th:value="${eventoId}"/>
+					<input type="hidden" name="eventoId" th:value="${evento.id}"/>
 			        <div class="modal-footer">
 			          <button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
 			          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>

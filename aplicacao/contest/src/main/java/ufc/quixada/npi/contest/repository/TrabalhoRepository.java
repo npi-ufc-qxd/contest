@@ -34,7 +34,9 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	
 	public List<Trabalho> findByTrilha(Trilha trilha);
 	
-	public List<Trabalho> findByParticipacoesPessoaAndEvento(Pessoa pessoa,Evento evento);
+	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :eventoId AND t.id in (SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
+			+ " pt where pt.pessoa.id = :autorId AND pt.papel = ufc.quixada.npi.contest.model.Papel.AUTOR)")
+	public List<Trabalho> getTrabalhoDoAutorNoEvento(@Param("autorId") Long pessoaId, @Param("eventoId") Long eventoId);
 	
 	public List<Trabalho> findAllByEventoId(Long eventoID);
 }

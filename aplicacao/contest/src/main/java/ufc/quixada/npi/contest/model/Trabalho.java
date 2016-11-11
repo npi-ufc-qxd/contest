@@ -45,6 +45,7 @@ public class Trabalho implements Comparable<Trabalho> {
 	private List<Revisao> revisoes;
 
 	@OneToMany(mappedBy = "trabalho", cascade=CascadeType.ALL)
+	@OrderBy("papel")
 	private List<ParticipacaoTrabalho> participacoes;
 
 	@Column(name="path")
@@ -142,6 +143,34 @@ public class Trabalho implements Comparable<Trabalho> {
 		return true;
 	}
 	
+	public void setAutores(Pessoa autor, List<Pessoa> coautores){
+		ParticipacaoTrabalho participacaoAutor = new ParticipacaoTrabalho();
+		participacaoAutor.setPapel(Papel.AUTOR);
+		participacaoAutor.setTrabalho(this);
+		participacaoAutor.setPessoa(autor);
+		
+		participacoes = new ArrayList<ParticipacaoTrabalho>();
+		for (Pessoa pessoa : coautores) {
+			ParticipacaoTrabalho participacaoCoautor = new ParticipacaoTrabalho();
+			participacaoCoautor.setPapel(Papel.COAUTOR);
+			participacaoCoautor.setTrabalho(this);
+			participacaoCoautor.setPessoa(pessoa);
+			participacoes.add(participacaoCoautor);
+		}
+		participacoes.add(participacaoAutor);
+	}
+	
+	public void setCoautores(List<Pessoa> coautores) {
+		
+		for (Pessoa pessoa : coautores) {
+			ParticipacaoTrabalho participacaoCoautor = new ParticipacaoTrabalho();
+			participacaoCoautor.setPapel(Papel.COAUTOR);
+			participacaoCoautor.setTrabalho(this);
+			participacaoCoautor.setPessoa(pessoa);
+			participacoes.add(participacaoCoautor);
+		}
+	}
+	
 	private List<Pessoa> getParticipacaoPapelTrabalho(Papel... papeis) {
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
@@ -198,6 +227,8 @@ public class Trabalho implements Comparable<Trabalho> {
 		}
 		return 0;
 	}
+
+	
 	
 	
 }

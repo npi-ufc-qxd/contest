@@ -34,14 +34,14 @@
             <div class="card-stacked">
               <div th:include="fragments/evento_timeline :: evento-timeline(${evento})"></div>
               <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
-                  <a th:if="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
-               	  <a th:unless="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" class="btn disabled grey white-text">Fora do Prazo de Envio de Trabalho</a>
+                  <a th:if="${evento.isPeriodoInicial()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:if="${evento.isPeriodoRevisao()}" class="btn disabled grey white-text">Fora do Prazo de Envio de Trabalho</a>
                	  
                	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                 </div>
                 <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'TEM_REVISAO'">
-                  <a th:if="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
-               	  <a th:unless="${evento.isPeriodoInicial()} or ${evento.isPeriodoFinal()}" class="btn disabled grey white-text">Fora do Prazo de Envio de Trabalho</a>
+                  <a th:if="${evento.isPeriodoInicial()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:if="${evento.isPeriodoRevisao()}" class="btn disabled grey white-text">Fora do Prazo de Envio de Trabalho</a>
                	  
                	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                 </div>

@@ -63,8 +63,8 @@ public class TrabalhoService {
 		return trabalhoRepository.getAutoresDoTrabalho(idTrabalho);
 	}
 	
-	public List<Trabalho> getTrabalhosPorAutor(Pessoa pessoa,Evento evento){
-		return trabalhoRepository.findByParticipacoesPessoaAndEvento(pessoa, evento);
+	public List<Trabalho> getTrabalhosDoAutorNoEvento(Pessoa pessoa,Evento evento){
+		return trabalhoRepository.getTrabalhoDoAutorNoEvento(pessoa.getId(), evento.getId());
 	}
 	public void remover(Long id){
 		trabalhoRepository.delete(id);
