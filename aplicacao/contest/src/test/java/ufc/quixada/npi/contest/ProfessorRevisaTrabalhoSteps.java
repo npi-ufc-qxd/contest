@@ -31,7 +31,7 @@ import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Então;
 import ufc.quixada.npi.contest.controller.RevisorController;
-import ufc.quixada.npi.contest.model.AvaliacaoTrabalho;
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
@@ -165,7 +165,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		revisao = new Revisao();
 		revisao.setConteudo("conteudo");
 		revisao.setObservacoes(comentarios_organizacao);
-		revisao.setAvaliacao(AvaliacaoTrabalho.Avaliacao.REPROVADO);
+		revisao.setAvaliacao(Avaliacao.REPROVADO);
 		revisao.setTrabalho(trabalho);
 		
 		action = mockMvc

@@ -11,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import ufc.quixada.npi.contest.model.AvaliacaoTrabalho.Avaliacao;
-
 @Entity
 @Table(name = "revisao")
 public class Revisao {
@@ -27,7 +25,7 @@ public class Revisao {
 
 	@Column(name = "avaliacao")
 	@Enumerated(EnumType.STRING)
-	private AvaliacaoTrabalho.Avaliacao avaliacao;
+	private Avaliacao avaliacao;
 	
 	@Column(name="observacoes", columnDefinition="TEXT")
 	private String observacoes;
@@ -58,7 +56,7 @@ public class Revisao {
 		return avaliacao;
 	}
 
-	public void setAvaliacao(AvaliacaoTrabalho.Avaliacao avaliacao) {
+	public void setAvaliacao(Avaliacao avaliacao) {
 		this.avaliacao = avaliacao;
 	}
 

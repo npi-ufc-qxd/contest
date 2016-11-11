@@ -28,9 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Email;
 import ufc.quixada.npi.contest.model.Email.EmailBuilder;
-
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Notificacao;
@@ -70,6 +70,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String SUBMISSAO_FINAL = "existeSubmissaoFinal";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
+	private static final String TRABALHOS_DO_EVENTO = "organizador/org_ver_trabalhos_evento";
+	
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
@@ -176,6 +178,20 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("evento", evento);
 		model.addAttribute("trabalhos", trabalhos);
 		return Constants.TEMPLATE_ATRIBUIR_REVISOR_ORG;
+	}
+	
+	@RequestMapping(value="/evento/{id}/trabalhos", method= RequestMethod.GET)
+	public String verTrabalhosDoEvento(@PathVariable("id") Long idEvento, Model model){
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(evento == null){
+			return "redirect:/error";
+		}
+		
+		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
+		model.addAttribute("evento", evento);
+		model.addAttribute("opcoesFiltro", Avaliacao.values());
+		model.addAttribute("trabalhos", trabalhosDoEvento);
+		return TRABALHOS_DO_EVENTO;
 	}
 	
 	@RequestMapping(value = "/evento/trabalho/revisor",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
