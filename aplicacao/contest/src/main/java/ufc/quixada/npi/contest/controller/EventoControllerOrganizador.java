@@ -348,13 +348,18 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
 	public String detalhesTrilha(@PathVariable String idTrilha,@PathVariable String idEvento, Model model, RedirectAttributes redirect) {
+		Pessoa pessoaLogado = getOrganizadorLogado();
 		try{
 			Long trilhaId = Long.valueOf(idTrilha);
 			Long eventoId = Long.valueOf(idEvento);
-			Trilha trilha = trilhaService.get(trilhaId, eventoId);
-			model.addAttribute("trilha", trilha);
-			model.addAttribute("trabalhos", trabalhoService.getTrabalhosTrilha(trilha));
-			return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			Trilha trilha = trilhaService.get(trilhaId, eventoId);			
+			if (participacaoEventoService.isOrganizadorDoEvento(pessoaLogado, eventoId)) {
+				model.addAttribute("trilha", trilha);
+				model.addAttribute("trabalhos", trabalhoService.getTrabalhosTrilha(trilha));
+				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
+			}else{
+				return Constants.TEMPLATE_ORGANIZADOR_SEM_PERMISSAO;
+			}	
 		}catch(NumberFormatException e){
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
