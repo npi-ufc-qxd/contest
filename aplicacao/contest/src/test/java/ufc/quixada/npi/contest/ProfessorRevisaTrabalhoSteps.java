@@ -37,6 +37,7 @@ import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.repository.PessoaRepository;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
@@ -73,6 +74,9 @@ public class ProfessorRevisaTrabalhoSteps {
 	private PessoaService pessoaService;
 	
 	@Mock
+	private PessoaRepository pessoaRepository;
+	
+	@Mock
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	private MockMvc mockMvc;
@@ -107,61 +111,48 @@ public class ProfessorRevisaTrabalhoSteps {
 	//Cenário: Professor revisa um trabalho com sucesso
 	@E("^Realizo a revisão de um artigo com todos os critérios obrigatórios selecionados$")
 	public void todosOsCriteriosObrigatoriosSelecionados() throws Exception{
+		revisor = new Pessoa();
+		revisor.setId(1l);
+		
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		Authentication auth = Mockito.mock(Authentication.class);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("11111111101");
+		SecurityContextHolder.setContext(context);
+		
 		
 		Calendar cal = Calendar.getInstance();
-		cal.set(2016, 10, 30);
+		cal.set(2010, 10, 20);
 		Date revisaoInicial =  cal.getTime();
-		cal.set(2018, 11, 10);
+		cal.set(2018, 11, 30);
 		Date revisaoFinal = cal.getTime();
 		
-		Evento evento = Mockito.mock(Evento.class);
+		Evento evento = new Evento();
 		evento.setId(1l);
 		evento.setPrazoRevisaoInicial(revisaoInicial);
 		evento.setPrazoRevisaoFinal(revisaoFinal);
 		
-		revisor = new Pessoa();
-		revisor.setCpf("11111111101");
-		revisor.setId(1l);
-		
 		trabalho = new Trabalho();
 		trabalho.setId(Long.valueOf(1));
-		trabalho.setTitulo("O que fazer na greve");
+		trabalho.setEvento(evento);
 		
 		participacaoTrabalho = new ParticipacaoTrabalho();
 		participacaoTrabalho.setPessoa(revisor);
 		participacaoTrabalho.setTrabalho(trabalho);
 		
 		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-		when(eventoService.buscarEventoPorId(1l)).thenReturn(evento);
-		when(evento.isPeriodoRevisao()).thenReturn(true);
-		when(context.getAuthentication()).thenReturn(auth);
-		when(auth.getName()).thenReturn("11111111101");
-		SecurityContextHolder.setContext(context);
+		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(revisaoService
+				.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))
+				.thenReturn(false);
 		
-		when(revisorController.getRevisorLogado()).thenReturn(revisor);
-		
-		when(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(Long.valueOf(1), Long.valueOf(1))).thenReturn(participacaoTrabalho);
-		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-		when(eventoService.existeEvento(Long.valueOf(idEvento))).thenReturn(true);
+		when(participacaoTrabalhoService
+				.getParticipacaoTrabalhoRevisor(Long.valueOf(1), Long.valueOf(1)))
+				.thenReturn(participacaoTrabalho);
 		
 		when(criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
 				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(true);
-		
-		when(RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao, comentarios_autores, 
-				avaliacao_geral, avaliacao_final, indicar)).thenReturn("{'originalidade':'OTIMO','clareza':'OTIMO',"
-						+ "'avaliacao_geral':'OTIMO','qualidade':'OTIMO','formatacao':'Problemas com a formatação',"
-						+ "'relevancia':'Especialista','comentarios':'Bom Trabalho',"
-						+ "'merito':'OTIMO','avaliacao_final':'APROVADO'}");
-		
-		
-		when(context.getAuthentication()).thenReturn(auth);
-		when(auth.getName()).thenReturn("92995454310");
-		SecurityContextHolder.setContext(context);
-		
-		when(pessoaService.get(1L)).thenReturn(revisor);
-		
+				
 		revisao = new Revisao();
 		revisao.setConteudo("conteudo");
 		revisao.setObservacoes(comentarios_organizacao);
@@ -201,45 +192,46 @@ public class ProfessorRevisaTrabalhoSteps {
 	//Cenário: Professor não preenche todos os campos obrigatórios
 	@E("^Realizo a revisão de um artigo com um critério obrigatório não preenchido$")
 	public void criterioObrigatorioNaoPreenchido() throws Exception{
+		revisor = new Pessoa();
+		revisor.setId(1l);
+		
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		Authentication auth = Mockito.mock(Authentication.class);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("11111111101");
+		SecurityContextHolder.setContext(context);
+		
 		
 		Calendar cal = Calendar.getInstance();
-		cal.set(2016, 10, 30);
+		cal.set(2010, 10, 20);
 		Date revisaoInicial =  cal.getTime();
-		cal.set(2018, 11, 10);
+		cal.set(2018, 11, 30);
 		Date revisaoFinal = cal.getTime();
 		
-		Evento evento = Mockito.mock(Evento.class);
+		Evento evento = new Evento();
 		evento.setId(1l);
 		evento.setPrazoRevisaoInicial(revisaoInicial);
 		evento.setPrazoRevisaoFinal(revisaoFinal);
 		
-		revisor = new Pessoa();
-		revisor.setCpf("11111111101");
-		revisor.setId(1l);
-		
 		trabalho = new Trabalho();
 		trabalho.setId(Long.valueOf(1));
-		trabalho.setTitulo("O que fazer na greve");
+		trabalho.setEvento(evento);
 		
 		participacaoTrabalho = new ParticipacaoTrabalho();
 		participacaoTrabalho.setPessoa(revisor);
 		participacaoTrabalho.setTrabalho(trabalho);
 		
 		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-		when(eventoService.buscarEventoPorId(1l)).thenReturn(evento);
-		when(evento.isPeriodoRevisao()).thenReturn(true);
-		when(context.getAuthentication()).thenReturn(auth);
-		when(auth.getName()).thenReturn("11111111101");
-		SecurityContextHolder.setContext(context);
+		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(revisaoService
+				.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))
+				.thenReturn(false);
 		
-		when(revisorController.getRevisorLogado()).thenReturn(revisor);
+		when(participacaoTrabalhoService
+				.getParticipacaoTrabalhoRevisor(Long.valueOf(1), Long.valueOf(1)))
+				.thenReturn(participacaoTrabalho);
 		
-		when(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(Long.valueOf(1), Long.valueOf(1))).thenReturn(participacaoTrabalho);
-		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-		when(eventoService.existeEvento(Long.valueOf(idEvento))).thenReturn(true);
-		when(criterios.validate(originalidade, merito, "", "", "", "",
+		when(criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
 				comentarios_autores, avaliacao_geral, avaliacao_final)).thenReturn(false);
 		
 		action = mockMvc
@@ -268,7 +260,7 @@ public class ProfessorRevisaTrabalhoSteps {
 	
 	@E("^Uma mensagem de erro deve ser mostrada$")
 	public void mensagemErroMostrada() throws NoSuchMessageException, Exception{
-		action.andExpect(redirectedUrl("/revisor/" + idEvento + "/" + idTrabalho + "/revisar"))
+		action.andExpect(redirectedUrl("/revisor/" + idTrabalho + "/revisar"))
 		.andExpect(flash().attribute("criterioRevisaoVazioError", messageService.getMessage("CRITERIOS_REVISAO_VAZIO")));
 	}
 	
@@ -310,13 +302,24 @@ public class ProfessorRevisaTrabalhoSteps {
 		action.andExpect(redirectedUrl("/error"));
 	}
 	
+	
+	//@Cenário: Professor tenta revisar trabalho fora do período de revisão
 	@E("^Tento revisar um trabalho existente fora do prazo de revisão$")
 	public void revisarTrabalhoForaPrazoRevisao() throws Exception{
+		revisor = new Pessoa();
+		revisor.setId(1l);
+		
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn("11111111101");
+		SecurityContextHolder.setContext(context);
+		
 		
 		Calendar cal = Calendar.getInstance();
-		cal.set(2016, 11, 5);
+		cal.set(2010, 10, 20);
 		Date revisaoInicial =  cal.getTime();
-		cal.set(2016, 11, 10);
+		cal.set(2010, 11, 30);
 		Date revisaoFinal = cal.getTime();
 		
 		Evento evento = Mockito.mock(Evento.class);
@@ -324,15 +327,22 @@ public class ProfessorRevisaTrabalhoSteps {
 		evento.setPrazoRevisaoInicial(revisaoInicial);
 		evento.setPrazoRevisaoFinal(revisaoFinal);
 		
-		trabalho = new Trabalho();
-		trabalho.setId(1l);
+		trabalho = Mockito.mock(Trabalho.class);
+		trabalho.setId(Long.valueOf(1));
+		trabalho.setEvento(evento);
 		
-		when(eventoService.buscarEventoPorId(Long.valueOf(1l))).thenReturn(evento);
-		when(trabalhoService.getTrabalhoById(1l)).thenReturn(trabalho);
+		participacaoTrabalho = new ParticipacaoTrabalho();
+		participacaoTrabalho.setPessoa(revisor);
+		participacaoTrabalho.setTrabalho(trabalho);
+		
+		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
+		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(trabalho.getEvento()).thenReturn(evento);
 		when(evento.isPeriodoRevisao()).thenReturn(false);
 		
+		
 		action = mockMvc
-				.perform(get("/revisor/1/1/revisar"));
+				.perform(get("/revisor/1/revisar"));
 	}
 	
 	@Então("^uma mensagem informativa deve ser mostrada$")
@@ -342,37 +352,42 @@ public class ProfessorRevisaTrabalhoSteps {
 	
 	@E("^Tento revisar um trabalho que não sou revisor$")
 	public void revisarTrabalhoEmQueNaoSouRevisor() throws Exception{
-		SecurityContext context = Mockito.mock(SecurityContext.class);
-		Authentication auth = Mockito.mock(Authentication.class);
-		
-		Calendar cal = Calendar.getInstance();
-		cal.set(2016, 10, 30);
-		Date revisaoInicial =  cal.getTime();
-		cal.set(2018, 11, 10);
-		Date revisaoFinal = cal.getTime();
-		
-		Evento evento = Mockito.mock(Evento.class);
-		evento.setId(1l);
-		evento.setPrazoRevisaoInicial(revisaoInicial);
-		evento.setPrazoRevisaoFinal(revisaoFinal);
-		
 		revisor = new Pessoa();
-		revisor.setCpf("11111111101");
 		revisor.setId(1l);
 		
-		trabalho = new Trabalho();
-		trabalho.setId(Long.valueOf(1));
-		trabalho.setTitulo("O que fazer na greve");
-		
-		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-		when(eventoService.buscarEventoPorId(1l)).thenReturn(evento);
-		when(evento.isPeriodoRevisao()).thenReturn(true);
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
 		when(context.getAuthentication()).thenReturn(auth);
 		when(auth.getName()).thenReturn("11111111101");
 		SecurityContextHolder.setContext(context);
 		
-		when(revisorController.getRevisorLogado()).thenReturn(revisor);
-		when(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(Long.valueOf(1), Long.valueOf(2))).thenReturn(null);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(2010, 10, 20);
+		Date revisaoInicial =  cal.getTime();
+		cal.set(2018, 11, 30);
+		Date revisaoFinal = cal.getTime();
+		
+		Evento evento = new Evento();
+		evento.setId(1l);
+		evento.setPrazoRevisaoInicial(revisaoInicial);
+		evento.setPrazoRevisaoFinal(revisaoFinal);
+		
+		trabalho = new Trabalho();
+		trabalho.setId(Long.valueOf(1));
+		trabalho.setEvento(evento);
+		
+		participacaoTrabalho = new ParticipacaoTrabalho();
+		participacaoTrabalho.setPessoa(revisor);
+		participacaoTrabalho.setTrabalho(trabalho);
+		
+		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
+		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(revisaoService
+				.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))
+				.thenReturn(false);
+		
+		when(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId())).thenReturn(null);
 	
 		action = mockMvc
 				.perform(post("/revisor/avaliar")
@@ -401,30 +416,44 @@ public class ProfessorRevisaTrabalhoSteps {
 	/* Cenário: Professor tenta revisar um trabalho que já foi revisado por ele*/
 	@E("^Tento revisar um trabalho que já revisei$")
 	public void trabalhoJaRevisado() throws Exception{
+		revisor = new Pessoa();
+		revisor.setId(1l);
+		
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		Authentication auth = Mockito.mock(Authentication.class);
-				
-		Evento evento = Mockito.mock(Evento.class);
-		evento.setId(1L);
-		
-		trabalho = new Trabalho();
-		trabalho.setId(1L);
-		
-		revisor = new Pessoa();
-		revisor.setId(1L);
-		
-		when(trabalhoService.getTrabalhoById(Long.valueOf(1L))).thenReturn(trabalho);
-		when(eventoService.buscarEventoPorId(1L)).thenReturn(evento);
-		when(evento.isPeriodoRevisao()).thenReturn(true);
 		when(context.getAuthentication()).thenReturn(auth);
 		when(auth.getName()).thenReturn("11111111101");
 		SecurityContextHolder.setContext(context);
 		
-		when(revisorController.getRevisorLogado()).thenReturn(revisor);
-		when(revisaoService.isTrabalhoRevisadoPeloRevisor(1L, 1L)).thenReturn(true);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(2010, 10, 20);
+		Date revisaoInicial =  cal.getTime();
+		cal.set(2010, 11, 30);
+		Date revisaoFinal = cal.getTime();
+		
+		Evento evento = Mockito.mock(Evento.class);
+		evento.setId(1l);
+		evento.setPrazoRevisaoInicial(revisaoInicial);
+		evento.setPrazoRevisaoFinal(revisaoFinal);
+		
+		trabalho = Mockito.mock(Trabalho.class);
+		trabalho.setId(Long.valueOf(1));
+		trabalho.setEvento(evento);
+		
+		participacaoTrabalho = new ParticipacaoTrabalho();
+		participacaoTrabalho.setPessoa(revisor);
+		participacaoTrabalho.setTrabalho(trabalho);
+		
+		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
+		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(trabalho.getEvento()).thenReturn(evento);
+		when(evento.isPeriodoRevisao()).thenReturn(true);
+		when(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))
+				.thenReturn(true);
 		
 		action = mockMvc
-				.perform(get("/revisor/1/1/revisar"));
+				.perform(get("/revisor/1/revisar"));
 	}
 	
 	@Entao("^uma mensagem informando um erro deve ser mostrada$")
