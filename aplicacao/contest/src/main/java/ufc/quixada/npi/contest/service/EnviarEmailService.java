@@ -1,10 +1,12 @@
 package ufc.quixada.npi.contest.service;
 
 import java.util.Map;
+import java.util.Properties;
+
+import javax.mail.Session;
 
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,10 @@ import ufc.quixada.npi.contest.util.Constants;
 public class EnviarEmailService {
 
 	private Email email;
+	
 	private SimpleMailMessage templateMessage;
-	private JavaMailSender javaMailSender;
+	private JavaMailSenderImpl javaMailSender;
+
 	
 	public EnviarEmailService() {}
 
@@ -24,10 +28,26 @@ public class EnviarEmailService {
 		this.email = email;
 		this.javaMailSender = new JavaMailSenderImpl();
 		this.templateMessage = new SimpleMailMessage();
+		
+		
 	}
 
 	public boolean enviarEmail() {
-		
+//
+//		this.javaMailSender.setHost("200.129.38.134");
+//	
+//		
+//		Properties props = new Properties();
+//		props.put("mail.smtp.starttls.enable","true");
+//		props.put( "mail.smtp.auth", "true" );
+//		props.put("mail.smtp.port","587");
+//		
+//		this.javaMailSender.setPassword("");
+//		this.javaMailSender.setPort(587);
+//		this.javaMailSender.setProtocol("smtp");
+//		Session session = Session.getDefaultInstance(props,null); 
+//		this.javaMailSender.setSession(session);
+	
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
 		
 		Map<String, String> destinatariosHash;
@@ -53,6 +73,5 @@ public class EnviarEmailService {
 			return false;
 		}
 		return true;
-		
 	}
 }
