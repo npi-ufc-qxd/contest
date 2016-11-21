@@ -96,10 +96,4 @@ public class EventoService {
 		return eventoRepository.findEventoByEstadoAndVisibilidade(estado, VisibilidadeEvento.PUBLICO);
 	}
 	
-	public Boolean organizadorParticipaEvento(Long organizador, Evento evento){
-		return null;		
-	}
-	
-	
-	
 }
