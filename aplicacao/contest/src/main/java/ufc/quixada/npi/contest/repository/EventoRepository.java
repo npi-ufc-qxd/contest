@@ -38,4 +38,7 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 	
 	public List<Evento> findEventoByEstado(EstadoEvento estadoEvento);
 	
+	@Query("select case when count(*) > 0 then true else false end "
+			+ "FROM Revisao as r, Trabalho as t  WHERE r.trabalho.id = t.id and t.evento.id = :idEvento")
+	public boolean organizadorParticipaEvento(@Param("idEvento") Long idEvento);
 }
