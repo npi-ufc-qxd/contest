@@ -28,9 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Email;
 import ufc.quixada.npi.contest.model.Email.EmailBuilder;
-
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Notificacao;
@@ -39,6 +39,7 @@ import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -69,6 +70,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String SUBMISSAO_FINAL = "existeSubmissaoFinal";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
+	private static final String TRABALHOS_DO_EVENTO = "organizador/org_ver_trabalhos_evento";
+	
 	
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
@@ -125,22 +128,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Pessoa pessoa = getOrganizadorLogado();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Pessoa> pessoas = new ArrayList<Pessoa>(); 
-		List<Trilha> trilhas = trilhaService.buscarTrilhas(Long.parseLong(id));
-		boolean organizaEvento = false;
+		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 		
-		for(ParticipacaoEvento pe : pessoa.getParticipacoesEvento()){
-			if(pe.getEvento().getId() == evento.getId() && pe.getPapel() == Papel.ORGANIZADOR){
-				organizaEvento = true;
-				pessoas = pessoaService.getPossiveisOrganizadoresDoEvento(eventoId);
-			}
-		}
-		
-		model.addAttribute("trilhasEvento", trilhas);
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("numeroTrilhas", trilhaService.buscarQtdTrilhasPorEvento(eventoId));
-		model.addAttribute("numeroRevisores", participacaoEventoService.buscarQuantidadeRevisoresPorEvento(eventoId));
 		
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
 		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
@@ -155,6 +147,26 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 	
+	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
+	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		Long eventoId = Long.parseLong(id);
+		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
+		
+		Pessoa organizadorLogado = getOrganizadorLogado();
+		
+		if(PapelLdap.Tipo.DOCENTE.equals(organizadorLogado.getPapelLdap())){
+			if(!revisoes.isEmpty()){
+				model.addAttribute("revisoes", revisoes);
+				return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
+			}
+			redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;			
+		}else{
+			redirect.addFlashAttribute("nao_organizador", messageService.getMessage("NAO_ORGANIZADOR"));
+			return "redirect:/eventoOrganizador/evento/" + eventoId;
+		}	
+	}
+	
 	@RequestMapping(value = "/evento/{id}/revisores", method = RequestMethod.GET)
 	public String gerenciarRevisor(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
@@ -167,6 +179,20 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("evento", evento);
 		model.addAttribute("trabalhos", trabalhos);
 		return Constants.TEMPLATE_ATRIBUIR_REVISOR_ORG;
+	}
+	
+	@RequestMapping(value="/evento/{id}/trabalhos", method= RequestMethod.GET)
+	public String verTrabalhosDoEvento(@PathVariable("id") Long idEvento, Model model){
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if(evento == null){
+			return "redirect:/error";
+		}
+		
+		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
+		model.addAttribute("evento", evento);
+		model.addAttribute("opcoesFiltro", Avaliacao.values());
+		model.addAttribute("trabalhos", trabalhosDoEvento);
+		return TRABALHOS_DO_EVENTO;
 	}
 	
 	@RequestMapping(value = "/evento/trabalho/revisor",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -312,7 +338,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public String listaTrilhas(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try{
 			Long eventoId = Long.valueOf(id);
-			model.addAttribute("trilhas", trilhaService.buscarTrilhas(eventoId));
 			model.addAttribute("trilha", new Trilha());
 			model.addAttribute("evento", eventoService.buscarEventoPorId(eventoId));
 			return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;

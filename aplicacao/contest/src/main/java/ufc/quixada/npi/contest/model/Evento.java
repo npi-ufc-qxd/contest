@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -69,6 +70,7 @@ public class Evento {
 	private List<ParticipacaoEvento> participacoes;
 	
 	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	@OrderBy("nome ASC")
 	private List<Trilha> trilhas;
 
 	public Long getId() {
@@ -224,16 +226,26 @@ public class Evento {
 		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(prazoSubmissaoFinal)<= 0);
 		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
 	}
-	
-	
-	public List<Pessoa> getOrganizadores(){
-		List<Pessoa> organizadores = new ArrayList<Pessoa>();
-		for(ParticipacaoEvento participacao : participacoes){
-			if(participacao.getPapel() == Papel.ORGANIZADOR){
-				organizadores.add(participacao.getPessoa());
+	private List<Pessoa> getByPapel(Papel ...papeis){
+		List<Pessoa> pessoa = new ArrayList<Pessoa>();
+		for (ParticipacaoEvento p : getParticipacoes()) {
+			for(Papel papel : papeis){
+				if (p.getPapel() == papel){
+					pessoa.add(p.getPessoa());
+				}
 			}
 		}
-		return organizadores;
+		return pessoa;
+		
+	}
+	
+	public List<Pessoa> getOrganizadores(){
+		return getByPapel(Papel.ORGANIZADOR);
+	}
+	
+	
+	public List<Pessoa> getRevisores(){
+		return getByPapel(Papel.REVISOR);
 	}
 	
 }

@@ -34,7 +34,7 @@
               <tbody>             
                 <tr th:each="trabalho : ${trabalhos}">
                   <td th:text="${trabalho.titulo}"></td>
-                  <td th:text="${trabalho.participacoes[0].pessoa.nome}"></td>
+                  <td th:text="${trabalho.autor.nome}"></td>
                   <td th:if="${#lists.isEmpty(trabalho.revisoes)}">Não</td>
                   <td th:if="${not #lists.isEmpty(trabalho.revisoes)}">Sim</td>
                 </tr>

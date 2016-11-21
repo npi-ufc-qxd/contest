@@ -6,7 +6,38 @@
 	<groupId>ufc.quixada.npi</groupId>
 	<artifactId>contest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>${packaging.type}</packaging>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<packaging.type>jar</packaging.type>
+				<npi.ldap.version>0.1.2</npi.ldap.version>
+				<activatedProperties>dev</activatedProperties>
+			</properties>
+		</profile>
+		<profile>
+			<id>homol</id>
+			<properties>
+				<packaging.type>war</packaging.type>
+				<npi.ldap.version>0.3</npi.ldap.version>
+				<activatedProperties>homologacao</activatedProperties>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<packaging.type>war</packaging.type>
+				<npi.ldap.version>0.3</npi.ldap.version>
+				<activatedProperties>producao</activatedProperties>
+			</properties>
+		</profile>
+	</profiles>
+
 
 	<name>contest</name>
 	<description>Sistema de controle de eventos de submissão</description>
@@ -35,8 +66,7 @@
 		<font.awesome.version>4.6.3</font.awesome.version>
 		<jquery.version>2.2.4</jquery.version>
 
-		<!-- LDAP -->
-		<npi.ldap.version>0.1.2</npi.ldap.version>
+		
 	</properties>
 
 	<repositories>
