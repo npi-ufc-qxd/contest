@@ -30,7 +30,7 @@
 			<div class="col s12">
 				<div class="input-field row">
 					<input placeholder="Procurando um evento especifico?"
-						id="filtro-nome" type="text" oninput="buscar(this,'card-stacked')" class="col s11 validate" /><a
+						id="filtro-nome" type="text" oninput="buscar(this,'card-stacked','card-content')" class="col s11 validate" /><a
 						class="btn-floating btn-large waves-effect waves-light right">
 						<i class="material-icons">search</i>
 					</a>
@@ -100,17 +100,20 @@
 	 <script type="text/javascript">
 		$(document).ready(function(){
 			
-			buscar = function(e,componente) {
+			buscar = function(e,componente,elementoABuscar) {
 				var filtro = e;
 				var componente = componente;
+				var elementoABuscar = elementoABuscar;
 				
 				var nomeFiltro = removerAcentos(filtro.value.toLowerCase());
-				var elemento = document.getElementsByClassName(componente);
+				var componenteCompleto = document.getElementsByClassName(componente);
+				var elemento = document.getElementsByClassName(elementoABuscar);
 				
 				 for (var i = elemento.length - 1; i >=0; i--){
-					var conteudoBusca = removerAcentos(elemento[i].children[0].children[0].firstElementChild.innerHTML);
+					var conteudoBusca = removerAcentos(elemento[i].firstElementChild.innerHTML);
 					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
-					elemento[i].style.display = corresponde ? '' : 'none';
+					componenteCompleto[i].style.display = corresponde ? '' : 'none';
+					
 			    } 
 				
 			};
