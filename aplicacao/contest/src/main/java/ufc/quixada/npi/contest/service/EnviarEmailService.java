@@ -1,9 +1,6 @@
 package ufc.quixada.npi.contest.service;
 
 import java.util.Map;
-import java.util.Properties;
-
-import javax.mail.Session;
 
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
