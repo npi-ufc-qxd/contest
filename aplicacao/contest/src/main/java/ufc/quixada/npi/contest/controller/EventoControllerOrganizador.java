@@ -137,6 +137,15 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
 		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
 		
+		List<Pessoa> organizadores = pessoaService.getOrganizadoresEvento(eventoId);
+		
+		for(Pessoa p : organizadores){
+			if(p.getId() == pessoa.getId()){
+				model.addAttribute("gerarCertificado", true);
+				break;
+			}
+		}
+		
 		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
 		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
 		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
