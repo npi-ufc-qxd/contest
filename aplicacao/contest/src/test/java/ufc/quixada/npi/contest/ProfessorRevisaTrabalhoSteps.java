@@ -37,7 +37,6 @@ import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
-import ufc.quixada.npi.contest.repository.PessoaRepository;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
@@ -72,9 +71,6 @@ public class ProfessorRevisaTrabalhoSteps {
 	
 	@Mock
 	private PessoaService pessoaService;
-	
-	@Mock
-	private PessoaRepository pessoaRepository;
 	
 	@Mock
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
