@@ -102,7 +102,7 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador convida a pessoa com nome (.*) e email (.*) para participar do evento$")
     public void casoTesteQuandoCenario1(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.enviarEmail()).thenReturn(true);
+		//when(emailService.enviarEmail()).thenReturn(true);
 		when(eventoService.buscarEventoPorId(Long.valueOf(EVENTO_ID))).thenReturn(evento);
 		evento.setEstado(EstadoEvento.ATIVO);
 		action = mockMvc
@@ -144,7 +144,7 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador tenta convidar uma pessoa com nome (.*) o email invalido (.*)$")
     public void casoTesteQuando(String nomeConvidado, String enderecoEmail) throws Throwable {
-		when(emailService.enviarEmail()).thenReturn(false);
+		//when(emailService.enviarEmail()).thenReturn(false);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("eventoId", evento.getId().toString())

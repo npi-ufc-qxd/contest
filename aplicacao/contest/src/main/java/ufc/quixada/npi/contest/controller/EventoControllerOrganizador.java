@@ -115,6 +115,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@Autowired
 	private SubmissaoService submissaoService;
 	
+	@Autowired
+	private EnviarEmailService emailService;
+	
 	private JRDataSource jrDataSource;
 	
 	@ModelAttribute("pessoas")
@@ -395,9 +398,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			
 			EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo);
 			Email mail = builder.build();
-			EnviarEmailService serviceEmail = new EnviarEmailService(mail);
-			if(!serviceEmail.enviarEmail()){
-				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL)); 
+			if(!emailService.enviarEmail(mail)){
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
+				return "redirect:/eventoOrganizador/evento/" + eventoId;
 			}
 		}else{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO)); 
