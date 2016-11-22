@@ -98,15 +98,15 @@ public class RevisorController {
 		return REVISOR_TRABALHOS_REVISAO;
 	}
 
-	@RequestMapping(value = "/{idEvento}/{idTrabalho}/revisar", method = RequestMethod.GET)
-	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
-			@PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
+	@RequestMapping(value = "/{idTrabalho}/revisar", method = RequestMethod.GET)
+	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho, RedirectAttributes redirect) {
 		
-		Evento evento = eventoService.buscarEventoPorId(idEvento);
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
+		Evento evento;
 		Pessoa revisor = getRevisorLogado();
 		
-		if(evento!=null && trabalho!=null){
+		if(trabalho!=null){
+			evento = trabalho.getEvento();
 			if(!evento.isPeriodoRevisao()){
 				redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 				return "redirect:/eventoOrganizador";
@@ -120,13 +120,11 @@ public class RevisorController {
 
 		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
 			
-			
-			
 			model.addAttribute("nomeEvento", evento.getNome());
 			model.addAttribute("idEvento", evento.getId());
 			model.addAttribute("trabalho", trabalho);
 			
-			session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
+			session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(evento.getId()));
 			session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
 			return REVISOR_AVALIAR_TRABALHO;
 		}
@@ -152,14 +150,13 @@ public class RevisorController {
 			HttpSession session) {
 		
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-		Evento evento = eventoService.buscarEventoPorId(Long.valueOf(idEvento));
 		Pessoa revisor = getRevisorLogado();
 		
 		if(trabalho == null){
 			return "redirect:/error";
-		}else if(evento == null){
+		}else if(trabalho.getEvento() == null){
 			return "redirect:/error";
-		}else if(!evento.isPeriodoRevisao()){
+		}else if(!trabalho.getEvento().isPeriodoRevisao()){
 			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 			return "redirect:/eventoOrganizador";
 		}else if(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())){
@@ -177,7 +174,7 @@ public class RevisorController {
 	
 			if (!validacao) {
 				redirect.addFlashAttribute("criterioRevisaoVazioError", messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
-				return "redirect:/revisor/" + idEvento + "/" + idTrabalho + "/revisar";
+				return "redirect:/revisor/" + idTrabalho + "/revisar";
 			}						
 	
 			String conteudo = RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
@@ -185,7 +182,7 @@ public class RevisorController {
 	
 			Revisao revisao = new Revisao();
 			revisao.setConteudo(conteudo);
-			revisao.setRevisor(getRevisorLogado());
+			revisao.setRevisor(revisor);
 			revisao.setTrabalho(trabalho);
 			revisao.setObservacoes(comentarios_organizacao);
 			
