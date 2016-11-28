@@ -31,6 +31,7 @@ public class Constants {
 	public static final String TEMPLATE_DETALHES_EVENTO_ORG = "organizador/org_detalhes_evento";
 	public static final String TEMPLATE_ATRIBUIR_REVISOR_ORG = "organizador/org_atribuir_revisores";
 	public static final String TEMPLATE_CONSIDERACOES_REVISORES_ORG = "organizador/org_consideracoes_dos_revisores";
+	public static final String TEMPLATE_ORGANIZADOR_SEM_PERMISSAO = "organizador/erro_permissao_de_org";
 	
 	public static final String TEMPLATE_INDEX_AUTOR = "autor/autor_index";
 	public static final String TEMPLATE_MEUS_TRABALHOS_AUTOR = "autor/autor_meus_trabalhos";

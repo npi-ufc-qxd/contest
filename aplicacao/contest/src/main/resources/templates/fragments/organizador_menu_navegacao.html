@@ -12,12 +12,12 @@
 	       
 	       <!-- Dropdown Structure -->
 			<ul th:if="${evento}" id='dropdown1' class='dropdown-content'>
-			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Certificados para Organização</a></li>
-			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosRevisores/${evento.id}|}">Certificados para Revisores</a></li>
-			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosTrabalho/${evento.id}|}">Certificados para Trabalhos</a></li>
+				<li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Certificados para Organização</a></li>
+			  	<li><a th:href="@{|/eventoOrganizador/gerarCertificadosRevisores/${evento.id}|}">Certificados para Revisores</a></li>
+			  	<li><a th:href="@{|/eventoOrganizador/gerarCertificadosTrabalho/${evento.id}|}">Certificados para Trabalhos</a></li>
 			</ul>
 	       	<!-- Dropdown Trigger -->
- 			<a th:if="${evento}" class='dropdown-button' href='#' data-activates='dropdown1'>Certificados</a>
+ 			<a  th:if="${gerarCertificado}" class='dropdown-button' href='#' data-activates='dropdown1'>Certificados</a>
  			
  			
 	       
