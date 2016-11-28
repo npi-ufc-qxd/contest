@@ -12,7 +12,10 @@
         	<span class="white-text" th:text= "${organizadorError}"></span>
         	<i class="material-icons">close</i>
       </div>
-      
+       <div th:if="${organizadorSucess}" class="chip green darken-1">
+        	<span class="white-text" th:text= "${organizadorSucess}"></span>
+        	<i class="material-icons">close</i>
+      </div>
        <div th:if="${nao_organizador}" class="chip red darken-1">
         	<span class="white-text" th:text= "${NAO_ORGANIZADOR}"></span>
         	<i class="material-icons">close</i>
