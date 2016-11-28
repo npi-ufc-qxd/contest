@@ -219,13 +219,16 @@ public class Evento {
 	public boolean isPeriodoFinal(){
 		Date dataAtual = new Date();
 		Calendar cal = Calendar.getInstance();
-        cal.setTime(dataAtual);
-        cal.add(Calendar.DAY_OF_MONTH, -1);
-		Date hoje = cal.getTime();
+        cal.setTime(prazoRevisaoFinal);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date diaAposRevisaoFinal = cal.getTime();
+		boolean comecaAposRevisaoFinal = (dataAtual.compareTo(diaAposRevisaoFinal)>= 0);
 		
-		boolean comecaAposRevisaoFinal = (hoje.compareTo(prazoRevisaoFinal) > 0);
-		boolean terminaNoDiaOuAntesSubmissaoFinal = (hoje.compareTo(prazoSubmissaoFinal) <= 0);
-		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubmissaoFinal);
+		cal.setTime(prazoSubmissaoFinal);
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date diaAposSubmissaoFinal = cal.getTime();
+		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(diaAposSubmissaoFinal)<= 0);
+		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
 	}
 	
 	private List<Pessoa> getByPapel(Papel ...papeis){
