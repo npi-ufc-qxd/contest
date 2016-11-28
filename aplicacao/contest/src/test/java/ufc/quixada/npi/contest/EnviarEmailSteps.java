@@ -25,10 +25,12 @@ import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
+import ufc.quixada.npi.contest.model.Email;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
+import ufc.quixada.npi.contest.model.Email.EmailBuilder;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
@@ -46,6 +48,8 @@ public class EnviarEmailSteps {
 	private MessageService messageService;
 	@Mock
 	private PessoaService pessoaService;
+	@Mock
+	private EnviarEmailService mailService;
 	
 	
 	private MockMvc mockMvc;
@@ -54,6 +58,10 @@ public class EnviarEmailSteps {
 	private Pessoa pessoa;
 	private String papelConvidado;
 	private Long EVENTO_ID = 1L;
+	private Email mail;
+	private EmailBuilder mailBilder;
+	private String assunto;
+	private String corpo;
 	private static final String URL_DETALHES_EVENTO_ORGANIZADOR = "/eventoOrganizador/evento/";
 
 	@Before
@@ -61,6 +69,7 @@ public class EnviarEmailSteps {
 		
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoControllerOrganizador).build();
+		
 		evento = new Evento();
 		evento.setId(Long.valueOf(1));
 		evento.setNome("NomeEvento");
@@ -76,6 +85,9 @@ public class EnviarEmailSteps {
 		pessoa.setPapelLdap("DOCENTE");
 		pessoaService.toString(); //para Codacy não reclamar
 		
+		assunto = messageService.getMessage("TITULO_EMAIL_CONVITE_ORGANIZADOR");
+		corpo = messageService.getMessage("TEXTO_EMAIL_CONVITE_ORGANIZADOR");
+				
 	}
 	/* O organizador convida pessoas para participarem de um evento ativo*/
 	@Dado("^que existe um evento ativo$")
@@ -102,7 +114,9 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador convida a pessoa com nome (.*) e email (.*) para participar do evento$")
     public void casoTesteQuandoCenario1(String nomeConvidado, String enderecoEmail) throws Throwable {
-		//when(emailService.enviarEmail()).thenReturn(true);
+		mailBilder = new EmailBuilder(nomeConvidado, assunto, enderecoEmail, corpo);
+		mail = mailBilder.build();
+		when(emailService.enviarEmail(this.mail)).thenReturn(true);
 		when(eventoService.buscarEventoPorId(Long.valueOf(EVENTO_ID))).thenReturn(evento);
 		evento.setEstado(EstadoEvento.ATIVO);
 		action = mockMvc
@@ -144,7 +158,8 @@ public class EnviarEmailSteps {
 	}
 	@Quando("^o organizador tenta convidar uma pessoa com nome (.*) o email invalido (.*)$")
     public void casoTesteQuando(String nomeConvidado, String enderecoEmail) throws Throwable {
-		//when(emailService.enviarEmail()).thenReturn(false);
+		mailBilder = new EmailBuilder(nomeConvidado, assunto, enderecoEmail, corpo);
+		mail = mailBilder.build();
 		action = mockMvc
 				.perform(post("/eventoOrganizador/convidar")
 				.param("eventoId", evento.getId().toString())

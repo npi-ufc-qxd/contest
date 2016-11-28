@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Email;
@@ -23,22 +22,7 @@ public class EnviarEmailService {
 	}
 
 	public boolean enviarEmail(Email email) {
-//
-//		this.javaMailSender.setHost("200.129.38.134");
-//	
-//		
-//		Properties props = new Properties();
-//		props.put("mail.smtp.starttls.enable","true");
-//		props.put( "mail.smtp.auth", "true" );
-//		props.put("mail.smtp.port","587");
-//		
-//		this.javaMailSender.setPassword("");
-//		this.javaMailSender.setPort(587);
-//		this.javaMailSender.setProtocol("smtp");
-//		Session session = Session.getDefaultInstance(props,null); 
-//		this.javaMailSender.setSession(session);
-	
-		
+			
 		Map<String, String> destinatariosHash;
 		  int i = 0;
 		 destinatariosHash = email.getEnderecosDestinatarios();
