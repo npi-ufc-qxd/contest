@@ -223,9 +223,14 @@ public class Evento {
         cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date diaAposRevisaoFinal = cal.getTime();
 		boolean comecaAposRevisaoFinal = (dataAtual.compareTo(diaAposRevisaoFinal)>= 0);
-		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(prazoSubmissaoFinal)<= 0);
+		
+		cal.setTime(prazoSubmissaoFinal);
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date diaAposSubmissaoFinal = cal.getTime();
+		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(diaAposSubmissaoFinal)<= 0);
 		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
 	}
+	
 	private List<Pessoa> getByPapel(Papel ...papeis){
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoEvento p : getParticipacoes()) {
