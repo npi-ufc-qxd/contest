@@ -188,7 +188,7 @@ public class Trabalho implements Comparable<Trabalho> {
 		if(lista!=null){
 			StringBuilder nomes = new StringBuilder();
 			for (Pessoa p : lista) {
-				nomes.append(p.getNome());
+				nomes.append(p.getNome().toUpperCase());
 				if(lista.indexOf(p)!=(lista.size()-1)){
 					nomes.append(", ");
 				}

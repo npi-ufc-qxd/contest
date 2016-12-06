@@ -44,14 +44,21 @@
 										<div
 											th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
 										<div
-											th:include="fragments/listar_participacoes :: listar-inline('Revisor(es):', ${trabalho.revisores})"></div>
+											th:include="fragments/listar_participacoes :: listar-inline('Revisor(es):', ${trabalho.revisores})">
+										</div>
+										
+										<div>
+											<a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Arquivo</a>
+										</div>
 									</div>
+									
 									<div class="card-action">
 										<div class="chip  yellow lighten-1"
 											th:if="${best}">
 											<i class="fa fa-star" aria-hidden="true"></i> <em>Best
 												Paper</em>
 										</div>
+										
 										<th:block  th:switch="${status}">
 										<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}" class="chip light-blue accent-2">
 											<i class="fa fa-thumbs-up" aria-hidden="true"></i>
@@ -76,6 +83,8 @@
 											<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 											Não revisado
 										</div>
+										
+										
 									</div>
 								</div>
 							</div>

@@ -568,7 +568,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if(ids != null){
 			List<Pessoa> pessoas = new ArrayList<>();
 			for(Long id : ids){
-				pessoas.add(pessoaService.get(id));
+				Pessoa p = pessoaService.get(id);
+				p.setNome(p.getNome().toUpperCase());
+				pessoas.add(p);
 			}
 			
 			if(pessoas != null){
@@ -593,6 +595,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if(trabalhosIds != null){
 			List<Trabalho> trabalhos = new ArrayList<>();
 			for(Long id : trabalhosIds){
+				Trabalho t = trabalhoService.getTrabalhoById(id);
+				t.setTitulo(t.getTitulo().toUpperCase());
 				trabalhos.add(trabalhoService.getTrabalhoById(id));
 			}
 			if(trabalhos != null){
