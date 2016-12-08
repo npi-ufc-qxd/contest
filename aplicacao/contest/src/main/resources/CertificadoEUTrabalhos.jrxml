@@ -18,7 +18,7 @@
 			<textField>
 				<reportElement x="172" y="188" width="459" height="66" forecolor="#2F608C" uuid="fb8030d3-4cb3-4c6c-9d8f-07eb52ebc428"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true"/>
+					<font size="15" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
 			</textField>
@@ -27,7 +27,7 @@
 			<textField>
 				<reportElement x="84" y="0" width="640" height="81" forecolor="#2F608C" uuid="f5b8f7c5-9710-4b7a-b765-1c5bb4fd7e63"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="15"/>
+					<font size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{coautoresInString}]]></textFieldExpression>
 			</textField>
