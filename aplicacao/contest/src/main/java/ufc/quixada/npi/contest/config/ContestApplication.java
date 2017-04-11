@@ -20,7 +20,7 @@ import ufc.quixada.npi.contest.model.StorageProperties;
 import ufc.quixada.npi.contest.service.StorageService;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-@ComponentScan({"br.ufc.quixada.npi.ldap", "ufc.quixada.npi.contest"})
+@ComponentScan({"br.ufc.quixada.npi.ldap", "ufc.quixada.npi.contest","br.ufc.quixada.npi.service"})
 @EntityScan(basePackages="ufc.quixada.npi.contest.model")
 @EnableJpaRepositories("ufc.quixada.npi.contest.repository")
 @EnableConfigurationProperties(StorageProperties.class)
