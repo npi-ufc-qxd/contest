@@ -1,5 +1,10 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,8 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -533,11 +543,27 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
-	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model){
+	public void gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, HttpServletResponse response) throws FileNotFoundException, IOException{
 		Long id = Long.parseLong(idEvento);
 		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(id);
-		model.addAttribute("organizadores", listaOrganizadores);
-		return Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES;
+		
+		final Object[][] dados = new Object[listaOrganizadores.size()][1];
+		
+		for(int i = 0; i < listaOrganizadores.size(); i++){
+			dados[i] = new Object[] {listaOrganizadores.get(i).getNome().toUpperCase()};
+		}
+		
+		String[] colunas = new String[] {"organizador"};
+		TableModel modelo = new DefaultTableModel(dados, colunas);
+		final File file = new File("organizadores.ods");
+		SpreadSheet.createEmpty(modelo).saveAs(file);
+		
+		response.setContentType("application/ods");
+		response.setHeader("Content-Disposition", "attachment; filename = organizadores" + ".ods");
+		InputStream is = new FileInputStream(file);
+		IOUtils.copy(is, response.getOutputStream());
+		response.flushBuffer();
+
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
@@ -549,11 +575,28 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
-	public String gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, Model model){
+	public void gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, HttpServletResponse response) throws FileNotFoundException, IOException{
 		Long id = Long.parseLong(idEvento);
 		List<Pessoa> listaRevisores = pessoaService.getRevisoresEvento(id);
-		model.addAttribute("revisores", listaRevisores);
-		return Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES;
+		
+		
+		final Object[][] dados = new Object[listaRevisores.size()][1];
+		
+		for(int i = 0; i < listaRevisores.size(); i++){
+			dados[i] = new Object[] {listaRevisores.get(i).getNome().toUpperCase()};
+		}
+		
+		String[] colunas = new String[] {"revisores"};
+		TableModel modelo = new DefaultTableModel(dados, colunas);
+		final File file = new File("organizadores.ods");
+		SpreadSheet.createEmpty(modelo).saveAs(file);
+		
+		response.setContentType("application/ods");
+		response.setHeader("Content-Disposition", "attachment; filename = revisores" + ".ods");
+		InputStream is = new FileInputStream(file);
+		IOUtils.copy(is, response.getOutputStream());
+		response.flushBuffer();
+		
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
