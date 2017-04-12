@@ -19,6 +19,7 @@ public class EnviarEmailService {
 		
 		
 		EmailBuilder emailBuilder = new EmailBuilder(titulo,Constants.ENDERECO_EMAIL_CONTEST,assunto,emailDestinatario,corpo);
+		
 		Email email = new Email(emailBuilder);
 		
         
