@@ -407,8 +407,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
 			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " +evento.getNome() + " como " + funcao;
-			
-			if(!emailService.enviarEmail(evento,assunto, email, corpo)){
+			String titulo = "[CONTEST] Convite para o Evento: "+evento.getNome();
+			if(!emailService.enviarEmail(titulo,evento,assunto, email, corpo)){
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
 				return "redirect:/eventoOrganizador/evento/" + eventoId;
 			}

@@ -15,11 +15,10 @@ public class EnviarEmailService {
 	@Autowired
 	SendEmailService service;
 	
-	public boolean enviarEmail(Evento evento,String assunto, String emailDestinatario, String corpo) {
+	public boolean enviarEmail(String titulo,Evento evento,String assunto, String emailDestinatario, String corpo) {
 		
-		String titulo = "[CONTEST] Convite Evento "+evento.getNome();
-		//EmailBuilder emailBuilder = new EmailBuilder(titulo,Constants.ENDERECO_EMAIL_CONTEST,assunto,emailDestinatario,corpo);
-		EmailBuilder emailBuilder = new EmailBuilder(titulo,Constants.ENDERECO_EMAIL_CONTEST,assunto,"carlos_matheus95@hotmail.com",corpo);
+		
+		EmailBuilder emailBuilder = new EmailBuilder(titulo,Constants.ENDERECO_EMAIL_CONTEST,assunto,emailDestinatario,corpo);
 		Email email = new Email(emailBuilder);
 		
         
