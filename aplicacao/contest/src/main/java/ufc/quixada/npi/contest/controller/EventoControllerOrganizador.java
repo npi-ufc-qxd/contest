@@ -543,71 +543,40 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
-	public void gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, HttpServletResponse response) throws FileNotFoundException, IOException{
+	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model, HttpServletResponse response) throws FileNotFoundException, IOException{
 		Long id = Long.parseLong(idEvento);
 		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(id);
-		
-		final Object[][] dados = new Object[listaOrganizadores.size()][1];
-		
-		for(int i = 0; i < listaOrganizadores.size(); i++){
-			dados[i] = new Object[] {listaOrganizadores.get(i).getNome().toUpperCase()};
-		}
-		
-		String[] colunas = new String[] {"organizador"};
-		TableModel modelo = new DefaultTableModel(dados, colunas);
-		final File file = new File("organizadores.ods");
-		SpreadSheet.createEmpty(modelo).saveAs(file);
-		
-		response.setContentType("application/ods");
-		response.setHeader("Content-Disposition", "attachment; filename = organizadores" + ".ods");
-		InputStream is = new FileInputStream(file);
-		IOUtils.copy(is, response.getOutputStream());
-		response.flushBuffer();
+		model.addAttribute("organizadores", listaOrganizadores);
 
+		return Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES;
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
-	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model) throws JRException{
+	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model, HttpServletResponse response) throws JRException, FileNotFoundException, IOException{
 		
-		criarDadosPdf(organizadoresIds, model);
+		criarDadosPdf(organizadoresIds, model, "Organizadores", response);
 		
 		return "PDF_ORGANIZADOR";
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
-	public void gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, HttpServletResponse response) throws FileNotFoundException, IOException{
+	public String gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, Model model) throws FileNotFoundException, IOException{
 		Long id = Long.parseLong(idEvento);
 		List<Pessoa> listaRevisores = pessoaService.getRevisoresEvento(id);
+		model.addAttribute("revisores", listaRevisores);
 		
-		
-		final Object[][] dados = new Object[listaRevisores.size()][1];
-		
-		for(int i = 0; i < listaRevisores.size(); i++){
-			dados[i] = new Object[] {listaRevisores.get(i).getNome().toUpperCase()};
-		}
-		
-		String[] colunas = new String[] {"revisores"};
-		TableModel modelo = new DefaultTableModel(dados, colunas);
-		final File file = new File("organizadores.ods");
-		SpreadSheet.createEmpty(modelo).saveAs(file);
-		
-		response.setContentType("application/ods");
-		response.setHeader("Content-Disposition", "attachment; filename = revisores" + ".ods");
-		InputStream is = new FileInputStream(file);
-		IOUtils.copy(is, response.getOutputStream());
-		response.flushBuffer();
-		
+		return Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES;
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
-	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model) throws JRException{
+	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model, HttpServletResponse response) throws JRException, FileNotFoundException, IOException{
 		
-		criarDadosPdf(revisoresIds, model);
+		criarDadosPdf(revisoresIds, model, "Revisores", response);
 		
 		return "PDF_REVISORES";
 	}
 	
-	public void criarDadosPdf(Long[] ids, Model model){
+	public void criarDadosPdf(Long[] ids, Model model, String nomeDocumento, HttpServletResponse response) throws FileNotFoundException, IOException{
 		if(ids != null){
 			List<Pessoa> pessoas = new ArrayList<>();
 			for(Long id : ids){
@@ -617,24 +586,31 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			}
 			
 			if(pessoas != null){
-				jrDataSource  = new JRBeanCollectionDataSource(pessoas);
-				model.addAttribute("datasource", jrDataSource);
-				model.addAttribute("format", "pdf");
+				final Object[][] dados = new Object[pessoas.size()][1];
+				for(int i = 0; i < pessoas.size(); i++){
+					dados[i] = new Object[] {pessoas.get(i).getNome().toUpperCase()};
+				}
+				
+				String[] colunas = new String[] {nomeDocumento};
+				gerarODS(nomeDocumento, colunas, dados, response);
 			}
 		}
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
-	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model){
+	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model,  HttpServletResponse response) throws FileNotFoundException, IOException{
 		Long id = Long.parseLong(idEvento);
 		Evento e = eventoService.buscarEventoPorId(id);
 		List<Trabalho> listaTrabalhos = trabalhoService.getTrabalhosEvento(e);
 		model.addAttribute("trabalhos", listaTrabalhos);
+		
 		return Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO;
+		
 	}
 
 	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.POST)
-	public String gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model){
+	public void gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model, HttpServletResponse response) throws FileNotFoundException, IOException{
+		
 		if(trabalhosIds != null){
 			List<Trabalho> trabalhos = new ArrayList<>();
 			for(Long id : trabalhosIds){
@@ -643,14 +619,37 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				trabalhos.add(trabalhoService.getTrabalhoById(id));
 			}
 			if(trabalhos != null){
-				jrDataSource  = new JRBeanCollectionDataSource(trabalhos);
-				model.addAttribute("datasource", jrDataSource);
-				model.addAttribute("format", "pdf");
+				final Object[][] dados = new Object[trabalhos.size()][4];
+				for(int i = 0; i < trabalhos.size(); i++){
+					Trabalho t = trabalhos.get(i);
+					
+					int aux = t.getSubmissoes().toArray().length;
+					SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
+					String data = formatadorData.format(t.getSubmissoes().get(aux-1).getDataSubmissao());
+					
+					dados[i] = new Object[] {t.getAutor().getNome().toUpperCase(), 
+											 t.getCoautoresInString().toUpperCase(), 
+											 t.getTitulo().toUpperCase(), 
+											 data};			
+				}
+				String[] colunas = new String[] {"Nome", "Coautores", "Título", "Data"};
+				gerarODS("trabalhos", colunas, dados, response);
+				
 			}
 		}
-		return "PDF_TRABALHOS";
 	}
 	
+	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response) throws FileNotFoundException, IOException{
+		TableModel modelo = new DefaultTableModel(dados, colunas);
+		final File file = new File(nomeDocumento + ".ods");
+		SpreadSheet.createEmpty(modelo).saveAs(file);
+		
+		response.setContentType("application/ods");
+		response.setHeader("Content-Disposition", "attachment; filename = " + nomeDocumento + ".ods");
+		InputStream is = new FileInputStream(file);
+		IOUtils.copy(is, response.getOutputStream());
+		response.flushBuffer();
+	}
 	
 	public Pessoa getOrganizadorLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
