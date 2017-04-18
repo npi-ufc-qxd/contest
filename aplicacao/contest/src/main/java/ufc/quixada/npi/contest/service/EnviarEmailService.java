@@ -15,7 +15,7 @@ public class EnviarEmailService {
 	@Autowired
 	SendEmailService service;
 	
-	public boolean enviarEmail(String titulo,Evento evento,String assunto, String emailDestinatario, String corpo) {
+	public boolean enviarEmail(String titulo,String assunto, String emailDestinatario, String corpo) {
 		
 		
 		EmailBuilder emailBuilder = new EmailBuilder(titulo,Constants.ENDERECO_EMAIL_CONTEST,assunto,emailDestinatario,corpo);
