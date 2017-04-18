@@ -16,20 +16,25 @@
     <div th:include="fragments/header :: header"></div>
     <div class="container page">
 		<div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
-    	<h2>Gerar Certificados Dos  Trabalhos</h2>
+    	<h2>Gerar Certificados Dos Revisores</h2>
 		<div class="row">
 			<a href="#" onclick="selecionarTodos()">Selecionar todos</a>
 			<a href="#" onclick="removerTodos()">Não selecionar todos</a>
 			<div class="col m12 s12">
 			    <br/>
+			    <div th:if="${not #lists.isEmpty(revisores)}">
 				<form th:action="@{/eventoOrganizador/gerarCertificadosRevisores}" method="POST">
 					<div th:each="pessoa,count : ${revisores}">
 	      				<input type="checkbox" th:id="${count.index}"  name="revisoresIds" th:value="${pessoa.id}"/>
 	      				<label class="black-text" th:for="${count.index}" th:text="${pessoa.nome}" ></label>
 					</div>
 					<br/>
-					<button type="submit" class="waves-effect waves-light btn white-text">Gerar PDF</button>		
+					<button type="submit" class="waves-effect waves-light btn white-text">Gerar Planilhas</button>		
 				</form>
+				</div>
+				<div th:if="${#lists.isEmpty(revisores)}">
+					Não há certificados disponíveis
+				</div>
 			</div>
 		</div>
 	</div>

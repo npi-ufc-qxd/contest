@@ -22,14 +22,19 @@
 			<a href="#" onclick="removerTodos()">Não selecionar todos</a>
 			<div class="col m12 s12">
 				<br/>
-				<form th:action="@{/eventoOrganizador/gerarCertificadosTrabalho}" method="POST">
-					<div th:each="trabalho,count : ${trabalhos}">
-	      				<input type="checkbox" th:id="${count.index}"  name="trabalhosIds" th:value="${trabalho.id}"/>
-	      				<label class="black-text" th:for="${count.index}" th:text="${trabalho.titulo}" ></label>
-					</div>
-					<br/>
-					<button type="submit" class="waves-effect waves-light btn white-text">Gerar PDF</button>		
-				</form>
+				<div th:if="${not #lists.isEmpty(trabalhos)}">
+					<form th:action="@{/eventoOrganizador/gerarCertificadosTrabalho}" method="POST">
+						<div th:each="trabalho,count : ${trabalhos}">
+		      				<input type="checkbox" th:id="${count.index}"  name="trabalhosIds" th:value="${trabalho.id}"/>
+		      				<label class="black-text" th:for="${count.index}" th:text="${trabalho.titulo}" ></label>
+						</div>
+						<br/>
+						<button type="submit" class="waves-effect waves-light btn white-text">Gerar Planilhas</button>		
+					</form>
+				</div>
+				<div th:if="${#lists.isEmpty(trabalhos)}">
+					Não há certificados disponíveis
+				</div>
 			</div>
 		</div>
 	</div>
