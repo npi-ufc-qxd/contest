@@ -16,7 +16,7 @@
     <div th:include="fragments/header :: header"></div>
     <div class="container page">
 		<div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
-    	<h2>Gerar Certificados Dos  Organizadores</h2>
+    	<h2>Gerar planilha de dados dos Organizadores</h2>
 		<div class="row">
 			<a href="#" onclick="selecionarTodos()">Selecionar todos</a>
 			<a href="#" onclick="removerTodos()">Não selecionar todos</a>
@@ -28,7 +28,7 @@
 		      				<label class="black-text" th:for="${count.index}" th:text="${pessoa.nome}" ></label>
 						</div>
 						<br/>
-						<button type="submit" class="waves-effect waves-light btn white-text">Gerar Planilhas</button>		
+						<button type="submit" class="waves-effect waves-light btn white-text">Gerar Planilha</button>		
 					</form>
 			</div>
 		</div>
