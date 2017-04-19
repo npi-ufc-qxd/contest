@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 import br.ufc.quixada.npi.model.Email;
 import br.ufc.quixada.npi.model.Email.EmailBuilder;
 import br.ufc.quixada.npi.service.SendEmailService;
-import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Service
 public class EnviarEmailService {
 	@Autowired
-	SendEmailService service;
+	private SendEmailService service;
 	
 	public boolean enviarEmail(String titulo,String assunto, String emailDestinatario, String corpo) {
 		
