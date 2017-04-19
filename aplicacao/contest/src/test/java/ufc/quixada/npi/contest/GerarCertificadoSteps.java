@@ -51,10 +51,12 @@ public class GerarCertificadoSteps {
 	@Mock
 	private JRDataSource jrDataSource;
 	
+	
+	private Pessoa revisor1, revisor2, revisor3;
 	private List<Pessoa> listaPessoas;
 	private List<Trabalho> listaTrabalho;
 	private Evento evento;
-	private Trabalho trabalho;
+	private Trabalho trabalho1, trabalho2, trabalho3;
 	private MockMvc mockMvc;
 	private ResultActions action;
 	
@@ -66,14 +68,43 @@ public class GerarCertificadoSteps {
 		listaPessoas = new ArrayList<Pessoa>();
 		listaTrabalho = new ArrayList<Trabalho>();
 		evento = new Evento();
-		trabalho = new Trabalho();
+		
+		trabalho1 = new Trabalho();
+		trabalho1.setId(1L);
+		trabalho1.setTitulo("Titulo");
+		
+		trabalho2 = new Trabalho();
+		trabalho2.setId(2L);
+		trabalho2.setTitulo("Titulo");
+
+		
+		trabalho3 = new Trabalho();
+		trabalho3.setId(3L);
+		trabalho3.setTitulo("Titulo");
+
 		
 		evento.setId(ID_EVENTO);
+		
+		revisor1 = new Pessoa();
+		revisor1.setId(1L);
+		revisor1.setNome("Revisor 1");
+		
+		revisor2 = new Pessoa();
+		revisor2.setId(2L);
+		revisor2.setNome("Revisor 2");
+		
+		revisor3 = new Pessoa();
+		revisor3.setId(3L);
+		revisor3.setNome("Revisor 3");
 	}
 	
 	@Dado("^que o organizador deseja gerar o pdf dos organizadores$")
 	public void organizadorDesejaGerarPdfParaOrganizadores() throws Exception{
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
+		when(pessoaService.get(revisor1.getId())).thenReturn(revisor1);
+		when(pessoaService.get(revisor2.getId())).thenReturn(revisor2);
+		when(pessoaService.get(revisor3.getId())).thenReturn(revisor3);
+		
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_ORGANIZADOR, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES));
 	}
@@ -124,7 +155,9 @@ public class GerarCertificadoSteps {
 	
 	@Quando("^ele seleciona os trabalhos e manda gerar o pdf$")
 	public void organizadoSelecionaOsTrabalhosParaGerarPdf() throws Throwable {
-		when(trabalhoService.getTrabalhoById(ID_EVENTO)).thenReturn(trabalho);
+		when(trabalhoService.getTrabalhoById(trabalho1.getId())).thenReturn(trabalho1);
+		when(trabalhoService.getTrabalhoById(trabalho2.getId())).thenReturn(trabalho2);
+		when(trabalhoService.getTrabalhoById(trabalho3.getId())).thenReturn(trabalho3);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/gerarCertificadosTrabalho")
 				.param("trabalhosIds", IDS));

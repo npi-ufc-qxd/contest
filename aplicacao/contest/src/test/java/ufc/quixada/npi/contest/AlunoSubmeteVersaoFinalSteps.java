@@ -80,6 +80,7 @@ public class AlunoSubmeteVersaoFinalSteps {
 		trabalho.setTitulo("Trabalho");
 		trabalho.setId(5L);
 		trabalho.setParticipacoes(new ArrayList<>());
+		trabalho.setEvento(evento);
 	}
 	
 	@Dado("^que existe um aluno$")

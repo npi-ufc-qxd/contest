@@ -403,9 +403,9 @@ public class AutorController {
 			if(trabalhoService.existeTrabalho(idTrabalho) && eventoService.existeEvento(idEvento)){
 				
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(eventoId));
-				Date dataDeEnvio = new Date(System.currentTimeMillis());
+				Date dataDeRequisicaoDeExclusao = new Date(System.currentTimeMillis());
 				
-				if(evento.getPrazoSubmissaoFinal().after(dataDeEnvio)){
+				if(evento.getPrazoSubmissaoFinal().after(dataDeRequisicaoDeExclusao)){
 					Trabalho t = trabalhoService.getTrabalhoById(idTrabalho);
 					Pessoa autor = getAutorLogado();
 					if(autor.equals(t.getAutor())){
