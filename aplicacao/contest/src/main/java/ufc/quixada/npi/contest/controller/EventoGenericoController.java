@@ -93,8 +93,6 @@ public class EventoGenericoController {
             if (evento != null){
                 model.addAttribute(EVENTO, evento);
                 model.addAttribute(ID_PESSOA, evento.getParticipacoes().get(0).getId());
-                ;
-
                 return viewSucesso;
             }else{
                 redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
