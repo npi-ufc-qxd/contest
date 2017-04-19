@@ -18,9 +18,9 @@ import ufc.quixada.npi.contest.util.Constants;
 @RequestMapping("/secao")
 public class SecaoController {
 	@Autowired
-	SecaoService secaoService;
+	private SecaoService secaoService;
 	@Autowired
-	TrabalhoService trabalhoService;
+	private TrabalhoService trabalhoService;
 	
 	@RequestMapping(value="/cadastrarSecaoForm")
 	public String cadastrarSecaoForm(){

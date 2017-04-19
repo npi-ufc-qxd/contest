@@ -12,7 +12,7 @@ import ufc.quixada.npi.contest.repository.SecaoRepository;
 @Service
 public class SecaoService {
 	@Autowired
-	SecaoRepository secaoRepository;
+	private SecaoRepository secaoRepository;
 	
 	public void addOrUpdate(Secao secao) {
 		secaoRepository.save(secao);
