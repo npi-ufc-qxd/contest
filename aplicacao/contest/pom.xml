@@ -26,6 +26,7 @@
 				<packaging.type>war</packaging.type>
 				<npi.ldap.version>0.3</npi.ldap.version>
 				<activatedProperties>homologacao</activatedProperties>
+				
 			</properties>
 		</profile>
 		<profile>
@@ -67,7 +68,7 @@
 		<font.awesome.version>4.6.3</font.awesome.version>
 		<jquery.version>2.2.4</jquery.version>
 
-		
+		<npi.mail.version>1.0.0</npi.mail.version>
 	</properties>
 
 	<repositories>
@@ -244,8 +245,11 @@
 	        <version>${spring.version}</version>
 	    </dependency>
 		
-		
-		
+		<dependency>
+			<groupId>br.ufc.quixada.npi</groupId>
+			<artifactId>npi-mail</artifactId>
+			<version>${npi.mail.version}</version>
+		</dependency>
 		
 	</dependencies>
 
