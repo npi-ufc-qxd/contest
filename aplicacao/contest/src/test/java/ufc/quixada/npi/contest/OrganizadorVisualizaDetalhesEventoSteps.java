@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.neo4j.cypher.internal.compiler.v2_2.perty.recipe.Pretty.nest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.Before;
 import cucumber.api.java.gl.E;
 import cucumber.api.java.pt.Dado;
@@ -56,15 +54,8 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Long EVENTO_ID = 1L;
-	private Long EVENTO_ID_INEXISTENTE = 2L;
-	private Long EVENTO_ID_INATIVO = 3L;
 	private Evento eventoAtivo; 
 	
-	private static final String EVENTO_INATIVO = "eventoInativo";
-	private static final String EVENTO_INEXISTENTE = "eventoInexistente";
-	
-	private static final String PAGINA_DETALHES_EVENTO_INATIVO = "/eventoOrganizador/evento/3";
-	private static final String PAGINA_DETALHES_EVENTO_INEXISTENTE = "/eventoOrganizador/evento/2";
 	private static final String PAGINA_VISUAIZAR_DETALHES_EVENTO = "organizador/org_detalhes_evento";
 	private static final String PAGINA_DETALHES_EVENTO = "/eventoOrganizador/evento/{id}";
 	
@@ -107,31 +98,27 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 		organizadorLogado.setId(Long.valueOf(5));
 		organizadorLogado.setCpf("000000");
 		
-		Pessoa p1, p2;
-		
-		p1 = new Pessoa();
+		Pessoa p1 = new Pessoa();
 		p1.setCpf("11111");
 		p1.setNome("ze");
 		p1.setPapelLdap("DOCENTE");
 		
-		p2 = new Pessoa();
+		Pessoa p2 = new Pessoa();
 		p2.setCpf("222222");
 		p2.setNome("joao");
 		p2.setPapelLdap("DISCENTE");
 		
-		ParticipacaoEvento participacao1, participacao2, participacao3;
-		
-		participacao1 = new ParticipacaoEvento();
+		ParticipacaoEvento participacao1 = new ParticipacaoEvento();
 		participacao1.setEvento(eventoAtivo);
 		participacao1.setPapel(Papel.ORGANIZADOR);
 		participacao1.setPessoa(organizadorLogado);
 		
-		participacao2 = new ParticipacaoEvento();
+		ParticipacaoEvento participacao2 = new ParticipacaoEvento();
 		participacao2.setEvento(eventoAtivo);
 		participacao2.setPapel(Papel.REVISOR);
 		participacao2.setPessoa(p1);
 		
-		participacao3 = new ParticipacaoEvento();
+		ParticipacaoEvento participacao3 = new ParticipacaoEvento();
 		participacao3.setEvento(eventoAtivo);
 		participacao3.setPapel(Papel.AUTOR);
 		participacao3.setPessoa(p2);
