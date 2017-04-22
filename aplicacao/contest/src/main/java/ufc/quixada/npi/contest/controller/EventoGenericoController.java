@@ -63,14 +63,14 @@ public class EventoGenericoController {
             }
             
             
-            List<Trabalho> trabalho = trabalhoService.getTrabalhosEvento(evento);
+            List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
             model.addAttribute(EXISTE_SUBMISSAO, false);
             model.addAttribute(SUBMISSAO_REVISAO, false);
             model.addAttribute(SUBMISSAO_FINAL, false);
             
-            if(!trabalho.isEmpty()){
-            	for(int i = 0; i < trabalho.size(); i++){
-            		Submissao submissao = submissaoService.getSubmissaoByTrabalho(trabalho.get(i));
+            if(!trabalhos.isEmpty()){
+            	for(int i = 0; i < trabalhos.size(); i++){
+            		Submissao submissao = submissaoService.getSubmissaoByTrabalho(trabalhos.get(i));
             		if(submissao != null){ 
             			model.addAttribute(EXISTE_SUBMISSAO, true);
             			submissao.getTipoSubmissao();
@@ -90,13 +90,9 @@ public class EventoGenericoController {
             	}
             }
     
-            if (evento != null){
-                model.addAttribute(EVENTO, evento);
-                model.addAttribute(ID_PESSOA, evento.getParticipacoes().get(0).getId());
-                return viewSucesso;
-            }else{
-                redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
-            }
+            model.addAttribute(EVENTO, evento);
+			model.addAttribute(ID_PESSOA, evento.getParticipacoes().get(0).getId());
+			return viewSucesso;
         }catch(NumberFormatException e){
             redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
         }
