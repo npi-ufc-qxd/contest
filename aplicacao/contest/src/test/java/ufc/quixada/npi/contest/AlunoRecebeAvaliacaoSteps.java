@@ -11,7 +11,11 @@ import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -22,6 +26,7 @@ import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.AutorController;
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -59,6 +64,7 @@ public class AlunoRecebeAvaliacaoSteps {
 	private Trabalho trabalho;
 	private Revisao revisao;
 	private List<Revisao> revisoes;
+	private Pessoa aluno;
 	
 	@Before
 	public void setup() {
@@ -70,6 +76,17 @@ public class AlunoRecebeAvaliacaoSteps {
 		evento = new Evento();
 		evento.setId(3L);
 		
+		aluno = new Pessoa();
+		aluno.setCpf("00000");
+		aluno.setId(1L);
+		aluno.setEmail("aluno@gmail.com");
+		
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getName()).thenReturn(aluno.getCpf());
+		SecurityContextHolder.setContext(context);
+		
 	}
 	
 	@Dado("^que o aluno deseja ver a revisão de seu trabalho$")
@@ -79,6 +96,7 @@ public class AlunoRecebeAvaliacaoSteps {
 		trabalho.setId(5L);
 		trabalho.setParticipacoes(new ArrayList<>());
 		trabalho.setEvento(evento);
+		trabalho.setAutores(aluno, new ArrayList<Pessoa>());
 		
 		revisoes = new ArrayList<Revisao>();
 		
@@ -90,11 +108,11 @@ public class AlunoRecebeAvaliacaoSteps {
 	public void naoExisteRevisao() throws Throwable{
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
+		when(pessoaService.getByCpf(aluno.getCpf())).thenReturn(aluno);
 
 		action = mockMvc
-				.perform(get("/autor/revisao")
-						.param("trabalhoId", trabalho.getId().toString())
-				);
+				.perform(get("/autor/revisao/trabalho/{trabalhoId}",
+						trabalho.getId().toString()));
 	}
 	
 	@Então("^deve ver uma mensagem de erro de revisão inexistente$")
@@ -121,11 +139,11 @@ public class AlunoRecebeAvaliacaoSteps {
 		
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
+		when(pessoaService.getByCpf(aluno.getCpf())).thenReturn(aluno);
 		
 		action = mockMvc
-				.perform(get("/autor/revisao")
-						.param("trabalhoId", trabalho.getId().toString())
-				);
+				.perform(get("/autor/revisao/trabalho/{trabalhoId}",
+						trabalho.getId().toString()));
 	}
 	
 	@Então("^deve obter acesso as revisões$")

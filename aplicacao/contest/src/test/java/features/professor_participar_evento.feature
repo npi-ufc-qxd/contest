@@ -13,14 +13,10 @@ Funcionalidade: O professor decide participar de um evento
         
 	  Cenário: Professor participa de um evento com sucesso 
 		E Realizo uma busca por eventos ativos no sistema
-		Quando Escolho participar de um evento ativo com id 2
-		Então Confirmo minha incrição
-		E Deve ser mostrado uma mensagem de feedback
+		Quando Escolho participar de um evento ativo
+		E Confirmo minha incrição
+		Então Deve ser mostrado uma mensagem de feedback
 			
-	  Cenário: Verificar os eventos listados para o professor
+	  Cenário: Professor procura um evento para participar
 	  	Quando Realizo uma busca por eventos ativos
-	  	Então Deve ser mostrado apenas eventos públicos
-	  
-	  Cenário: Buscar por evento 
-		Quando Realizo uma busca por um evento
-		Então Deve ser listado os eventos ativos e públicos
+	  	Então Deve ser mostrado apenas eventos públicos e ativos
