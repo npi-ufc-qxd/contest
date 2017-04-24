@@ -94,16 +94,16 @@ public class EnviarTrabalhoSteps {
 		
 		evento.setId(1L);
 		Calendar dataInicialSubmissao = Calendar.getInstance();
-		dataInicialSubmissao.set(2016, Calendar.SEPTEMBER, 30);
+		dataInicialSubmissao.add(Calendar.DAY_OF_MONTH, -1);
 		
 		Calendar dataInicialRevisao = Calendar.getInstance();
-		dataInicialRevisao.set(2016, Calendar.DECEMBER, 30);
+		dataInicialRevisao.add(Calendar.DAY_OF_MONTH, 1);
 		
 		Calendar dataFinalRevisao = Calendar.getInstance();
-		dataFinalRevisao.set(2017, Calendar.FEBRUARY, 17);
+		dataFinalRevisao.add(Calendar.DAY_OF_MONTH, 5);
 		
 		Calendar dataFinalSubmissao = Calendar.getInstance();
-		dataFinalSubmissao.set(2017, Calendar.SEPTEMBER, 1);
+		dataFinalSubmissao.add(Calendar.DAY_OF_MONTH, 10);
 		
 		Date dataInicial = dataInicialSubmissao.getTime();
 		Date dataFinal = dataFinalSubmissao.getTime();
@@ -135,7 +135,7 @@ public class EnviarTrabalhoSteps {
 		evento.setParticipacoes(participacoes);
 	}
 	
-	@Dado("^que o autor seleciona um evento que ele participa$")
+	@Dado("^que o autor seleciona um evento que ele participa e o prazo esta vigente$")
 	public void autorSelecionaEvento() throws Throwable{
 		List<Trilha> trilhas = new ArrayList<>();
 		trilhas.add(trilha);

@@ -30,11 +30,13 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 
 public class EditarEventoSteps {
 
@@ -52,6 +54,9 @@ public class EditarEventoSteps {
 	
 	@Mock
 	private EventoService eventoService;
+	
+	@Mock
+	private TrabalhoService trabalhoService;
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
@@ -99,8 +104,8 @@ public class EditarEventoSteps {
 	@Dado("^que o administrador deseja alterar um evento$")
 	public void desejaAlterarEvento() throws Throwable{
 		when(eventoService.buscarEventoPorId(Long.valueOf(ID_EVENTO))).thenReturn(evento);
-		when(eventoService.buscarEventoPorId(Long.valueOf(ID_EVENTO))).thenReturn(evento);
 		when(participacaoEventoService.findByEventoId(evento.getId())).thenReturn(participacao);
+		when(trabalhoService.getTrabalhosEvento(evento)).thenReturn(new ArrayList<Trabalho>());
 		mockMvc.perform(get(TEMPLATE_EDITAR_EVENTO,Long.valueOf(ID_EVENTO))).andExpect(view().name(PAGINA_CADASTRAR));
 	}
 	

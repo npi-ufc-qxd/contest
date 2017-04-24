@@ -39,8 +39,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import ufc.quixada.npi.contest.model.Avaliacao;
-import ufc.quixada.npi.contest.model.Email;
-import ufc.quixada.npi.contest.model.Email.EmailBuilder;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Notificacao;
@@ -419,10 +417,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
 			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " +evento.getNome() + " como " + funcao;
-			
-			EmailBuilder builder = new EmailBuilder(nome, assunto, email, corpo);
-			Email mail = builder.build();
-			if(!emailService.enviarEmail(mail)){
+			String titulo = "[CONTEST] Convite para o Evento: "+evento.getNome();
+			if(!emailService.enviarEmail(titulo,assunto, email, corpo)){
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
 				return "redirect:/eventoOrganizador/evento/" + eventoId;
 			}

@@ -26,6 +26,7 @@
 				<packaging.type>war</packaging.type>
 				<npi.ldap.version>0.3</npi.ldap.version>
 				<activatedProperties>homologacao</activatedProperties>
+				
 			</properties>
 		</profile>
 		<profile>
@@ -52,6 +53,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<cucumber.java.version>1.2.5</cucumber.java.version>
 
 		<!-- Flyway Database Migrations -->
 		<flyway.version>4.0.2</flyway.version>
@@ -69,7 +71,7 @@
 		<!-- NPI Mail Version -->
 		<npi.mail.version>1.0.0</npi.mail.version>
 
-		
+		<npi.mail.version>1.0.0</npi.mail.version>
 	</properties>
 
 	<repositories>
@@ -80,18 +82,6 @@
 	</repositories>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>info.cukes</groupId>
-			<artifactId>cucumber-java</artifactId>
-			<version>1.2.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>info.cukes</groupId>
-			<artifactId>cucumber-junit</artifactId>
-			<version>1.2.4</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -114,6 +104,34 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+				<dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-core</artifactId>
+            <version>${cucumber.java.version}</version>
+            <scope>test</scope>
+        </dependency> 
+		
+		<dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.java.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.java.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+              <groupId>info.cukes</groupId>
+              <artifactId>cucumber-spring</artifactId>
+              <version>${cucumber.java.version}</version>
+              <scope>test</scope>
+        </dependency>
 
 		<!-- Database Dependencies -->
 		<dependency>
@@ -229,7 +247,7 @@
 	        <artifactId>spring-context-support</artifactId>
 	        <version>${spring.version}</version>
 	    </dependency>
-		
+
 		
 		<dependency>
     		<groupId>org.jopendocument</groupId>
@@ -243,6 +261,7 @@
 		    <artifactId>npi-mail</artifactId>
 		    <version>${npi.mail.version}</version>
 		  </dependency>
+
 		
 	</dependencies>
 

@@ -54,6 +54,9 @@ public class Trabalho implements Comparable<Trabalho> {
 	@Transient
 	private String coautoresInString;
 	
+	@ManyToOne
+	private Secao secao;
+	
 	public Long getId() {
 		return id;
 	}
@@ -252,6 +255,14 @@ public class Trabalho implements Comparable<Trabalho> {
 			return 1;
 		}
 		return 0;
+	}
+
+	public Secao getSecao() {
+		return secao;
+	}
+
+	public void setSecao(Secao secao) {
+		this.secao = secao;
 	}
 
 	
