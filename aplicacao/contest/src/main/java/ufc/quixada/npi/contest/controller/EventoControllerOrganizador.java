@@ -550,9 +550,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
 	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model, HttpServletResponse response) throws JRException, FileNotFoundException, IOException{
 		
-		criarDadosPdf(organizadoresIds, model, "Organizadores", response);
+		criarDadosODS(organizadoresIds, model, "Organizadores", response);
 		
-		return "PDF_ORGANIZADOR";
+		return "DADOS_ORGANIZADOR";
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
@@ -567,12 +567,12 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
 	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model, HttpServletResponse response) throws JRException, FileNotFoundException, IOException{
 		
-		criarDadosPdf(revisoresIds, model, "Revisores", response);
+		criarDadosODS(revisoresIds, model, "Revisores", response);
 		
-		return "PDF_REVISORES";
+		return "DADOS_REVISORES";
 	}
 	
-	public void criarDadosPdf(Long[] ids, Model model, String nomeDocumento, HttpServletResponse response) throws FileNotFoundException, IOException{
+	public void criarDadosODS(Long[] ids, Model model, String nomeDocumento, HttpServletResponse response) throws FileNotFoundException, IOException{
 		if(ids != null){
 			List<Pessoa> pessoas = new ArrayList<>();
 			for(Long id : ids){
@@ -605,7 +605,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	}
 
 	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.POST)
-	public void gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model, HttpServletResponse response) throws FileNotFoundException, IOException{
+	public String gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model, HttpServletResponse response) throws FileNotFoundException, IOException{
 		
 		if(trabalhosIds != null){
 			List<Trabalho> trabalhos = new ArrayList<>();
@@ -614,14 +614,13 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				t.setTitulo(t.getTitulo().toUpperCase());
 				trabalhos.add(trabalhoService.getTrabalhoById(id));
 			}
-			if(trabalhos != null){
+			if(!trabalhos.isEmpty()){
 				final Object[][] dados = new Object[trabalhos.size()][4];
 				for(int i = 0; i < trabalhos.size(); i++){
 					Trabalho t = trabalhos.get(i);
 					
-					int aux = t.getSubmissoes().toArray().length;
 					SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
-					String data = formatadorData.format(t.getSubmissoes().get(aux-1).getDataSubmissao());
+					String data = formatadorData.format(t.getEvento().getPrazoSubmissaoFinal());
 					
 					dados[i] = new Object[] {t.getAutor().getNome().toUpperCase(), 
 											 t.getCoautoresInString().toUpperCase(), 
@@ -630,9 +629,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				}
 				String[] colunas = new String[] {"Nome", "Coautores", "Título", "Data"};
 				gerarODS("trabalhos", colunas, dados, response);
-				
 			}
 		}
+		return "DADOS_TRABALHOS";
 	}
 	
 	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response) throws FileNotFoundException, IOException{

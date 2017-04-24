@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.mockito.InjectMocks;
@@ -67,24 +68,38 @@ public class GerarCertificadoSteps {
 		
 		listaPessoas = new ArrayList<Pessoa>();
 		listaTrabalho = new ArrayList<Trabalho>();
+		List<Pessoa> coautores = new ArrayList<Pessoa>();
 		evento = new Evento();
+		evento.setId(ID_EVENTO);
+		evento.setPrazoSubmissaoFinal(new Date());
+		
+		Pessoa pessoa1 = new Pessoa();
+		Pessoa pessoa2 = new Pessoa();
+		
+		pessoa1.setNome("Joao Paulo Silv aSauro");
+		pessoa2.setNome("Maria Tereza dos Anzois");
+		
+		coautores.add(pessoa2);
 		
 		trabalho1 = new Trabalho();
 		trabalho1.setId(1L);
 		trabalho1.setTitulo("Titulo");
+		trabalho1.setAutores(pessoa1, coautores);
+		trabalho1.setEvento(evento);
 		
 		trabalho2 = new Trabalho();
 		trabalho2.setId(2L);
 		trabalho2.setTitulo("Titulo");
-
+		trabalho2.setAutores(pessoa1, coautores);
+		trabalho2.setEvento(evento);
 		
 		trabalho3 = new Trabalho();
 		trabalho3.setId(3L);
 		trabalho3.setTitulo("Titulo");
+		trabalho3.setAutores(pessoa1, coautores);
+		trabalho3.setEvento(evento);
 
-		
-		evento.setId(ID_EVENTO);
-		
+				
 		revisor1 = new Pessoa();
 		revisor1.setId(1L);
 		revisor1.setNome("Revisor 1");
@@ -120,7 +135,7 @@ public class GerarCertificadoSteps {
 	
 	@Então("^o pdf dos organizadores e gerado$")
 	public void pdfDosOrganizadoresEGerado() throws Throwable {
-		action.andExpect(view().name("PDF_ORGANIZADOR"));
+		action.andExpect(view().name("DADOS_ORGANIZADOR"));
 	}
 	
 	@Dado("^que o organizador deseja gerar o pdf dos revisores$")
@@ -141,7 +156,7 @@ public class GerarCertificadoSteps {
 	
 	@Então("^o pdf dos revisores e gerado$")
 	public void pdfDosRevisoresEGerado() throws Throwable {
-		action.andExpect(view().name("PDF_REVISORES"));
+		action.andExpect(view().name("DADOS_REVISORES"));
 	}
 	
 	
@@ -166,7 +181,7 @@ public class GerarCertificadoSteps {
 	
 	@Então("^o pdf dos trabalhos e gerado$")
 	public void pdfDosTrabalhosEGerado() throws Throwable {
-		action.andExpect(view().name("PDF_TRABALHOS"));
+		action.andExpect(view().name("DADOS_TRABALHOS"));
 	}
 	
 }
