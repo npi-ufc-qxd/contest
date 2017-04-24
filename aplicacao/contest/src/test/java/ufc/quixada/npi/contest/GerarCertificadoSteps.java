@@ -113,7 +113,7 @@ public class GerarCertificadoSteps {
 		revisor3.setNome("Revisor 3");
 	}
 	
-	@Dado("^que o organizador deseja gerar o pdf dos organizadores$")
+	@Dado("^que o organizador deseja gerar a planilha dos organizadores$")
 	public void organizadorDesejaGerarPdfParaOrganizadores() throws Exception{
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		when(pessoaService.get(revisor1.getId())).thenReturn(revisor1);
@@ -124,7 +124,7 @@ public class GerarCertificadoSteps {
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES));
 	}
 	
-	@Quando("^ele seleciona os organizadores e manda gerar o pdf$")
+	@Quando("^ele seleciona os organizadores e manda gerar a planilha$")
 	public void organizadoSelecionaOrganizadoresParaGerarPdf() throws Throwable {
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		action = mockMvc
@@ -133,19 +133,19 @@ public class GerarCertificadoSteps {
 		
 	}
 	
-	@Então("^o pdf dos organizadores e gerado$")
+	@Então("^a planilha dos organizadores e gerada$")
 	public void pdfDosOrganizadoresEGerado() throws Throwable {
 		action.andExpect(view().name("DADOS_ORGANIZADOR"));
 	}
 	
-	@Dado("^que o organizador deseja gerar o pdf dos revisores$")
+	@Dado("^que o organizador deseja gerar a planilha dos revisores$")
 	public void organizadorDesejaGerarPdfParaRevisores() throws Exception{
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_REVISOR, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES));
 	}
 	
-	@Quando("^ele seleciona os revisores e manda gerar o pdf$")
+	@Quando("^ele seleciona os revisores e manda gerar a planilha$")
 	public void organizadoSelecionaRevisoresParaGerarPdf() throws Throwable {
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		action = mockMvc
@@ -154,13 +154,13 @@ public class GerarCertificadoSteps {
 		
 	}
 	
-	@Então("^o pdf dos revisores e gerado$")
+	@Então("^a planilha dos revisores e gerada$")
 	public void pdfDosRevisoresEGerado() throws Throwable {
 		action.andExpect(view().name("DADOS_REVISORES"));
 	}
 	
 	
-	@Dado("^que o organizador deseja gerar o pdf dos trabalhos$")
+	@Dado("^que o organizador deseja gerar a planilha dos trabalhos$")
 	public void organizadorDesejaGerarPdfParaOsTrabalhos() throws Exception{
 		when(eventoService.buscarEventoPorId(ID_EVENTO)).thenReturn(evento);
 		when(trabalhoService.getTrabalhosEvento(evento)).thenReturn(listaTrabalho);
@@ -168,7 +168,7 @@ public class GerarCertificadoSteps {
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO));
 	}
 	
-	@Quando("^ele seleciona os trabalhos e manda gerar o pdf$")
+	@Quando("^ele seleciona os trabalhos e manda gerar a planilha$")
 	public void organizadoSelecionaOsTrabalhosParaGerarPdf() throws Throwable {
 		when(trabalhoService.getTrabalhoById(trabalho1.getId())).thenReturn(trabalho1);
 		when(trabalhoService.getTrabalhoById(trabalho2.getId())).thenReturn(trabalho2);
@@ -179,7 +179,7 @@ public class GerarCertificadoSteps {
 		
 	}
 	
-	@Então("^o pdf dos trabalhos e gerado$")
+	@Então("^a planilha dos trabalhos e gerada$")
 	public void pdfDosTrabalhosEGerado() throws Throwable {
 		action.andExpect(view().name("DADOS_TRABALHOS"));
 	}
