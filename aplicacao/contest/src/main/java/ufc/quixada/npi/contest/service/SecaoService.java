@@ -40,4 +40,11 @@ public class SecaoService {
 		secao.getTrabalhos().remove(trabalho);
 		addOrUpdate(secao);
 	}
+	
+	public void adicionarTrabalhoSecao(Long idSecao,Trabalho trabalho){
+		Secao secao = secaoRepository.findOne(idSecao);
+		List<Trabalho> listAux = secao.getTrabalhos();
+		listAux.add(trabalho);
+		secao.setTrabalhos(listAux);
+	}
 }

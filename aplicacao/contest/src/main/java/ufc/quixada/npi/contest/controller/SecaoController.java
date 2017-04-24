@@ -63,10 +63,17 @@ public class SecaoController {
 		return "";
 	}
 	
-	@RequestMapping("/secao/{idSecao}/{idTrabalho}")
+	@RequestMapping("/{idSecao}/{idTrabalho}")
 	public String excluirTrabalhoSecao(@PathVariable("idSecao") Long idSecao,@PathVariable("idTrabalho") Long idTrabalho){
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		secaoService.removerTrablahoSecao(idSecao,trabalho);
+		return "redirect:/secao/"+idSecao;
+	}
+	
+	@RequestMapping("/{idSecao}/{idTrabalho}")
+	public String adicionarTrabalhoSecao(@PathVariable("idSecao") Long idSecao,@PathVariable("idTrabalho") Long idTrabalho){
+		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+		secaoService.adicionarTrabalhoSecao(idSecao, trabalho);
 		return "redirect:/secao/"+idSecao;
 	}
 }
