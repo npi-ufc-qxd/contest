@@ -187,7 +187,7 @@ public class Trabalho implements Comparable<Trabalho> {
 	}
 	
 	public String getCoautoresInString(){
-		List<Pessoa> lista = this.getAutoresDoTrabalho();
+		List<Pessoa> lista = this.getCoAutoresDoTrabalho();
 		if(lista!=null){
 			StringBuilder nomes = new StringBuilder();
 			for (Pessoa p : lista) {
@@ -207,6 +207,10 @@ public class Trabalho implements Comparable<Trabalho> {
 	
 	public List<Pessoa> getAutoresDoTrabalho() {
 		return getParticipacaoPapelTrabalho(Papel.AUTOR, Papel.COAUTOR);
+	}
+	
+	public List<Pessoa> getCoAutoresDoTrabalho() {
+		return getParticipacaoPapelTrabalho(Papel.COAUTOR);
 	}
 	
 	public List<Pessoa> getRevisores(){

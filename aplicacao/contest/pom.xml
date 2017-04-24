@@ -67,6 +67,9 @@
 		<materialize.version>0.97.6</materialize.version>
 		<font.awesome.version>4.6.3</font.awesome.version>
 		<jquery.version>2.2.4</jquery.version>
+		
+		<!-- NPI Mail Version -->
+		<npi.mail.version>1.0.0</npi.mail.version>
 
 		<npi.mail.version>1.0.0</npi.mail.version>
 	</properties>
@@ -244,12 +247,21 @@
 	        <artifactId>spring-context-support</artifactId>
 	        <version>${spring.version}</version>
 	    </dependency>
+
 		
 		<dependency>
-			<groupId>br.ufc.quixada.npi</groupId>
-			<artifactId>npi-mail</artifactId>
-			<version>${npi.mail.version}</version>
+    		<groupId>org.jopendocument</groupId>
+    		<artifactId>jOpenDocument</artifactId>
+    		<version>1.3</version>
 		</dependency>
+		
+		<!-- NPI Mail -->
+		  <dependency>
+		    <groupId>br.ufc.quixada.npi</groupId>
+		    <artifactId>npi-mail</artifactId>
+		    <version>${npi.mail.version}</version>
+		  </dependency>
+
 		
 	</dependencies>
 
