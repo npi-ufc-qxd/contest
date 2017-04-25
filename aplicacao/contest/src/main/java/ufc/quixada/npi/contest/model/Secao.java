@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -17,7 +18,7 @@ import javax.persistence.OneToOne;
 public class Secao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long idSecao;
+	private Long id;
 	@Column(name = "nome")
 	private String nome;
 	@Column(name = "local")
@@ -30,13 +31,16 @@ public class Secao {
 	
 	@OneToOne
 	private Pessoa responsavel;
+	
+	@ManyToOne(cascade=CascadeType.PERSIST)
+	private Evento evento;
 
-	public Long getIdSecao() {
-		return idSecao;
+	public Long getId() {
+		return id;
 	}
 
-	public void setIdSecao(Long idSecao) {
-		this.idSecao = idSecao;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -77,6 +81,14 @@ public class Secao {
 
 	public void setResponsavel(Pessoa responsavel) {
 		this.responsavel = responsavel;
+	}
+
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
 	}
 
 }

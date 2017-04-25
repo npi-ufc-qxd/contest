@@ -72,6 +72,8 @@ public class Evento {
 	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
 	@OrderBy("nome ASC")
 	private List<Trilha> trilhas;
+	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL)
+	private List<Secao> secoes;
 
 	public Long getId() {
 		return id;
@@ -251,6 +253,14 @@ public class Evento {
 	
 	public List<Pessoa> getRevisores(){
 		return getByPapel(Papel.REVISOR);
+	}
+
+	public List<Secao> getSecoes() {
+		return secoes;
+	}
+
+	public void setSecoes(List<Secao> secoes) {
+		this.secoes = secoes;
 	}
 	
 }
