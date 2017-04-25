@@ -31,14 +31,14 @@
 			    <select multiple="multiple" name="idOrganizadores">
 			      <option value="" disabled="disabled" selected="selected">Selecione os Organizadores</option>
 			      <div th:each="pessoa : ${pessoas}">
-			        <option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
-	                <option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" ></option>   
+		            <option th:if="${evento.getOrganizadores().contains(pessoa)}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
+	                <option th:unless="${evento.getOrganizadores().contains(pessoa)}" th:value="${pessoa.id}" th:text="${pessoa.nome}" ></option>   
 			      </div>
 			    </select>
 	            <label>organizadores</label>
 	          </div>
 	          <div class="col s2">
-				<button class="btn waves-effect waves-light" type="submit" name="action">Add
+				<button class="btn waves-effect waves-light" type="submit" name="action">Adicionar
 				  <i class="material-icons right"></i>
 				</button>
 	          </div>
