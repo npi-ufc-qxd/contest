@@ -3,7 +3,7 @@ CREATE TABLE secao (
     nome character varying(255),
     local character varying(255),
     descricao character varying(255),
-    pessoa_id bigint, 
+    responsavel_id bigint, 
     Primary key(id)
 );
 
@@ -15,6 +15,6 @@ ALTER TABLE trabalho
    REFERENCES secao(id);
 
 ALTER TABLE secao
-   ADD CONSTRAINT pessoa_id_key
-   FOREIGN KEY (pessoa_id) 
+   ADD CONSTRAINT responsavel_id_key
+   FOREIGN KEY (responsavel_id) 
    REFERENCES pessoa(id);
