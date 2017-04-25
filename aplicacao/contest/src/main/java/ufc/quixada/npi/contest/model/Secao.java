@@ -35,12 +35,12 @@ public class Secao {
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Evento evento;
 
-	public Long getIdSecao() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setIdSecao(Long idSecao) {
-		this.id = idSecao;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -81,6 +81,14 @@ public class Secao {
 
 	public void setResponsavel(Pessoa responsavel) {
 		this.responsavel = responsavel;
+	}
+
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
 	}
 
 }

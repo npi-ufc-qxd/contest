@@ -254,5 +254,13 @@ public class Evento {
 	public List<Pessoa> getRevisores(){
 		return getByPapel(Papel.REVISOR);
 	}
+
+	public List<Secao> getSecoes() {
+		return secoes;
+	}
+
+	public void setSecoes(List<Secao> secoes) {
+		this.secoes = secoes;
+	}
 	
 }
