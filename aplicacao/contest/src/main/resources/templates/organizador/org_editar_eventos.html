@@ -61,7 +61,7 @@
                </div>
              </div>
               
-             <div class="col s3" th:unless="${existeSubmissao} == false">
+             <div class="col s3" th:if="${existeSubmissao} == false">
                <div class="card-content">
                  <span class="card-title"> 
                  	Prazo de Submissão - Inicial
@@ -80,7 +80,7 @@
                  <input type="hidden" th:field="*{prazoRevisaoInicial}" id="prazo_revisao_inicial"/>
                </div>
              </div>
-             <div class="col s3" th:unless="${existeSubmissaoRevisao} == false">
+             <div class="col s3" th:if="${existeSubmissaoRevisao} == false">
                <div class="card-content">
                  <span class="card-title"> 
                  	Prazo de Revisão - Inicial
@@ -99,21 +99,21 @@
                  <input type="hidden" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final"/>
                </div>
              </div>
-             <div class="col s3" th:unless="${existeSubmissaoFinal} == false">
+             <div class="col s3" th:if="${existeSubmissaoFinal} == false">
                <div class="card-content">
                  <span class="card-title"> 
                  	Prazo de Revisão - Final
                  </span>
                  <input type="date" th:field="*{prazoRevisaoFinal}" id="prazo_revisao_final" class="datepicker"/>
                </div>
-                      
+              </div>          
                       
              <div class="col s3">
                 <div class="card-content"><span class="card-title"> Prazo de Submissão - Final</span>
                   <input type="date" th:field="*{prazoSubmissaoFinal}" id="prazo_submissao_final" class="datepicker"/>
                 </div>
               </div> 
-              </div>        
+                    
                       
            <div th:if="${eventoInativo} == true">
             

@@ -311,14 +311,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect){
 		Long eventoId = Long.valueOf(id);
-		boolean exiteSubmissao = submissaoService.existeTrabalhoNesseEvento(eventoId);
+		boolean existeSubmissao = submissaoService.existeTrabalhoNesseEvento(eventoId);
 		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(eventoId);
 		boolean existeSubmissaoFinal = submissaoService.existeTrabalhoFinalNesseEvento(eventoId);
 		
-		if(exiteSubmissao){
-			model.addAttribute(EXISTE_SUBMISSAO, exiteSubmissao);
+		if(existeSubmissao){
+			model.addAttribute(EXISTE_SUBMISSAO, existeSubmissao);
 			if(existeRevisao){
-				model.addAttribute(SUBMISSAO_REVISAO, exiteSubmissao);
+				model.addAttribute(SUBMISSAO_REVISAO, existeSubmissao);
 				if (existeSubmissaoFinal) {
 					model.addAttribute(SUBMISSAO_FINAL, existeSubmissaoFinal);
 				}
