@@ -138,7 +138,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		Pessoa pessoa = getOrganizadorLogado();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		List<Pessoa> pessoas = new ArrayList<Pessoa>(); 
+		List<Pessoa> pessoas = pessoaService.getTodos();
 		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 		
 		model.addAttribute("organizaEvento", organizaEvento);

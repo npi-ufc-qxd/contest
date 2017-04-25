@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,10 +47,10 @@ public class Pessoa implements UserDetails {
 	@NotEmpty
 	private String email;
 
-	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE}, fetch=FetchType.LAZY)
 	private List<ParticipacaoEvento> participacoesEvento;
 
-	@OneToMany(mappedBy = "pessoa")
+	@OneToMany(mappedBy = "pessoa", fetch=FetchType.LAZY)
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 	
 	@Column(name = "papel_ldap")
