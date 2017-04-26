@@ -35,9 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
@@ -72,8 +70,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	private static final String TITULO_EMAIL_ORGANIZADOR="TITULO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String TEXTO_EMAIL_ORGANIZADOR="TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
-	private static final String EVENTO_INATIVO = "eventoInativo";
-	private static final String EVENTO_ATIVO = "eventoAtivo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
 	private static final String SUBMISSAO_FINAL = "existeSubmissaoFinal";
@@ -126,7 +122,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	@Autowired
 	private EnviarEmailService emailService;
 	
-	private JRDataSource jrDataSource;
 	
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
