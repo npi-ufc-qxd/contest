@@ -323,15 +323,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 					model.addAttribute(SUBMISSAO_FINAL, existeSubmissaoFinal);
 				}
 			}
-		}else{
-			Evento evento = eventoService.buscarEventoPorId(Long.valueOf(id));
-			boolean eventoAtivo = true;
-			boolean eventoInativo = true;
-			if(evento.getEstado().equals(EstadoEvento.ATIVO)){
-				model.addAttribute(EVENTO_ATIVO,eventoAtivo);
-			}else{
-				model.addAttribute(EVENTO_INATIVO,eventoInativo);
-			}
 		}
 		return alterarEvento(id, model, redirect, Constants.TEMPLATE_EDITAR_EVENTO_ORG, "redirect:/eventoOrganizador/inativos");
 	}
