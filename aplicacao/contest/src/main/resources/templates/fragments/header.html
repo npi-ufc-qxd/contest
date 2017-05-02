@@ -17,16 +17,7 @@
 
 				<!-- Dropdown Trigger -->
 				   <div class="right">  
-					<a class='dropdown-button btn' href='#' data-activates='dropdown1' th:text="|Notificações (${#arrays.length(notificacoes)})|"></a>
-					 <ul id='dropdown1' class='dropdown-content collection '>
-					     <div th:each="notificacao : ${notificacoes}" >
-					     	<li class="collection-item dismissable left " th:id="${notificacao.id}" onclick="removerNotificacao(this)">
-						      <span class="title center" th:text="${notificacao.titulo}"></span>
-						      <p th:text="${notificacao.descricao}"></p>
-					     	</li>
-					    </div>
-					  </ul>
-			      <ul id="nav-mobile" class="side-nav">
+					<ul id="nav-mobile" class="side-nav">
 					<li><a href="#">Nome</a></li>			     
 					<li><a href="#">Sair&nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i></a></li>   
 			      </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
