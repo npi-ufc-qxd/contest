@@ -13,6 +13,7 @@ public class LoginController {
 	public String login() {
 		return "login";
 	}
+	
 
 	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
 	public String loginfailed(Authentication auth, RedirectAttributes redirectAttributes) {
@@ -22,6 +23,11 @@ public class LoginController {
 
 		redirectAttributes.addFlashAttribute("loginError", true);
 		return "redirect:/login";
+	}
+	
+	@RequestMapping(value = "/cadastro", method = RequestMethod.GET)
+	public String cadastro() {
+		return "cadastro";
 	}
 
 }
