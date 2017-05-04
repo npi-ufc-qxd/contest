@@ -66,14 +66,12 @@
 	  if(password.value != password_confirm.value) {
 	    alert("Senhas diferentes!")
 	  } else {
-	    password_confirm.setCustomValidity('');
 	    $("#btn_cadastro").prop("disabled", false);
 	  }
 	}
-
 	
 	$("#password_confirm").blur(function() {
-		  validatePassword();
+			validatePassword();
 		});
 
 	});

@@ -101,6 +101,27 @@ h1, h2, h3 {
      border-bottom: 1px solid #6a1b9a ;
      box-shadow: 0 1px 0 0 #000;
    }
+   
+   /* label focus color */
+   .input-field input[type=email]:focus + label {
+     color: #6a1b9a;
+   }
+   /* label underline focus color */
+   .input-field input[type=email]:focus {
+     border-bottom: 1px solid #6a1b9a;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* valid color */
+   .input-field input[type=email].valid {
+     border-bottom: 1px solid #6a1b9a ;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* invalid color */
+   .input-field input[type=email].invalid {
+     border-bottom: 1px solid #6a1b9a ;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   
    /* icon prefix focus color */
    .input-field .prefix.active {
      color:#6a1b9a ;
