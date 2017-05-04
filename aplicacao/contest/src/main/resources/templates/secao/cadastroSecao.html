@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<div th:include="fragments/head :: head"></div>
+<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+<title>Cadastrar</title>
+</head>
+<body>
+<div th:include="fragments/header :: header"></div>
+<div th:include="fragments/admin_menu_navegacao :: admin_menu_navegacao"></div>
+ <form action="@{/secao/cadastrarSecaoForm}" method="post">
+ <input type="text"></input>
+ <button type="submit"></button>
+ </form>
+<div th:include="fragments/footer :: footer"></div>
+<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+<script type="text/javascript"></script>
+</body>
+</html>
