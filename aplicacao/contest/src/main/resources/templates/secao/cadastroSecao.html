@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="fragments/head :: head"></div>
 <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
@@ -7,13 +7,66 @@
 </head>
 <body>
 <div th:include="fragments/header :: header"></div>
-<div th:include="fragments/admin_menu_navegacao :: admin_menu_navegacao"></div>
- <form action="@{/secao/cadastrarSecaoForm}" method="post">
- <input type="text"></input>
- <button type="submit"></button>
- </form>
+
+<div class="container pagination">
+
+    <div class="row opcoes">
+        <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
+        <a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar Seção</a>
+    </div>
+
+      <div class="row">
+        <h1 class="center header">Cadastro de Seção</h1>
+        <div class="col s12">
+          <form name="cadastroForm" th:action="@{/cadastro}" class="valign" method="post" id="formCadastro">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            
+            <div class="input-field">
+              <input type="text" id="nome_secao" required="required"/>
+              <label for="nome_secao">*Nome</label>
+            </div>
+
+            <div class="input-field">
+              <input class="datepicker" type="date" id="data_secao" required="required"/>
+              <label for="data_secao">*Data</label>
+            </div>
+            
+            <div class="input-field">
+              <input type="text" id="horario" placeholder="Exemplo: 00:00" required="required"/>
+              <label for="horario">*Horário</label>
+            </div>
+
+            <div class="input-field">
+              <textarea type="text" class="materialize-textarea validate" id="descricao" required="required"></textarea>
+              <label for="descricao">*Descrição</label>
+            </div>
+            <br/>
+            <div class="right">
+            <button class="right btn waves-effect waves-light purple darken-4" type="submit" id="btn_cadastro">Cadastrar<i class="material-icons right">save</i></button>
+          </div>
+          </form>
+        </div>
+      </div>
+
+</div>
 <div th:include="fragments/footer :: footer"></div>
 <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
-<script type="text/javascript"></script>
+<script type="text/javascript">
+//datepicker
+$('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15, // Creates a dropdown of 15 years to control year
+    //Persnonalizando nomes dos meses do ano
+    monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+    //Persnonalizando nomes dos dias da semana
+    weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+    weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+    weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+    today: 'Hoje',
+    clear: 'Limpar',
+    close: 'Fechar'
+
+});
+</script>
 </body>
 </html>

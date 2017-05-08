@@ -23,6 +23,11 @@ public class SecaoController {
 	@Autowired
 	private TrabalhoService trabalhoService;
 	
+	@RequestMapping(value="/paginaSecao")
+	public String indexSecao(){
+		return "secao/indexSecao";
+	}
+	
 	@RequestMapping(value="/cadastrarSecaoForm",method= RequestMethod.GET)
 	public String cadastrarSecaoForm(){
 		return "secao/cadastroSecao";
