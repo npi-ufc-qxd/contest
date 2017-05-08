@@ -33,6 +33,11 @@ public class SecaoController {
 		return "secao/cadastroSecao";
 	}
 	
+	@RequestMapping(value="/secaoTrabalhos", method=RequestMethod.GET)
+	public String secaoTrabalhos(){
+		return "/secao/secaoTrabalhos";
+	}
+	
 	@RequestMapping(value="/cadastrarSecao")
 	public String cadastrarSecao(Secao secao){
 		secaoService.addOrUpdate(secao);

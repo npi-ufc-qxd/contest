@@ -45,7 +45,7 @@
             </div>
             <br/>
             <div class="right">
-            <button disabled="disabled" class="right btn waves-effect waves-light purple darken-4" type="submit" id="btn_cadastro">Cadastrar</button>
+            <button disabled="disabled" class="right btn waves-effect waves-light" type="submit" id="btn_cadastro">Cadastrar</button>
           </div>
           </form>
         </div>
@@ -57,21 +57,34 @@
   
   $(document).ready(function() {
 	  
-	  //validação de senha
+	 //seta um background cinza ao botão de submit
+	  $('#btn_cadastro').css('background-color', '#616161');
 	  
+	 //pega os valores dos campos de password
 	  var password = document.getElementById("password");
 	  var password_confirm = document.getElementById("password_confirm");
-
+	  
+	 //validação de senha
 	function validatePassword(){
-	  if(password.value != password_confirm.value) {
-	    alert("Senhas diferentes!")
-	  } else {
-	    $("#btn_cadastro").prop("disabled", false);
+	
+	  if(password.value == password_confirm.value) {
+		    $("#btn_cadastro").prop("disabled", false);
+		    $('#btn_cadastro').css('background-color', '#311b92');
+	   
+	  }else{
+		  $('#btn_cadastro').css('background-color', '#616161');
+		  $("#btn_cadastro").prop("disabled", true);
 	  }
 	}
-	
-	$("#password_confirm").blur(function() {
+	//validação de senha enquanto o usuário digita
+	$("#password_confirm").on('input',function() {
+		if(password.value != ""){
 			validatePassword();
+		}else if(password_confirm != ""){
+			validatePassword();
+		}else{
+			console.log("ok");
+		}
 		});
 
 	});

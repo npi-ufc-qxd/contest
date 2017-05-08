@@ -13,7 +13,13 @@
         <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
         <a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar Seção</a>
     </div>
-
+    
+    <div class="row">
+     <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
+	       		Voltar
+	 </a>
+	</div>
+    
 <br/>
 
 <div class="row">
@@ -29,7 +35,7 @@
             <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
                 <p>Texto para descrever seção</p> </div>
             <div class="card-action">
-                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
+                <a th:href="@{/secao/secaoTrabalhos}" class="orange-text accent-3">ver seção</a>
                 <a href='#' id="remove_secao" class="orange-text accent-3">deletar seção</a>
             </div>
         </div>
