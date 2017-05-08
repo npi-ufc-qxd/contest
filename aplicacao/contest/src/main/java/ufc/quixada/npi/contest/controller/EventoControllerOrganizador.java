@@ -47,6 +47,7 @@ import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
@@ -127,12 +128,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		Pessoa pessoa = getOrganizadorLogado();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		Boolean eventoPrivado = false;
+		
+		if(evento.getVisibilidade() == VisibilidadeEvento.PRIVADO){
+			eventoPrivado = true;
+		}
+		
 		List<Pessoa> pessoas = pessoaService.getTodos();
 		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 		
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
+		model.addAttribute("eventoPrivado", eventoPrivado);
 		
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
 		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
@@ -379,14 +387,14 @@ public class EventoControllerOrganizador extends EventoGenericoController{
     }
 	
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam("nomeConvidado") String nome,@RequestParam("email") String email,
+	public String convidarPorEmail(@RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, 
 			Model model, RedirectAttributes redirect) {
 			Evento evento = eventoService.buscarEventoPorId(eventoId);
 
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
-			String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " +evento.getNome() + " como " + funcao;
+			String corpo = messageService.getMessage("Você recebeu um convite para participar do ") + " " +evento.getNome() + " como " + funcao;
 			String titulo = "[CONTEST] Convite para o Evento: "+evento.getNome();
 			if(!emailService.enviarEmail(titulo,assunto, email, corpo)){
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));

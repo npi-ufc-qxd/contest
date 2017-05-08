@@ -115,6 +115,30 @@
       </div>
     </div>
 	<div th:include="fragments/footer :: footer"></div>
+	
+	
+	<form th:if="${eventoPrivado} == true" th:action="@{/eventoOrganizador/convidar}" action="#" method="post">
+        <div id="modalConvidarPessoas" class="modal">
+          <div class="modal-content">
+            <h4>Convidar Pessoas</h4>
+            <div class="input-field col m6 s6">
+            	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
+            	<input id="email_da_pessoa" name="email" type="email" />
+            	<label for="email_da_pessoa">Email</label>
+            	<select name="funcao">
+            		<option value="organizador">Organizador</option>
+            		<option value="revisor">Revisor</option>
+            		<option value="autor">Autor</option>
+            	</select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+          	<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+       	  </div>
+        </div>
+      </form>
+	
 	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
     <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
     <script type="text/javascript">
