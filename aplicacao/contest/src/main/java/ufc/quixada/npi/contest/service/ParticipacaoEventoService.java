@@ -24,11 +24,10 @@ public class ParticipacaoEventoService {
 	}
 	
 	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacao){
-		if(participacao != null){
-			if(participacaoEventoRepository.findByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa()) == null){
+		ParticipacaoEvento participando = participacaoEventoRepository.findByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa());
+		if(participacao != null && (participando == null)){
 				participacaoEventoRepository.save(participacao);
 				return true;
-			}
 		}
 			return false;
 	}
