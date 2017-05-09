@@ -24,27 +24,37 @@
       <div class="row">
         <h1 class="center header">Cadastro de Seção</h1>
         <div class="col s12">
-          <form name="cadastroForm" th:action="@{/cadastro}" class="valign" method="post" id="formCadastro">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <form name="cadastroForm" th:action="@{/secao/cadastrarSecao}" class="valign" method="post" id="formCadastro">
             
             <div class="input-field">
-              <input type="text" id="nome_secao" required="required"/>
-              <label for="nome_secao">*Nome</label>
-            </div>
-
-            <div class="input-field">
-              <input class="datepicker" type="date" id="data_secao" required="required"/>
-              <label for="data_secao">*Data</label>
-            </div>
+              <input type="text" id="nome_secao" th:name="nome_secao" required="required"/>
+              <label for="nome_secao">Nome</label>
+            </div><br/>
             
             <div class="input-field">
-              <input type="text" id="horario" placeholder="Exemplo: 00:00" required="required"/>
-              <label for="horario">*Horário</label>
-            </div>
+        		<select id="pessoas_select" name="id_responsavel">
+          			<option value="" disabled="disabled" selected="selected" >Selecione uma pessoa</option>
+          			<div th:each="pessoa : ${pessoas}"  >
+            			<option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
+            			<option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" ></option>   
+          			</div> 
+        		</select> 
+        		<label for="pessoas_select">Responsável pela Seção</label>
+      		</div><br/>
+      		
+      		 <div class="input-field">
+        		<select id="eventos_select" name="id_evento">
+          			<option value="" disabled="disabled" selected="selected" >Selecione um Evento</option>
+          			<div th:each="evento : ${eventos}"  >
+            			<option th:value="${evento.id}" th:text="${evento.nome}"></option>   
+          			</div> 
+        		</select> 
+        		<label for="eventos_select">Eventos</label>
+      		</div><br/>
 
             <div class="input-field">
-              <textarea type="text" class="materialize-textarea validate" id="descricao" required="required"></textarea>
-              <label for="descricao">*Descrição</label>
+              <textarea type="text" class="materialize-textarea validate" id="descricao" th:name="descricao" required="required"></textarea>
+              <label for="descricao">Descrição</label>
             </div>
             <br/>
             <div class="right">

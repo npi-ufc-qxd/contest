@@ -9,12 +9,14 @@
 		    <a th:href="@{/eventoOrganizador}">Meus Eventos</a>
 	        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
 	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+	       	<a th:href="@{/secao/paginaSecao}">Cadastrar Seção</a>
 	       
 	       <!-- Dropdown Structure -->
 			<ul th:if="${evento}" id='dropdown1' class='dropdown-content'>
 				<li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Dados da Organização</a></li>
 			  	<li><a th:href="@{|/eventoOrganizador/gerarCertificadosRevisores/${evento.id}|}">Dados dos Revisores</a></li>
 			  	<li><a th:href="@{|/eventoOrganizador/gerarCertificadosTrabalho/${evento.id}|}">Dados dos Trabalhos</a></li>
+			  	
 			</ul>
 	       	<!-- Dropdown Trigger -->
  			<a  th:if="${gerarCertificado}" class='dropdown-button' href='#' data-activates='dropdown1'>Planilhas</a>

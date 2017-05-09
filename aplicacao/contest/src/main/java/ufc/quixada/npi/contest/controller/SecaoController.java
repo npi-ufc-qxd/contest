@@ -8,40 +8,67 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.service.EventoService;
+import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.SecaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
-@RequestMapping(value="/secao", method = RequestMethod.GET)
+@RequestMapping(value="/secao")
 public class SecaoController {
 	@Autowired
 	private SecaoService secaoService;
 	@Autowired
 	private TrabalhoService trabalhoService;
-	
+	@Autowired
+	private EventoService eventoService;
+	@Autowired
+	private PessoaService pessoaService;
+		
 	@RequestMapping(value="/paginaSecao")
 	public String indexSecao(){
 		return "secao/indexSecao";
 	}
 	
 	@RequestMapping(value="/cadastrarSecaoForm",method= RequestMethod.GET)
-	public String cadastrarSecaoForm(){
+	public String cadastrarSecaoForm(Model model){
+		List<Pessoa> pessoas = pessoaService.getPossiveisOrganizadores();
+		List<Evento> eventos = eventoService.buscarEventos();
+		model.addAttribute("pessoas",pessoas);
+		model.addAttribute("eventos",eventos);
 		return "secao/cadastroSecao";
+	}
+	
+	@RequestMapping(value="/cadastrarSecao")
+	public String cadastrarSecao(@RequestParam String nome_secao,@RequestParam String descricao,@RequestParam Long id_responsavel,@RequestParam Long id_evento){
+		Secao secao = new Secao();
+		Pessoa responsavel = pessoaService.get(id_responsavel);
+		Evento evento = eventoService.buscarEventoPorId(id_evento);
+		
+		System.out.println(nome_secao);
+		System.out.println(descricao);
+		System.out.println(responsavel.getNome());
+		System.out.println(evento.getNome());
+		
+		secao.setNome(nome_secao);
+		secao.setDescricao(descricao);
+		secao.setResponsavel(responsavel);
+		secao.setEvento(evento);
+		
+		secaoService.addOrUpdate(secao);
+		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
 	
 	@RequestMapping(value="/secaoTrabalhos", method=RequestMethod.GET)
 	public String secaoTrabalhos(){
-		return "/secao/secaoTrabalhos";
-	}
-	
-	@RequestMapping(value="/cadastrarSecao")
-	public String cadastrarSecao(Secao secao){
-		secaoService.addOrUpdate(secao);
-		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
+		return "secao/secaoTrabalhos";
 	}
 	
 	//FALTA A PAGINA ALTERAR SECAO

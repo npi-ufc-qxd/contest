@@ -9,9 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 
 @Entity
@@ -21,15 +21,14 @@ public class Secao {
 	private Long id;
 	@Column(name = "nome")
 	private String nome;
-	@Column(name = "local")
-	private String local;
 	@Column(name = "descricao")
 	private String descricao;
 	
 	@OneToMany(mappedBy = "secao", targetEntity = Trabalho.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private List<Trabalho> trabalhos;
 	
-	@OneToOne
+	@ManyToOne
+	@JoinColumn(name="responsavel_id")
 	private Pessoa responsavel;
 	
 	@ManyToOne(cascade=CascadeType.PERSIST)
@@ -49,14 +48,6 @@ public class Secao {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public String getLocal() {
-		return local;
-	}
-
-	public void setLocal(String local) {
-		this.local = local;
 	}
 
 	public String getDescricao() {
