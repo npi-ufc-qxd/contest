@@ -387,10 +387,28 @@ public class EventoControllerOrganizador extends EventoGenericoController{
     }
 	
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam("email") String email,
+	public String convidarPorEmail(@RequestParam("nome") String nome, @RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, 
 			Model model, RedirectAttributes redirect) {
 			Evento evento = eventoService.buscarEventoPorId(eventoId);
+			
+			Papel papel;
+			
+			if(funcao.equals(Papel.ORGANIZADOR)){
+				papel = Papel.ORGANIZADOR;
+			} else if(funcao.equals(Papel.AUTOR)){
+				papel = Papel.AUTOR;
+			} else {
+				papel = Papel.ORGANIZADOR;
+			}
+			
+			Pessoa pessoa = pessoaService.getByEmail(email);
+			
+			if(pessoa == null){
+				pessoa = new Pessoa(nome, email);
+			}
+			
+			
 
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
@@ -404,6 +422,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO)); 
 		}
 		redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+		ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
+		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 		return "redirect:/eventoOrganizador/evento/" + eventoId;	
 	}
 	

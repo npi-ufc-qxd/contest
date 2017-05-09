@@ -117,19 +117,37 @@
 	<div th:include="fragments/footer :: footer"></div>
 	
 	
-	<form th:if="${eventoPrivado} == true" th:action="@{/eventoOrganizador/convidar}" action="#" method="post">
+	<form th:if="${eventoPrivado} == true" th:action="@{/eventoOrganizador/convidar}" action="#" method="post" class="col s12">
         <div id="modalConvidarPessoas" class="modal">
           <div class="modal-content">
             <h4>Convidar Pessoas</h4>
-            <div class="input-field col m6 s6">
+            <div class="row">
+            <div class="col s12">
+            <div class="row modal-form-row">
+            <div class="input-field col s12">
+            
+                <div class="input-field">
             	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
-            	<input id="email_da_pessoa" name="email" type="email" />
+            	</div>
+            	
+            	<div class="input-field">
+            	<input id="nome_da_pessoa" name="nome" type="text" />
+            	<label for="nome_da_pessoa">Nome</label>
+            	</div>
+            	
+            	<div class="input-field">
+            	<input id="email_da_pessoa" name="email" type="email"/>
             	<label for="email_da_pessoa">Email</label>
+            	</div>
+            	
             	<select name="funcao">
-            		<option value="organizador">Organizador</option>
-            		<option value="revisor">Revisor</option>
-            		<option value="autor">Autor</option>
+            		<option value="ORGANIZADOR">Organizador</option>
+            		<option value="REVISOR">Revisor</option>
+            		<option value="AUTOR">Autor</option>
             	</select>
+            </div>
+            </div>
+            </div>
             </div>
           </div>
           <div class="modal-footer">
