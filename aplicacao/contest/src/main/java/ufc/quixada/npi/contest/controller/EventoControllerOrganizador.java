@@ -406,6 +406,9 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			case "REVISOR":
 				papel = Papel.REVISOR;
 				break;
+				
+			default:
+				break;
 			}
 			
 			Pessoa pessoa = pessoaService.getByEmail(email);
