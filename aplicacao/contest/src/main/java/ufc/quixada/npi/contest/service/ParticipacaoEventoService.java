@@ -24,12 +24,16 @@ public class ParticipacaoEventoService {
 	}
 	
 	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacao){
-		ParticipacaoEvento participando = participacaoEventoRepository.findByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa());
-		if(participacao != null && (participando == null)){
+		try{
+			ParticipacaoEvento participacaoTemp = participacaoEventoRepository.findOneByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa());
+			if(participacaoTemp == null){
 				participacaoEventoRepository.save(participacao);
-				return true;
-		}
+			}
+			return true;
+			
+		}catch (Exception e) {
 			return false;
+		}
 	}
 	
 	public void removerParticipacaoEvento(Evento evento){
