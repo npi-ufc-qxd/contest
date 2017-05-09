@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="fragments/head :: head"></div>
+<title>Seção - Contest</title>
+</head>
+<body>
+<div th:include="fragments/header :: header"></div>
+
+<div class="container page">
+
+    <div class="row opcoes">
+        <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
+        <a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar Seção</a>
+    </div>
+    
+    <div class="row">
+     <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
+	       		Voltar
+	 </a>
+	</div>
+    
+<br/>
+
+<div class="row">
+
+    <div id="remove" class="col s12 m4">
+        <div id="area_secao" class="card purple darken-4">
+            <div class="card-content white-text">
+                <span class="card-title activator">Iniciação Científica <i class="material-icons right" title="Descrição da Seção">description</i></span>
+                <p>Data: 27/10/2017</p>
+                <p>Hora: 8:00 AM</p>
+                <p>Local: Sala 3</p>
+            </div>
+            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
+                <p>Texto para descrever seção</p> </div>
+            <div class="card-action">
+                <a th:href="@{/secao/secaoTrabalhos}" class="orange-text accent-3">ver seção</a>
+                <a href='#' id="remove_secao" class="orange-text accent-3">deletar seção</a>
+            </div>
+        </div>
+    </div>
+
+    <div  class="col s12 m4">
+        <div  class="card purple darken-4">
+            <div class="card-content white-text">
+                <span class="card-title activator">Iniciação Científica <i class="material-icons right" id="tolltip1" title="Descrição da Seção">description</i></span>
+                <p>Data: 27/10/2017</p>
+                <p>Hora: 8:00 AM</p>
+                <p>Local: Sala 3</p>
+            </div>
+            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
+                <p>Texto para descrever seção</p> </div>
+            <div class="card-action">
+                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
+                <a href='#'  class="orange-text accent-3">deletar seção</a>
+            </div>
+        </div>
+    </div>
+
+    <div  class="col s12 m4">
+        <div  class="card purple darken-4">
+            <div class="card-content white-text">
+                <span class="card-title activator">Iniciação Científica <i class="material-icons right"  title="Descrição da Seção">description</i></span>
+                <p>Data: 27/10/2017</p>
+                <p>Hora: 8:00 AM</p>
+                <p>Local: Sala 3</p>
+            </div>
+            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
+                <p>Texto para descrever seção</p> </div>
+            <div class="card-action">
+                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
+                <a href='#'  class="orange-text accent-3">deletar seção</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m4">
+        <div  class="card purple darken-4">
+            <div class="card-content white-text">
+                <span class="card-title activator">Iniciação Científica <i class="material-icons right"  title="Descrição da Seção">description</i></span>
+                <p>Data: 27/10/2017</p>
+                <p>Hora: 8:00 AM</p>
+                <p>Local: Sala 3</p>
+            </div>
+            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
+                <p>Texto para descrever seção</p> </div>
+            <div class="card-action">
+                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
+                <a href='#'  class="orange-text accent-3">deletar seção</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m4">
+        <div class="card purple darken-4">
+            <div class="card-content white-text">
+                <span class="card-title activator" >Iniciação Científica <i class="material-icons right"  title="Descrição da Seção">description</i></span>
+                <p>Data: 27/10/2017</p>
+                <p>Hora: 8:00 AM</p>
+                <p>Local: Sala 3</p>
+            </div>
+            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
+                <p>Texto para descrever seção</p> </div>
+            <div class="card-action">
+                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
+                <a href='#'  class="orange-text accent-3">deletar seção</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m4">
+        <div class="card purple darken-4">
+            <div class="card-content white-text">
+                <span class="card-title activator" >Iniciação Científica <i class="material-icons right"  title="Descrição da Seção">description</i></span>
+                <p>Data: 27/10/2017</p>
+                <p>Hora: 8:00 AM</p>
+                <p>Local: Sala 3</p>
+            </div>
+            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
+                <p>Texto para descrever seção</p> </div>
+            <div class="card-action">
+                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
+                <a href='#'  class="orange-text accent-3">deletar seção</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row col s12 center">
+        <ul class="pagination">
+            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li class="waves-effect"><a href="#">2</a></li>
+            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+        </ul>
+    </div>
+
+</div>
+
+</div>
+
+ <div th:include="fragments/footer :: footer"></div>
+</body>
+</html>

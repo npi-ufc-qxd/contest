@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:include="fragments/head :: head"></div></head>
+<body>
+  <nav class="purple darken-4" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo center"><img th:src="@{/img/logotipo_white.png}" width="200px" alt="logo" /></a>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="">
+    <div class="container">
+    <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
+	       		Voltar
+	       	</a>
+      <div class="row">
+        <h1 class="center header">Cadastro</h1>
+        <div class="col s12">
+          <form name="cadastroForm" th:action="@{/cadastro}" class="valign" method="post" id="formCadastro">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            
+            <div class="input-field">
+              <input type="text" id="nome" required="required"/>
+              <label for="nome">*Nome</label>
+            </div>
+
+            <div class="input-field">
+              <input type="email" id="email" required="required"/>
+              <label for="email">*Email</label>
+            </div>
+            
+            <div class="input-field">
+              <input type="text" id="cpf" placeholder="Exemplo: 000.000.000-00"  pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" required="required"/>
+              <label for="cpf">*CPF</label>
+            </div>
+
+            <div class="input-field">
+              <input type="password" id="password" required="required" name="senha"/>
+              <label for="password">*Senha</label>
+            </div>
+            
+            <div class="input-field">
+              <input type="password" id="password_confirm" required="required" name="senha_confirma" oninput="validaSenha(this)" />
+              <label for="password_confirm">*Repetir Senha</label>
+            </div>
+            <br/>
+            <div class="right">
+            <button disabled="disabled" class="right btn waves-effect waves-light" type="submit" id="btn_cadastro">Cadastrar</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:include="fragments/footer :: footer"></div>
+  <script type="text/javascript">
+  
+  $(document).ready(function() {
+	  
+	 //seta um background cinza ao botão de submit
+	  $('#btn_cadastro').css('background-color', '#616161');
+	  
+	 //pega os valores dos campos de password
+	  var password = document.getElementById("password");
+	  var password_confirm = document.getElementById("password_confirm");
+	  
+	 //validação de senha
+	function validatePassword(){
+	
+	  if(password.value == password_confirm.value) {
+		    $("#btn_cadastro").prop("disabled", false);
+		    $('#btn_cadastro').css('background-color', '#311b92');
+	   
+	  }else{
+		  $('#btn_cadastro').css('background-color', '#616161');
+		  $("#btn_cadastro").prop("disabled", true);
+	  }
+	}
+	//validação de senha enquanto o usuário digita
+	$("#password_confirm").on('input',function() {
+		if(password.value != ""){
+			validatePassword();
+		}else if(password_confirm != ""){
+			validatePassword();
+		}else{
+			console.log("ok");
+		}
+		});
+
+	});
+  </script>
+</body>
+</html>

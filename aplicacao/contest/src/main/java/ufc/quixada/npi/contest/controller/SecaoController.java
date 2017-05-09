@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trabalho;
@@ -15,16 +16,26 @@ import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
-@RequestMapping("/secao")
+@RequestMapping(value="/secao", method = RequestMethod.GET)
 public class SecaoController {
 	@Autowired
 	private SecaoService secaoService;
 	@Autowired
 	private TrabalhoService trabalhoService;
 	
-	@RequestMapping(value="/cadastrarSecaoForm")
+	@RequestMapping(value="/paginaSecao")
+	public String indexSecao(){
+		return "secao/indexSecao";
+	}
+	
+	@RequestMapping(value="/cadastrarSecaoForm",method= RequestMethod.GET)
 	public String cadastrarSecaoForm(){
-		return "";
+		return "secao/cadastroSecao";
+	}
+	
+	@RequestMapping(value="/secaoTrabalhos", method=RequestMethod.GET)
+	public String secaoTrabalhos(){
+		return "/secao/secaoTrabalhos";
 	}
 	
 	@RequestMapping(value="/cadastrarSecao")
