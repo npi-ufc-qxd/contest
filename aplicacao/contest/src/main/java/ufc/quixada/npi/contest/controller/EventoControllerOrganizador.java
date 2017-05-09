@@ -392,14 +392,20 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			Model model, RedirectAttributes redirect) {
 			Evento evento = eventoService.buscarEventoPorId(eventoId);
 			
-			Papel papel;
+			Papel papel = null;
 			
-			if(funcao.equals(Papel.ORGANIZADOR)){
+			switch(funcao){
+			case "ORGANIZADOR":
 				papel = Papel.ORGANIZADOR;
-			} else if(funcao.equals(Papel.AUTOR)){
+				break;
+				
+			case "AUTOR":
 				papel = Papel.AUTOR;
-			} else {
-				papel = Papel.ORGANIZADOR;
+				break;
+				
+			case "REVISOR":
+				papel = Papel.REVISOR;
+				break;
 			}
 			
 			Pessoa pessoa = pessoaService.getByEmail(email);
