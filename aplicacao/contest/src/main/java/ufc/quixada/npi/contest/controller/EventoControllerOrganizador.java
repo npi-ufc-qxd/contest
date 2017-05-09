@@ -459,11 +459,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if(idOrganizadores != null){
 			String ids[] = idOrganizadores.split(Pattern.quote(","));
 			List<Pessoa> organizadores = new ArrayList<>();
+			
 			for(String id : ids){
 				organizadores.add(pessoaService.get(Long.parseLong(id)));
 			}
 			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
-			
 			
 			for(Pessoa p : organizadores){
 				ParticipacaoEvento participacao = new ParticipacaoEvento();
