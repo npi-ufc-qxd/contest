@@ -40,7 +40,7 @@
             </div>
             
             <div class="input-field">
-              <input type="password" id="password_confirm" required="required" name="senha_confirma" oninput="validaSenha(this)" />
+              <input type="password" id="password_confirm" required="required" name="senha_confirma" />
               <label for="password_confirm">*Repetir Senha</label>
             </div>
             <br/>
@@ -77,13 +77,19 @@
 	  }
 	}
 	//validação de senha enquanto o usuário digita
+	$("#password").on('input',function() {
+		if(password.value != ""){
+			validatePassword();
+		}else if(password_confirm != ""){
+			validatePassword();
+		}
+		});
+	
 	$("#password_confirm").on('input',function() {
 		if(password.value != ""){
 			validatePassword();
 		}else if(password_confirm != ""){
 			validatePassword();
-		}else{
-			console.log("ok");
 		}
 		});
 
