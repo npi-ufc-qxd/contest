@@ -33,7 +33,9 @@ public class SecaoController {
 	private PessoaService pessoaService;
 
 	@RequestMapping(value = "/paginaSecao")
-	public String indexSecao() {
+	public String indexSecao(Model model) {
+		List<Secao> secoes = secaoService.list();
+		model.addAttribute("secoes", secoes);
 		return "secao/indexSecao";
 	}
 
@@ -62,8 +64,11 @@ public class SecaoController {
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
 
-	@RequestMapping(value = "/secaoTrabalhos", method = RequestMethod.GET)
-	public String secaoTrabalhos() {
+	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
+	public String secaoTrabalhos(@PathVariable("id") Long idSecao,Model model) {
+		Secao secao = secaoService.get(idSecao);
+		model.addAttribute("secao", secao);
+		model.addAttribute("qtdTrabalhos", secao.getTrabalhos().size());
 		return "secao/secaoTrabalhos";
 	}
 
@@ -94,7 +99,7 @@ public class SecaoController {
 	@RequestMapping(value = "/excluirSecao/{id}")
 	public String excluirSecao(@PathVariable("id") Long idSecao) {
 		secaoService.delete(idSecao);
-		return "";
+		return "redirect:/secao/paginaSecao";
 	}
 
 	@RequestMapping("/excluirTrabalho/{idSecao}/{idTrabalho}")

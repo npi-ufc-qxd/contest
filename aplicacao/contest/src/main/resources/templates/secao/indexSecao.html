@@ -10,6 +10,7 @@
 <div class="container page">
 
     <div class="row opcoes">
+        <a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus Eventos</a>
         <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
         <a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar Seção</a>
     </div>
@@ -22,57 +23,38 @@
     
 <br/>
 
-<div class="row">
+<div class="row" >
 
-    <div id="remove" class="col s12 m4">
-        <div id="area_secao" class="card purple darken-4">
+    <div  class="col s12 m4" th:each="secao:${secoes}">
+        <div  class="card purple darken-4">
             <div class="card-content white-text">
-                <span class="card-title activator">Iniciação Científica <i class="material-icons right" title="Descrição da Seção">description</i></span>
-                <p>Data: 27/10/2017</p>
-                <p>Hora: 8:00 AM</p>
-                <p>Local: Sala 3</p>
+                <span class="card-title activator" th:text="${secao.nome}"> <i class="material-icons right" id="tolltip1" title="Descrição da Seção">description</i></span>
+                <p th:text="'Descrição: '+${secao.descricao}"></p>
             </div>
-            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
-                <p>Texto para descrever seção</p> </div>
+           
             <div class="card-action">
-                <a th:href="@{/secao/secaoTrabalhos}" class="orange-text accent-3">ver seção</a>
-                <a href='#' id="remove_secao" class="orange-text accent-3">deletar seção</a>
+                <a th:href="@{'/secao/secaoTrabalhos/'+${secao.id}}" class="orange-text accent-3">ver seção</a>
+                <a th:href="@{'/secao/excluirSecao/'+${secao.id}}"  class="orange-text accent-3">deletar seção</a>
             </div>
         </div>
     </div>
-
-    <div  class="col s12 m4">
-        <div  class="card purple darken-4">
-            <div class="card-content white-text">
-                <span class="card-title activator">Iniciação Científica <i class="material-icons right" id="tolltip1" title="Descrição da Seção">description</i></span>
-                <p>Data: 27/10/2017</p>
-                <p>Hora: 8:00 AM</p>
-                <p>Local: Sala 3</p>
-            </div>
-            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
-                <p>Texto para descrever seção</p> </div>
-            <div class="card-action">
-                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
-                <a href='#'  class="orange-text accent-3">deletar seção</a>
-            </div>
-        </div>
+	<div>
+    	<div  class="col s12 m4">
+        	<div  class="card purple darken-4">
+            	<div class="card-content white-text">
+                	<span class="card-title activator">Iniciação Científica <i class="material-icons right"  title="Descrição da Seção">description</i></span>
+                	<p>Data: 27/10/2017</p>
+                	<p>Hora: 8:00 AM</p>
+                	<p>Local: Sala 3</p>
+            	</div>
+            	<div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
+                	<p>Texto para descrever seção</p> </div>
+            	<div class="card-action">
+                	<a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
+                	<a href='#'  class="orange-text accent-3">deletar seção</a>
+            	</div>
+        	</div>
     </div>
-
-    <div  class="col s12 m4">
-        <div  class="card purple darken-4">
-            <div class="card-content white-text">
-                <span class="card-title activator">Iniciação Científica <i class="material-icons right"  title="Descrição da Seção">description</i></span>
-                <p>Data: 27/10/2017</p>
-                <p>Hora: 8:00 AM</p>
-                <p>Local: Sala 3</p>
-            </div>
-            <div class="card-reveal"> <span class="card-title grey-text text-darken-4">Descrição da seção<i class="material-icons right">close</i></span>
-                <p>Texto para descrever seção</p> </div>
-            <div class="card-action">
-                <a href="seçao_trabalhos.html" class="orange-text accent-3">ver seção</a>
-                <a href='#'  class="orange-text accent-3">deletar seção</a>
-            </div>
-        </div>
     </div>
 
     <div class="col s12 m4">

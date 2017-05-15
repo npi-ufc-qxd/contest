@@ -20,7 +20,7 @@
                             <div class="input-field col s12">
                                 <select multiple="multiple">
                                     <option value="" disabled="disabled" selected="selected">Selecionar trabalhos</option>
-                                    <option value="1">Trabalho 1</option>
+                                    <option value="1" th:text="${qtdTrabalhos}"></option>
                                     <option value="2">Trabalho 2</option>
                                     <option value="3">Trabalho 3</option>
                                     <option value="4">Trabalho 4</option>
@@ -42,6 +42,7 @@
 <div class="container">
 
     <div class="row opcoes">
+     	<a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus Eventos</a>
         <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
         <a href="#modal1" class="modal-trigger"  style="color: #6a1b9a;">ADD - Trabalhos</a>
     </div>
@@ -56,11 +57,11 @@
    <div class="container">
     <!--Dados da Seção-->
     <div class="">
-        <h4 class="center-align">Nome Seção</h4>
+        <h4 class="center-align" th:text="${secao.nome}"></h4>
         <h6 class="right-align">Horário: 8:00</h6>
         <h6 class="right-align">Data: 00/00/0000</h6>
-        <h6>Local: Sala 3</h6>
-        <h6 class="right-align">Nº de Trabalhos: x</h6>
+        <h6 th:text="'Descrição: '+${secao.descricao}"></h6>
+        <h6 class="right-align" th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
     </div>
 
     <table class="bordered centered striped">
