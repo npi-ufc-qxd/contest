@@ -23,12 +23,17 @@ public class ParticipacaoEventoService {
 		return participacaoEventoRepository.findOne(id);
 	}
 	
-	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacaoEvento){
-		if(participacaoEvento != null){
-			participacaoEventoRepository.save(participacaoEvento);
+	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacao){
+		try{
+			ParticipacaoEvento participacaoTemp = participacaoEventoRepository.findOneByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa());
+			if(participacaoTemp == null){
+				participacaoEventoRepository.save(participacao);
+			}
 			return true;
+			
+		}catch (Exception e) {
+			return false;
 		}
-		return false;
 	}
 	
 	public void removerParticipacaoEvento(Evento evento){
