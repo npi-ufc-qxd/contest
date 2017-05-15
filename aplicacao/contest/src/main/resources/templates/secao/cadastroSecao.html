@@ -27,12 +27,12 @@
           <form name="cadastroForm" th:action="@{/secao/cadastrarSecao}" class="valign" method="post" id="formCadastro">
             
             <div class="input-field">
-              <input type="text" id="nome_secao" th:name="nome_secao" required="required"/>
+              <input type="text" id="nome_secao" th:name="nomeSecao" required="required"/>
               <label for="nome_secao">Nome</label>
             </div><br/>
             
             <div class="input-field">
-        		<select id="pessoas_select" name="id_responsavel">
+        		<select id="pessoas_select" name="idResponsavel">
           			<option value="" disabled="disabled" selected="selected" >Selecione uma pessoa</option>
           			<div th:each="pessoa : ${pessoas}"  >
             			<option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
@@ -43,7 +43,7 @@
       		</div><br/>
       		
       		 <div class="input-field">
-        		<select id="eventos_select" name="id_evento">
+        		<select id="eventos_select" name="idEvento">
           			<option value="" disabled="disabled" selected="selected" >Selecione um Evento</option>
           			<div th:each="evento : ${eventos}"  >
             			<option th:value="${evento.id}" th:text="${evento.nome}"></option>   
