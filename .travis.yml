@@ -13,4 +13,5 @@ addons:
         github_token:
             secure: TxnbH2Rb/zBpYqnMygJDdbMsZ5hAguxXGeV/x1N/rnTlQnimuRrds7bOLUFyYJ7lymEfF5J3fI4fpKAa0z/9HsaGCCKOXRgHVi/HdA4oxDl0w2pRHQR+p3JhTpuOOno80Kc3BQI2bQJZIFHJJLvDsUzpyIbSkt6oL0ycUtRnyqZOZay7v7nxFWNyr+aciCV81dCjh7DRsDoyX/mPyzCRgDcJQr729I11i+2MPho3OF06jk6owtqAC18gCVHrDBYNJmkIlLnI0qzDYid64zhcfgfeE0aEpUFKNJE50h3tKbi1xfK5eKe6RdMWH7pBai4SuBHgxkI4x6oVkxWJUdIv9+Yte4juC8CgriSfNthWdHW5D8wQmquhgZsfwGO3/+AV66JGmXY5k0+uU4xvLoAkYePqvur0eLrn1JQ+VKg21GtFew/F5DhWZDoillbdw3rGs9lk9ndIHXb3eUUP6v4+28p5pgjPfznsP6vzw9HXLiUa5WCMUw80v3hcZb+wIDHe9MC0VtwegteK4pJJTzo7mkkrxtm/IGzxJg7x6kcKlIOD2nZYX1C8f4oS/e4o+vMLsT90FT2PWBb8I7J3y6qbQW1HrzFM2yXroMqHF1xgp3LyXeURaA7Pv8zAMHXiJ28EyiY9hgTjpI3uYzyFKgqpyEcJuPl3+hSsqgrc4o9EvjA=
 script:
+    - mvn install
     - sonar-scanner
