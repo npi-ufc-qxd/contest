@@ -57,6 +57,16 @@ public class Pessoa implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private PapelLdap.Tipo papelLdap;
 
+	
+	public Pessoa(String nome, String email) {
+		this.nome = nome;
+		this.email = email;
+	}
+	
+	public Pessoa() {
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}

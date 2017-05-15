@@ -24,10 +24,11 @@ public class EnviarEmailService {
         
 		try {
 			service.sendEmail(email);
+			return true;
 		} catch (MailException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
+		
 	}
 }

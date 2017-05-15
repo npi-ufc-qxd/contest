@@ -9,6 +9,7 @@
 		    <a th:href="@{/eventoOrganizador}">Meus Eventos</a>
 	        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
 	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
+	       	<a th:if="${eventoPrivado} == true" class="modal-trigger" href="#modalConvidarPessoas">Convidar Pessoas</a>
 	       
 	       <!-- Dropdown Structure -->
 			<ul th:if="${evento}" id='dropdown1' class='dropdown-content'>
