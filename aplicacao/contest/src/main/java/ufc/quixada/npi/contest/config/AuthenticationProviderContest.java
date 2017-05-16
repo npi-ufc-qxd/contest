@@ -45,7 +45,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 				pessoaTemp.setNome(usuario.getNome());
 				pessoaTemp.setEmail(usuario.getEmail());
 				pessoaTemp.setPassword(pessoaService.encodePassword(password));
-				pessoaTemp.setPapelLdap(usuario.getAuthorities().get(0).getNome()); //REVISAR
+				pessoaTemp.setPapelLdap(usuario.getAuthorities().get(0).getNome()); //REFATORAR PARA PAPEL USER
 				pessoaService.addOrUpdate(pessoaTemp);
 				return new UsernamePasswordAuthenticationToken(pessoaTemp, pessoaService.encodePassword(password),
 						pessoaTemp.getAuthorities());

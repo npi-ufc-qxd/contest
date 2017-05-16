@@ -22,6 +22,7 @@ public class PessoaService {
 	private PessoaRepository pessoaRepository;
 
 	public void addOrUpdate(Pessoa pessoa) {
+		System.out.println("nome:" +pessoa.getNome()+ "cpf:" +pessoa.getCpf()+  "email:" +pessoa.getEmail()+  "senha:" +pessoa.getPassword());
 		pessoaRepository.save(pessoa);
 	}
 
@@ -72,7 +73,7 @@ public class PessoaService {
 	}
 	
 	public List<Pessoa> revisoresNoEvento(Long idEvento){
-		List<Pessoa> revisores = new ArrayList<Pessoa>();
+		List<Pessoa> revisores = new ArrayList<>();
 		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.DOCENTE, idEvento));
 		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.STA, idEvento));
 		return revisores;

@@ -59,8 +59,19 @@ public class Pessoa implements UserDetails {
 	@Column(name = "papel_ldap")
 	@Enumerated(EnumType.STRING)
 	private PapelLdap.Tipo papelLdap;
+	
+	@Column(name = "papel")
+	private String papel;
 
 	
+	public String getPapel() {
+		return papel;
+	}
+
+	public void setPapel(String papel) {
+		this.papel = papel;
+	}
+
 	public Pessoa(String nome, String email) {
 		this.nome = nome;
 		this.email = email;

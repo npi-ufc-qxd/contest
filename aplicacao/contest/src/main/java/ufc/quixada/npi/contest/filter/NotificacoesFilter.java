@@ -18,7 +18,6 @@ import ufc.quixada.npi.contest.service.PessoaService;
 
 public class NotificacoesFilter implements Filter {
 	
-
 	@Autowired
 	private PessoaService pessoaService;
 
