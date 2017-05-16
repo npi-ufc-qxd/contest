@@ -22,7 +22,6 @@ public class PessoaService {
 	private PessoaRepository pessoaRepository;
 
 	public void addOrUpdate(Pessoa pessoa) {
-		System.out.println("nome:" +pessoa.getNome()+ "cpf:" +pessoa.getCpf()+  "email:" +pessoa.getEmail()+  "senha:" +pessoa.getPassword());
 		pessoaRepository.save(pessoa);
 	}
 

@@ -18,7 +18,7 @@ import ufc.quixada.npi.contest.service.PessoaService;
 public class LoginController {
 	
 	@Autowired
-	PessoaService pessoaService;
+	private PessoaService pessoaService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET  )
 	public String login() {
@@ -43,9 +43,9 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/cadastro")
-	public String cadastro(@Valid Pessoa pessoa, @RequestParam String senha, @RequestParam String senha_Confirma) {
+	public String cadastro(@Valid Pessoa pessoa, @RequestParam String senha, @RequestParam String senhaConfirma) {
 	
-		if(senha_Confirma.equals(senha)){
+		if(senhaConfirma.equals(senha)){
 			pessoa.setPassword(senha);
 			pessoa.setPapel("USER");
 			pessoaService.addOrUpdate(pessoa);
