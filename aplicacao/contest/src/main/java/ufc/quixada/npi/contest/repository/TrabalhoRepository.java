@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +16,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 
 @Repository
 @Transactional
-public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
+public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 	public List<Trabalho> findByEvento(Evento evento);
 	
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :idEvento AND t.id in(SELECT pt.trabalho.id FROM ParticipacaoTrabalho"

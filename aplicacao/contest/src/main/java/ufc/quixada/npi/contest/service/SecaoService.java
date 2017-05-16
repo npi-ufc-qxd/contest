@@ -15,6 +15,7 @@ public class SecaoService {
 	private SecaoRepository secaoRepository;
 	
 	public void addOrUpdate(Secao secao) {
+		System.out.println("Teste");
 		secaoRepository.save(secao);
 	}
 
@@ -33,12 +34,6 @@ public class SecaoService {
 
 	public Secao get(Long id) {
 		return secaoRepository.findOne(id);
-	}
-
-	public void removerTrablahoSecao(Long idSecao, Trabalho trabalho) {
-		Secao secao = secaoRepository.findOne(idSecao);
-		secao.getTrabalhos().remove(trabalho);
-		addOrUpdate(secao);
 	}
 	
 	public void adicionarTrabalhoSecao(Long idSecao,Trabalho trabalho){

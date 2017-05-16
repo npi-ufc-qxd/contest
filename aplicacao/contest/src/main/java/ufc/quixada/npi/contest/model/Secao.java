@@ -24,7 +24,7 @@ public class Secao {
 	@Column(name = "descricao")
 	private String descricao;
 	
-	@OneToMany(mappedBy = "secao", targetEntity = Trabalho.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "secao", targetEntity = Trabalho.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Trabalho> trabalhos;
 	
 	@ManyToOne

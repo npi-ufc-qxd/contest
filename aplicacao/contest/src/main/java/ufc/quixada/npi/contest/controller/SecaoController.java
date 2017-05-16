@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trabalho;
@@ -31,7 +34,7 @@ public class SecaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
-
+	
 	@RequestMapping(value = "/paginaSecao")
 	public String indexSecao(Model model) {
 		List<Secao> secoes = secaoService.list();
@@ -67,17 +70,29 @@ public class SecaoController {
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
 	public String secaoTrabalhos(@PathVariable("id") Long idSecao,Model model) {
 		Secao secao = secaoService.get(idSecao);
+		List<ParticipacaoTrabalho> trabalhosSecao = new ArrayList<>();
+		List<Trabalho> trabalhos = new ArrayList<>();
+		
+		for(Trabalho trab : secao.getTrabalhos()){
+			for(ParticipacaoTrabalho part : trab.getParticipacoes()){
+				if(part.getPapel().equals(Papel.AUTOR)){
+					trabalhosSecao.add(part);
+				}
+			}
+		}
+		
+		for(Trabalho trabalho : trabalhoService.buscarTodosTrabalhos()){
+			if(trabalho.getSecao() == null){
+				trabalhos.add(trabalho);
+			}
+		}
+		
+		
+		model.addAttribute("trabalhos",trabalhos);
+		model.addAttribute("trabalhosSecao",trabalhosSecao);
 		model.addAttribute("secao", secao);
 		model.addAttribute("qtdTrabalhos", secao.getTrabalhos().size());
 		return "secao/secaoTrabalhos";
-	}
-
-	// FALTA A PAGINA ALTERAR SECAO
-	@RequestMapping(value = "/alterarSecao/{id}")
-	public String alterarSecaoForm(@PathVariable("id") Long idSecao, Model model) {
-		Secao secao = secaoService.get(idSecao);
-		model.addAttribute("secao", secao);
-		return "";
 	}
 
 	@RequestMapping(value = "/alterarSecao")
@@ -86,35 +101,23 @@ public class SecaoController {
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
 
-	// FALTA A PAGINA DE LISTAR TRABALHOS SEÇÃO
-	@RequestMapping(value = "/secao/{id}")
-	public String listarTrabalhoSecao(@PathVariable("id") Long idSecao, Model model) {
-		Secao secao = secaoService.get(idSecao);
-		List<Trabalho> trabalhos = secao.getTrabalhos();
-		model.addAttribute("trabalhos", trabalhos);
-		return "";
-	}
-
-	// FALTA A PAGINA DE LISTAR TRABALHOS SEÇÃO
-	@RequestMapping(value = "/excluirSecao/{id}")
-	public String excluirSecao(@PathVariable("id") Long idSecao) {
-		secaoService.delete(idSecao);
-		return "redirect:/secao/paginaSecao";
-	}
-
 	@RequestMapping("/excluirTrabalho/{idSecao}/{idTrabalho}")
 	public String excluirTrabalhoSecao(@PathVariable("idSecao") Long idSecao,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		secaoService.removerTrablahoSecao(idSecao, trabalho);
-		return "redirect:/secao/" + idSecao;
+
+		trabalhoService.removerSecao(trabalho);
+		
+		return "redirect:/secao/secaoTrabalhos/" + idSecao;
 	}
 
-	@RequestMapping("/adicionarTrabalho/{idSecao}/{idTrabalho}")
-	public String adicionarTrabalhoSecao(@PathVariable("idSecao") Long idSecao,
-			@PathVariable("idTrabalho") Long idTrabalho) {
-		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		secaoService.adicionarTrabalhoSecao(idSecao, trabalho);
-		return "redirect:/secao/" + idSecao;
+	@RequestMapping("/adicionarTrabalhoSecao")
+	public String adicionarTrabalhoSecao(@RequestParam Long idSecao,@RequestParam List<Long> idTrabalhos) {
+		for(int i = 0 ; i< idTrabalhos.size();i++){
+			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalhos.get(i));
+			trabalho.setSecao(secaoService.get(idSecao));
+			trabalhoService.adicionarTrabalho(trabalho);
+		}
+		return "redirect:/secao/secaoTrabalhos/" + idSecao;
 	}
 }
