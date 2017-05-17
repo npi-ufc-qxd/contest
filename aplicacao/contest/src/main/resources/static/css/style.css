@@ -179,6 +179,27 @@ h1, h2, h3 {
 }
 
 
+/* input type number color contest*/
+.input-field input[type=number]:focus + label {
+    color: #6a1b9a;
+}
+/* label underline focus color */
+.input-field input[type=number]:focus {
+    border-bottom: 1px solid #6a1b9a;
+    box-shadow: 0 1px 0 0 #000;
+}
+/* valid color */
+.input-field input[type=number].valid {
+    border-bottom: 1px solid #6a1b9a ;
+    box-shadow: 0 1px 0 0 #000;
+}
+/* invalid color */
+.input-field input[type=number].invalid {
+    border-bottom: 1px solid #6a1b9a ;
+    box-shadow: 0 1px 0 0 #000;
+}
+
+
 .page{
     min-height: 650px;
 }

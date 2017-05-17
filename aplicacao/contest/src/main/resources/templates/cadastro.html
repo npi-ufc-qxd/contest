@@ -29,7 +29,9 @@
             </div>
             
             <div class="input-field">
+
               <input type="text" id="cpf" name="cpf" th:field="*{cpf}" placeholder="Exemplo: 11111111111"   required="required"/>
+
               <label for="cpf">*CPF</label>
             </div>
 
@@ -56,14 +58,13 @@
   
   $(document).ready(function() {
 	  
-	 //seta um background cinza ao botão de submit
 	  $('#btn_cadastro').css('background-color', '#616161');
-	  
-	 //pega os valores dos campos de password
+	 
+
 	  var password = document.getElementById("password");
 	  var password_confirm = document.getElementById("password_confirm");
 	  
-	 //validação de senha
+
 	function validatePassword(){
 	
 	  if(password.value == password_confirm.value) {
@@ -75,7 +76,8 @@
 		  $("#btn_cadastro").prop("disabled", true);
 	  }
 	}
-	//validação de senha enquanto o usuário digita
+	 
+
 	$("#password").on('input',function() {
 		if(password.value != ""){
 			validatePassword();
@@ -91,7 +93,28 @@
 			validatePassword();
 		}
 		});
+	
 
+	$("#password").on('input',function() {
+		if(password.value == ""){
+		  $('#btn_cadastro').css('background-color', '#616161');
+		  $("#btn_cadastro").prop("disabled", true);
+	  }else if(password_confirm.value == ""){
+		  $('#btn_cadastro').css('background-color', '#616161');
+		  $("#btn_cadastro").prop("disabled", true);
+	  }
+	});
+	
+	$("#password_confirm").on('input',function() {
+		if(password.value == ""){
+		  $('#btn_cadastro').css('background-color', '#616161');
+		  $("#btn_cadastro").prop("disabled", true);
+	  }else if(password_confirm.value == ""){
+		  $('#btn_cadastro').css('background-color', '#616161');
+		  $("#btn_cadastro").prop("disabled", true);
+	  }
+	});
+	
 	});
   </script>
 </body>
