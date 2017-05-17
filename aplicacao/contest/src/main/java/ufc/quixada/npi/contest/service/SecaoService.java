@@ -23,13 +23,9 @@ public class SecaoService {
 		return (List<Secao>) secaoRepository.findAll();
 	}
 
-	public boolean delete(Long id) {
-		if (secaoRepository.findOne(id) != null) {
-			secaoRepository.delete(id);
-			return true;
-		}
-
-		return false;
+	public void delete(Long id) {
+		Secao secao = secaoRepository.findOne(id);
+		secaoRepository.delete(secao);
 	}
 
 	public Secao get(Long id) {

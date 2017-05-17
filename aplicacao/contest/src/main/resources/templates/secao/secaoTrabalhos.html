@@ -38,10 +38,6 @@
         
 </div>
 
-
-
-
-
 <!--Seleção de trabalhos da seção-->
 <div class="container">
 
@@ -62,10 +58,9 @@
     <!--Dados da Seção-->
     <div class="">
         <h4 class="center-align" th:text="${secao.nome}"></h4>
-        <h6 class="right-align">Horário: 8:00</h6>
-        <h6 class="right-align">Data: 00/00/0000</h6>
-        <h6 class="right-align">Local: Sala 3</h6>
-        <h6 th:text="'Descrição: '+${secao.descricao}"></h6>
+        <h6 class="right-align" th:text="'Horário: '+${secao.horario}"></h6>
+        <h6 class="right-align" th:text="'Data: '+${secao.dataSecao}"></h6>
+        <h6 class="right-align" th:text="'Local: '+${secao.local}"></h6>
         <h6 class="right-align" th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
     </div>
 

@@ -21,7 +21,6 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.SecaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
-import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
 @RequestMapping(value = "/secao")
@@ -34,7 +33,7 @@ public class SecaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
-	
+
 	@RequestMapping(value = "/paginaSecao")
 	public String indexSecao(Model model) {
 		List<Secao> secoes = secaoService.list();
@@ -50,55 +49,51 @@ public class SecaoController {
 		model.addAttribute("eventos", eventos);
 		return "secao/cadastroSecao";
 	}
-
+	
 	@RequestMapping(value = "/cadastrarSecao")
-	public String cadastrarSecao(@RequestParam String nomeSecao, @RequestParam String descricao,
-			@RequestParam Long idResponsavel, @RequestParam Long idEvento) {
-		Secao secao = new Secao();
-		Pessoa responsavel = pessoaService.get(idResponsavel);
-		Evento evento = eventoService.buscarEventoPorId(idEvento);
-
-		secao.setNome(nomeSecao);
-		secao.setDescricao(descricao);
-		secao.setResponsavel(responsavel);
-		secao.setEvento(evento);
-
+	public String cadastrarSecao(Secao secao) {
 		secaoService.addOrUpdate(secao);
-		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
+		return "redirect:/secao/paginaSecao";
 	}
 
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
-	public String secaoTrabalhos(@PathVariable("id") Long idSecao,Model model) {
+	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
 		Secao secao = secaoService.get(idSecao);
 		List<ParticipacaoTrabalho> trabalhosSecao = new ArrayList<>();
 		List<Trabalho> trabalhos = new ArrayList<>();
-		
-		for(Trabalho trab : secao.getTrabalhos()){
-			for(ParticipacaoTrabalho part : trab.getParticipacoes()){
-				if(part.getPapel().equals(Papel.AUTOR)){
+
+		for (Trabalho trab : secao.getTrabalhos()) {
+			for (ParticipacaoTrabalho part : trab.getParticipacoes()) {
+				if (part.getPapel().equals(Papel.AUTOR)) {
 					trabalhosSecao.add(part);
 				}
 			}
 		}
-		
-		for(Trabalho trabalho : trabalhoService.buscarTodosTrabalhos()){
-			if(trabalho.getSecao() == null){
+
+		for (Trabalho trabalho : trabalhoService.buscarTodosTrabalhos()) {
+			if (trabalho.getSecao() == null) {
 				trabalhos.add(trabalho);
 			}
 		}
-		
-		
-		model.addAttribute("trabalhos",trabalhos);
-		model.addAttribute("trabalhosSecao",trabalhosSecao);
+
+		model.addAttribute("trabalhos", trabalhos);
+		model.addAttribute("trabalhosSecao", trabalhosSecao);
 		model.addAttribute("secao", secao);
 		model.addAttribute("qtdTrabalhos", secao.getTrabalhos().size());
 		return "secao/secaoTrabalhos";
 	}
 
-	@RequestMapping(value = "/alterarSecao")
-	public String alterarSecao(Secao secao) {
-		secaoService.addOrUpdate(secao);
-		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
+	@RequestMapping(value = "/excluirSecao/{id}")
+	public String excluirSecao(@PathVariable("id") Long idSecao) {
+		Secao secao = secaoService.get(idSecao);
+		
+		for(Trabalho trabalho : secao.getTrabalhos()){
+			trabalhoService.removerSecao(trabalho);
+		}
+		
+		secaoService.delete(idSecao);
+		
+		return "redirect:/secao/paginaSecao";
 	}
 
 	@RequestMapping("/excluirTrabalho/{idSecao}/{idTrabalho}")
@@ -107,13 +102,13 @@ public class SecaoController {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 
 		trabalhoService.removerSecao(trabalho);
-		
+
 		return "redirect:/secao/secaoTrabalhos/" + idSecao;
 	}
 
 	@RequestMapping("/adicionarTrabalhoSecao")
-	public String adicionarTrabalhoSecao(@RequestParam Long idSecao,@RequestParam List<Long> idTrabalhos) {
-		for(int i = 0 ; i< idTrabalhos.size();i++){
+	public String adicionarTrabalhoSecao(@RequestParam Long idSecao, @RequestParam List<Long> idTrabalhos) {
+		for (int i = 0; i < idTrabalhos.size(); i++) {
 			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalhos.get(i));
 			trabalho.setSecao(secaoService.get(idSecao));
 			trabalhoService.adicionarTrabalho(trabalho);
