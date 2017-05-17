@@ -112,12 +112,12 @@ public class EventoController extends EventoGenericoController{
 			}
 			
 			eventoService.adicionarOuAtualizarEvento(evento);
-			//
+			
 			List<Trilha> trilhas = new ArrayList<>();
 			
-            Trilha trilha = new Trilha();
-            trilha.setEvento(evento);
-            trilha.setNome("Principal");
+            		Trilha trilha = new Trilha();
+            		trilha.setEvento(evento);
+			trilha.setNome("Principal");
 			trilhas.add(trilha);
             
 			evento.setTrilhas(trilhas);
