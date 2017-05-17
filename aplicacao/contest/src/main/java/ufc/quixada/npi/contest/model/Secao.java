@@ -21,10 +21,14 @@ public class Secao {
 	private Long id;
 	@Column(name = "nome")
 	private String nome;
-	@Column(name = "descricao")
-	private String descricao;
+	@Column(name = "local")
+	private String local;
+	@Column(name="data_secao")
+	private String dataSecao;
+	@Column(name="horario")
+	private String horario;
 	
-	@OneToMany(mappedBy = "secao", targetEntity = Trabalho.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "secao", targetEntity = Trabalho.class, fetch = FetchType.EAGER)
 	private List<Trabalho> trabalhos;
 	
 	@ManyToOne
@@ -50,14 +54,6 @@ public class Secao {
 		this.nome = nome;
 	}
 
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
 	public List<Trabalho> getTrabalhos() {
 		return trabalhos;
 	}
@@ -80,6 +76,30 @@ public class Secao {
 
 	public void setEvento(Evento evento) {
 		this.evento = evento;
+	}
+
+	public String getDataSecao() {
+		return dataSecao;
+	}
+
+	public void setDataSecao(String dataSecao) {
+		this.dataSecao = dataSecao;
+	}
+
+	public String getHorario() {
+		return horario;
+	}
+
+	public void setHorario(String horario) {
+		this.horario = horario;
+	}
+
+	public String getLocal() {
+		return local;
+	}
+
+	public void setLocal(String local) {
+		this.local = local;
 	}
 
 }
