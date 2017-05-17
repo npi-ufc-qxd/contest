@@ -15,7 +15,6 @@ public class SecaoService {
 	private SecaoRepository secaoRepository;
 	
 	public void addOrUpdate(Secao secao) {
-		System.out.println("Teste");
 		secaoRepository.save(secao);
 	}
 
