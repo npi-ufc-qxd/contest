@@ -16,36 +16,35 @@
       <div class="row">
         <h1 class="center header">Cadastro</h1>
         <div class="col s12">
-          <form name="cadastroForm" th:action="@{/cadastro}" class="valign" method="post" id="formCadastro">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <form th:action="@{/cadastro}" class="valign" th:object="${user}" method="post">
             
             <div class="input-field">
-              <input type="text" id="nome" required="required"/>
+              <input type="text" id="nome" th:field="*{nome}" required="required"/>
               <label for="nome">*Nome</label>
             </div>
 
             <div class="input-field">
-              <input type="email" id="email" required="required"/>
+              <input type="email" id="email" name="email" th:field="*{email}" required="required"/>
               <label for="email">*Email</label>
             </div>
             
             <div class="input-field">
-              <input type="text" id="cpf" placeholder="Exemplo: 000.000.000-00"  pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" required="required"/>
+              <input type="text" id="cpf" name="cpf" th:field="*{cpf}" placeholder="Exemplo: 11111111111"   required="required"/>
               <label for="cpf">*CPF</label>
             </div>
 
             <div class="input-field">
-              <input type="password" id="password" required="required" name="senha"/>
+              <input type="password" id="password" th:name="senha" required="required"/>
               <label for="password">*Senha</label>
             </div>
             
             <div class="input-field">
-              <input type="password" id="password_confirm" required="required" name="senha_confirma" />
+              <input type="password" id="password_confirm" required="required" name="senhaConfirma" />
               <label for="password_confirm">*Repetir Senha</label>
             </div>
             <br/>
             <div class="right">
-            <button disabled="disabled" class="right btn waves-effect waves-light" type="submit" id="btn_cadastro">Cadastrar</button>
+            <button class="right btn waves-effect waves-light" type="submit" id="btn_cadastro">Cadastrar</button>
           </div>
           </form>
         </div>

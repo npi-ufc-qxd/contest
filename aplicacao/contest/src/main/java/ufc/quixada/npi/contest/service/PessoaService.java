@@ -72,7 +72,7 @@ public class PessoaService {
 	}
 	
 	public List<Pessoa> revisoresNoEvento(Long idEvento){
-		List<Pessoa> revisores = new ArrayList<Pessoa>();
+		List<Pessoa> revisores = new ArrayList<>();
 		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.DOCENTE, idEvento));
 		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.STA, idEvento));
 		return revisores;
