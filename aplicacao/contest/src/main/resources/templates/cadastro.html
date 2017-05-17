@@ -30,7 +30,7 @@
             
             <div class="input-field">
 
-              <input type="text" id="cpf" name="cpf" th:field="*{cpf}" placeholder="Exemplo: 11111111111"   required="required"/>
+              <input type="number" id="cpf" name="cpf" th:field="*{cpf}" placeholder="Exemplo: 11111111111"   required="required"/>
 
               <label for="cpf">*CPF</label>
             </div>
@@ -46,7 +46,7 @@
             </div>
             <br/>
             <div class="right">
-            <button class="right btn waves-effect waves-light" type="submit" id="btn_cadastro">Cadastrar</button>
+            <button class="right btn waves-effect waves-light" disabled="disabled" type="submit" id="btn_cadastro">Cadastrar</button>
           </div>
           </form>
         </div>
