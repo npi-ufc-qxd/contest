@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +38,6 @@ import net.sf.jasperreports.engine.JRException;
 import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Notificacao;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
@@ -49,10 +47,10 @@ import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
-import ufc.quixada.npi.contest.service.NotificacaoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -91,9 +89,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 
 	@Autowired
 	private PessoaService pessoaService;
-	
-	@Autowired
-	private NotificacaoService notificacaoService;
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -133,12 +128,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Long eventoId = Long.parseLong(id);
 		Pessoa pessoa = getOrganizadorLogado();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		Boolean eventoPrivado = false;
+		
+		if(evento.getVisibilidade() == VisibilidadeEvento.PRIVADO){
+			eventoPrivado = true;
+		}
+		
 		List<Pessoa> pessoas = pessoaService.getTodos();
 		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 		
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("pessoas", pessoas);
+		model.addAttribute("eventoPrivado", eventoPrivado);
 		
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
 		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
@@ -220,16 +222,6 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		participacaoTrabalho.setPapel(Papel.REVISOR);
 		participacaoTrabalho.setPessoa(revisor);
 		participacaoTrabalho.setTrabalho(trabalho);
-		
-		Notificacao notificacao = new Notificacao();
-		
-		notificacao.setTitulo(trabalho.getTitulo());
-		notificacao.setNova(true);
-		notificacao.setPessoa(revisor);
-		final DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-		notificacao.setDescricao("Você foi alocado como revisor deste tralho. Com prazo de revisão inicial para: "+ df.format(trabalho.getEvento().getPrazoRevisaoInicial()));
-		
-		notificacaoService.adicionarNotificacao(notificacao);
 
 		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalho);
 		
@@ -395,10 +387,40 @@ public class EventoControllerOrganizador extends EventoGenericoController{
     }
 	
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam("nomeConvidado") String nome,@RequestParam("email") String email,
+	public String convidarPorEmail(@RequestParam("nome") String nome, @RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, 
 			Model model, RedirectAttributes redirect) {
 			Evento evento = eventoService.buscarEventoPorId(eventoId);
+			
+			Papel papel = null;
+			
+			switch(funcao){
+			case "ORGANIZADOR":
+				papel = Papel.ORGANIZADOR;
+				break;
+				
+			case "AUTOR":
+				papel = Papel.AUTOR;
+				break;
+				
+			case "REVISOR":
+				papel = Papel.REVISOR;
+				break;
+				
+			default:
+				break;
+			}
+			
+			Pessoa pessoa = pessoaService.getByEmail(email);
+			
+			if(pessoa == null){
+				pessoa = new Pessoa(nome, email);
+				pessoaService.addOrUpdate(pessoa);
+			}
+			
+			
+			
+			
 
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 			String assunto =  messageService.getMessage(TITULO_EMAIL_ORGANIZADOR)+ " " + evento.getNome();
@@ -412,6 +434,8 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO)); 
 		}
 		redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+		ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
+		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 		return "redirect:/eventoOrganizador/evento/" + eventoId;	
 	}
 	
@@ -475,11 +499,11 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		if(idOrganizadores != null){
 			String ids[] = idOrganizadores.split(Pattern.quote(","));
 			List<Pessoa> organizadores = new ArrayList<>();
+			
 			for(String id : ids){
 				organizadores.add(pessoaService.get(Long.parseLong(id)));
 			}
 			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
-			
 			
 			for(Pessoa p : organizadores){
 				ParticipacaoEvento participacao = new ParticipacaoEvento();

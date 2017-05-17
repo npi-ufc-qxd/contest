@@ -64,7 +64,7 @@ public class EventoController extends EventoGenericoController{
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
-
+	
 	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<Evento> listaEventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
@@ -105,17 +105,19 @@ public class EventoController extends EventoGenericoController{
 			if(evento.getId() != null){
 				participacao = participacaoEventoService.findByEventoId(evento.getId());
 				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
-				
 				addEventoEmParticipacao(evento, participacao, pessoa);
-				return "redirect:/evento/inativos";
 			}else{
+				
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
+			
+			eventoService.adicionarOuAtualizarEvento(evento);
+			
 			List<Trilha> trilhas = new ArrayList<>();
 			
-            Trilha trilha = new Trilha();
-            trilha.setEvento(evento);
-            trilha.setNome("Principal");
+            		Trilha trilha = new Trilha();
+            		trilha.setEvento(evento);
+			trilha.setNome("Principal");
 			trilhas.add(trilha);
             
 			evento.setTrilhas(trilhas);

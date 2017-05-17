@@ -3,9 +3,10 @@ CREATE TABLE secao (
     nome character varying(255),
     local character varying(255),
     descricao character varying(255),
-    responsavel_id bigint, 
-    Primary key(id)
+    responsavel_id bigint
 );
+ALTER TABLE ONLY secao
+    ADD CONSTRAINT secao_pkey PRIMARY KEY (id);
 
 ALTER TABLE trabalho ADD COLUMN secao_id bigint;
 

@@ -62,6 +62,15 @@ public class ParticipacaoEvento {
 		this.evento = evento;
 	}
 
+	public ParticipacaoEvento(Papel papel, Pessoa pessoa, Evento evento) {
+		this.papel = papel;
+		this.pessoa = pessoa;
+		this.evento = evento;
+	}
+	
+	public ParticipacaoEvento() {
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

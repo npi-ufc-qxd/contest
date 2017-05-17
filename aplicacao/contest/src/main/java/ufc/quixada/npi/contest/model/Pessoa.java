@@ -53,10 +53,34 @@ public class Pessoa implements UserDetails {
 	@OneToMany(mappedBy = "pessoa", fetch=FetchType.LAZY)
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 	
+	@OneToMany(mappedBy="responsavel",fetch=FetchType.LAZY)
+	private List<Secao> secoes;
+	
 	@Column(name = "papel_ldap")
 	@Enumerated(EnumType.STRING)
 	private PapelLdap.Tipo papelLdap;
+	
+	@Column(name = "papel")
+	private String papel;
 
+	
+	public String getPapel() {
+		return papel;
+	}
+
+	public void setPapel(String papel) {
+		this.papel = papel;
+	}
+
+	public Pessoa(String nome, String email) {
+		this.nome = nome;
+		this.email = email;
+	}
+	
+	public Pessoa() {
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -115,6 +139,14 @@ public class Pessoa implements UserDetails {
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("Papel proveniente do LDAP não condiz com os papéis mapeados pelo sistema [" +papelLdap + "]" );
 		}
+	}
+
+	public List<Secao> getSecoes() {
+		return secoes;
+	}
+
+	public void setSecoes(List<Secao> secoes) {
+		this.secoes = secoes;
 	}
 
 	@Override

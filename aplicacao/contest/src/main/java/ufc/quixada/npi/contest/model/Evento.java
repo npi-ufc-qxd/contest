@@ -72,6 +72,7 @@ public class Evento {
 	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
 	@OrderBy("nome ASC")
 	private List<Trilha> trilhas;
+	
 	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL)
 	private List<Secao> secoes;
 
