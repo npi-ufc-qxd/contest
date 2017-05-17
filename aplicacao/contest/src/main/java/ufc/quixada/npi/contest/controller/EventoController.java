@@ -109,6 +109,7 @@ public class EventoController extends EventoGenericoController{
 				addEventoEmParticipacao(evento, participacao, pessoa);
 				return "redirect:/evento/inativos";
 			}else{
+				eventoService.adicionarOuAtualizarEvento(evento);
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
 			List<Trilha> trilhas = new ArrayList<>();
