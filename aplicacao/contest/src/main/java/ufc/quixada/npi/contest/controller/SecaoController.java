@@ -52,6 +52,9 @@ public class SecaoController {
 	
 	@RequestMapping(value = "/cadastrarSecao")
 	public String cadastrarSecao(Secao secao) {
+		if(secao.getEvento()== null || secao.getResponsavel()== null){
+			return "redirect:/secao/cadastrarSecaoForm";
+		}
 		secaoService.addOrUpdate(secao);
 		return "redirect:/secao/paginaSecao";
 	}
