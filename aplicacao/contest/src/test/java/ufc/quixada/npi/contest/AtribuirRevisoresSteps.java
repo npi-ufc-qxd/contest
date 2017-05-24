@@ -26,7 +26,7 @@ import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;

@@ -21,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import ufc.quixada.npi.contest.model.PapelLdap.Tipo;
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
 
 @Entity
 @Table(name = "pessoa")
@@ -55,20 +56,21 @@ public class Pessoa implements UserDetails {
 	
 	@OneToMany(mappedBy="responsavel",fetch=FetchType.LAZY)
 	private List<Secao> secoes;
-	
+
 	@Column(name = "papel_ldap")
 	@Enumerated(EnumType.STRING)
 	private PapelLdap.Tipo papelLdap;
 	
 	@Column(name = "papel")
-	private String papel;
+	@Enumerated(EnumType.STRING)
+	private PapelSistema.Papel papel;
 
 	
-	public String getPapel() {
+	public PapelSistema.Papel getPapel() {
 		return papel;
 	}
-
-	public void setPapel(String papel) {
+	
+	public void setPapel(PapelSistema.Papel papel) {
 		this.papel = papel;
 	}
 
@@ -174,16 +176,22 @@ public class Pessoa implements UserDetails {
 		return true;
 	}
 
+//	@Override
+//	public String toString() {
+//		return "Pessoa [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", password=" + password + ", email=" + email
+//				+ ", participacoesEvento=" + participacoesEvento + ", participacoesTrabalho=" + participacoesTrabalho
+//				+ ", papelLdap=" + papelLdap + ", papelSistema=" + papel + "]";
+//	}
 	@Override
 	public String toString() {
 		return "Pessoa [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", password=" + password + ", email=" + email
 				+ ", participacoesEvento=" + participacoesEvento + ", participacoesTrabalho=" + participacoesTrabalho
-				+ ", papelLdap=" + papelLdap + "]";
+				+ ", papelSistema=" + papel + "]";
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.asList(new PapelLdap(papelLdap));
+		return Arrays.asList(new PapelSistema(papel));
 	}
 
 	@Override

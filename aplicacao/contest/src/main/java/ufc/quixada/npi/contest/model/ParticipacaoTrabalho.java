@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+
 @Entity
 @Table(name = "participacao_trabalho")
 public class ParticipacaoTrabalho {

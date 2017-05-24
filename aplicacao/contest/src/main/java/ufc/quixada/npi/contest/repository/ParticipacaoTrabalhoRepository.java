@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Trabalho;
 

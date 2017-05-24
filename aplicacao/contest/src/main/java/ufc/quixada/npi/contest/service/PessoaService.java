@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.PapelLdap;
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.PessoaRepository;
 

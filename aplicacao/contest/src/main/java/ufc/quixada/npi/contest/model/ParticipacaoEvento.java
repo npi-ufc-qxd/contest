@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+
 @Entity
 @Table(name = "participacao_evento")
 public class ParticipacaoEvento {

@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.PapelLdap;
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
 import ufc.quixada.npi.contest.model.Pessoa;
 
 @Repository
@@ -30,7 +30,7 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long>{
 	
 	@Query("select p from Pessoa p where p.id not in "
 			+ "(select DISTINCT pe.pessoa.id from ParticipacaoEvento pe where pe.evento.id = :idEvento AND "
-			+ " pe.papel = ufc.quixada.npi.contest.model.Papel.ORGANIZADOR) AND "
+			+ " pe.papel = ufc.quixada.npi.contest.model.PapelSistema$Papel.ORGANIZADOR) AND "
 			+ "(p.papelLdap <> ufc.quixada.npi.contest.model.PapelLdap$Tipo.DISCENTE)")	
 	public List<Pessoa> getPossiveisOrganizadoresDoEvento(@Param("idEvento")Long idEvento);
 	

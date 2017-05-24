@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+
 @Entity
 @Table(name = "trabalho")
 public class Trabalho implements Comparable<Trabalho> {
