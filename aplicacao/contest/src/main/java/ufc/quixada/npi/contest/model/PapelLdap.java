@@ -3,8 +3,6 @@ package ufc.quixada.npi.contest.model;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-import org.springframework.security.core.GrantedAuthority;
-
 public class PapelLdap {
 
 	@Enumerated(EnumType.STRING)

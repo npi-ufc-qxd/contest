@@ -176,12 +176,6 @@ public class Pessoa implements UserDetails {
 		return true;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "Pessoa [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", password=" + password + ", email=" + email
-//				+ ", participacoesEvento=" + participacoesEvento + ", participacoesTrabalho=" + participacoesTrabalho
-//				+ ", papelLdap=" + papelLdap + ", papelSistema=" + papel + "]";
-//	}
 	@Override
 	public String toString() {
 		return "Pessoa [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", password=" + password + ", email=" + email

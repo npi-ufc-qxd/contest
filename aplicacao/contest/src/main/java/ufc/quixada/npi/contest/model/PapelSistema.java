@@ -29,10 +29,6 @@ public class PapelSistema implements GrantedAuthority {
 		public String getTipo() {
 			return tipo;
 		}
-
-		public void setTipo(String tipo) {
-			this.tipo = tipo;
-		}
 	}
 
 	@Override
