@@ -30,11 +30,11 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	@Autowired
 	private MessageService messageService;
 
-	private Pessoa pessoa = new Pessoa();
-
 	@Override
 	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		
+		Pessoa pessoa = new Pessoa();
 		
 		String cpf = authentication.getName();
 		String password = authentication.getCredentials().toString();
