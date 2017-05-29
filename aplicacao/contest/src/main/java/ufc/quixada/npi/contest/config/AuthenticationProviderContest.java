@@ -30,7 +30,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	@Autowired
 	private MessageService messageService;
 
-	private Pessoa pessoa;
+	private Pessoa pessoa = new Pessoa();
 
 	@Override
 	@Transactional
@@ -49,6 +49,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 			}
 				
 		} else if (usuario != null && usuarioService.autentica(cpf, password)) { 
+			
 			pessoa = new Pessoa();
 			pessoa.setCpf(usuario.getCpf());
 			pessoa.setNome(usuario.getNome());
@@ -57,7 +58,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 			pessoa.setEmail(usuario.getEmail());
 			
 			for (Affiliation affiliation : usuario.getAuthorities()) {
-				if (affiliation.getNome().equals(Tipo.ADMIN.getTipo())) {
+				if (affiliation.getNome().equals(Tipo.ADMIN.getNome())) {
 					pessoa.setPapel(Tipo.ADMIN);
 				}
 			}

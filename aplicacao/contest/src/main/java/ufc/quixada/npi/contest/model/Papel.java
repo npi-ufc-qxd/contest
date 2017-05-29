@@ -20,14 +20,14 @@ public class Papel implements GrantedAuthority {
 		ORGANIZADOR("ORGANIZADOR"), REVISOR("REVISOR"), AUTOR("AUTOR"), 
 		COAUTOR("COAUTOR"), ORIENTADOR("ORIENTADOR"), USER("USER"), ADMIN("ADMIN");
 		
-		private String tipo;
+		private String nome;
 
-		Tipo(String tipo) {
-			this.tipo = tipo;
+		Tipo(String nome) {
+			this.nome = nome;
 		}
 
-		public String getTipo() {
-			return tipo;
+		public String getNome() {
+			return nome;
 		}
 	}
 
@@ -38,6 +38,6 @@ public class Papel implements GrantedAuthority {
 	
 	@Override
 	public String toString() {
-		return "Papel [nome=" + papel.getTipo() + "]";
+		return "Papel [nome=" + papel.getNome() + "]";
 	}
 }
