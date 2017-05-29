@@ -27,7 +27,7 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.AutorController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
@@ -89,7 +89,7 @@ public class AutorParticipaEvento {
 
 		participacaoEvento.setEvento(evento);
 		participacaoEvento.setPessoa(pessoa);
-		participacaoEvento.setPapel(Papel.AUTOR);
+		participacaoEvento.setPapel(Tipo.AUTOR);
 
 		pessoa = new Pessoa();
 		pessoa.setCpf("123");

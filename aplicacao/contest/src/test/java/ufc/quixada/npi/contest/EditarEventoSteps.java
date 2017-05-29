@@ -27,7 +27,7 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
@@ -94,7 +94,7 @@ public class EditarEventoSteps {
 
 		participacao.setEvento(evento);
 		participacao.setId(Long.valueOf(ID_PARTICIPACAO_EVENTO));
-		participacao.setPapel(Papel.ORGANIZADOR);
+		participacao.setPapel(Tipo.ORGANIZADOR);
 		participacao.setPessoa(org);
 		participacoes.add(participacao);
 		
@@ -129,7 +129,7 @@ public class EditarEventoSteps {
 		ParticipacaoEvento participacao = new ParticipacaoEvento();
 		participacao.setEvento(evento);
 		participacao.setPessoa(org);
-		participacao.setPapel(Papel.ORGANIZADOR);
+		participacao.setPapel(Tipo.ORGANIZADOR);
 		
 		action.andExpect(status().isFound())
 		      .andExpect(redirectedUrl(TEMPLATE_LISTAR_EVENTOS_INATIVOS));

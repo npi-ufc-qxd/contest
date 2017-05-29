@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 
@@ -77,19 +77,19 @@ public class EventoService {
 	}
 
 	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor){
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idAutor, Papel.AUTOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idAutor, Tipo.AUTOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 	
 	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor){
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idRevisor, Papel.REVISOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idRevisor, Tipo.REVISOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 	
 	public List<Evento> buscarEventosParticapacaoOrganizador(Long idOrganizador){
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idOrganizador, Papel.ORGANIZADOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idOrganizador, Tipo.ORGANIZADOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 	
 	public List<Evento> buscarEventosInativosQueOrganizo(Long idOrganizador){
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idOrganizador, Papel.ORGANIZADOR, EstadoEvento.INATIVO);
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idOrganizador, Tipo.ORGANIZADOR, EstadoEvento.INATIVO);
 	}
 	
 	public List<Evento> getEventosByEstadoEVisibilidadePublica(EstadoEvento estado){

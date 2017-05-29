@@ -5,24 +5,24 @@ import javax.persistence.Enumerated;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public class PapelSistema implements GrantedAuthority {
+public class Papel implements GrantedAuthority {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Enumerated(EnumType.STRING)
-	private Papel papel;
+	private Tipo papel;
 	
-	public PapelSistema(Papel papel){
+	public Papel(Tipo papel){
 		this.papel = papel;
 	}
 
-	public enum Papel {
+	public enum Tipo {
 		ORGANIZADOR("ORGANIZADOR"), REVISOR("REVISOR"), AUTOR("AUTOR"), 
 		COAUTOR("COAUTOR"), ORIENTADOR("ORIENTADOR"), USER("USER"), ADMIN("ADMIN");
 		
 		private String tipo;
 
-		Papel(String tipo) {
+		Tipo(String tipo) {
 			this.tipo = tipo;
 		}
 

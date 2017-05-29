@@ -17,7 +17,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 
 @Entity
 @Table(name = "trabalho")
@@ -150,14 +150,14 @@ public class Trabalho implements Comparable<Trabalho> {
 	
 	public void setAutores(Pessoa autor, List<Pessoa> coautores){
 		ParticipacaoTrabalho participacaoAutor = new ParticipacaoTrabalho();
-		participacaoAutor.setPapel(Papel.AUTOR);
+		participacaoAutor.setPapel(Tipo.AUTOR);
 		participacaoAutor.setTrabalho(this);
 		participacaoAutor.setPessoa(autor);
 		
 		participacoes = new ArrayList<ParticipacaoTrabalho>();
 		for (Pessoa pessoa : coautores) {
 			ParticipacaoTrabalho participacaoCoautor = new ParticipacaoTrabalho();
-			participacaoCoautor.setPapel(Papel.COAUTOR);
+			participacaoCoautor.setPapel(Tipo.COAUTOR);
 			participacaoCoautor.setTrabalho(this);
 			participacaoCoautor.setPessoa(pessoa);
 			participacoes.add(participacaoCoautor);
@@ -169,17 +169,17 @@ public class Trabalho implements Comparable<Trabalho> {
 		
 		for (Pessoa pessoa : coautores) {
 			ParticipacaoTrabalho participacaoCoautor = new ParticipacaoTrabalho();
-			participacaoCoautor.setPapel(Papel.COAUTOR);
+			participacaoCoautor.setPapel(Tipo.COAUTOR);
 			participacaoCoautor.setTrabalho(this);
 			participacaoCoautor.setPessoa(pessoa);
 			participacoes.add(participacaoCoautor);
 		}
 	}
 	
-	private List<Pessoa> getParticipacaoPapelTrabalho(Papel... papeis) {
+	private List<Pessoa> getParticipacaoPapelTrabalho(Tipo... papeis) {
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
-			for(Papel papel : papeis){
+			for(Tipo papel : papeis){
 				if (p.getPapel() == papel){
 					pessoa.add(p.getPessoa());
 				}
@@ -204,19 +204,19 @@ public class Trabalho implements Comparable<Trabalho> {
 	}
 
 	public Pessoa getAutor() {
-		return getParticipacaoPapelTrabalho(Papel.AUTOR).get(0);
+		return getParticipacaoPapelTrabalho(Tipo.AUTOR).get(0);
 	}
 	
 	public List<Pessoa> getAutoresDoTrabalho() {
-		return getParticipacaoPapelTrabalho(Papel.AUTOR, Papel.COAUTOR);
+		return getParticipacaoPapelTrabalho(Tipo.AUTOR, Tipo.COAUTOR);
 	}
 	
 	public List<Pessoa> getCoAutoresDoTrabalho() {
-		return getParticipacaoPapelTrabalho(Papel.COAUTOR);
+		return getParticipacaoPapelTrabalho(Tipo.COAUTOR);
 	}
 	
 	public List<Pessoa> getRevisores(){
-		return getParticipacaoPapelTrabalho(Papel.REVISOR);
+		return getParticipacaoPapelTrabalho(Tipo.REVISOR);
 	}
 	
 	public boolean isRevisado(){

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.ParticipacaoEventoRepository;
@@ -53,18 +53,18 @@ public class ParticipacaoEventoService {
 	
 	public List<ParticipacaoEvento> getEventosDoOrganizador(EstadoEvento estado, Long id){
 		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
-		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Papel.ORGANIZADOR, id);
+		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.ORGANIZADOR, id);
 		return listaParticipacaoEventos;
 	}
 
 	public List<ParticipacaoEvento> getEventosDoRevisor(EstadoEvento estado, Long id){
 		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
-		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Papel.REVISOR, id);
+		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.REVISOR, id);
 		return listaParticipacaoEventos;
 	}
 
 	public List<ParticipacaoEvento> getParticipacaoComoRevisorPorEvento(Long idEvento){
-		return participacaoEventoRepository.findByEventoIdAndPapel(idEvento, Papel.REVISOR);
+		return participacaoEventoRepository.findByEventoIdAndPapel(idEvento, Tipo.REVISOR);
 	}
 	
 	public int buscarQuantidadeRevisoresPorEvento(Long idEvento){
@@ -72,14 +72,14 @@ public class ParticipacaoEventoService {
 	}
 
 	public List<ParticipacaoEvento> getRevisoresNoEvento(Long id){
-		return participacaoEventoRepository.findByEventoIdAndPapel(id, Papel.REVISOR);
+		return participacaoEventoRepository.findByEventoIdAndPapel(id, Tipo.REVISOR);
 	}
 	
 	public boolean isOrganizadorDoEvento(Pessoa organizador, Long idEvento){
 		if(organizador.getParticipacoesEvento() != null){
 			for(ParticipacaoEvento participacaoEvento : organizador.getParticipacoesEvento()){
 				if(participacaoEvento.getEvento().getId() == idEvento && 
-						participacaoEvento.getPapel() == Papel.ORGANIZADOR) return true;
+						participacaoEvento.getPapel() == Tipo.ORGANIZADOR) return true;
 			}
 		}
 		

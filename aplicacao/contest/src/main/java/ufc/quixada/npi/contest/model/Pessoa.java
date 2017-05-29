@@ -20,8 +20,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import ufc.quixada.npi.contest.model.PapelLdap.Tipo;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 
 @Entity
 @Table(name = "pessoa")
@@ -63,14 +62,14 @@ public class Pessoa implements UserDetails {
 	
 	@Column(name = "papel")
 	@Enumerated(EnumType.STRING)
-	private PapelSistema.Papel papel;
+	private Papel.Tipo papel;
 
 	
-	public PapelSistema.Papel getPapel() {
+	public Papel.Tipo getPapel() {
 		return papel;
 	}
 	
-	public void setPapel(PapelSistema.Papel papel) {
+	public void setPapel(Papel.Tipo papel) {
 		this.papel = papel;
 	}
 
@@ -137,7 +136,7 @@ public class Pessoa implements UserDetails {
 
 	public void setPapelLdap(String papelLdap) throws IllegalArgumentException {
 		try {
-			this.papelLdap = Tipo.valueOf(papelLdap);
+			this.papelLdap = PapelLdap.Tipo.valueOf(papelLdap);
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("Papel proveniente do LDAP não condiz com os papéis mapeados pelo sistema [" +papelLdap + "]" );
 		}
@@ -185,7 +184,7 @@ public class Pessoa implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.asList(new PapelSistema(papel));
+		return Arrays.asList(new Papel(this.papel));
 	}
 
 	@Override
@@ -225,7 +224,7 @@ public class Pessoa implements UserDetails {
 	public int getNumeroTrabalhosRevisar(Evento evento){
 		int trabalhosRevisar = 0;
 		for(ParticipacaoTrabalho participacao: participacoesTrabalho){
-			if(participacao.getPapel() == Papel.REVISOR && participacao.getTrabalho().getEvento().equals(evento)){
+			if(participacao.getPapel() == Tipo.REVISOR && participacao.getTrabalho().getEvento().equals(evento)){
 				trabalhosRevisar++;
 			}
 		}

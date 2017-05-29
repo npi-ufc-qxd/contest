@@ -20,12 +20,12 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	public List<Trabalho> findByEvento(Evento evento);
 	
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :idEvento AND t.id in(SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
-			+ " pt where pt.pessoa.id = :idRevisor AND pt.papel = ufc.quixada.npi.contest.model.PapelSistema$Papel.REVISOR)")
+			+ " pt where pt.pessoa.id = :idRevisor AND pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.REVISOR)")
 	public List<Trabalho> getTrabalhosParaRevisar(@Param("idRevisor") Long idRevisor, @Param("idEvento") Long idEvento);
 	
 	@Query("SELECT p FROM Pessoa p WHERE p.id in "
 			+ "(SELECT pt.pessoa.id FROM ParticipacaoTrabalho pt WHERE pt.trabalho.id = :idTrabalho AND "
-			+ "pt.papel = ufc.quixada.npi.contest.model.PapelSistema$Papel.AUTOR)")
+			+ "pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.AUTOR)")
 	public List<Pessoa> getAutoresDoTrabalho(@Param("idTrabalho") Long idTrabalho);
 	
 	@Query("select case when count(*) > 0 then true else false end "
@@ -35,7 +35,7 @@ public interface TrabalhoRepository extends CrudRepository<Trabalho, Long>{
 	public List<Trabalho> findByTrilha(Trilha trilha);
 	
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :eventoId AND t.id in (SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
-			+ " pt where pt.pessoa.id = :autorId AND pt.papel = ufc.quixada.npi.contest.model.PapelSistema$Papel.AUTOR)")
+			+ " pt where pt.pessoa.id = :autorId AND pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.AUTOR)")
 	public List<Trabalho> getTrabalhoDoAutorNoEvento(@Param("autorId") Long pessoaId, @Param("eventoId") Long eventoId);
 	
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :eventoId AND t.id in (SELECT rev.trabalho.id FROM Revisao"

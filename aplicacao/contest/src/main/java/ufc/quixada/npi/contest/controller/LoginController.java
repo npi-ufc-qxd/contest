@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.PessoaService;
 
@@ -49,7 +49,7 @@ public class LoginController {
 		if(senhaConfirma.equals(senha)){
 			String password = pessoaService.encodePassword(senha);
 			pessoa.setPassword(password);
-			pessoa.setPapel(Papel.USER);
+			pessoa.setPapel(Tipo.USER);
 			pessoaService.addOrUpdate(pessoa);
 			return "login";
 		}

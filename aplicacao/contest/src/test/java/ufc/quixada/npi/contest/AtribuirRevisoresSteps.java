@@ -26,7 +26,7 @@ import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
@@ -101,7 +101,7 @@ public class AtribuirRevisoresSteps {
 		
 		participacaoTrabalho.setPessoa(pessoa);
 		participacaoTrabalho.setTrabalho(trabalho);
-		participacaoTrabalho.setPapel(Papel.REVISOR);
+		participacaoTrabalho.setPapel(Tipo.REVISOR);
 
 		String json = String.format("{\"revisorId\": \"1\",\"trabalhoId\": \"3\"}");
 

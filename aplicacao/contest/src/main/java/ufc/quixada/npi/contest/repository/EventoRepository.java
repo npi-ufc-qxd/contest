@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 
 @Repository
@@ -32,9 +32,9 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 	
 	public List<Evento> findDistinctEventoByParticipacoesPessoaIdAndVisibilidade(Long id, VisibilidadeEvento visbilidade);
 	
-	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(Long id,Papel papel,VisibilidadeEvento visibilidade, EstadoEvento estado);
+	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(Long id,Tipo papel,VisibilidadeEvento visibilidade, EstadoEvento estado);
 	
-	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(Long id, Papel papel, EstadoEvento estado);
+	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(Long id, Tipo papel, EstadoEvento estado);
 	
 	public List<Evento> findEventoByEstado(EstadoEvento estadoEvento);
 	

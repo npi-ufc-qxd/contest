@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import br.ufc.quixada.npi.ldap.model.Affiliation;
 import br.ufc.quixada.npi.ldap.model.Usuario;
 import br.ufc.quixada.npi.ldap.service.UsuarioService;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -30,48 +30,50 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	@Autowired
 	private MessageService messageService;
 
-	private Pessoa pessoa = new Pessoa();
+	private Pessoa pessoa;
 
 	@Override
 	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		
 		String cpf = authentication.getName();
 		String password = authentication.getCredentials().toString();
-		
-		Usuario usuario = usuarioService.getByCpf(cpf);
+
+		final Usuario usuario = usuarioService.getByCpf(cpf);
 		pessoa = pessoaService.getByCpf(cpf);
 
-				if (pessoa !=null) { // Pessoa existe
-					if (pessoaService.autentica(pessoa, cpf, password))
-						return new UsernamePasswordAuthenticationToken(pessoa, pessoaService.encodePassword(password),
-								pessoa.getAuthorities());
-				}else if (usuario != null && usuarioService.autentica(cpf, password)) { // Pessoa não existe, então tenta autenticar via LDAP
-					
-					pessoa.setEmail(usuario.getEmail());
-					pessoa.setCpf(cpf);
-					pessoa.setNome(usuario.getNome());
-					pessoa.setPassword(pessoaService.encodePassword(password));
-					pessoa.setPapel(Papel.USER);
-					
-					for(Affiliation affiliation: usuario.getAuthorities()){
-						if(affiliation.getNome().equals(Papel.ADMIN.getTipo())){
-							pessoa.setPapel(Papel.ADMIN);
-						}
-					}
-		 			
-					pessoaService.addOrUpdate(pessoa);
-					
-					return new UsernamePasswordAuthenticationToken(pessoa, pessoaService.encodePassword(password),
-							pessoa.getAuthorities());
+		if (pessoa != null) { // Pessoa existe na Base Local entra no trecho abaixo
+			if (pessoaService.autentica(pessoa, cpf, password)){
+				return new UsernamePasswordAuthenticationToken(pessoa, pessoaService.encodePassword(password),
+						pessoa.getAuthorities());
+			}
+				
+		} else if (usuario != null && usuarioService.autentica(cpf, password)) { 
+			pessoa = new Pessoa();
+			pessoa.setCpf(usuario.getCpf());
+			pessoa.setNome(usuario.getNome());
+			pessoa.setPassword(pessoaService.encodePassword(password));
+			pessoa.setPapel(Tipo.USER);
+			pessoa.setEmail(usuario.getEmail());
+			
+			for (Affiliation affiliation : usuario.getAuthorities()) {
+				if (affiliation.getNome().equals(Tipo.ADMIN.getTipo())) {
+					pessoa.setPapel(Tipo.ADMIN);
 				}
-				
-				throw new BadCredentialsException(messageService.getMessage("LOGIN_INVALIDO"));	
-				
+			}
+
+			pessoaService.addOrUpdate(pessoa);
+
+			return new UsernamePasswordAuthenticationToken(pessoa, pessoaService.encodePassword(password),
+					pessoa.getAuthorities());
+		}
+
+		throw new BadCredentialsException(messageService.getMessage("LOGIN_INVALIDO"));
 	}
 
-			@Override
-			public boolean supports(Class<?> arg0) {
-				return true;
-		}
+	@Override
+	public boolean supports(Class<?> arg0) {
+		return true;
+	}
 
 }

@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 
 @Entity
 @Table(name = "participacao_trabalho")
@@ -26,7 +26,7 @@ public class ParticipacaoTrabalho {
 	@Column(name = "papel")
 	@Enumerated(EnumType.STRING)
 	@NotNull
-	private Papel papel;
+	private Tipo papel;
 
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	private Pessoa pessoa;
@@ -42,11 +42,11 @@ public class ParticipacaoTrabalho {
 		this.id = id;
 	}
 
-	public Papel getPapel() {
+	public Tipo getPapel() {
 		return papel;
 	}
 
-	public void setPapel(Papel papel) {
+	public void setPapel(Tipo papel) {
 		this.papel = papel;
 	}
 

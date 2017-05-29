@@ -29,7 +29,7 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.PapelSistema.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -110,17 +110,17 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 		
 		ParticipacaoEvento participacao1 = new ParticipacaoEvento();
 		participacao1.setEvento(eventoAtivo);
-		participacao1.setPapel(Papel.ORGANIZADOR);
+		participacao1.setPapel(Tipo.ORGANIZADOR);
 		participacao1.setPessoa(organizadorLogado);
 		
 		ParticipacaoEvento participacao2 = new ParticipacaoEvento();
 		participacao2.setEvento(eventoAtivo);
-		participacao2.setPapel(Papel.REVISOR);
+		participacao2.setPapel(Tipo.REVISOR);
 		participacao2.setPessoa(p1);
 		
 		ParticipacaoEvento participacao3 = new ParticipacaoEvento();
 		participacao3.setEvento(eventoAtivo);
-		participacao3.setPapel(Papel.AUTOR);
+		participacao3.setPapel(Tipo.AUTOR);
 		participacao3.setPessoa(p2);
 		
 		List<ParticipacaoEvento> participacaoEventos = new ArrayList<ParticipacaoEvento>();
