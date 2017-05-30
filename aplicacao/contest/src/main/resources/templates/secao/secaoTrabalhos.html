@@ -79,19 +79,16 @@
 				</tr>
 			</thead>
 
-			<tbody th:each="trabalho:${trabalhosSecao}">
-				<tr>
-					<td th:text="${trabalho.pessoa.nome}"></td>
-					<td th:text="${trabalho.trabalho.titulo}"></td>
-					<td th:text="${trabalho.trabalho.trilha.nome}"></td>
-					<td><a
-						th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${trabalho.id}}"
-						class="waves-effect btn-flat red accent-4"
-						id="btn_excluir_trabalho">Deletar<i
-							class="material-icons right">delete</i></a></td>
-				</tr>
-			</tbody>
-		</table>
+
+        <tbody th:each="trabalho:${trabalhosSecao}">
+        <tr>
+            <td th:text="${trabalho.pessoa.nome}"></td>
+            <td th:text="${trabalho.trabalho.titulo}"></td>
+            <td th:text="${trabalho.trabalho.trilha.nome}"></td>
+            <td><a th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${trabalho.trabalho.id}}" class="waves-effect btn-flat red accent-4" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
+        </tr>
+        </tbody>
+    </table>
 
 	</div>
 	<br />
