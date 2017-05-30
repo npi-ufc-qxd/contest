@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
@@ -159,7 +159,7 @@ public class EventoController extends EventoGenericoController{
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		participacao.setEvento(evento);
 		participacao.setPessoa(pessoa);
-		participacao.setPapel(Papel.ORGANIZADOR);
+		participacao.setPapel(Tipo.ORGANIZADOR);
 		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 	}
 }

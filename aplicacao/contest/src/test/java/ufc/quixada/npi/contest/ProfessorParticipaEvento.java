@@ -31,7 +31,7 @@ import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -103,7 +103,7 @@ public class ProfessorParticipaEvento {
 		
 		participacaoEvento.setEvento(evento);
 		participacaoEvento.setPessoa(revisorLogado);
-		participacaoEvento.setPapel(Papel.REVISOR);
+		participacaoEvento.setPapel(Tipo.REVISOR);
 		
 		when(eventoService.existeEvento(id)).thenReturn(true);
 		when(eventoService.buscarEventoPorId(id)).thenReturn(evento);

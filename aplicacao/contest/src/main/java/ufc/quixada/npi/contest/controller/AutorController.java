@@ -27,7 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
@@ -167,7 +167,7 @@ public class AutorController {
 				ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
 				participacaoEvento.setEvento(evento);
 				participacaoEvento.setPessoa(autorLogado);
-				participacaoEvento.setPapel(Papel.AUTOR);
+				participacaoEvento.setPapel(Tipo.AUTOR);
 				
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
 				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO,

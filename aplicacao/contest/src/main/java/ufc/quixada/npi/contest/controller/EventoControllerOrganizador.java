@@ -38,7 +38,7 @@ import net.sf.jasperreports.engine.JRException;
 import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
@@ -219,7 +219,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId());
 		
 		ParticipacaoTrabalho participacaoTrabalho = new ParticipacaoTrabalho();
-		participacaoTrabalho.setPapel(Papel.REVISOR);
+		participacaoTrabalho.setPapel(Tipo.REVISOR);
 		participacaoTrabalho.setPessoa(revisor);
 		participacaoTrabalho.setTrabalho(trabalho);
 
@@ -392,19 +392,19 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 			Model model, RedirectAttributes redirect) {
 			Evento evento = eventoService.buscarEventoPorId(eventoId);
 			
-			Papel papel = null;
+			Tipo papel = null;
 			
 			switch(funcao){
 			case "ORGANIZADOR":
-				papel = Papel.ORGANIZADOR;
+				papel = Tipo.ORGANIZADOR;
 				break;
 				
 			case "AUTOR":
-				papel = Papel.AUTOR;
+				papel = Tipo.AUTOR;
 				break;
 				
 			case "REVISOR":
-				papel = Papel.REVISOR;
+				papel = Tipo.REVISOR;
 				break;
 				
 			default:
@@ -509,7 +509,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				ParticipacaoEvento participacao = new ParticipacaoEvento();
 				participacao.setEvento(evento);
 				participacao.setPessoa(p);
-				participacao.setPapel(Papel.ORGANIZADOR);
+				participacao.setPapel(Tipo.ORGANIZADOR);
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 			}
 			return "redirect:/eventoOrganizador/evento/"+idEvento;
@@ -533,7 +533,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 				ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
 				participacaoEvento.setEvento(evento);
 				participacaoEvento.setPessoa(professorLogado);
-				participacaoEvento.setPapel(Papel.REVISOR);
+				participacaoEvento.setPapel(Tipo.REVISOR);
 				
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
 				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO, messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));

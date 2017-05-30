@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.Evento;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -46,15 +47,16 @@ public class LoginController {
 	@RequestMapping(value = "/cadastroForm")
 	public String cadastroForm(Model model) {
 		model.addAttribute("user", new Pessoa());
-		return "cadastro" ;
+		return "cadastro";
 	}
 	
 	@RequestMapping(value = "/cadastro")
 	public String cadastro(@Valid Pessoa pessoa, @RequestParam String senha, @RequestParam String senhaConfirma) {
 	
 		if(senhaConfirma.equals(senha)){
-			pessoa.setPassword(senha);
-			pessoa.setPapel("USER");
+			String password = pessoaService.encodePassword(senha);
+			pessoa.setPassword(password);
+			pessoa.setPapel(Tipo.USER);
 			pessoaService.addOrUpdate(pessoa);
 			return "login";
 		}
