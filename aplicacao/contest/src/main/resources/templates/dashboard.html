@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:include="fragments/head :: head"></div></head>
+	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+<body>
+  <nav class="purple darken-4" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo center"><img th:src="@{/img/logotipo_white.png}" width="200px" alt="logo" /></a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div  class="col s12 m6">
+        <div  class="card white">
+            <div class="card-content">
+              <h5>Como Revisor</h5>
+              <ul>
+                <li>Proposta de aplivativo Android</li>
+                <li>Utilização de Sistemas Operacionais Livres</li>
+              </ul>
+            </div>
+            <div class="card-action"><a hreff="../paginas_autor/autor_revisar_trabalho.html" class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver mais</a></div>
+          </div>
+     
+      </div>
+      <div  class="col s12 m6">
+        <div  class="card white">
+            <div class="card-content">
+              <h5>Como Organizador</h5>
+              <ul>
+                <li>CBSoft 2017</li>
+                <li>Encontros Universitários</li>
+              </ul>
+            </div>
+            <div class="card-action"><a hreff="../paginas_organizador/org_eventos_listar_ativos.html" class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver mais</a></div>
+          </div>
+      </div>
+    </div>
+    <div class="col s12" th:if="${#lists.isEmpty(eventosParaParticipar)}">
+    	<div class="card white">
+					<div class="card content">
+						<div class="card-action" >
+							<h5>Como Autor</h5>
+							<h6>Não há eventos</h6>
+							
+						</div>
+					</div>
+    </div>
+    </div>
+    <div class="col s12" th:if="${!#lists.isEmpty(eventosParaParticipar)}">
+    
+    <div class="col s12 m4" th:each="evento : ${eventosParaParticipar}">
+				<div class="card white">
+					<div class="card content">
+						<div class="card-action" >
+							<div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+							<a class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+							<a class="btn disabled white-text grey">Período de inscrição encerrado</a>
+						</div>
+					</div>
+				</div>
+</div>
+</div>
+</div>
+<div class="row holder center"></div>
+<div th:include="fragments/footer :: footer"></div>
+<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+<script type="text/javascript"></script>
+</body>
+
+</html>
