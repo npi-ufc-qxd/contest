@@ -49,9 +49,12 @@ public class SecaoController {
 		model.addAttribute("eventos", eventos);
 		return "secao/cadastroSecao";
 	}
-	
+
 	@RequestMapping(value = "/cadastrarSecao")
 	public String cadastrarSecao(Secao secao) {
+		if (secao.getEvento() == null || secao.getResponsavel() == null) {
+			return "redirect:/secao/cadastrarSecaoForm";
+		}
 		secaoService.addOrUpdate(secao);
 		return "redirect:/secao/paginaSecao";
 	}
@@ -86,13 +89,13 @@ public class SecaoController {
 	@RequestMapping(value = "/excluirSecao/{id}")
 	public String excluirSecao(@PathVariable("id") Long idSecao) {
 		Secao secao = secaoService.get(idSecao);
-		
-		for(Trabalho trabalho : secao.getTrabalhos()){
+
+		for (Trabalho trabalho : secao.getTrabalhos()) {
 			trabalhoService.removerSecao(trabalho);
 		}
-		
+
 		secaoService.delete(idSecao);
-		
+
 		return "redirect:/secao/paginaSecao";
 	}
 
@@ -100,9 +103,7 @@ public class SecaoController {
 	public String excluirTrabalhoSecao(@PathVariable("idSecao") Long idSecao,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-
 		trabalhoService.removerSecao(trabalho);
-
 		return "redirect:/secao/secaoTrabalhos/" + idSecao;
 	}
 

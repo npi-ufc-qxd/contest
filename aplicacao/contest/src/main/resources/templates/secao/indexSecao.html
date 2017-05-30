@@ -14,18 +14,18 @@
         <a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus Eventos</a>
         <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
         <a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar Seção</a>
-    </div>
     
-    <div class="row">
-     <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
+    <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
 	       		Voltar
 	 </a>
-	</div>
+    </div>
     
 <br/>
 
 <div class="row" id="itemContainer">
-
+<div th:if="${#lists.isEmpty(secoes)}">
+ <h1 class="center">Não há seções cadastradas</h1>
+</div>
     <div class="col s12 m4" th:each="secao:${secoes}">
         <div  class="card purple darken-4">
             <div class="card-content white-text">
@@ -37,7 +37,8 @@
            
             <div class="card-action">
                 <a th:href="@{'/secao/secaoTrabalhos/'+${secao.id}}" class="orange-text accent-3">Ver Seção</a>
-                <a th:href="@{'/secao/excluirSecao/'+${secao.id}}"  class="orange-text accent-3">Deletar Seção</a>
+                <a th:href="@{'/secao/excluirSecao/'+${secao.id}}"
+                class="orange-text accent-3 deleta_secao">Deletar Seção</a>
             </div>
         </div>
     </div>
@@ -65,6 +66,15 @@
     	            perPage       : newPerPage
     	        });
     	    });
+    	    
+    	    $(".deleta_secao").on('click',function(e){
+    	    	 var deleta = confirm("Deletar seção?");
+    	    	 
+    	    	 if(deleta == false){
+    	    		 return false;
+    	    	 }
+    	    });
+    	    
       });
     </script>
 </body>
