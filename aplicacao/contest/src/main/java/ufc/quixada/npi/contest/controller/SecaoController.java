@@ -67,7 +67,7 @@ public class SecaoController {
 
 		for (Trabalho trab : secao.getTrabalhos()) {
 			for (ParticipacaoTrabalho part : trab.getParticipacoes()) {
-				if (part.getPapel().equals(Papel.AUTOR)) {
+				if (part.getPapel().equals(Papel.Tipo.AUTOR)) {
 					trabalhosSecao.add(part);
 				}
 			}
