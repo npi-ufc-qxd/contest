@@ -65,7 +65,8 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosDoAutorNoEvento(Pessoa pessoa,Evento evento){
 		return trabalhoRepository.getTrabalhoDoAutorNoEvento(pessoa.getId(), evento.getId());
 	}
-	public void remover(Long id){
+	
+public void remover(Long id){
 		trabalhoRepository.delete(id);
 	}
 	
@@ -82,4 +83,12 @@ public class TrabalhoService {
 		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento.getId());
 	}
 	
+	public void removerSecao(Trabalho trabalho){
+		trabalho.setSecao(null);
+		trabalhoRepository.save(trabalho);
+	}
+	
+	public List<Trabalho> buscarTodosTrabalhos (){
+		return trabalhoRepository.findAll();
+	}
 }

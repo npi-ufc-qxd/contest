@@ -2,118 +2,98 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="fragments/head :: head"></div>
-<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet"
+	media="screen,projection" />
 <title>Seção - Trabalhos</title>
 </head>
 <body>
-<div th:include="fragments/header :: header"></div>
+	<div th:include="fragments/header :: header"></div>
 
-<!-- Modal Structure -->
-<div id="modal1" class="modal" style="width: 80%; height: 60%">
-    <div class="modal-content">
-        <h4>Adicionar trabalho(s)</h4>
-        <div class="row">
-            <form class="col s12">
-                <div class="row">
+	<div id="modalAdicionarTrabalho" class="modal modal-fixed-footer"
+		style="width: 80%; height: 70%">
+		<div class="modal-content">
+			<h4>Adicionar Trabalho</h4>
+			<form class="col s12" th:action="@{/secao/adicionarTrabalhoSecao}"
+				method="post">
+				<input type="hidden" th:value="${secao.id}" th:name="idSecao" />
+				<div class="row">
 
-                        <div class="row modal-form-row">
-                            <div class="input-field col s12">
-                                <select multiple="multiple">
-                                    <option value="" disabled="disabled" selected="selected">Selecionar trabalhos</option>
-                                    <option value="1">Trabalho 1</option>
-                                    <option value="2">Trabalho 2</option>
-                                    <option value="3">Trabalho 3</option>
-                                    <option value="4">Trabalho 4</option>
-                                    <option value="5">Trabalho 5</option>
-                                </select>
-                            </div>
-                        </div>
+					<div class="row modal-form-row">
+						<div class="input-field col s12">
+							<select multiple="multiple" th:name="idTrabalhos">
+								<option value="" disabled="disabled" selected="selected">Selecionar</option>
+								<div th:each="trabalho : ${trabalhos}">
+									<option th:value="${trabalho.id}" th:text="${trabalho.titulo}"></option>
+								</div>
+							</select>
+						</div>
+					</div>
 
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <a class=" modal-action modal-close waves-effect btn-flat teal lighten-1">Adicionar</a>
-    </div>
-</div>
+				<div class="modal-footer">
+					<a class="modal-action modal-close btn waves-effect waves-light red" style="left:-50px;">Cancelar</a>
+					<button class="btn waves-effect waves-light purple darken-4 left" type="submit"
+						name="action">Adicionar</button>
+				</div>
+				</div>
+			</form>
 
-<!--Seleção de trabalhos da seção-->
-<div class="container">
+		</div>
 
-    <div class="row opcoes">
-        <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
-        <a href="#modal1" class="modal-trigger"  style="color: #6a1b9a;">ADD - Trabalhos</a>
-    </div>
-  </div>
-  
-      <div class="row container">
-       <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
-	       		Voltar
-	   </a>
 	</div>
 
-   <div class="container">
-    <!--Dados da Seção-->
-    <div class="">
-        <h4 class="center-align">Nome Seção</h4>
-        <h6 class="right-align">Horário: 8:00</h6>
-        <h6 class="right-align">Data: 00/00/0000</h6>
-        <h6>Local: Sala 3</h6>
-        <h6 class="right-align">Nº de Trabalhos: x</h6>
-    </div>
+	<!--Seleção de trabalhos da seção-->
+	<div class="container">
 
-    <table class="bordered centered striped">
-        <thead>
-        <tr>
-            <th>Nome Autor(es)</th>
-            <th>Nome Trabalho</th>
-            <th>Área</th>
-            <th></th>
-        </tr>
-        </thead>
+		<div class="row opcoes">
+			<a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus
+				Eventos</a> <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
+			<a href="#modalAdicionarTrabalho" class="modal-trigger"
+				style="color: #6a1b9a;">Adicionar Trabalhos</a> <a
+				class=" btn-large waves-effect waves-light purple right white-text"
+				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
+		</div>
+	</div>
 
-        <tbody>
-        <tr>
-            <td>Alvin</td>
-            <td>Casa automatizada</td>
-            <td>IOT</td>
-            <td><a class="waves-effect btn-flat red accent-4" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
-        </tr>
-        <tr>
-            <td>Alan</td>
-            <td>Framework JS</td>
-            <td>Desenvolvimento</td>
-            <td><a class="waves-effect btn-flat red accent-4">Deletar<i class="material-icons right">delete</i></a></td>
-        </tr>
-        <tr>
-            <td>Jonathan</td>
-            <td>Monitoria de POO</td>
-            <td>Iniciação à docência</td>
-            <td><a class="waves-effect btn-flat red accent-4">Deletar<i class="material-icons right">delete</i></a></td>
-        </tr>
 
-        <tr>
-            <td>Jonathan</td>
-            <td>Monitoria de POO</td>
-            <td>Iniciação à docência</td>
-            <td><a class="waves-effect btn-flat red accent-4">Deletar<i class="material-icons right">delete</i></a></td>
-        </tr>
+	<div class="container">
+		<!--Dados da Seção-->
+		<div class="">
+			<h4 class="center-align" th:text="${secao.nome}"></h4>
+			<h6 class="right-align" th:text="'Horário: '+${secao.horario}"></h6>
+			<h6 class="right-align" th:text="'Data: '+${secao.dataSecao}"></h6>
+			<h6 class="right-align" th:text="'Local: '+${secao.local}"></h6>
+			<h6 class="right-align" th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
+		</div>
+		
+		<div th:if="${#lists.isEmpty(trabalhosSecao)}">
+		<h2 class="center">Não há trabalhos na seção</h2>
+		</div>
+		
+		<table class="bordered centered striped">
+			<thead>
+				<tr>
+					<th>Nome Autor(es)</th>
+					<th>Nome Trabalho</th>
+					<th>Trilha</th>
+					<th></th>
+				</tr>
+			</thead>
 
-        <tr>
-            <td>Jonathan</td>
-            <td>Monitoria de POO</td>
-            <td>Iniciação à docência</td>
-            <td><a class="waves-effect btn-flat red accent-4">Deletar<i class="material-icons right">delete</i></a></td>
-        </tr>
 
+        <tbody th:each="trabalho:${trabalhosSecao}">
+        <tr>
+            <td th:text="${trabalho.pessoa.nome}"></td>
+            <td th:text="${trabalho.trabalho.titulo}"></td>
+            <td th:text="${trabalho.trabalho.trilha.nome}"></td>
+            <td><a th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${trabalho.trabalho.id}}" class="waves-effect btn-flat red accent-4" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
+        </tr>
         </tbody>
     </table>
 
-</div>
-<br/>
+	</div>
+	<br />
 
-<div th:include="fragments/footer :: footer"></div>
-<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
 </body>
 </html>

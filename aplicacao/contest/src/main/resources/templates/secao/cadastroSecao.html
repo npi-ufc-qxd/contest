@@ -2,87 +2,113 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="fragments/head :: head"></div>
-<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet"
+	media="screen,projection" />
 <title>Cadastrar</title>
 </head>
 <body>
-<div th:include="fragments/header :: header"></div>
+	<div th:include="fragments/header :: header"></div>
 
-<div class="container pagination">
+	<div class="container pagination">
 
-    <div class="row opcoes">
-        <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
-        <a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar Seção</a>
-    </div>
-    
-   <div class="row">
-     <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
-	       		Voltar
-	 </a>
+		<div class="row opcoes">
+			<a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
+			<a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar
+				Seção</a> <a
+				class=" btn-large waves-effect waves-light purple right white-text"
+				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
+		</div>
+
+		<div class="row">
+			<h1 class="center header">Cadastro de Seção</h1>
+			<div class="col s12">
+				<form name="cadastroForm" th:action="@{/secao/cadastrarSecao}"
+					class="valign" method="post" id="formCadastro">
+
+					<div class="input-field">
+						<input type="text" id="nome_secao" th:name="nome"
+							required="required" /> <label for="nome_secao">*Nome</label>
+					</div>
+					<br />
+
+					<div class="input-field">
+						<select id="pessoas_select" name="responsavel" required="required">
+							<option value="" disabled="disabled" 
+							selected="selected">*Selecione uma pessoa</option>
+							<div th:each="pessoa : ${pessoas}">
+								<option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}"
+									th:text="${pessoa.nome}" selected="selected"></option>
+								<option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}"
+									th:text="${pessoa.nome}"></option>
+							</div>
+						</select>
+					</div>
+					<br/>
+
+					<div class="input-field">
+						<select id="eventos_select" name="evento" required="required">
+							<option value="" disabled="disabled"
+							 selected="selected">*Selecione um evento</option>
+							<div th:each="evento : ${eventos}">
+								<option th:value="${evento.id}" th:text="${evento.nome}"></option>
+							</div>
+						</select>
+					</div>
+					<br />
+
+					<div class="input-field">
+						<input class="datepicker" type="date" placeholder="*Data"
+							id="data_secao" th:name="dataSecao" required="required" />
+					</div>
+					<br />
+
+					<div class="input-field">
+						*Horário <input type="text" id="horario"
+							placeholder="Exemplo: 00:00" th:name="horario"
+							required="required" />
+					</div>
+
+					<div class="input-field">
+						<textarea type="text" class="materialize-textarea validate"
+							id="local" th:name="local" required="required"></textarea>
+						<label for="local">*Local</label>
+					</div>
+					<br /> (*) Campo obrigatório
+					<div class="right">
+						<button class="right btn waves-effect waves-light purple darken-4"
+							type="submit" id="btn_cadastro">
+							Cadastrar<i class="material-icons right">save</i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 	</div>
-
-      <div class="row">
-        <h1 class="center header">Cadastro de Seção</h1>
-        <div class="col s12">
-          <form name="cadastroForm" th:action="@{/secao/cadastrarSecao}" class="valign" method="post" id="formCadastro">
-            
-            <div class="input-field">
-              <input type="text" id="nome_secao" th:name="nomeSecao" required="required"/>
-              <label for="nome_secao">Nome</label>
-            </div><br/>
-            
-            <div class="input-field">
-        		<select id="pessoas_select" name="idResponsavel">
-          			<option value="" disabled="disabled" selected="selected" >Selecione uma pessoa</option>
-          			<div th:each="pessoa : ${pessoas}"  >
-            			<option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
-            			<option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" ></option>   
-          			</div> 
-        		</select> 
-        		<label for="pessoas_select">Responsável pela Seção</label>
-      		</div><br/>
-      		
-      		 <div class="input-field">
-        		<select id="eventos_select" name="idEvento">
-          			<option value="" disabled="disabled" selected="selected" >Selecione um Evento</option>
-          			<div th:each="evento : ${eventos}"  >
-            			<option th:value="${evento.id}" th:text="${evento.nome}"></option>   
-          			</div> 
-        		</select> 
-        		<label for="eventos_select">Eventos</label>
-      		</div><br/>
-
-            <div class="input-field">
-              <textarea type="text" class="materialize-textarea validate" id="descricao" th:name="descricao" required="required"></textarea>
-              <label for="descricao">Descrição</label>
-            </div>
-            <br/>
-            <div class="right">
-            <button class="right btn waves-effect waves-light purple darken-4" type="submit" id="btn_cadastro">Cadastrar<i class="material-icons right">save</i></button>
-          </div>
-          </form>
-        </div>
-      </div>
-
-</div>
-<div th:include="fragments/footer :: footer"></div>
-<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
-<script type="text/javascript">
-//datepicker
-$('.datepicker').pickadate({
-    selectMonths: true, // Creates a dropdown to control month
-    selectYears: 15, // Creates a dropdown of 15 years to control year
-    //Persnonalizando nomes dos meses do ano
-    monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
-    //Persnonalizando nomes dos dias da semana
-    weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
-    weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
-    weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
-    today: 'Hoje',
-    clear: 'Limpar',
-    close: 'Fechar'
-
-});
-</script>
+	<div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<script type="text/javascript">
+		//datepicker
+		$('.datepicker').pickadate({
+			selectMonths : true, // Creates a dropdown to control month
+			selectYears : 15, // Creates a dropdown of 15 years to control year
+			//Persnonalizando nomes dos meses do ano
+			monthsFull : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+			//Persnonalizando nomes dos dias da semana
+			weekdaysFull : [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+			weekdaysShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+			weekdaysLetter : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+			today : 'Hoje',
+			clear : 'Limpar',
+			close : 'Fechar'
+		});
+	
+		$("#formCadastro").submit(function() {
+			if ($("#data_secao").val() == "") {
+				alert('campo data vazio');
+				return false;
+			}
+		});
+	</script>
 </body>
 </html>
