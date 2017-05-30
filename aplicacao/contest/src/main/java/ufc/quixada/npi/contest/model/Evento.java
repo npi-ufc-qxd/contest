@@ -22,6 +22,8 @@ import javax.persistence.TemporalType;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import ufc.quixada.npi.contest.model.Papel.Tipo;
+
 @Entity
 @Table(name = "evento")
 public class Evento {
@@ -234,10 +236,10 @@ public class Evento {
 		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
 	}
 	
-	private List<Pessoa> getByPapel(Papel ...papeis){
+	private List<Pessoa> getByPapel(Tipo ...papeis){
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoEvento p : getParticipacoes()) {
-			for(Papel papel : papeis){
+			for(Tipo papel : papeis){
 				if (p.getPapel() == papel){
 					pessoa.add(p.getPessoa());
 				}
@@ -248,12 +250,12 @@ public class Evento {
 	}
 	
 	public List<Pessoa> getOrganizadores(){
-		return getByPapel(Papel.ORGANIZADOR);
+		return getByPapel(Tipo.ORGANIZADOR);
 	}
 	
 	
 	public List<Pessoa> getRevisores(){
-		return getByPapel(Papel.REVISOR);
+		return getByPapel(Tipo.REVISOR);
 	}
 
 	public List<Secao> getSecoes() {

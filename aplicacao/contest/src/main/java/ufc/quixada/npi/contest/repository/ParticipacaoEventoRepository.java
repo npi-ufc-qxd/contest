@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 
@@ -18,7 +18,7 @@ import ufc.quixada.npi.contest.model.Pessoa;
 public interface ParticipacaoEventoRepository extends JpaRepository<ParticipacaoEvento, Long>{
 	public ParticipacaoEvento findByEventoId(Long idEvento);
 	//public List<ParticipacaoEvento> findDistinctByEventoEstadoAndPapel(EstadoEvento estadoEvento, Papel papel);
-	public List<ParticipacaoEvento> findByEventoEstadoAndPapelAndPessoaId(EstadoEvento estadoEvento, Papel papel, Long id);
-	public List<ParticipacaoEvento> findByEventoIdAndPapel(Long id, Papel papel);
+	public List<ParticipacaoEvento> findByEventoEstadoAndPapelAndPessoaId(EstadoEvento estadoEvento, Tipo papel, Long id);
+	public List<ParticipacaoEvento> findByEventoIdAndPapel(Long id, Tipo papel);
 	public ParticipacaoEvento findOneByEventoAndPessoa(Evento evento, Pessoa pessoa);
 }

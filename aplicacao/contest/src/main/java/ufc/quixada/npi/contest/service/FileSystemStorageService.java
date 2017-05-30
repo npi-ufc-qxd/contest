@@ -1,5 +1,7 @@
 package ufc.quixada.npi.contest.service;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -9,7 +11,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.stream.Stream;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
