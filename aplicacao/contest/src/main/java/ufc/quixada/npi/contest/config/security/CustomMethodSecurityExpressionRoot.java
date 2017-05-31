@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
@@ -30,8 +29,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
             }
         }*/
     	
-    	String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
-    	Pessoa pessoa = pessoaService.getByCpf(cpf);
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	if(pessoa.getCpf().equals("11111111109")){
     		return true;
     	}
