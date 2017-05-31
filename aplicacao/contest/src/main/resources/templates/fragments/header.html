@@ -10,8 +10,8 @@
 					alt="Contest" width="200px" /></a>
 				<ul class="white-text right hide-on-med-and-down">
 					
-<!-- 					<li><a href="#" sec:authentication="nome"></a></li> -->
-<!-- 					<li><a href="#" th:text="${#authentication}"></a></li> -->
+<!-- 					<li><a href="#" sec:authentication="username"></a></li> -->
+					<li><a href="#" th:text="${#authentication.getPrincipal().getNome()}"></a></li>
 					
 			        <li><form th:action="@{/logout}" method="POST" id="logout">
 				         <a onclick="document.getElementById('logout').submit(); return false;">Sair</a>

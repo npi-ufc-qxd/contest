@@ -3,7 +3,6 @@ package ufc.quixada.npi.contest.config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
@@ -11,17 +10,15 @@ import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import ufc.quixada.npi.contest.model.StorageProperties;
 import ufc.quixada.npi.contest.service.StorageService;
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+@SpringBootApplication()
 @ComponentScan({"br.ufc.quixada.npi.ldap", "ufc.quixada.npi.contest","br.ufc.quixada.npi.service"})
 @EntityScan(basePackages="ufc.quixada.npi.contest.model")
 @EnableJpaRepositories("ufc.quixada.npi.contest.repository")
 @EnableConfigurationProperties(StorageProperties.class)
-@EnableWebSecurity
 public class ContestApplication extends SpringBootServletInitializer {
 	private static Class<ContestApplication> applicationClass = ContestApplication.class;
 
@@ -40,6 +37,5 @@ public class ContestApplication extends SpringBootServletInitializer {
             storageService.deleteAll();
 		};
 	}
-	
-	
+		
 }
