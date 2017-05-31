@@ -132,6 +132,14 @@
               <version>${cucumber.java.version}</version>
               <scope>test</scope>
         </dependency>
+        
+        <!-- Thymeleaf Dialect -->
+	    <dependency>
+	        <groupId>org.thymeleaf.extras</groupId>
+	        <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+	    </dependency>
+	   
+
 
         <dependency>
             <groupId>org.jacoco</groupId>

@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 	<div th:fragment="header">
 		<nav role="navigation" class="purple darken-4" >
-			<div class="nav-wrapper container">
+			<div class="nav-wrapper container" sec:authorize="isAuthenticated()">
 			
 			
 				<a th:href="@{/}"><img th:src="@{/img/logotipo_white.png}"
 					alt="Contest" width="200px" /></a>
 				<ul class="white-text right hide-on-med-and-down">
-					<li><a href="#" th:text="${pessoa.nome}"></a></li>			        
+					
+<!-- 					<li><a href="#" sec:authentication="username"></a></li> -->
+					<li><a href="#" th:text="${#authentication.getPrincipal().getNome()}"></a></li>
+					
 			        <li><form th:action="@{/logout}" method="POST" id="logout">
 				         <a onclick="document.getElementById('logout').submit(); return false;">Sair</a>
 				    </form></li> 
