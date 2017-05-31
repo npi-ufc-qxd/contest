@@ -3,8 +3,10 @@ package ufc.quixada.npi.contest.config.security;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
+import ufc.quixada.npi.contest.model.Papel.Tipo;
+import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.PessoaService;
 
@@ -17,25 +19,70 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 	public CustomMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
     }
- 
-    public boolean isMember() {
-        /*String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
-        Pessoa pessoa = pessoaService.getByCpf(cpf);
-        if(pessoa != null){
-        	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-            	if(participacao.getEvento().getId() == eventoId){
-            		return true;
-            	}
-            }
-        }*/
-    	
+   
+    public boolean isOrganizadorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	if(pessoa.getCpf().equals("11111111109")){
-    		return true;
+    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
+    		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.ORGANIZADOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isRevisorInEvento(Long eventoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
+    		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.REVISOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isAutorInEvento(Long eventoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
+    		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.AUTOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isAutorInTrabalho(Long trabalhoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
+    		if(participacacao.getTrabalho().getId() == trabalhoId && participacacao.getPapel()== Tipo.AUTOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isCoautorInTrabalho(Long trabalhoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
+    		if(participacacao.getTrabalho().getId() == trabalhoId && participacacao.getPapel()== Tipo.COAUTOR){
+    			return true;
+    		}
     	}
     	return false;
     }
 
+    
+    public boolean isOrientadorInTrabalho(Long trabalhoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
+    		if(participacacao.getTrabalho().getId() == trabalhoId && participacacao.getPapel()== Tipo.ORIENTADOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    
+    
 	@Override
 	public void setFilterObject(Object filterObject) {
 		// TODO Auto-generated method stub
