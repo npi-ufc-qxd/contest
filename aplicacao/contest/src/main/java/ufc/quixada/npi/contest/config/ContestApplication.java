@@ -11,7 +11,11 @@ import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.StorageProperties;
 import ufc.quixada.npi.contest.service.StorageService;
 
@@ -20,6 +24,7 @@ import ufc.quixada.npi.contest.service.StorageService;
 @EntityScan(basePackages="ufc.quixada.npi.contest.model")
 @EnableJpaRepositories("ufc.quixada.npi.contest.repository")
 @EnableConfigurationProperties(StorageProperties.class)
+@EnableWebSecurity
 public class ContestApplication extends SpringBootServletInitializer {
 	private static Class<ContestApplication> applicationClass = ContestApplication.class;
 
@@ -38,5 +43,6 @@ public class ContestApplication extends SpringBootServletInitializer {
             storageService.deleteAll();
 		};
 	}
+	
 	
 }
