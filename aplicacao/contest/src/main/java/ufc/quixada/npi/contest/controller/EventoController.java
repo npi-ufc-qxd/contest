@@ -87,10 +87,10 @@ public class EventoController extends EventoGenericoController{
 	}	
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
-	public String adicionarEvento(@RequestParam(required = false) String organizador, @Valid Evento evento,
+	public String adicionarEvento(@RequestParam(required = false) String email, @Valid Evento evento,
 			BindingResult result, RedirectAttributes redirect) {
 
-		if (organizador == null || organizador.isEmpty()) {
+		if (email == null || email.isEmpty()) {
 			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(ORGANIZADOR_VAZIO_ERROR));
 		}
 
@@ -98,35 +98,43 @@ public class EventoController extends EventoGenericoController{
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 		}
 
-		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
+		Pessoa pessoa = pessoaService.getByEmail(email);
 		
 		if (pessoa != null) {
-			ParticipacaoEvento participacao = new ParticipacaoEvento();
+			//ParticipacaoEvento participacao = new ParticipacaoEvento();
+			boolean flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
 			if(evento.getId() != null){
-				participacao = participacaoEventoService.findByEventoId(evento.getId());
-				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
-				addEventoEmParticipacao(evento, participacao, pessoa);
+				//verificar caso a pessoa seja inserida novamente
+				if(flag){
+				//participacao = participacaoEventoService.findByEventoId(evento.getId());
+					redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
+				//addEventoEmParticipacao(evento, participacao, pessoa);
+				}else{
+					//TODO adicionar a mensagem de erro coerente
+				}
 			}else{
 				
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
 			
-			eventoService.adicionarOuAtualizarEvento(evento);
 			
-			List<Trilha> trilhas = new ArrayList<>();
-			
-            		Trilha trilha = new Trilha();
-            		trilha.setEvento(evento);
-			trilha.setNome("Principal");
-			trilhas.add(trilha);
-            
-			evento.setTrilhas(trilhas);
-			addEventoEmParticipacao(evento, participacao, pessoa);
+			//addEventoEmParticipacao(evento, participacao, pessoa);
 		} else {
-			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(PESSOA_NAO_ENCONTRADA));
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+			eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
+			//result.reject(ORGANIZADOR_ERROR, messageService.getMessage(PESSOA_NAO_ENCONTRADA));
 		}
-
+		
+		eventoService.adicionarOuAtualizarEvento(evento);
+		
+		List<Trilha> trilhas = new ArrayList<>();
+		
+        		Trilha trilha = new Trilha();
+        		trilha.setEvento(evento);
+		trilha.setNome("Principal");
+		trilhas.add(trilha);
+        
+		evento.setTrilhas(trilhas);
+		
 		return "redirect:/evento/inativos";
 	}
 	
@@ -162,4 +170,5 @@ public class EventoController extends EventoGenericoController{
 		participacao.setPapel(Tipo.ORGANIZADOR);
 		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 	}
+	
 }
