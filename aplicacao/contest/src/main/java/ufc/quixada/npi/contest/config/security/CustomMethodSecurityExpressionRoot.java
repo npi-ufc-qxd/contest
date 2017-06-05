@@ -8,13 +8,9 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
-import ufc.quixada.npi.contest.service.PessoaService;
 
 
 public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations{
-	
-	PessoaService pessoaService;
-	
 	
 	public CustomMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
@@ -85,31 +81,25 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     
 	@Override
 	public void setFilterObject(Object filterObject) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public Object getFilterObject() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setReturnObject(Object returnObject) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Object getReturnObject() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object getThis() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
