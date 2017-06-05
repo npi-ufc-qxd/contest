@@ -81,6 +81,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     
 	@Override
 	public void setFilterObject(Object filterObject) {
+		filterObject = null;
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 
 	@Override
 	public void setReturnObject(Object returnObject) {
-		
+		returnObject = null;
 	}
 
 	@Override
