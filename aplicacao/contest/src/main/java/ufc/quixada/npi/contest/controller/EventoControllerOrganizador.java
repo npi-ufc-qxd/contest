@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -122,7 +123,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
-	
+	@PreAuthorize("isMember(#id)")
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
