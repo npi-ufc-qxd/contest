@@ -81,7 +81,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     
 	@Override
 	public void setFilterObject(Object filterObject) {
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 
 	@Override
 	public void setReturnObject(Object returnObject) {
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
