@@ -69,5 +69,17 @@ public class LoginController {
 		model.addAttribute("eventosParaParticipar",eventos);
 		return "dashboard";
 	}
+	
+	@RequestMapping("resetarSenha")
+	public String resetarSenha(){
+		
+		return "resetar_senha";
+	}
+	
+	@RequestMapping("esqueciMinhaSenha")
+	public String esqueciSenha(){
+		
+		return "esqueci_senha";
+	}
 
 }
