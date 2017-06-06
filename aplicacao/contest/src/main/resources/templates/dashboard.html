@@ -1,72 +1,128 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <div th:include="fragments/head :: head"></div></head>
-	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+<div th:include="fragments/head :: head"></div>
+
+</head>
+
 <body>
-  <nav class="purple darken-4" role="navigation">
-    <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo center"><img th:src="@{/img/logotipo_white.png}" width="200px" alt="logo" /></a>
-    </div>
-  </nav>
-  <div class="container">
-    <div class="row">
-      <div  class="col s12 m6">
-        <div  class="card white">
-            <div class="card-content">
-              <h5>Como Revisor</h5>
-              <ul>
-                <li>Proposta de aplivativo Android</li>
-                <li>Utilização de Sistemas Operacionais Livres</li>
-              </ul>
-            </div>
-            <div class="card-action"><a hreff="../paginas_autor/autor_revisar_trabalho.html" class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver mais</a></div>
-          </div>
-     
-      </div>
-      <div  class="col s12 m6">
-        <div  class="card white">
-            <div class="card-content">
-              <h5>Como Organizador</h5>
-              <ul>
-                <li>CBSoft 2017</li>
-                <li>Encontros Universitários</li>
-              </ul>
-            </div>
-            <div class="card-action"><a hreff="../paginas_organizador/org_eventos_listar_ativos.html" class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver mais</a></div>
-          </div>
-      </div>
-    </div>
-    <div class="col s12" th:if="${#lists.isEmpty(eventosParaParticipar)}">
-    	<div class="card white">
-					<div class="card content">
-						<div class="card-action" >
-							<h5>Como Autor</h5>
-							<h6>Não há eventos</h6>
-							
+	<div th:include="fragments/header :: header"></div>
+	<div class="container">
+		<div class="row">
+			<h2 class="col s12">Dashboard</h2>
+		</div>
+		<div class="row">
+			<div class="col s12 m6">
+				<div class="card white">
+					<div class="card-content">
+						<h4>Como Revisor</h4>
+						<div th:if="${#lists.isEmpty(trabalhosQueReviso)}">
+							<b>Você não está revizano nenhum trabalho.</b>
+						</div>
+						<div th:i00f="${not #lists.isEmpty(trabalhosQueReviso)}">
+							<ul th:each="participacaoTrabalho : ${trabalhosQueReviso}">
+								<li th:text="${participacaoTrabalho.trabalho.titulo}"></li>
+							</ul>
 						</div>
 					</div>
-    </div>
-    </div>
-    <div class="col s12" th:if="${!#lists.isEmpty(eventosParaParticipar)}">
-    
-    <div class="col s12 m4" th:each="evento : ${eventosParaParticipar}">
+					<div class="card-action">
+						<a th:href="@{/revisor/}"
+							class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
+							mais</a>
+					</div>
+				</div>
+
+			</div>
+			<div class="col s12 m6">
 				<div class="card white">
-					<div class="card content">
-						<div class="card-action" >
-							<div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
-							<a class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
-							<a class="btn disabled white-text grey">Período de inscrição encerrado</a>
+					<div class="card-content">
+						<h4>Como Organizador</h4>
+						<div th:if="${#lists.isEmpty(eventosQueOrganizo)}">
+							<b>Você não está organizano nenhum evento ativo.</b>
+						</div>
+						<div th:if="${not #lists.isEmpty(eventosQueOrganizo)}">
+							<ul th:each="participacaoEvento : ${eventosQueOrganizo}">
+								<li th:text="${participacaoEvento.evento.nome}"></li>
+							</ul>
+						</div>
+					</div>
+					<div class="card-action">
+						<a th:href="@{/eventoOrganizador/}"
+							class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
+							mais</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col s12 m6">
+			<div class="card white">
+				<div class="card-content">
+					<h4>Como Autor</h4>
+					<div th:if="${#lists.isEmpty(trabalhosMinhaAutoria)}">
+						<b>Você não está participando de nenhum evento ativo.</b>
+					</div>
+					<div th:if="${not #lists.isEmpty(trabalhosMinhaAutoria)}">
+						<div class="card white">
+							<div class="card-content">
+								<h5>Participando</h5>
+								<h6>Evento</h6>
+								<ul th:each="participacaoTrabalho : ${trabalhosMinhaAutoria}">
+									<li th:text="${participacaoTrabalho.trabalho.titulo}"></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="card white">
+							<div class="card-content">
+								<h5>Não Participando</h5>
+								<div class="" th:if="${!#lists.isEmpty(eventosParaParticipar)}">
+									<div class="" th:each="evento : ${eventosParaParticipar}">
+										<div class="card horizontal">
+											<div class="card-stacked">
+												<div
+													th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+												<div class="card-action">
+													<a th:if="${evento.isPeriodoInicial()}"
+														th:attr="href='#modal' + ${evento.id}"
+														class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+													<a th:unless="${evento.isPeriodoInicial()}"
+														class="btn disabled white-text grey">Período de
+														inscrição encerrado</a>
+												</div>
+											</div>
+										</div>
+
+										<div th:attr="id='modal' + ${evento.id}" class="modal">
+											<div class="modal-content">
+												<h4>Participar do Evento</h4>
+												<h5 th:text="${evento.nome}"></h5>
+												<p>Tem certeza que quer participar deste evento?</p>
+											</div>
+											<form th:action="@{/autor/participarEvento}" method="post">
+
+												<div class="modal-footer">
+													<input type="hidden" name="idEvento"
+														th:value="${evento.id}" />
+													<button type="submit"
+														class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+													<a href="#"
+														class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-</div>
-</div>
-</div>
-<div class="row holder center"></div>
-<div th:include="fragments/footer :: footer"></div>
-<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
-<script type="text/javascript"></script>
+			</div>
+		</div>
+	</div>
+	<div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+	<script type="text/javascript"></script>
 </body>
 
 </html>
