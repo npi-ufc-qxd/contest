@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
 @RequestMapping("/evento")
-public class EventoController extends EventoGenericoController{
+public class EventoController extends EventoGenericoController {
 
 	private static final String EVENTO_INATIVO_EXCLUIDO_ERRO = "EVENTO_INATIVO_EXCLUIDO_ERRO";
 	private static final String ERRO_EXCLUIR = "erroExcluir";
@@ -56,7 +57,7 @@ public class EventoController extends EventoGenericoController{
 
 	@Autowired
 	private EventoService eventoService;
-	
+
 	@Autowired
 	private MessageService messageService;
 
@@ -64,12 +65,12 @@ public class EventoController extends EventoGenericoController{
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
-	
-	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
+
+	@RequestMapping(value = { "/ativos", "" }, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<Evento> listaEventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
-		
+
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ADMIN;
 	}
 
@@ -84,12 +85,13 @@ public class EventoController extends EventoGenericoController{
 	public String adicionarEvento(Model model) {
 		model.addAttribute(EVENTO, new Evento());
 		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
-	}	
+	}
 
 	@RequestMapping(value = "/adicionarEvento", method = RequestMethod.POST)
 	public String adicionarEvento(@RequestParam(required = false) String email, @Valid Evento evento,
-			BindingResult result, RedirectAttributes redirect) {
-
+			BindingResult result, RedirectAttributes redirect, HttpServletRequest request ) {
+		String url = request.getRequestURI().toString();
+		
 		if (email == null || email.isEmpty()) {
 			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(ORGANIZADOR_VAZIO_ERROR));
 		}
@@ -97,40 +99,45 @@ public class EventoController extends EventoGenericoController{
 		if (result.hasErrors()) {
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 		}
-		
+
 		boolean flag = false;
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		
-		if(evento.getId() != null){
-			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
-			if(flag){
+		if(pessoa == null){
+			pessoa = new Pessoa("Temporário", email);
+		}
+
+		if (evento.getId() != null) {
+			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome(), url);
+			if (flag) {
 				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
 			}
 		} else {
 			evento.setEstado(EstadoEvento.INATIVO);
 			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 			eventoService.adicionarOuAtualizarEvento(evento);
-			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
-			if(flag) {
+			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome(), url);
+			if (flag) {
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
-		}		
-		
+		}
+
 		List<Trilha> trilhas = new ArrayList<>();
-		
-        Trilha trilha = new Trilha();
-        trilha.setEvento(evento);
+
+		Trilha trilha = new Trilha();
+		trilha.setEvento(evento);
 		trilha.setNome("Principal");
 		trilhas.add(trilha);
-        
+
 		evento.setTrilhas(trilhas);
-		
+
 		return "redirect:/evento/inativos";
 	}
-	
+
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
-	public String alterarEventoAdmin(@PathVariable String id, Model model, RedirectAttributes redirect){
-		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN, "redirect:/evento/inativos");
+	public String alterarEventoAdmin(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN,
+				"redirect:/evento/inativos");
 	}
 
 	@RequestMapping(value = "/remover", method = RequestMethod.POST)
@@ -151,9 +158,9 @@ public class EventoController extends EventoGenericoController{
 
 		return "redirect:/evento/inativos";
 	}
-	
-	public void addEventoEmParticipacao(Evento evento, ParticipacaoEvento participacao, Pessoa pessoa){
-        evento.setEstado(EstadoEvento.INATIVO);
+
+	public void addEventoEmParticipacao(Evento evento, ParticipacaoEvento participacao, Pessoa pessoa) {
+		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		participacao.setEvento(evento);
 		participacao.setPessoa(pessoa);

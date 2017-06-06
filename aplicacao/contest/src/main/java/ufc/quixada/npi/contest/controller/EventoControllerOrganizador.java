@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -393,21 +394,22 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
 	public String convidarPorEmail(@RequestParam("nome") String nome, @RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, Model model,
-			RedirectAttributes redirect) {
+			RedirectAttributes redirect, HttpServletRequest request) {
+		String url = request.getRequestURI().toString();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		boolean flag = false;
 
 		switch (funcao) {
 		case "ORGANIZADOR":
-			flag = eventoService.adicionarOrganizador(email, evento, nome);
+			flag = eventoService.adicionarOrganizador(email, evento, nome, url);
 			break;
 
 		case "AUTOR":
-			flag = eventoService.adicionarAutor(email, evento, nome);
+			flag = eventoService.adicionarAutor(email, evento, nome, url);
 			break;
 
 		case "REVISOR":
-			flag = eventoService.adicionarRevisor(email, evento, nome);
+			flag = eventoService.adicionarRevisor(email, evento, nome, url);
 			break;
 
 		default:

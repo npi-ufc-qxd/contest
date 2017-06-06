@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
@@ -35,16 +34,20 @@ public class EventoService {
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
 
-	private boolean adicionarPessoa(String email, Evento evento, String nome, Tipo papel) {
+	private boolean adicionarPessoa(String email, Evento evento, String nome, Tipo papel, String url) {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
 
-		if (pessoa == null) {
-			pessoa = new Pessoa(nome, email);
-		}
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
 		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
+		
+		if (pessoa == null) {
+			pessoa = new Pessoa(nome, email);
+			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + " e termine o seu cadastro";
+		}
+		
+
 		
 		if (!emailService.enviarEmail(titulo, assunto, email, corpo)) {
 			return false;
@@ -55,19 +58,19 @@ public class EventoService {
 		return true;
 	}
 
-	public boolean adicionarOrganizador(String email, Evento evento, String nome) {
+	public boolean adicionarOrganizador(String email, Evento evento, String nome, String url) {
 		Tipo papel = Tipo.ORGANIZADOR;
-		return adicionarPessoa(email, evento, nome, papel);
+		return adicionarPessoa(email, evento, nome, papel, url);
 	}
 
-	public boolean adicionarRevisor(String email, Evento evento, String nome) {
+	public boolean adicionarRevisor(String email, Evento evento, String nome, String url) {
 		Tipo papel = Tipo.REVISOR;
-		return adicionarPessoa(email, evento, nome, papel);
+		return adicionarPessoa(email, evento, nome, papel, url);
 	}
 
-	public boolean adicionarAutor(String email, Evento evento, String nome) {
+	public boolean adicionarAutor(String email, Evento evento, String nome, String url) {
 		Tipo papel = Tipo.AUTOR;
-		return adicionarPessoa(email, evento, nome, papel);
+		return adicionarPessoa(email, evento, nome, papel, url);
 	}
 
 	public boolean adicionarOuAtualizarEvento(Evento evento) {
