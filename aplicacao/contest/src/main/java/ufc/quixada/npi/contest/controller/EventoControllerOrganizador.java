@@ -656,4 +656,12 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		String cpf = auth.getName();
 		return pessoaService.getByCpf(cpf);
 	}
+	
+	@RequestMapping(value = "/")
+	public String paginaOrganizador(Model model){
+		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
+		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
+		model.addAttribute("pessoa",pessoaAux);
+		return "organizador/organizador_meus_eventos";
+	}
 }

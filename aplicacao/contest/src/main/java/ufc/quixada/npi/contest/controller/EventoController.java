@@ -170,5 +170,4 @@ public class EventoController extends EventoGenericoController{
 		participacao.setPapel(Tipo.ORGANIZADOR);
 		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 	}
-	
 }
