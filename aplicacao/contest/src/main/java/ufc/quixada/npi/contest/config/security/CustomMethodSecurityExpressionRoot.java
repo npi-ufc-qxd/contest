@@ -26,6 +26,17 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	return false;
     }
     
+    public boolean isOrganizador(){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	System.out.println(pessoa.getCpf());
+    	//for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    	//	if(participacao.equals(Tipo.ORGANIZADOR)){
+    	//		return true;
+    	//	}
+    	//}
+    	return true;
+    }
+    
     public boolean isRevisorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
