@@ -10,7 +10,7 @@
     <div class="row">
       <h2 class="col s12">Adicionar Evento</h2>
     </div>
-    <form class="row" action="#" th:action="@{/evento/adicionar}" th:object="${evento}" method="post">
+    <form class="row"  th:action="@{/evento/adicionarEvento}" th:object="${evento}" method="post">
       <input type="hidden" th:field="*{id}" />
 	      <div class="error_area col s12" th:if="${#fields.hasErrors('*')}">
 	        <div class="chip row red left" th:each="err : ${#fields.errors('*')}">
@@ -25,7 +25,7 @@
       
       
         <div class="input-field col m6 s6">
-        	<input id="email" type="text" value="" />
+        	<input id="email" type="text" name="email"/>
        	    <label for="email">Email</label>
       	</div>
      

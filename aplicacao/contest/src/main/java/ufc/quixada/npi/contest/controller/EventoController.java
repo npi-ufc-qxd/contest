@@ -86,7 +86,7 @@ public class EventoController extends EventoGenericoController{
 		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 	}	
 
-	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
+	@RequestMapping(value = "/adicionarEvento", method = RequestMethod.POST)
 	public String adicionarEvento(@RequestParam(required = false) String email, @Valid Evento evento,
 			BindingResult result, RedirectAttributes redirect) {
 
@@ -97,39 +97,29 @@ public class EventoController extends EventoGenericoController{
 		if (result.hasErrors()) {
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 		}
-
+		
+		boolean flag = false;
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		
-		if (pessoa != null) {
-			//ParticipacaoEvento participacao = new ParticipacaoEvento();
-			boolean flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
-			if(evento.getId() != null){
-				//verificar caso a pessoa seja inserida novamente
-				if(flag){
-				//participacao = participacaoEventoService.findByEventoId(evento.getId());
-					redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
-				//addEventoEmParticipacao(evento, participacao, pessoa);
-				}else{
-					//TODO adicionar a mensagem de erro coerente
-				}
-			}else{
-				
+		if(evento.getId() != null){
+			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
+			if(flag){
+				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
+			}
+		} else {
+			evento.setEstado(EstadoEvento.INATIVO);
+			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
+			eventoService.adicionarOuAtualizarEvento(evento);
+			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
+			if(flag) {
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
-			
-			
-			//addEventoEmParticipacao(evento, participacao, pessoa);
-		} else {
-			eventoService.adicionarOrganizador(email, evento, pessoa.getNome());
-			//result.reject(ORGANIZADOR_ERROR, messageService.getMessage(PESSOA_NAO_ENCONTRADA));
-		}
-		
-		eventoService.adicionarOuAtualizarEvento(evento);
+		}		
 		
 		List<Trilha> trilhas = new ArrayList<>();
 		
-        		Trilha trilha = new Trilha();
-        		trilha.setEvento(evento);
+        Trilha trilha = new Trilha();
+        trilha.setEvento(evento);
 		trilha.setNome("Principal");
 		trilhas.add(trilha);
         
