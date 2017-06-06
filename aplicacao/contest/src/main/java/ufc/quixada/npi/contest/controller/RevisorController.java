@@ -276,8 +276,16 @@ public class RevisorController {
 	public Pessoa getRevisorLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String cpf = auth.getName();
-		Pessoa autorLogado = pessoaService.getByCpf(cpf);
-		return autorLogado;
+		Pessoa revisorLogado = pessoaService.getByCpf(cpf);
+		return revisorLogado;
+	}
+	
+	@RequestMapping(value = "/")
+	public String paginaRevisor(Model model){
+		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
+		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
+		model.addAttribute("pessoa",pessoaAux);
+		return "revisor/revisor_index";
 	}
 
 	

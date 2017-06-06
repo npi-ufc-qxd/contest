@@ -223,7 +223,7 @@ public class AutorController {
 				model.addAttribute("trabalho", trabalho);
 				model.addAttribute("eventoId", id);
 				model.addAttribute("trilhas", trilhas);
-				model.addAttribute("autor", getAutorLogado());
+				model.addAttribute("pessoa", getAutorLogado());
 				return Constants.TEMPLATE_ENVIAR_TRABALHO_FORM_AUTOR;	
 			}
 			return "redirect:/autor/meusTrabalhos";
