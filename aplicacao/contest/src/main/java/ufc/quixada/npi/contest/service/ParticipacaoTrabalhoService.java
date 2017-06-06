@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Trabalho;
@@ -25,6 +26,14 @@ public class ParticipacaoTrabalhoService {
 	
 	public List<ParticipacaoTrabalho> getParticipacaoTrabalhoByTrabalho(Trabalho trabalho){
 		return participacaoTrabalhoRepository.findByTrabalho(trabalho);
+	}
+	
+	public List<ParticipacaoTrabalho> getParticipacaoTrabalhoPorAutorId(Long idAutor){
+		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.AUTOR, idAutor);
+	}
+	
+	public List<ParticipacaoTrabalho> getTrabalhosPorRevisorId(Long idRevisor){
+		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.REVISOR, idRevisor);
 	}
 	
 	public ParticipacaoTrabalho getParticipacaoTrabalhoRevisor(Long idRevisor, Long idTrabalho){
