@@ -90,7 +90,8 @@ public class EventoController extends EventoGenericoController {
 	@RequestMapping(value = "/adicionarEvento", method = RequestMethod.POST)
 	public String adicionarEvento(@RequestParam(required = false) String email, @Valid Evento evento,
 			BindingResult result, RedirectAttributes redirect, HttpServletRequest request ) {
-		String url = request.getRequestURI().toString();
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		
 		
 		if (email == null || email.isEmpty()) {
 			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(ORGANIZADOR_VAZIO_ERROR));

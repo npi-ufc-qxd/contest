@@ -41,10 +41,12 @@ public class EventoService {
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
 		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
-		
+		String pageCadastro = "/cadastroForm";
 		if (pessoa == null) {
 			pessoa = new Pessoa(nome, email);
-			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + " e termine o seu cadastro";
+			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + " e termine o seu cadastro";
+		} else {
+			corpo = corpo + ". Realize o login em " + url + "/login";
 		}
 		
 
