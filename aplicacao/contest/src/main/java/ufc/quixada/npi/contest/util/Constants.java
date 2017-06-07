@@ -45,4 +45,7 @@ public class Constants {
 	
 	public static final String CAMINHO_TRABALHOS = "/mnt/contest-uploads";
 	public static final String ENDERECO_EMAIL_CONTEST = "naoresponda@contest.quixada.ufc.br";
+	
+	public static final String ACAO_RECUPERAR_SENHA = "Recuperar Senha";
+	public static final String ACAO_COMPLETAR_CADASTRO = "Completar Cadastro";
 }

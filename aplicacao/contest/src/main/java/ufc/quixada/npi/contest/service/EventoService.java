@@ -10,8 +10,10 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Token;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
+import ufc.quixada.npi.contest.util.Constants;
 
 @Service
 public class EventoService {
@@ -33,6 +35,9 @@ public class EventoService {
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
+	
+	@Autowired
+	TokenService tokenService;
 
 	private boolean adicionarPessoa(String email, Evento evento, String nome, Tipo papel, String url) {
 
@@ -41,10 +46,19 @@ public class EventoService {
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
 		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
-		String pageCadastro = "/cadastroForm";
+		String pageCadastro = "/completar-cadastro/";
+		Token token =  new Token();
+		
 		if (pessoa == null) {
 			pessoa = new Pessoa(nome, email);
-			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + " e termine o seu cadastro";
+			
+			try {
+				token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
 		} else {
 			corpo = corpo + ". Realize o login em " + url + "/login";
 		}
