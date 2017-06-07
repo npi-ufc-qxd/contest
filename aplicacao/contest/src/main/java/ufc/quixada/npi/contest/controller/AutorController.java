@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -119,7 +120,7 @@ public class AutorController {
 		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
-	
+	@PreAuthorize("isAutorInEvento(#trabalhoId)")
 	@RequestMapping(value="/revisao/trabalho/{trabalhoId}", method = RequestMethod.GET)
 	public String verRevisao(@PathVariable String trabalhoId, Model model, RedirectAttributes redirect){
 		Long idTrabalho = Long.parseLong(trabalhoId);
@@ -210,7 +211,7 @@ public class AutorController {
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
-
+	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
 	public String enviarTrabalhoForm(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
@@ -337,7 +338,7 @@ public class AutorController {
 			return "redirect:/autor/listarTrabalhos/" + idEvento;
 		}
 	}
-	
+	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
@@ -357,7 +358,8 @@ public class AutorController {
 			return "redirect:/autor/meusTrabalhos";
 		}
 	}
-   
+	
+	@PreAuthorize("isAutorInEvento(#trabalho)")
 	@RequestMapping(value="/file/{trabalho}", method=RequestMethod.GET, produces = "application/pdf")
 	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho,  HttpServletResponse response)
 	        throws IOException {

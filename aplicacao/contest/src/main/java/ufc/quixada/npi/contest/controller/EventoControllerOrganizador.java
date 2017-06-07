@@ -296,6 +296,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 	
+	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect){
 		Long eventoId = Long.valueOf(id);
