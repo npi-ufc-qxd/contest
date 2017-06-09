@@ -85,7 +85,7 @@ public class ProfessorParticipaEvento {
 		
 		SecurityContextHolder.setContext(context);
 		
-		when(eventoOrganizadorController.getOrganizadorLogado()).thenReturn(revisorLogado);
+		when(eventoOrganizadorController.getUsuarioLogado()).thenReturn(revisorLogado);
 	}
 	
 	@E("^Realizo uma busca por eventos ativos no sistema$")

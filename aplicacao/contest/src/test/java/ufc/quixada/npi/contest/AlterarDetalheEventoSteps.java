@@ -125,7 +125,7 @@ public class AlterarDetalheEventoSteps {
 		when(auth.getName()).thenReturn("92995454310");
 		SecurityContextHolder.setContext(context);
 		
-		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(org);
+		when(eventoControllerOrganizador.getUsuarioLogado()).thenReturn(org);
 		
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);

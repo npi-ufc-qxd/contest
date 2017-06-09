@@ -38,7 +38,6 @@ public class EventoController extends EventoGenericoController {
 	private static final String ERRO_EXCLUIR = "erroExcluir";
 	private static final String EVENTO_INATIVO_EXCLUIDO_SUCESSO = "EVENTO_INATIVO_EXCLUIDO_SUCESSO";
 	private static final String SUCESSO_EXCLUIR = "sucessoExcluir";
-	private static final String PESSOA_NAO_ENCONTRADA = "PESSOA_NAO_ENCONTRADA";
 	private static final String EVENTO_CADASTRADO_COM_SUCESSO = "EVENTO_CADASTRADO_COM_SUCESSO";
 	private static final String EVENTO_EDITADO_COM_SUCESSO = "EVENTO_EDITADO_COM_SUCESSO";
 	private static final String SUCESSO_CADASTRAR = "sucessoCadastrar";
@@ -90,6 +89,7 @@ public class EventoController extends EventoGenericoController {
 	@RequestMapping(value = "/adicionarEvento", method = RequestMethod.POST)
 	public String adicionarEvento(@RequestParam(required = false) String email, @Valid Evento evento,
 			BindingResult result, RedirectAttributes redirect, HttpServletRequest request ) {
+		
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		
 		
@@ -102,14 +102,9 @@ public class EventoController extends EventoGenericoController {
 		}
 
 		boolean flag = false;
-		Pessoa pessoa = pessoaService.getByEmail(email);
-		
-		if(pessoa == null){
-			pessoa = new Pessoa("Temporário", email);
-		}
-
+				
 		if (evento.getId() != null) {
-			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome(), url);
+			flag = eventoService.adicionarOrganizador(email, evento, url);
 			if (flag) {
 				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
 			}
@@ -117,7 +112,7 @@ public class EventoController extends EventoGenericoController {
 			evento.setEstado(EstadoEvento.INATIVO);
 			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 			eventoService.adicionarOuAtualizarEvento(evento);
-			flag = eventoService.adicionarOrganizador(email, evento, pessoa.getNome(), url);
+			flag = eventoService.adicionarOrganizador(email, evento, url);
 			if (flag) {
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}

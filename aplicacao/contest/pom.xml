@@ -16,7 +16,7 @@
 			</activation>
 			<properties>
 				<packaging.type>jar</packaging.type>
-				<npi.ldap.version>0.1.2</npi.ldap.version>
+				<npi.ldap.version>0.3.1</npi.ldap.version>
 				<activatedProperties>dev</activatedProperties>
 			</properties>
 		</profile>
@@ -82,7 +82,7 @@
 	</repositories>
 
 	<dependencies>
-
+	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -275,6 +275,8 @@
 		    <artifactId>npi-mail</artifactId>
 		    <version>${npi.mail.version}</version>
 		  </dependency>
+		 
+
 
 
 	</dependencies>

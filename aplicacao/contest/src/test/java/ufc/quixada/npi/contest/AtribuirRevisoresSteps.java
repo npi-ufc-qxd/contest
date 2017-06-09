@@ -92,7 +92,7 @@ public class AtribuirRevisoresSteps {
 		
 		SecurityContextHolder.setContext(context);
 		
-		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(pessoa);
+		when(eventoControllerOrganizador.getUsuarioLogado()).thenReturn(pessoa);
 	}
 	@Quando("^o organizador seleciona atribuir um revisor para um trabalho$")
 	public void organizadorAtribuiRevisoresAoTrabalho() throws Exception{

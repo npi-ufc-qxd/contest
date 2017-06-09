@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.ufc.quixada.npi.ldap.model.Usuario;
+import br.ufc.quixada.npi.ldap.service.UsuarioService;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -14,6 +16,7 @@ import ufc.quixada.npi.contest.model.Token;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.util.ContestUtil;
 
 @Service
 public class EventoService {
@@ -38,10 +41,14 @@ public class EventoService {
 	
 	@Autowired
 	TokenService tokenService;
+	
+	@Autowired
+	UsuarioService usuarioService;
 
-	private boolean adicionarPessoa(String email, Evento evento, String nome, Tipo papel, String url) {
+	private boolean adicionarPessoa(String email, Evento evento, Tipo papel, String url) {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
+		String nome = "Digite seu nome";
 
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
 		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
@@ -50,9 +57,18 @@ public class EventoService {
 		Token token =  new Token();
 		
 		if (pessoa == null) {
-			pessoa = new Pessoa(nome, email);
 			
 			try {
+				Usuario usuarioLdap = usuarioService.getByEmail(email);
+				
+				if(usuarioLdap != null){
+					pessoa = ContestUtil.convertUsuarioToPessoa("", usuarioLdap);
+				}else{
+					pessoa = new Pessoa(nome, email);
+					pessoa.setPapel(Tipo.USER);
+				}
+				pessoaService.addOrUpdate(pessoa);
+			
 				token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -63,30 +79,29 @@ public class EventoService {
 			corpo = corpo + ". Realize o login em " + url + "/login";
 		}
 		
-
 		
 		if (!emailService.enviarEmail(titulo, assunto, email, corpo)) {
+			pessoaService.delete(pessoa.getId());
 			return false;
 		}
-		pessoaService.addOrUpdate(pessoa);
 		ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
 		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 		return true;
 	}
 
-	public boolean adicionarOrganizador(String email, Evento evento, String nome, String url) {
+	public boolean adicionarOrganizador(String email, Evento evento, String url) {
 		Tipo papel = Tipo.ORGANIZADOR;
-		return adicionarPessoa(email, evento, nome, papel, url);
+		return adicionarPessoa(email, evento, papel, url);
 	}
 
 	public boolean adicionarRevisor(String email, Evento evento, String nome, String url) {
 		Tipo papel = Tipo.REVISOR;
-		return adicionarPessoa(email, evento, nome, papel, url);
+		return adicionarPessoa(email, evento, papel, url);
 	}
 
 	public boolean adicionarAutor(String email, Evento evento, String nome, String url) {
 		Tipo papel = Tipo.AUTOR;
-		return adicionarPessoa(email, evento, nome, papel, url);
+		return adicionarPessoa(email, evento, papel, url);
 	}
 
 	public boolean adicionarOuAtualizarEvento(Evento evento) {

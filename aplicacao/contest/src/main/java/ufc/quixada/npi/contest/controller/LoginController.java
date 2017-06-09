@@ -86,7 +86,7 @@ public class LoginController {
 		
 		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)){
 			model.setViewName("completar-cadastro");
-			model.addObject("user", token.getPessoa());
+			model.addObject("pessoa", token.getPessoa());
 		} else {
 			throw new Exception("O token passado não corresponde a ação de completar cadastro.");
 		}
@@ -100,16 +100,12 @@ public class LoginController {
 		if(senha.equals(senhaConfirma)){
 			String password =  pessoaService.encodePassword(senha);
 			pessoa.setPassword(password);
-			pessoa.setPapel(Tipo.USER);
 			pessoaService.addOrUpdate(pessoa);
 			tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
 			
-		} else {
-			
-		}
+		} 		
 		
-		
-		return "redirect:/";
+		return "redirect:/login";
 	}
 	
 	

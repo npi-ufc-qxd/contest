@@ -124,7 +124,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
-		Pessoa pessoa = getOrganizadorLogado();
+		Pessoa pessoa = getUsuarioLogado();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		Boolean eventoPrivado = false;
 
@@ -168,7 +168,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		Long eventoId = Long.parseLong(id);
 		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
 
-		Pessoa organizadorLogado = getOrganizadorLogado();
+		Pessoa organizadorLogado = getUsuarioLogado();
 
 		if (PapelLdap.Tipo.DOCENTE.equals(organizadorLogado.getPapelLdap())) {
 			if (!revisoes.isEmpty()) {
@@ -237,14 +237,14 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@RequestMapping(value = { "/meusEventos", "" }, method = RequestMethod.GET)
 	public String meusEventos(Model model) {
-		Pessoa revisor = getOrganizadorLogado();
+		Pessoa revisor = getUsuarioLogado();
 		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
 
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
-		Pessoa p = getOrganizadorLogado();
+		Pessoa p = getUsuarioLogado();
 		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
 				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
@@ -275,7 +275,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
-		Pessoa p = getOrganizadorLogado();
+		Pessoa p = getUsuarioLogado();
 
 		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.INATIVO);
 		List<Evento> eventosQueOrganizo = eventoService.buscarEventosInativosQueOrganizo(p.getId());
@@ -292,6 +292,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute(EVENTOS_INATIVOS, eventos);
 		model.addAttribute(EVENTOS_QUE_ORGANIZO, eventosQueOrganizo);
+		
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 
@@ -350,7 +351,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
 	public String detalhesTrilha(@PathVariable String idTrilha, @PathVariable String idEvento, Model model,
 			RedirectAttributes redirect) {
-		Pessoa pessoaLogado = getOrganizadorLogado();
+		Pessoa pessoaLogado = getUsuarioLogado();
 		try {
 			Long trilhaId = Long.valueOf(idTrilha);
 			Long eventoId = Long.valueOf(idEvento);
@@ -378,7 +379,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String convidarPessoasPorEmail(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		Pessoa professorLogado = getOrganizadorLogado();
+		Pessoa professorLogado = getUsuarioLogado();
 
 		if (EstadoEvento.ATIVO.equals(evento.getEstado())
 				&& PapelLdap.Tipo.DOCENTE.equals(professorLogado.getPapelLdap())) {
@@ -401,7 +402,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 		switch (funcao) {
 		case "ORGANIZADOR":
-			flag = eventoService.adicionarOrganizador(email, evento, nome, url);
+			flag = eventoService.adicionarOrganizador(email, evento, url);
 			break;
 
 		case "AUTOR":
@@ -513,7 +514,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			return "redirect:/eventoOrganizador";
 		}
 
-		Pessoa professorLogado = getOrganizadorLogado();
+		Pessoa professorLogado = getUsuarioLogado();
 
 		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
 
@@ -653,10 +654,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		response.flushBuffer();
 	}
 
-	public Pessoa getOrganizadorLogado() {
+	public Pessoa getUsuarioLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String cpf = auth.getName();
-		return pessoaService.getByCpf(cpf);
+		//String cpf = auth.getName();
+		//return pessoaService.getByCpf(cpf);
+		return (Pessoa) auth.getPrincipal();
 	}
 	
 	@RequestMapping(value = "/")

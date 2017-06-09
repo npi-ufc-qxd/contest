@@ -17,7 +17,7 @@ public class TokenService {
 	private TokenRepository tokenRepository;
 
 	public Token buscarPorUsuario(Pessoa pessoa) {
-		return tokenRepository.findByUsuario(pessoa);
+		return tokenRepository.findByPessoa(pessoa);
 	}
 
 	public Token buscar(String token) {

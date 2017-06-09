@@ -6,5 +6,5 @@ import ufc.quixada.npi.contest.model.*;
 
 public interface TokenRepository extends JpaRepository<Token, String> {
 
-	Token findByUsuario(Pessoa pessoa);
+	Token findByPessoa(Pessoa pessoa);
 }

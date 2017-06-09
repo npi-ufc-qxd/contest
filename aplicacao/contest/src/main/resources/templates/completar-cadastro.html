@@ -16,7 +16,10 @@
       <div class="row">
         <h1 class="center header">Cadastro</h1>
         <div class="col s12">
-          <form th:action="@{/cadastro}" class="valign" th:object="${user}" method="post">
+          <form th:action="@{/completar-cadastro}" class="valign" th:object="${pessoa}" method="post">
+          
+          	<input type="hidden" th:field="*{id}" />
+          	<input type="hidden" th:field="*{papel}" />
             
             <div class="input-field">
               <input type="text" id="nome" th:field="*{nome}" required="required"/>
