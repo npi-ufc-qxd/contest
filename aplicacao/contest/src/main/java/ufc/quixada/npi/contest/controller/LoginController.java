@@ -1,7 +1,9 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.net.URL;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
+import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
@@ -41,8 +44,12 @@ public class LoginController {
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
+	
 	@Autowired
 	TokenService tokenService;
+	
+	@Autowired
+	private EnviarEmailService emailService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET  )
 	public String login() {
@@ -82,7 +89,9 @@ public class LoginController {
 	
 	@RequestMapping(path="/completar-cadastro/{token}", method=RequestMethod.GET)
 	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws Exception{
+		
 		ModelAndView model = new ModelAndView();
+		
 		
 		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)){
 			model.setViewName("completar-cadastro");
@@ -127,16 +136,51 @@ public class LoginController {
 	}
 
 	
-	@RequestMapping("resetarSenha")
-	public String resetarSenha(){
-		
-		return "resetar_senha";
+	@RequestMapping(path="resetar-senha/{token}", method=RequestMethod.GET)
+	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws Exception{
+		ModelAndView model = new ModelAndView();
+		if (token.getAcao().equals(Constants.ACAO_RECUPERAR_SENHA)){
+			model.setViewName("resetar_senha");
+			model.addObject("token", token);
+		} else {
+			throw new Exception("O token passado não corresponde a ação de recuperar senha.");
+		}
+		return model;
 	}
 	
-	@RequestMapping("esqueciMinhaSenha")
-	public String esqueciSenha(){
+	@RequestMapping(path="/resetar-senha/{token}", method=RequestMethod.POST)
+	public String resetarSenha(@PathVariable("token") Token token, @RequestParam String senha, @RequestParam String senhaConfirma, RedirectAttributes redirectAttributes){
 		
+		if(senha.equals(senhaConfirma)){
+			Pessoa pessoa = token.getPessoa();
+			String password =  pessoaService.encodePassword(senha);
+			pessoa.setPassword(password);
+			pessoaService.addOrUpdate(pessoa);
+			tokenService.deletar(token);
+			redirectAttributes.addFlashAttribute("senhaRedefinida", true);
+		} 		
+		
+		return "redirect:/login";
+	}
+	
+	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.GET)
+	public String esqueciSenhaForm(){
 		return "esqueci_senha";
+	}
+	
+	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.POST)
+	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request) throws Exception{
+		Pessoa pessoa = pessoaService.getByEmail(email);
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		
+		if(pessoa!=null){
+			Token token = tokenService.novoToken(pessoa, Constants.ACAO_RECUPERAR_SENHA);
+			String corpo = "Você pode alterar sua senha no link a seguir: "+url+"/resetar-senha/"+token.getToken();
+			emailService.enviarEmail("Redefinição de senha", "[Contest] Redefinição de senha", email, corpo);
+		}
+		
+		redirectAttributes.addFlashAttribute("esqueciSenha", true);
+		return "redirect:/login";
 	}
 
 }

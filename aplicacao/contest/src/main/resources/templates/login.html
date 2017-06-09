@@ -43,6 +43,14 @@
               <span class="white-text" th:text="#{LOGOUT_SUCESSO}"></span>
               <i class="material-icons">close</i>
             </div>
+            <div th:if="${esqueciSenha}" class="chip blue darken-1">
+              <span class="white-text" th:text="'Em breve você receberá um email com mais informações.'"></span>
+              <i class="material-icons">close</i>
+            </div>
+            <div th:if="${senhaRedefinida}" class="chip blue darken-1">
+              <span class="white-text" th:text="'Sua senha foi redefinida com sucesso.'"></span>
+              <i class="material-icons">close</i>
+            </div>
 
             <div class="input-field">
               <i class="material-icons prefix">account_circle</i>
@@ -55,6 +63,7 @@
               <input type="password" id="password" th:name="password" />
               <label for="password">Senha</label>
             </div>
+            <a th:href="@{/esqueci-minha-senha}">Esqueci minha senha</a>
             <button class="right btn waves-effect waves-light purple darken-4" type="submit">Entrar</button>
           </form>
         </div>
