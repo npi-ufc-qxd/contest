@@ -81,6 +81,8 @@ public class LoginController {
 		List<ParticipacaoTrabalho> trabalhosQueReviso = participacaoTrabalhoService.getTrabalhosPorRevisorId(pessoaAux.getId());
 		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, pessoaAux.getId());
 		List<ParticipacaoTrabalho> trabalhosMinhaAutoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorAutorId(pessoaAux.getId());
+		List<ParticipacaoEvento> eventoTrabalhosMinhaAutoria = participacaoEventoService.getEventosDoAutor(EstadoEvento.ATIVO, pessoaAux.getId());
+		model.addAttribute("eventoTrabalhosMinhaAutoria", eventoTrabalhosMinhaAutoria);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventosParaParticipar", eventos);
 		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
@@ -88,7 +90,6 @@ public class LoginController {
 		model.addAttribute("pessoa",pessoaAux);
 		return "dashboard";
 	}
-
 	
 	@RequestMapping("resetarSenha")
 	public String resetarSenha(){
