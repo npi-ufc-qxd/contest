@@ -396,7 +396,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String convidarPorEmail(@RequestParam("nome") String nome, @RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, Model model,
 			RedirectAttributes redirect, HttpServletRequest request) {
-		String url = request.getRequestURI().toString();
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		boolean flag = false;
 

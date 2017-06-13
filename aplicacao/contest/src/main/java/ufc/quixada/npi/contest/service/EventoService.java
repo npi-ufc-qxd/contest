@@ -76,6 +76,7 @@ public class EventoService {
 			
 			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
 		} else {
+			nome = pessoa.getNome();
 			corpo = corpo + ". Realize o login em " + url + "/login";
 		}
 		
