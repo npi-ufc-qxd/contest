@@ -211,7 +211,7 @@ public class AutorController {
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
-	@PreAuthorize("isAutorInEvento(#id)")
+
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
 	public String enviarTrabalhoForm(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
