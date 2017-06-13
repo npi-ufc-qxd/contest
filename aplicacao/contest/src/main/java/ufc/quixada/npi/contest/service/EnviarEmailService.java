@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,6 +46,17 @@ public class EnviarEmailService {
 			return false;
 		}
 		
+	}
+	public String  resetarSenhaEmail(@PathVariable("token") Token token, @RequestParam String senha, @RequestParam String senhaConfirma, RedirectAttributes redirectAttributes){
+		if(senha.equals(senhaConfirma)){
+			Pessoa pessoa = token.getPessoa();
+			String password =  pessoaService.encodePassword(senha);
+			pessoa.setPassword(password);
+			pessoaService.addOrUpdate(pessoa);
+			tokenService.deletar(token);
+			redirectAttributes.addFlashAttribute("senhaRedefinida", true);
+		} 	
+		return "";
 	}
 	public String esqueciSenhaEmail(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request,String url) throws Exception{
 		Pessoa pessoa = pessoaService.getByEmail(email);

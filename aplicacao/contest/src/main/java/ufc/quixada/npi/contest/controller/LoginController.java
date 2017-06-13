@@ -1,6 +1,5 @@
-package ufc.quixada.npi.contest.controller;
+ package ufc.quixada.npi.contest.controller;
 
-import java.net.URL;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -150,16 +149,7 @@ public class LoginController {
 	
 	@RequestMapping(path="/resetar-senha/{token}", method=RequestMethod.POST)
 	public String resetarSenha(@PathVariable("token") Token token, @RequestParam String senha, @RequestParam String senhaConfirma, RedirectAttributes redirectAttributes){
-		
-		if(senha.equals(senhaConfirma)){
-			Pessoa pessoa = token.getPessoa();
-			String password =  pessoaService.encodePassword(senha);
-			pessoa.setPassword(password);
-			pessoaService.addOrUpdate(pessoa);
-			tokenService.deletar(token);
-			redirectAttributes.addFlashAttribute("senhaRedefinida", true);
-		} 		
-		
+		enviarEmailService.resetarSenhaEmail(token, senha, senhaConfirma, redirectAttributes);
 		return "redirect:/login";
 	}
 	
@@ -169,9 +159,9 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.POST)
-	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request, String url) throws Exception{
+	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request) throws Exception{
 		
-		url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		enviarEmailService.esqueciSenhaEmail(email, redirectAttributes, request,url);
 		redirectAttributes.addFlashAttribute("esqueciSenha", true);
 		return "redirect:/login";
