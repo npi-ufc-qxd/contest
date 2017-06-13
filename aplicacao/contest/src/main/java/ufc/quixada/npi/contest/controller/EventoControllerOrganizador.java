@@ -49,7 +49,6 @@ import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
-import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -111,8 +110,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@Autowired
 	private SubmissaoService submissaoService;
 
-	@Autowired
-	private EnviarEmailService emailService;
+	//@Autowired
+	//private EnviarEmailService emailService;
 
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
