@@ -9,7 +9,6 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 
-
 public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations{
 	
 	public CustomMethodSecurityExpressionRoot(Authentication authentication) {
@@ -18,6 +17,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
    
     public boolean isOrganizadorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	
     	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
     		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.ORGANIZADOR){
     			return true;
@@ -27,7 +27,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     }
     
     public boolean isRevisorInEvento(Long eventoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	Pessoa pessoa = (Pessoa)getPrincipal();
+    	
     	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
     		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.REVISOR){
     			return true;

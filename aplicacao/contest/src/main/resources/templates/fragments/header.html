@@ -1,33 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 	<div th:fragment="header">
-		<nav role="navigation" class="purple darken-4" >
+		<nav role="navigation" class="purple darken-4">
 			<div class="nav-wrapper container" sec:authorize="isAuthenticated()">
-			
-			
+
+
 				<a th:href="@{/}"><img th:src="@{/img/logotipo_white.png}"
 					alt="Contest" width="200px" /></a>
 				<ul class="white-text right hide-on-med-and-down">
-					
-<!-- 					<li><a href="#" sec:authentication="username"></a></li> -->
-					<li><a href="#" th:text="${#authentication.getPrincipal().getNome()}"></a></li>
-					
-			        <li><form th:action="@{/logout}" method="POST" id="logout">
-				         <a onclick="document.getElementById('logout').submit(); return false;">Sair</a>
-				    </form></li> 
-				</ul> 
+					<li><form th:action="@{/dashboard}" method="POST"
+							id="dashboard">
+							<a th:href="@{/dashboard}">Ir para Dashboard</a>
+						</form></li>
+					<!-- 					<li><a href="#" sec:authentication="username"></a></li> -->
+					<li><a href="#"
+						th:text="${#authentication.getPrincipal().getNome()}"></a></li>
+
+					<li><form th:action="@{/logout}" method="POST" id="logout">
+							<a
+								onclick="document.getElementById('logout').submit(); return false;">Sair</a>
+						</form></li>
+				</ul>
 
 				<!-- Dropdown Trigger -->
-				   <div class="right">  
+				<div class="right">
 					<ul id="nav-mobile" class="side-nav">
-					<li><a href="#">Nome</a></li>			     
-					<li><a href="#">Sair&nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i></a></li>   
-			      </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-		     	</div>  
-		
+						<li><a href="#">Nome</a></li>
+						<li><a href="#">Sair&nbsp;<i class="fa fa-sign-out"
+								aria-hidden="true"></i></a></li>
+					</ul>
+					<a href="#" data-activates="nav-mobile" class="button-collapse"><i
+						class="material-icons">menu</i></a>
+				</div>
+
 			</div>
 		</nav>
-	</div>	
+	</div>
 </body>
 </html>

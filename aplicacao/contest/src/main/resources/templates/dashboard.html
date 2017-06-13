@@ -17,11 +17,19 @@
 					<div class="card-content">
 						<h4>Como Revisor</h4>
 						<div th:if="${#lists.isEmpty(trabalhosQueReviso)}">
-							<b>Você não está revizano nenhum trabalho.</b>
+							<b>Você não está revisando nenhum trabalho.</b>
 						</div>
-						<div th:i00f="${not #lists.isEmpty(trabalhosQueReviso)}">
-							<ul th:each="participacaoTrabalho : ${trabalhosQueReviso}">
-								<li th:text="${participacaoTrabalho.trabalho.titulo}"></li>
+						<div th:if="${not #lists.isEmpty(trabalhosQueReviso)}">
+							<ul>
+								<li><a th:href="@{|/revisor/trabalho/${trabalhosQueReviso[0].trabalho.id}|}"
+									th:text="${trabalhosQueReviso[0].trabalho.titulo}"></a></li>
+								<li><a th:if="${trabalhosQueReviso.size()} > 1"
+									th:href="@{|/revisor/trabalho/${trabalhosQueReviso[1].trabalho.id}|}"
+									th:text="${trabalhosQueReviso[1].trabalho.titulo}"></a></li>
+								<li><a th:if="${trabalhosQueReviso.size()} > 2"
+									th:href="@{|/revisor/trabalho/${trabalhosQueReviso[2].trabalho.id}|}"
+									th:text="${trabalhosQueReviso[2].trabalho.titulo}"></a></li>
+
 							</ul>
 						</div>
 					</div>
@@ -38,11 +46,18 @@
 					<div class="card-content">
 						<h4>Como Organizador</h4>
 						<div th:if="${#lists.isEmpty(eventosQueOrganizo)}">
-							<b>Você não está organizano nenhum evento ativo.</b>
+							<b>Você não está organizando nenhum evento ativo.</b>
 						</div>
 						<div th:if="${not #lists.isEmpty(eventosQueOrganizo)}">
-							<ul th:each="participacaoEvento : ${eventosQueOrganizo}">
-								<li th:text="${participacaoEvento.evento.nome}"></li>
+							<ul>
+							<li><a th:href="@{|/evento/editar/${eventosQueOrganizo[0].evento.id}|}"
+									th:text="${eventosQueOrganizo[0].evento.nome}"></a></li>
+								<li><a th:if="${eventosQueOrganizo.size()} > 1"
+									th:href="@{|/evento/editar/${eventosQueOrganizo[1].evento.id}|}"
+									th:text="${eventosQueOrganizo[1].evento.nome}"></a></li>
+								<li><a th:if="${eventosQueOrganizo.size()} > 2"
+									th:href="@{|/evento/editar/${eventosQueOrganizo[2].evento.id}|}"
+									th:text="${eventosQueOrganizo[2].evento.nome}"></a></li>
 							</ul>
 						</div>
 					</div>
@@ -62,55 +77,87 @@
 					<div th:if="${#lists.isEmpty(trabalhosMinhaAutoria)}">
 						<b>Você não está participando de nenhum evento ativo.</b>
 					</div>
-					<div th:if="${not #lists.isEmpty(trabalhosMinhaAutoria)}">
-						<div class="card white">
-							<div class="card-content">
-								<h5>Participando</h5>
-								<h6>Evento</h6>
-								<ul th:each="participacaoTrabalho : ${trabalhosMinhaAutoria}">
-									<li th:text="${participacaoTrabalho.trabalho.titulo}"></li>
-								</ul>
+					<div class="card white" th:if="${not #lists.isEmpty(eventoTrabalhosMinhaAutoria)}">
+						<div class="card-content" >
+							<h5>Participando</h5>
+								<div class=""
+									th:each="participacaoEvento : ${eventoTrabalhosMinhaAutoria}">
+									<div class="card horizontal">
+										<div class="card-stacked">
+											<div
+												th:include="fragments/evento_timeline::evento-timeline(evento=${participacaoEvento.evento})"></div>
+											<div class="card-action">
+												<a th:if="${participacaoEvento.evento.isPeriodoInicial()}"
+													th:attr="href='#modal' + ${participacaoEvento.evento.id}"
+													class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+												<a
+													th:unless="${participacaoEvento.evento.isPeriodoInicial()}"
+													class="btn disabled white-text grey">Período de
+													inscrição encerrado</a>
+											</div>
+										</div>
+									</div>
+
+									<div th:attr="id='modal' + ${participacaoEvento.evento.id}"
+										class="modal">
+										<div class="modal-content">
+											<h4>Participar do Evento</h4>
+											<h5 th:text="${participacaoEvento.evento.nome}"></h5>
+											<p>Tem certeza que quer participar deste evento?</p>
+										</div>
+										<form th:action="@{/autor/participarEvento}" method="post">
+
+											<div class="modal-footer">
+												<input type="hidden" name="idEvento"
+													th:value="${participacaoEvento.evento.id}" />
+												<button type="submit"
+													class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+												<a href="#"
+													class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+											</div>
+										</form>
+									</div>
+								</div>
 							</div>
 						</div>
+					</div>
 
-						<div class="card white">
-							<div class="card-content">
-								<h5>Não Participando</h5>
-								<div class="" th:if="${!#lists.isEmpty(eventosParaParticipar)}">
-									<div class="" th:each="evento : ${eventosParaParticipar}">
-										<div class="card horizontal">
-											<div class="card-stacked">
-												<div
-													th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
-												<div class="card-action">
-													<a th:if="${evento.isPeriodoInicial()}"
-														th:attr="href='#modal' + ${evento.id}"
-														class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
-													<a th:unless="${evento.isPeriodoInicial()}"
-														class="btn disabled white-text grey">Período de
-														inscrição encerrado</a>
-												</div>
+					<div class="card white">
+						<div class="card-content">
+							<h5>Não Participando</h5>
+							<div class="" th:if="${!#lists.isEmpty(eventosParaParticipar)}">
+								<div class="" th:each="evento : ${eventosParaParticipar}">
+									<div class="card horizontal">
+										<div class="card-stacked">
+											<div
+												th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+											<div class="card-action">
+												<a th:if="${evento.isPeriodoInicial()}"
+													th:attr="href='#modal' + ${evento.id}"
+													class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+												<a th:unless="${evento.isPeriodoInicial()}"
+													class="btn disabled white-text grey">Período de
+													inscrição encerrado</a>
 											</div>
 										</div>
+									</div>
 
-										<div th:attr="id='modal' + ${evento.id}" class="modal">
-											<div class="modal-content">
-												<h4>Participar do Evento</h4>
-												<h5 th:text="${evento.nome}"></h5>
-												<p>Tem certeza que quer participar deste evento?</p>
-											</div>
-											<form th:action="@{/autor/participarEvento}" method="post">
-
-												<div class="modal-footer">
-													<input type="hidden" name="idEvento"
-														th:value="${evento.id}" />
-													<button type="submit"
-														class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-													<a href="#"
-														class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-												</div>
-											</form>
+									<div th:attr="id='modal' + ${evento.id}" class="modal">
+										<div class="modal-content">
+											<h4>Participar do Evento</h4>
+											<h5 th:text="${evento.nome}"></h5>
+											<p>Tem certeza que quer participar deste evento?</p>
 										</div>
+										<form th:action="@{/autor/participarEvento}" method="post">
+
+											<div class="modal-footer">
+												<input type="hidden" name="idEvento" th:value="${evento.id}" />
+												<button type="submit"
+													class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+												<a href="#"
+													class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>
@@ -119,7 +166,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
 	<script type="text/javascript"></script>
