@@ -50,13 +50,13 @@
 						</div>
 						<div th:if="${not #lists.isEmpty(eventosQueOrganizo)}">
 							<ul>
-							<li><a th:href="@{|/evento/editar/${trabalhosQueReviso[0].trabalho.id}|}"
+							<li><a th:href="@{|/evento/editar/${eventosQueOrganizo[0].evento.id}|}"
 									th:text="${eventosQueOrganizo[0].evento.nome}"></a></li>
 								<li><a th:if="${eventosQueOrganizo.size()} > 1"
-									th:href="@{|/evento/editar/${trabalhosQueReviso[1].trabalho.id}|}"
+									th:href="@{|/evento/editar/${eventosQueOrganizo[1].evento.id}|}"
 									th:text="${eventosQueOrganizo[1].evento.nome}"></a></li>
 								<li><a th:if="${eventosQueOrganizo.size()} > 2"
-									th:href="@{|/evento/editar/${trabalhosQueReviso[2].trabalho.id}|}"
+									th:href="@{|/evento/editar/${eventosQueOrganizo[2].evento.id}|}"
 									th:text="${eventosQueOrganizo[2].evento.nome}"></a></li>
 							</ul>
 						</div>
@@ -77,7 +77,7 @@
 					<div th:if="${#lists.isEmpty(trabalhosMinhaAutoria)}">
 						<b>Você não está participando de nenhum evento ativo.</b>
 					</div>
-					<div class="card white" th:if="${!#lists.isEmpty(eventoTrabalhosMinhaAutoria)}">
+					<div class="card white" th:if="${not #lists.isEmpty(eventoTrabalhosMinhaAutoria)}">
 						<div class="card-content" >
 							<h5>Participando</h5>
 								<div class=""
