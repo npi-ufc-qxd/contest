@@ -34,13 +34,13 @@ import ufc.quixada.npi.contest.util.Constants;
 public class LoginController {
 	
 	@Autowired
-	private PessoaService pessoaService;
+	PessoaService pessoaService;
 	@Autowired
-	private EventoService eventoService;
+	EventoService eventoService;
 	@Autowired
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
+	ParticipacaoTrabalhoService participacaoTrabalhoService;
 	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
+	ParticipacaoEventoService participacaoEventoService;
 	@Autowired
 	TokenService tokenService;
 	

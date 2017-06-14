@@ -25,19 +25,19 @@ public class EventoService {
 	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	
 	@Autowired
-	private EventoRepository eventoRepository;
+	EventoRepository eventoRepository;
 
 	@Autowired
-	private PessoaService pessoaService;
+	PessoaService pessoaService;
 
 	@Autowired
-	private MessageService messageService;
+	MessageService messageService;
 
 	@Autowired
-	private EnviarEmailService emailService;
+	EnviarEmailService emailService;
 
 	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
+	ParticipacaoEventoService participacaoEventoService;
 	
 	@Autowired
 	TokenService tokenService;
