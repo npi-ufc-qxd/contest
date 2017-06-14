@@ -48,4 +48,5 @@ public class Constants {
 	
 	public static final String ACAO_RECUPERAR_SENHA = "Recuperar Senha";
 	public static final String ACAO_COMPLETAR_CADASTRO = "Completar Cadastro";
+	public static final String REDIRECIONAR_PARA_LOGIN = "redirect:/login";
 }

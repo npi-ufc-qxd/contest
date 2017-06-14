@@ -36,7 +36,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-		        .antMatchers("/cadastro*", "/resetarSenha", "/esqueciMinhaSenha", "/completar-cadastro/**", "/logout").permitAll()
+		        .antMatchers("/cadastro*", "/resetar-senha/**", "/esqueci-minha-senha", "/completar-cadastro/**", "/logout").permitAll()
 		        .antMatchers("/dashboard").hasRole("USER")
 				.antMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
 				.antMatchers("/autor/file/**").permitAll()

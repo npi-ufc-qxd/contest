@@ -1,7 +1,8 @@
-package ufc.quixada.npi.contest.controller;
+ package ufc.quixada.npi.contest.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ufc.quixada.npi.contes.exception.ContestException;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -23,6 +25,7 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
+import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
@@ -40,9 +43,13 @@ public class LoginController {
 	@Autowired
 	ParticipacaoTrabalhoService participacaoTrabalhoService;
 	@Autowired
-	ParticipacaoEventoService participacaoEventoService;
+	private ParticipacaoEventoService participacaoEventoService;
+	
 	@Autowired
-	TokenService tokenService;
+	private TokenService tokenService;
+	
+	@Autowired
+	private EnviarEmailService enviarEmailService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET  )
 	public String login() {
@@ -57,7 +64,7 @@ public class LoginController {
 		}
 
 		redirectAttributes.addFlashAttribute("loginError", true);
-		return "redirect:/login";
+		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
 	
 	@RequestMapping(value = "/cadastroForm")
@@ -74,7 +81,7 @@ public class LoginController {
 			pessoa.setPassword(password);
 			pessoa.setPapel(Tipo.USER);
 			pessoaService.addOrUpdate(pessoa);
-			return "login";
+			return Constants.REDIRECIONAR_PARA_LOGIN;
 		}
 		
 		return "cadastro" ;
@@ -83,6 +90,7 @@ public class LoginController {
 	@RequestMapping(path="/completar-cadastro/{token}", method=RequestMethod.GET)
 	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws IllegalArgumentException {
 		ModelAndView model = new ModelAndView();
+		
 		
 		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)){
 			model.setViewName("completar-cadastro");
@@ -105,7 +113,7 @@ public class LoginController {
 			
 		} 		
 		
-		return "redirect:/login";
+		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
 	
 	
@@ -128,16 +136,41 @@ public class LoginController {
 		return "dashboard";
 	}
 	
-	@RequestMapping("resetarSenha")
-	public String resetarSenha(){
-		
-		return "resetar_senha";
+	@RequestMapping(path="resetar-senha/{token}", method=RequestMethod.GET)
+	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws ContestException{
+		ModelAndView model = new ModelAndView();
+		if (token.getAcao().equals(Constants.ACAO_RECUPERAR_SENHA)){
+			model.setViewName("resetar_senha");
+			model.addObject("token", token);
+		} else {
+			throw new ContestException("O token passado não corresponde a ação de recuperar senha.");
+		}
+		return model;
 	}
 	
-	@RequestMapping("esqueciMinhaSenha")
-	public String esqueciSenha(){
-		
+	@RequestMapping(path="/resetar-senha/{token}", method=RequestMethod.POST)
+	public String resetarSenha(@PathVariable("token") Token token, @RequestParam String senha, @RequestParam String senhaConfirma, RedirectAttributes redirectAttributes){
+		enviarEmailService.resetarSenhaEmail(token, senha, senhaConfirma, redirectAttributes);
+		return Constants.REDIRECIONAR_PARA_LOGIN;
+	}
+	
+	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.GET)
+	public String esqueciSenhaForm(){
 		return "esqueci_senha";
+	}
+	
+	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.POST)
+	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		try {
+			enviarEmailService.esqueciSenhaEmail(email, redirectAttributes, url);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		redirectAttributes.addFlashAttribute("esqueciSenha", true);
+		return Constants.REDIRECIONAR_PARA_LOGIN;
+
 	}
 
 }

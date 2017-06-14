@@ -40,10 +40,10 @@ public class EventoService {
 	ParticipacaoEventoService participacaoEventoService;
 	
 	@Autowired
-	TokenService tokenService;
+	private TokenService tokenService;
 	
 	@Autowired
-	UsuarioService usuarioService;
+	private UsuarioService usuarioService;
 
 	private boolean adicionarPessoa(String email, Evento evento, Tipo papel, String url) {
 
