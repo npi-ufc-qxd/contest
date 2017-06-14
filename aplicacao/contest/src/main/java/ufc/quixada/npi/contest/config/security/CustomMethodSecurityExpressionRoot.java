@@ -15,7 +15,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 	public CustomMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
     }
-   
+   //RESTRIÇÕES PARA ORGANIZADOR
     public boolean isOrganizadorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	
@@ -26,18 +26,6 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	}
     	return false;
     }
-    
-    public boolean isResponsavelInSecao(Long secaoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	
-    	for(Secao secao : pessoa.getSecoes()){
-    		if( secao.getId() == secaoId ){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
     public boolean isOrganizador(){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	
@@ -48,12 +36,12 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	}
     	return false;
     }
+    //RESTRIÇÕES PARA AUTOR
     
-    public boolean isRevisorInEvento(Long eventoId){
-    	Pessoa pessoa = (Pessoa)getPrincipal();
-    	
+    public boolean isAutor(){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.REVISOR){
+    		if(participacacao.getPapel()== Tipo.AUTOR){
     			return true;
     		}
     	}
@@ -70,21 +58,44 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	return false;
     }
     
-    
-    public boolean isAutor(){
+    public boolean isAutorInTrabalho(Long trabalhoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getPapel()== Tipo.AUTOR){
+    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
+    		if(participacacao.getTrabalho().getId() == trabalhoId && participacacao.getPapel()== Tipo.AUTOR){
     			return true;
     		}
     	}
     	return false;
     }
     
-    public boolean isAutorInTrabalho(Long trabalhoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    //RESTRIÇÕES PARA REVISOR
+    public boolean isRevisorInTrabalho(Long trabalhoId){
+    	Pessoa pessoa = (Pessoa)getPrincipal();
+    	
     	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacacao.getTrabalho().getId() == trabalhoId && participacacao.getPapel()== Tipo.AUTOR){
+    		if(participacacao.getTrabalho().getId()== trabalhoId && participacacao.getPapel() == Tipo.REVISOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isRevisorInEvento(Long eventoId){
+    	Pessoa pessoa = (Pessoa)getPrincipal();
+    	
+    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
+    		if(participacacao.getEvento().getId() == eventoId && participacacao.getPapel()== Tipo.REVISOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isResponsavelInSecao(Long secaoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	
+    	for(Secao secao : pessoa.getSecoes()){
+    		if( secao.getId() == secaoId ){
     			return true;
     		}
     	}
