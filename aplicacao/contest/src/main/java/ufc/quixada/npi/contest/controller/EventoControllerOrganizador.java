@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -236,7 +237,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
-
+  
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getUsuarioLogado();
@@ -267,7 +269,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
-
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa p = getUsuarioLogado();
@@ -290,7 +292,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
-
+	
+	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.valueOf(id);
