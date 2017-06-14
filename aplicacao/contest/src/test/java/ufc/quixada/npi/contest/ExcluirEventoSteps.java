@@ -111,7 +111,7 @@ public class ExcluirEventoSteps extends Mockito {
 			  .andExpect(redirectedUrl("/evento/inativos"))
 			  .andExpect(flash().attributeExists("sucessoExcluir"));
 
-		verify(participacaoEventoService).removerParticipacaoEvento(evento);
+		verify(eventoService).removerEvento(evento.getId());
 	}
 
 	@Quando("^tento remover um evento com estado (.*) e id (.*)$")
@@ -127,7 +127,7 @@ public class ExcluirEventoSteps extends Mockito {
 	@Então("^o usuário é informado que não pode excluir esse evento$")
 	public void aconteceExcecao() throws Throwable {
 		when(messages.getMessage("EVENTO_INATIVO_EXCLUIDO_ERRO")).thenReturn("Evento não encontrado");
-		doThrow(IllegalArgumentException.class).when(participacaoEventoService).removerParticipacaoEvento(evento);
+		//doThrow(IllegalArgumentException.class).when(participacaoEventoService).removerParticipacaoEvento(evento);
 
 		action.andExpect(status().is3xxRedirection());
 	}

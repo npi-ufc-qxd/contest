@@ -9,6 +9,9 @@ import ufc.quixada.npi.contest.model.Pessoa;
 @Component
 public class ContestUtil {
 	
+	private ContestUtil() {
+	}
+	
 	public static Pessoa convertUsuarioToPessoa(String encondedPassword, final Usuario usuario) {
 		Pessoa pessoa;
 		pessoa = new Pessoa();

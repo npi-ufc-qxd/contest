@@ -28,7 +28,7 @@ public class EventoGenericoController {
 
 	private static final String EVENTO_INATIVO = "eventoInativo";
 	protected static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
-	private static final String ID_PESSOA = "idPessoa";
+	private static final String ORGANIZADOR = "organizador";
 	private static final String EVENTO = "evento";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
@@ -91,7 +91,7 @@ public class EventoGenericoController {
             }
     
             model.addAttribute(EVENTO, evento);
-			model.addAttribute(ID_PESSOA, evento.getParticipacoes().get(0).getId());
+			model.addAttribute(ORGANIZADOR, evento.getParticipacoes().get(0).getPessoa());
 			return viewSucesso;
         }catch(NumberFormatException e){
             redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));

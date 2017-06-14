@@ -239,7 +239,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
-
+  
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getUsuarioLogado();
@@ -270,7 +271,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
-
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa p = getUsuarioLogado();
@@ -293,6 +294,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
+	
 	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect) {
@@ -404,11 +406,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			break;
 
 		case "AUTOR":
-			flag = eventoService.adicionarAutor(email, evento, nome, url);
+			flag = eventoService.adicionarAutor(email, evento, url);
 			break;
 
 		case "REVISOR":
-			flag = eventoService.adicionarRevisor(email, evento, nome, url);
+			flag = eventoService.adicionarRevisor(email, evento, url);
 			break;
 
 		default:
@@ -654,8 +656,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	public Pessoa getUsuarioLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		//String cpf = auth.getName();
-		//return pessoaService.getByCpf(cpf);
 		return (Pessoa) auth.getPrincipal();
 	}
 	

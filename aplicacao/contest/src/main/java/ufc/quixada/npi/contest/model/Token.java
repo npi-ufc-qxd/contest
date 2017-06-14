@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -8,7 +9,8 @@ import javax.persistence.OneToOne;
 public class Token {
 
 	@Id
-	private String token;
+	@Column(name="token")
+	private String codigoToken;
 
 	@OneToOne
 	private Pessoa pessoa;
@@ -34,11 +36,11 @@ public class Token {
 	}
 
 	public String getToken() {
-		return token;
+		return codigoToken;
 	}
 
 	public void setToken(String token) {
-		this.token = token;
+		this.codigoToken = token;
 	}
 
 
@@ -46,7 +48,7 @@ public class Token {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((token == null) ? 0 : token.hashCode());
+		result = prime * result + ((codigoToken == null) ? 0 : codigoToken.hashCode());
 		return result;
 	}
 
@@ -59,10 +61,10 @@ public class Token {
 		if (getClass() != obj.getClass())
 			return false;
 		Token other = (Token) obj;
-		if (token == null) {
-			if (other.token != null)
+		if (codigoToken == null) {
+			if (other.codigoToken != null)
 				return false;
-		} else if (!token.equals(other.token))
+		} else if (!codigoToken.equals(other.codigoToken))
 			return false;
 		return true;
 	}

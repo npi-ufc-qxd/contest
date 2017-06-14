@@ -25,19 +25,19 @@ public class EventoService {
 	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	
 	@Autowired
-	private EventoRepository eventoRepository;
+	EventoRepository eventoRepository;
 
 	@Autowired
-	private PessoaService pessoaService;
+	PessoaService pessoaService;
 
 	@Autowired
-	private MessageService messageService;
+	MessageService messageService;
 
 	@Autowired
-	private EnviarEmailService emailService;
+	EnviarEmailService emailService;
 
 	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
+	ParticipacaoEventoService participacaoEventoService;
 	
 	@Autowired
 	private TokenService tokenService;
@@ -48,10 +48,10 @@ public class EventoService {
 	private boolean adicionarPessoa(String email, Evento evento, Tipo papel, String url) {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
-		String nome = "Digite seu nome";
+		String nome = "Nome Temporário";
 
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
-		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
+		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
 		String pageCadastro = "/completar-cadastro/";
 		Token token =  new Token();
@@ -81,7 +81,11 @@ public class EventoService {
 		
 		
 		if (!emailService.enviarEmail(titulo, assunto, email, corpo)) {
-			pessoaService.delete(pessoa.getId());
+			try{
+				pessoaService.delete(pessoa.getId());
+			}catch (Exception ex){
+				ex.printStackTrace();
+			}
 			return false;
 		}
 		ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
@@ -94,12 +98,12 @@ public class EventoService {
 		return adicionarPessoa(email, evento, papel, url);
 	}
 
-	public boolean adicionarRevisor(String email, Evento evento, String nome, String url) {
+	public boolean adicionarRevisor(String email, Evento evento, String url) {
 		Tipo papel = Tipo.REVISOR;
 		return adicionarPessoa(email, evento, papel, url);
 	}
 
-	public boolean adicionarAutor(String email, Evento evento, String nome, String url) {
+	public boolean adicionarAutor(String email, Evento evento, String url) {
 		Tipo papel = Tipo.AUTOR;
 		return adicionarPessoa(email, evento, papel, url);
 	}

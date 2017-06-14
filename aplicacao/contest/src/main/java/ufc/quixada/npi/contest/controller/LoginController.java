@@ -37,11 +37,11 @@ import ufc.quixada.npi.contest.util.Constants;
 public class LoginController {
 	
 	@Autowired
-	private PessoaService pessoaService;
+	PessoaService pessoaService;
 	@Autowired
-	private EventoService eventoService;
+	EventoService eventoService;
 	@Autowired
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
+	ParticipacaoTrabalhoService participacaoTrabalhoService;
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
 	
@@ -88,8 +88,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path="/completar-cadastro/{token}", method=RequestMethod.GET)
-	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws ContestException{
-		
+	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws IllegalArgumentException {
 		ModelAndView model = new ModelAndView();
 		
 		
@@ -97,7 +96,7 @@ public class LoginController {
 			model.setViewName("completar-cadastro");
 			model.addObject("pessoa", token.getPessoa());
 		} else {
-			throw new ContestException("O token passado não corresponde a ação de completar cadastro.");
+			throw new IllegalArgumentException("O token passado não corresponde a ação de completar cadastro.");
 		}
 		
 		return model;

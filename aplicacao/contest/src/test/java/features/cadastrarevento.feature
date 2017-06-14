@@ -11,17 +11,12 @@ Funcionalidade: Cadastrar Evento
         Dado o administrador deseja cadastrar um evento.
 	
 	  Cenário: Cadastro de evento com sucesso
-		Quando informar o organizador Lucas e o evento com nome Teste e descricao Legal
-		Então o evento deve ser cadastrado com visibilidade privada e estado inativo.
+		Quando informar o organizador lucas@gmail.com e o evento com nome Teste e descricao Legal
+		Então o organizador deve ser convidado por email e o evento deve ser cadastrado com visibilidade privada e estado inativo.
 		
 	  Cenário: Cadastrar evento sem informar o organizador do evento
 		Quando informar somente o nome do evento Teste
 		Então O evento não deve ser cadastrado
-		
-	  Cenário: Cadastro de evento com organizador não cadastrado no sistema
-		Quando informar o organizador Bruno e o nome evento Teste
-		E o organizador do evento informado não está cadastrado no sistema
-		Então O evento não deve ser cadastrado no sistema
 		
 	  Cenário: Cadastro de evento sem nome
 		Quando informar somente o organizador Matheus
