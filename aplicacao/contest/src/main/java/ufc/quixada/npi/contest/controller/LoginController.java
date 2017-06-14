@@ -64,7 +64,7 @@ public class LoginController {
 		}
 
 		redirectAttributes.addFlashAttribute("loginError", true);
-		return "redirect:/login";
+		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
 	
 	@RequestMapping(value = "/cadastroForm")
@@ -81,7 +81,7 @@ public class LoginController {
 			pessoa.setPassword(password);
 			pessoa.setPapel(Tipo.USER);
 			pessoaService.addOrUpdate(pessoa);
-			return "login";
+			return Constants.REDIRECIONAR_PARA_LOGIN;
 		}
 		
 		return "cadastro" ;
@@ -113,7 +113,7 @@ public class LoginController {
 			
 		} 		
 		
-		return "redirect:/login";
+		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
 	
 	
@@ -151,7 +151,7 @@ public class LoginController {
 	@RequestMapping(path="/resetar-senha/{token}", method=RequestMethod.POST)
 	public String resetarSenha(@PathVariable("token") Token token, @RequestParam String senha, @RequestParam String senhaConfirma, RedirectAttributes redirectAttributes){
 		enviarEmailService.resetarSenhaEmail(token, senha, senhaConfirma, redirectAttributes);
-		return "redirect:/login";
+		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
 	
 	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.GET)
@@ -160,12 +160,16 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.POST)
-	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request) throws Exception{
+	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-		enviarEmailService.esqueciSenhaEmail(email, redirectAttributes, request,url);
+		try {
+			enviarEmailService.esqueciSenhaEmail(email, redirectAttributes, request,url);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		redirectAttributes.addFlashAttribute("esqueciSenha", true);
-		return "redirect:/login";
+		return Constants.REDIRECIONAR_PARA_LOGIN;
 
 	}
 

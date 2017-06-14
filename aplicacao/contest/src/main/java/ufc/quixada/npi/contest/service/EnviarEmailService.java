@@ -1,7 +1,5 @@
 package ufc.quixada.npi.contest.service;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
@@ -56,7 +54,7 @@ public class EnviarEmailService {
 		} 	
 		return "";
 	}
-	public String esqueciSenhaEmail(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request,String url) throws Exception{
+	public String esqueciSenhaEmail(@RequestParam String email, RedirectAttributes redirectAttributes,String url) {
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		if(pessoa!=null){
 			Token token = tokenService.novoToken(pessoa, Constants.ACAO_RECUPERAR_SENHA);
