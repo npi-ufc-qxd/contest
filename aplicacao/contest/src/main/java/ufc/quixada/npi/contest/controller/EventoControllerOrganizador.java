@@ -111,8 +111,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@Autowired
 	private SubmissaoService submissaoService;
 
-	//@Autowired
-	//private EnviarEmailService emailService;
 
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {

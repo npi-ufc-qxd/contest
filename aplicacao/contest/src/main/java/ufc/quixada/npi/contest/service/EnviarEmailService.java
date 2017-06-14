@@ -27,8 +27,6 @@ public class EnviarEmailService {
 	@Autowired
 	private TokenService tokenService;
 	
-	//@Autowired
-	//private EnviarEmailService emailService;
 	
 	public boolean enviarEmail(String titulo,String assunto, String emailDestinatario, String corpo) {
 		
@@ -60,14 +58,12 @@ public class EnviarEmailService {
 	}
 	public String esqueciSenhaEmail(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request,String url) throws Exception{
 		Pessoa pessoa = pessoaService.getByEmail(email);
-		//String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-		
 		if(pessoa!=null){
 			Token token = tokenService.novoToken(pessoa, Constants.ACAO_RECUPERAR_SENHA);
 			String corpo = "Você pode alterar sua senha no link a seguir: "+url+"/resetar-senha/"+token.getToken();
 			enviarEmail("Redefinição de senha", "[Contest] Redefinição de senha", email, corpo);
 		}		
-		//redirectAttributes.addFlashAttribute("esqueciSenha", true);
+		redirectAttributes.addFlashAttribute("esqueciSenha", true);
 		return "";
 	}
 	
