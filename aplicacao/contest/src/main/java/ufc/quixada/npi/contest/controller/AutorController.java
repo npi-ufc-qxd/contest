@@ -359,7 +359,7 @@ public class AutorController {
 		}
 	}
 	
-	@PreAuthorize("isAutorInEvento(#trabalho)")
+	@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
 	@RequestMapping(value="/file/{trabalho}", method=RequestMethod.GET, produces = "application/pdf")
 	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho,  HttpServletResponse response)
 	        throws IOException {
