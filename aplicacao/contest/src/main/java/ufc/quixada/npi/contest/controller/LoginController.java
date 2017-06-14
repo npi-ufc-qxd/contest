@@ -9,9 +9,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contest.model.EstadoEvento;
@@ -20,22 +22,27 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Token;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.service.TokenService;
+import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
 public class LoginController {
 	
 	@Autowired
-	private PessoaService pessoaService;
+	PessoaService pessoaService;
 	@Autowired
-	private EventoService eventoService;
+	EventoService eventoService;
 	@Autowired
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
+	ParticipacaoTrabalhoService participacaoTrabalhoService;
 	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
+	ParticipacaoEventoService participacaoEventoService;
+	@Autowired
+	TokenService tokenService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET  )
 	public String login() {
@@ -72,6 +79,36 @@ public class LoginController {
 		
 		return "cadastro" ;
 	}
+	
+	@RequestMapping(path="/completar-cadastro/{token}", method=RequestMethod.GET)
+	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws IllegalArgumentException {
+		ModelAndView model = new ModelAndView();
+		
+		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)){
+			model.setViewName("completar-cadastro");
+			model.addObject("pessoa", token.getPessoa());
+		} else {
+			throw new IllegalArgumentException("O token passado não corresponde a ação de completar cadastro.");
+		}
+		
+		return model;
+	}
+	
+	@RequestMapping(path="/completar-cadastro", method=RequestMethod.POST)
+	public String completarCadastro(@Valid Pessoa pessoa, @RequestParam String senha, @RequestParam String senhaConfirma){
+		
+		if(senha.equals(senhaConfirma)){
+			String password =  pessoaService.encodePassword(senha);
+			pessoa.setPassword(password);
+			pessoaService.addOrUpdate(pessoa);
+			tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
+			
+		} 		
+		
+		return "redirect:/login";
+	}
+	
+	
 	
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model){
