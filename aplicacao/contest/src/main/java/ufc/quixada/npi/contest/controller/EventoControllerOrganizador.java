@@ -404,11 +404,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			break;
 
 		case "AUTOR":
-			flag = eventoService.adicionarAutor(email, evento, nome, url);
+			flag = eventoService.adicionarAutor(email, evento, url);
 			break;
 
 		case "REVISOR":
-			flag = eventoService.adicionarRevisor(email, evento, nome, url);
+			flag = eventoService.adicionarRevisor(email, evento, url);
 			break;
 
 		default:

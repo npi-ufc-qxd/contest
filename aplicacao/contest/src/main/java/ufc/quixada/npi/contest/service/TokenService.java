@@ -5,10 +5,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ufc.quixada.npi.contest.util.*;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
 import ufc.quixada.npi.contest.repository.TokenRepository;
+import ufc.quixada.npi.contest.util.Constants;
 
 @Service
 public class TokenService {
@@ -36,7 +36,7 @@ public class TokenService {
 		tokenRepository.delete(token);
 	}
 	
-	public Token novoToken(Pessoa pessoa, String acao) throws Exception{
+	public Token novoToken(Pessoa pessoa, String acao) throws IllegalArgumentException{
 		Token token = new Token();
 		token.setPessoa(pessoa);
 		
@@ -48,7 +48,7 @@ public class TokenService {
 			token.setAcao(Constants.ACAO_RECUPERAR_SENHA);
 			break;
 		default:
-			throw new Exception("Acao não existente para geração do token.");
+			throw new IllegalArgumentException("Acao não existente para geração do token.");
 		}
 		
 		

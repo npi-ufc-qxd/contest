@@ -81,7 +81,11 @@ public class EventoService {
 		
 		
 		if (!emailService.enviarEmail(titulo, assunto, email, corpo)) {
-			pessoaService.delete(pessoa.getId());
+			try{
+				pessoaService.delete(pessoa.getId());
+			}catch (Exception ex){
+				ex.printStackTrace();
+			}
 			return false;
 		}
 		ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
@@ -94,12 +98,12 @@ public class EventoService {
 		return adicionarPessoa(email, evento, papel, url);
 	}
 
-	public boolean adicionarRevisor(String email, Evento evento, String nome, String url) {
+	public boolean adicionarRevisor(String email, Evento evento, String url) {
 		Tipo papel = Tipo.REVISOR;
 		return adicionarPessoa(email, evento, papel, url);
 	}
 
-	public boolean adicionarAutor(String email, Evento evento, String nome, String url) {
+	public boolean adicionarAutor(String email, Evento evento, String url) {
 		Tipo papel = Tipo.AUTOR;
 		return adicionarPessoa(email, evento, papel, url);
 	}

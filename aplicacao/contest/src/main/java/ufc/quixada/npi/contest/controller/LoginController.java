@@ -81,14 +81,14 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path="/completar-cadastro/{token}", method=RequestMethod.GET)
-	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws Exception{
+	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws IllegalArgumentException {
 		ModelAndView model = new ModelAndView();
 		
 		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)){
 			model.setViewName("completar-cadastro");
 			model.addObject("pessoa", token.getPessoa());
 		} else {
-			throw new Exception("O token passado não corresponde a ação de completar cadastro.");
+			throw new IllegalArgumentException("O token passado não corresponde a ação de completar cadastro.");
 		}
 		
 		return model;
