@@ -253,6 +253,19 @@ public class Evento {
 		return getByPapel(Tipo.ORGANIZADOR);
 	}
 	
+	public List<String> getNomeOrganizadores(){
+		
+		List<Pessoa> pessoas = new ArrayList<>();
+		List<String> nomePessoas = new ArrayList<>();
+		pessoas = this.getOrganizadores();
+		for(Pessoa p : pessoas){
+			nomePessoas.add(p.getNome());
+		}
+		
+		return nomePessoas;
+		
+	}
+	
 	
 	public List<Pessoa> getRevisores(){
 		return getByPapel(Tipo.REVISOR);

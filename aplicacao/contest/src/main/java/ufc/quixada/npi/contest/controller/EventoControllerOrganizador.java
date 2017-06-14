@@ -392,35 +392,41 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		}
 	}
 
-	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam("nome") String nome, @RequestParam("email") String email,
+	@RequestMapping(value = "/convidar/{id}", method = RequestMethod.POST)
+	public String convidarPorEmail(@PathVariable String id, @RequestParam("nome") String nome, @RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, Model model,
 			RedirectAttributes redirect, HttpServletRequest request) {
+		
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		boolean flag = false;
-
-		switch (funcao) {
-		case "ORGANIZADOR":
-			flag = eventoService.adicionarOrganizador(email, evento, url);
-			break;
-
-		case "AUTOR":
-			flag = eventoService.adicionarAutor(email, evento, nome, url);
-			break;
-
-		case "REVISOR":
-			flag = eventoService.adicionarRevisor(email, evento, nome, url);
-			break;
-
-		default:
-			break;
-		}
-
-		if (flag == false) {
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
+		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
+		
+			boolean flag = false;
+	
+			switch (funcao) {
+			case "ORGANIZADOR":
+				flag = eventoService.adicionarOrganizador(email, evento, url);
+				break;
+	
+			case "AUTOR":
+				flag = eventoService.adicionarAutor(email, evento, nome, url);
+				break;
+	
+			case "REVISOR":
+				flag = eventoService.adicionarRevisor(email, evento, nome, url);
+				break;
+	
+			default:
+				break;
+			}
+	
+			if (flag == false) {
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
+			} else {
+				redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+			}
 		} else {
-			redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
 		}
 		return "redirect:/eventoOrganizador/evento/" + eventoId;
 	}

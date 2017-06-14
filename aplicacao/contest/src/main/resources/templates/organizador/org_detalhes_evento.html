@@ -117,7 +117,7 @@
 	<div th:include="fragments/footer :: footer"></div>
 	
 	
-	<form th:if="${eventoPrivado} == true" th:action="@{/eventoOrganizador/convidar}" action="#" method="post" class="col s12">
+	<form th:action="@{'/eventoOrganizador/convidar/' + ${evento.id}}" action="#" method="post" class="col s12">
         <div id="modalConvidarPessoas" class="modal">
           <div class="modal-content">
             <h4>Convidar Pessoas</h4>
