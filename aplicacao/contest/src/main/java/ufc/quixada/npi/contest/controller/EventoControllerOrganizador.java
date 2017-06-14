@@ -242,7 +242,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
-	
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getOrganizadorLogado();
@@ -273,7 +273,7 @@ public class EventoControllerOrganizador extends EventoGenericoController{
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
-
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa p = getOrganizadorLogado();

@@ -211,7 +211,7 @@ public class AutorController {
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
-	@PreAuthorize("isAutorInEvento(#id)")
+
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
 	public String enviarTrabalhoForm(@PathVariable String id, Model model, RedirectAttributes redirect){
 		try{
@@ -359,7 +359,7 @@ public class AutorController {
 		}
 	}
 	
-	@PreAuthorize("isAutorInEvento(#trabalho)")
+	@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
 	@RequestMapping(value="/file/{trabalho}", method=RequestMethod.GET, produces = "application/pdf")
 	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho,  HttpServletResponse response)
 	        throws IOException {

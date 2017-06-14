@@ -8,6 +8,7 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Secao;
 
 public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations{
 	
@@ -20,6 +21,28 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	
     	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
     		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.ORGANIZADOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isResponsavelInSecao(Long secaoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	
+    	for(Secao secao : pessoa.getSecoes()){
+    		if( secao.getId() == secaoId ){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isOrganizador(){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	
+    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
+    		if(participacacao.getPapel()== Tipo.ORGANIZADOR){
     			return true;
     		}
     	}
@@ -41,6 +64,17 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
     		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.AUTOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    
+    public boolean isAutor(){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
+    		if(participacacao.getPapel()== Tipo.AUTOR){
     			return true;
     		}
     	}
