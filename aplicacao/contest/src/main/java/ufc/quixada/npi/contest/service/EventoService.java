@@ -48,10 +48,10 @@ public class EventoService {
 	private boolean adicionarPessoa(String email, Evento evento, Tipo papel, String url) {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
-		String nome = "Digite seu nome";
+		String nome = "Nome Temporário";
 
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
-		String corpo = nome + messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
+		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
 		String pageCadastro = "/completar-cadastro/";
 		Token token =  new Token();

@@ -36,19 +36,13 @@ public class ParticipacaoEventoService {
 		}
 	}
 	
-	public void removerParticipacaoEvento(Evento evento){
+	public void removerParticipacaoEventoDoOrganizador(Evento evento, Pessoa pessoa){
 		if(evento != null && evento.getEstado().equals(EstadoEvento.INATIVO)){
-			ParticipacaoEvento participacaoEvento = findByEventoId(evento.getId());
+			ParticipacaoEvento participacaoEvento = buscarOrganizadorPorPessoaEEvento(evento, pessoa);
 			participacaoEventoRepository.delete(participacaoEvento);
 		}else{
 			throw new IllegalArgumentException("So é possivel remover eventos inativos");
 		}
-	}
-	
-	public ParticipacaoEvento findByEventoId(Long idEvento){
-		if(idEvento != null)
-			return participacaoEventoRepository.findByEventoId(idEvento);
-		return null;
 	}
 	
 	public List<ParticipacaoEvento> getEventosDoOrganizador(EstadoEvento estado, Long id){
@@ -84,5 +78,9 @@ public class ParticipacaoEventoService {
 		}
 		
 		return false;
+	}
+	
+	public ParticipacaoEvento buscarOrganizadorPorPessoaEEvento(Evento evento, Pessoa pessoa){
+		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.ORGANIZADOR);
 	}
 }
