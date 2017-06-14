@@ -47,13 +47,13 @@ public class Pessoa implements UserDetails {
 	@NotEmpty
 	private String email;
 
-	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE}, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE}, fetch=FetchType.EAGER)
 	private List<ParticipacaoEvento> participacoesEvento;
 
-	@OneToMany(mappedBy = "pessoa", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy = "pessoa", fetch=FetchType.EAGER)
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 	
-	@OneToMany(mappedBy="responsavel",fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="responsavel",fetch=FetchType.EAGER)
 	private List<Secao> secoes;
 
 	@Column(name = "papel_ldap")

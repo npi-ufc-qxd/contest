@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -53,7 +54,7 @@ public class RevisorController {
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
-	
+
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
@@ -67,7 +68,7 @@ public class RevisorController {
 	private static final String REVISOR_AVALIAR_TRABALHO = "revisor/revisor_avaliar_trabalho";
 	private static final String REVISOR_SEM_PERMISSAO = "revisor/erro_permissao_de_revisor";
 	private static final String TRABALHO_REVISAO_PELO_REVISOR = "revisor/erro_trabalho_ja_revisado";
-	
+
 	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
 	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
 	private static final String PARTICAPACAO_EVENTO_SUCESSO = "particapacaoEventoSucesso";
@@ -80,56 +81,58 @@ public class RevisorController {
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
 	private static final String FORA_PERIODO_REVISAO = "FORA_PERIODO_REVISAO";
 
+	@PreAuthorize("isRevisorInEvento(#idEvento)")
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
-		if(!evento.isPeriodoRevisao()){
+		if (!evento.isPeriodoRevisao()) {
 			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 			return "redirect:/eventoOrganizador";
 		}
-		
+
 		Pessoa revisor = getRevisorLogado();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
-		model.addAttribute("trabalhosRevisados", 
+		model.addAttribute("trabalhosRevisados",
 				trabalhoService.getTrabalhosRevisadosDoRevisor(revisor.getId(), idEvento));
-		
+
 		model.addAttribute("evento", evento);
-		
+
 		return REVISOR_TRABALHOS_REVISAO;
 	}
 
+	@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/{idTrabalho}/revisar", method = RequestMethod.GET)
-	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho, RedirectAttributes redirect) {
-		
+	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
+			RedirectAttributes redirect) {
+
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 		Evento evento;
 		Pessoa revisor = getRevisorLogado();
-		
-		if(trabalho!=null){
+
+		if (trabalho != null) {
 			evento = trabalho.getEvento();
-			if(!evento.isPeriodoRevisao()){
+			if (!evento.isPeriodoRevisao()) {
 				redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 				return "redirect:/eventoOrganizador";
-			}else if(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())){
+			} else if (revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())) {
 				return TRABALHO_REVISAO_PELO_REVISOR;
 			}
-		}else{
+		} else {
 			return "redirect:/error";
 		}
-		
 
-		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
-			
+		if (participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null) {
+
 			model.addAttribute("nomeEvento", evento.getNome());
 			model.addAttribute("idEvento", evento.getId());
 			model.addAttribute("trabalho", trabalho);
-			
+
 			session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(evento.getId()));
 			session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
 			return REVISOR_AVALIAR_TRABALHO;
 		}
 		return REVISOR_SEM_PERMISSAO;
-		
+
 	}
 
 	@RequestMapping(value = "/avaliar", method = RequestMethod.POST)
@@ -148,85 +151,83 @@ public class RevisorController {
 			@RequestParam(value = "avaliacao-final", required = false) String avaliacao_final,
 			@RequestParam(value = "indicar", required = false) String indicar, RedirectAttributes redirect,
 			HttpSession session) {
-		
+
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 		Pessoa revisor = getRevisorLogado();
-		
-		if(trabalho == null){
+
+		if (trabalho == null) {
 			return "redirect:/error";
-		}else if(trabalho.getEvento() == null){
+		} else if (trabalho.getEvento() == null) {
 			return "redirect:/error";
-		}else if(!trabalho.getEvento().isPeriodoRevisao()){
+		} else if (!trabalho.getEvento().isPeriodoRevisao()) {
 			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 			return "redirect:/eventoOrganizador";
-		}else if(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())){
+		} else if (revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())) {
 			return TRABALHO_REVISAO_PELO_REVISOR;
 		}
-		
-		if(participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null){
-		
+
+		if (participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId()) != null) {
+
 			session.setAttribute("ID_EVENTO_REVISOR", Long.valueOf(idEvento));
 			session.setAttribute("ID_TRABALHO_REVISOR", Long.valueOf(idTrabalho));
-			
+
 			CriteriosRevisaoValidator criterios = new CriteriosRevisaoValidator();
-			boolean validacao = criterios.validate(originalidade, merito, clareza, qualidade, relevancia, auto_avaliacao,
-					comentarios_autores, avaliacao_geral, avaliacao_final);
-	
+			boolean validacao = criterios.validate(originalidade, merito, clareza, qualidade, relevancia,
+					auto_avaliacao, comentarios_autores, avaliacao_geral, avaliacao_final);
+
 			if (!validacao) {
-				redirect.addFlashAttribute("criterioRevisaoVazioError", messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
+				redirect.addFlashAttribute("criterioRevisaoVazioError",
+						messageService.getMessage(CRITERIOS_REVISAO_VAZIO));
 				return "redirect:/revisor/" + idTrabalho + "/revisar";
-			}						
-	
+			}
+
 			String conteudo = RevisaoJSON.toJson(formatacao, originalidade, merito, clareza, qualidade, relevancia,
 					auto_avaliacao, comentarios_autores, avaliacao_geral, avaliacao_final, indicar);
-	
+
 			Revisao revisao = new Revisao();
 			revisao.setConteudo(conteudo);
 			revisao.setRevisor(revisor);
 			revisao.setTrabalho(trabalho);
 			revisao.setObservacoes(comentarios_organizacao);
-			
+
 			switch (avaliacao_final) {
-				case "APROVADO":
-					revisao.setAvaliacao(Avaliacao.APROVADO);
-					break;
-				case "RESSALVAS":
-					revisao.setAvaliacao(Avaliacao.RESSALVAS);
-					break;
-				case "REPROVADO":
-					revisao.setAvaliacao(Avaliacao.REPROVADO);
-					break;
-				default:
-					break;
+			case "APROVADO":
+				revisao.setAvaliacao(Avaliacao.APROVADO);
+				break;
+			case "RESSALVAS":
+				revisao.setAvaliacao(Avaliacao.RESSALVAS);
+				break;
+			case "REPROVADO":
+				revisao.setAvaliacao(Avaliacao.REPROVADO);
+				break;
+			default:
+				break;
 			}
-			
+
 			revisaoService.addOrUpdate(revisao);
-			
+
 			redirect.addFlashAttribute("trabalhoRevisado", messageService.getMessage(TRABALHO_REVISADO));
 			return "redirect:/revisor/" + idEvento + "/trabalhosRevisao";
 		}
 		return REVISOR_SEM_PERMISSAO;
 	}
- 
+
+	@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
-	public String validaTrabalho(HttpSession session, @PathVariable("trabalhoID") String idTrabalho, 
-			HttpServletResponse response,
-			RedirectAttributes redirect) throws IOException {
-		
+	public String validaTrabalho(HttpSession session, @PathVariable("trabalhoID") String idTrabalho,
+			HttpServletResponse response, RedirectAttributes redirect) throws IOException {
+
 		if (trabalhoService.existeTrabalho(Long.valueOf(idTrabalho))) {
 			Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 			baixarTrabalho(response, trabalho);
-			
+
 			session.setAttribute("ID_TRABALHO_REVISOR", idTrabalho);
-			return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") 
-										+ "/" + idTrabalho + "/revisar";
+			return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") + "/" + idTrabalho + "/revisar";
 		}
-		
-		
+
 		redirect.addFlashAttribute("trabalhoNaoExisteError", messageService.getMessage(TRABALHO_NAO_EXISTE));
-		return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") + "/" 
-									+ session.getAttribute("ID_TRABALHO_REVISOR") 
-									+ "/revisar";
+		return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") + "/"
+				+ session.getAttribute("ID_TRABALHO_REVISOR") + "/revisar";
 	}
 
 	@ResponseBody
@@ -279,14 +280,13 @@ public class RevisorController {
 		Pessoa revisorLogado = pessoaService.getByCpf(cpf);
 		return revisorLogado;
 	}
-	
+
 	@RequestMapping(value = "/")
-	public String paginaRevisor(Model model){
+	public String paginaRevisor(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
-		model.addAttribute("pessoa",pessoaAux);
+		model.addAttribute("pessoa", pessoaAux);
 		return "revisor/revisor_index";
 	}
 
-	
 }
