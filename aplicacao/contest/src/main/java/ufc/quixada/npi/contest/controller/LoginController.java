@@ -164,7 +164,7 @@ public class LoginController {
 		
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		try {
-			enviarEmailService.esqueciSenhaEmail(email, redirectAttributes, request,url);
+			enviarEmailService.esqueciSenhaEmail(email, redirectAttributes, url);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
