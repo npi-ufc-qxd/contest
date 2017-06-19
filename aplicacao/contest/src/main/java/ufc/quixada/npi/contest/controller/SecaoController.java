@@ -34,7 +34,7 @@ public class SecaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
-
+	
 	@RequestMapping(value = "/paginaSecao")
 	public String indexSecao(Model model) {
 		List<Secao> secoes = secaoService.list();
@@ -44,7 +44,7 @@ public class SecaoController {
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/cadastrarSecaoForm", method = RequestMethod.GET)
 	public String cadastrarSecaoForm(Model model) {
-		List<Pessoa> pessoas = pessoaService.getPossiveisOrganizadores();
+		List<Pessoa> pessoas = pessoaService.getTodos();
 		List<Evento> eventos = eventoService.buscarEventos();
 		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("eventos", eventos);
@@ -56,6 +56,7 @@ public class SecaoController {
 		if (secao.getEvento() == null || secao.getResponsavel() == null) {
 			return "redirect:/secao/cadastrarSecaoForm";
 		}
+	
 		secaoService.addOrUpdate(secao);
 		return "redirect:/secao/paginaSecao";
 	}
