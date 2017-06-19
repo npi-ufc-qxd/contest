@@ -263,7 +263,6 @@ public class Evento {
 		}
 		
 		return nomePessoas;
-		
 	}
 	
 	

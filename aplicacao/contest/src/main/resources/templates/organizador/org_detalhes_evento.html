@@ -127,23 +127,25 @@
             <div class="input-field col s12">
             
                 <div class="input-field">
-            	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
+            		<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
             	</div>
             	
             	<div class="input-field">
-            	<input id="nome_da_pessoa" name="nome" type="text" />
-            	<label for="nome_da_pessoa">Nome</label>
+            		<input id="nome_da_pessoa" name="nome" type="text" />
+            		<label for="nome_da_pessoa">Nome</label>
             	</div>
             	
             	<div class="input-field">
-            	<input id="email_da_pessoa" name="email" type="email"/>
-            	<label for="email_da_pessoa">Email</label>
+            		<input id="email_da_pessoa" name="email" type="email"/>
+            		<label for="email_da_pessoa">Email</label>
             	</div>
             	
             	<select name="funcao">
-            		<option value="ORGANIZADOR">Organizador</option>
-            		<option value="REVISOR">Revisor</option>
-            		<option value="AUTOR">Autor</option>
+            		<div th:if="${#strings.equals(evento.visibilidade.getVisibilidade(),'Publico')}">
+            			<option value="ORGANIZADOR">Organizador</option>
+            			<option value="AUTOR">Autor</option>
+            		</div>
+            			<option value="REVISOR">Revisor</option>
             	</select>
             </div>
             </div>
