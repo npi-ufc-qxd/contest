@@ -16,9 +16,8 @@ import ufc.quixada.npi.contest.model.Pessoa;
 @Repository
 @Transactional
 public interface ParticipacaoEventoRepository extends JpaRepository<ParticipacaoEvento, Long>{
-	public ParticipacaoEvento findByEventoId(Long idEvento);
-	//public List<ParticipacaoEvento> findDistinctByEventoEstadoAndPapel(EstadoEvento estadoEvento, Papel papel);
 	public List<ParticipacaoEvento> findByEventoEstadoAndPapelAndPessoaId(EstadoEvento estadoEvento, Tipo papel, Long id);
 	public List<ParticipacaoEvento> findByEventoIdAndPapel(Long id, Tipo papel);
+	public ParticipacaoEvento findOneByEventoAndPessoaAndPapel(Evento evento, Pessoa pessoa, Tipo papel);
 	public ParticipacaoEvento findOneByEventoAndPessoa(Evento evento, Pessoa pessoa);
 }

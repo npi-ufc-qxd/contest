@@ -82,18 +82,24 @@ public class EventoController extends EventoGenericoController {
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento(Model model) {
+		Pessoa organizador = new Pessoa();
+		organizador.setEmail("Email do Organizador");
+		
 		model.addAttribute(EVENTO, new Evento());
+		model.addAttribute("organizador", organizador);
+		
 		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 	}
 
 	@RequestMapping(value = "/adicionarEvento", method = RequestMethod.POST)
-	public String adicionarEvento(@RequestParam(required = false) String email, @Valid Evento evento,
+	public String adicionarEvento(@ModelAttribute("organizador") Pessoa organizador, @Valid Evento evento,
 			BindingResult result, RedirectAttributes redirect, HttpServletRequest request ) {
 		
+
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		
 		
-		if (email == null || email.isEmpty()) {
+		if (organizador.getEmail() == null || organizador.getEmail().isEmpty()) {
 			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(ORGANIZADOR_VAZIO_ERROR));
 		}
 
@@ -101,31 +107,47 @@ public class EventoController extends EventoGenericoController {
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 		}
 
-		boolean flag = false;
+		boolean flag = true;
 				
 		if (evento.getId() != null) {
-			flag = eventoService.adicionarOrganizador(email, evento, url);
+			
+			Evento eventoBd = eventoService.buscarEventoPorId(evento.getId());
+			
+			if(!eventoBd.getOrganizadores().get(0).getEmail().equals(organizador.getEmail())){
+				
+				eventoBd.getParticipacoes().clear();
+				eventoService.adicionarOuAtualizarEvento(eventoBd);
+				flag = eventoService.adicionarOrganizador(organizador.getEmail(), eventoBd, url);
+			}
+			
+			eventoBd.setDescricao(evento.getDescricao());
+			eventoBd.setNome(evento.getNome());
+			eventoService.adicionarOuAtualizarEvento(eventoBd);
+			
 			if (flag) {
 				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
 			}
 		} else {
 			evento.setEstado(EstadoEvento.INATIVO);
 			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
+			
+			List<Trilha> trilhas = new ArrayList<>();
+
+			Trilha trilha = new Trilha();
+			trilha.setEvento(evento);
+			trilha.setNome("Principal");
+			trilhas.add(trilha);
+
+			evento.setTrilhas(trilhas);
+			
 			eventoService.adicionarOuAtualizarEvento(evento);
-			flag = eventoService.adicionarOrganizador(email, evento, url);
+			flag = eventoService.adicionarOrganizador(organizador.getEmail(), evento, url);
 			if (flag) {
 				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
 			}
 		}
 
-		List<Trilha> trilhas = new ArrayList<>();
-
-		Trilha trilha = new Trilha();
-		trilha.setEvento(evento);
-		trilha.setNome("Principal");
-		trilhas.add(trilha);
-
-		evento.setTrilhas(trilhas);
+		
 
 		return "redirect:/evento/inativos";
 	}
@@ -142,7 +164,7 @@ public class EventoController extends EventoGenericoController {
 			Long idEvento = Long.valueOf(id);
 			Evento evento = eventoService.buscarEventoPorId(idEvento);
 			if (evento != null) {
-				participacaoEventoService.removerParticipacaoEvento(evento);
+				eventoService.removerEvento(evento.getId());
 
 				redirect.addFlashAttribute(SUCESSO_EXCLUIR, messageService.getMessage(EVENTO_INATIVO_EXCLUIDO_SUCESSO));
 			} else {

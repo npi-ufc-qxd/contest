@@ -29,7 +29,7 @@ public class ParticipacaoEvento {
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	private Pessoa pessoa;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	private Evento evento;
 
 	public Long getId() {

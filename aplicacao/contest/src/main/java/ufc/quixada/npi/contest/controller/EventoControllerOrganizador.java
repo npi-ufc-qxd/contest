@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -49,7 +50,6 @@ import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
-import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -66,8 +66,6 @@ import ufc.quixada.npi.contest.util.Constants;
 public class EventoControllerOrganizador extends EventoGenericoController {
 
 	private static final String ERRO_ENVIO_EMAIL = "ERRO_ENVIO_EMAIL";
-	private static final String TITULO_EMAIL_ORGANIZADOR = "TITULO_EMAIL_CONVITE_ORGANIZADOR";
-	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
 	private static final String EXISTE_SUBMISSAO = "existeSubmissao";
 	private static final String SUBMISSAO_REVISAO = "existeSubmissaoRevisao";
@@ -113,8 +111,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@Autowired
 	private SubmissaoService submissaoService;
 
-	@Autowired
-	private EnviarEmailService emailService;
 
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -241,7 +237,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
-
+  
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = getUsuarioLogado();
@@ -272,7 +269,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
-
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
 		Pessoa p = getUsuarioLogado();
@@ -295,7 +292,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
-
+	
+	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.valueOf(id);
@@ -399,6 +397,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
+
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 		
 			boolean flag = false;
@@ -409,11 +408,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 				break;
 	
 			case "AUTOR":
-				flag = eventoService.adicionarAutor(email, evento, nome, url);
+				flag = eventoService.adicionarAutor(email, evento, url);
 				break;
 	
 			case "REVISOR":
-				flag = eventoService.adicionarRevisor(email, evento, nome, url);
+				flag = eventoService.adicionarRevisor(email, evento, url);
 				break;
 	
 			default:
@@ -662,8 +661,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	public Pessoa getUsuarioLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		//String cpf = auth.getName();
-		//return pessoaService.getByCpf(cpf);
 		return (Pessoa) auth.getPrincipal();
 	}
 	

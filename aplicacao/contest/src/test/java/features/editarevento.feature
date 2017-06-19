@@ -19,7 +19,3 @@ Funcionalidade: Editar Evento
 	Cenário: Alterar um evento inativo sem informar o organizador do evento
 		Quando edito o nome do evento para NOMEEDITADO e descricao para NOVADESCRICAO e não informo o nome do organizador
 		Então o usuário é avisado via mensagem que o organizador do evento deve ser informado
-
-	Cenário: Alterar o organizador de um evento inativo para por um organizador não cadastrado
-		Quando edito o nome do evento para NOMEEDITADO e descricao para NOVADESCRICAO e escolho um organizador não cadastrado
-		Então deve ser mostrado uma mensagem dizendo que o oganizadr não foi encontrado 

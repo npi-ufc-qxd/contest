@@ -68,14 +68,14 @@ public class Evento {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoRevisaoFinal;
 
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<ParticipacaoEvento> participacoes;
 	
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=true)
 	@OrderBy("nome ASC")
 	private List<Trilha> trilhas;
 	
-	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<Secao> secoes;
 
 	public Long getId() {

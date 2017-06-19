@@ -27,3 +27,5 @@ aplicacao/contest/src/main/resources/application-producao.properties
 
 *.bak
 *.log
+
+*.ods

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class SecaoController {
 		model.addAttribute("secoes", secoes);
 		return "secao/indexSecao";
 	}
-
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/cadastrarSecaoForm", method = RequestMethod.GET)
 	public String cadastrarSecaoForm(Model model) {
 		List<Pessoa> pessoas = pessoaService.getPossiveisOrganizadores();
@@ -58,7 +59,8 @@ public class SecaoController {
 		secaoService.addOrUpdate(secao);
 		return "redirect:/secao/paginaSecao";
 	}
-
+	
+	@PreAuthorize("isResponsavelInSecao(#idSecao)")
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
 	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
 		Secao secao = secaoService.get(idSecao);
@@ -85,7 +87,8 @@ public class SecaoController {
 		model.addAttribute("qtdTrabalhos", secao.getTrabalhos().size());
 		return "secao/secaoTrabalhos";
 	}
-
+	
+	@PreAuthorize("isResponsavelInSecao(#idSecao)")
 	@RequestMapping(value = "/excluirSecao/{id}")
 	public String excluirSecao(@PathVariable("id") Long idSecao) {
 		Secao secao = secaoService.get(idSecao);

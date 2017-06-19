@@ -18,7 +18,8 @@
 			<div class="row">
 				<h1 class="center header">Resetar Senha</h1>
 				<div class="col s12">
-					<form class="valign" method="post">
+					<form th:action="@{/resetar-senha/}+${token.token}"  class="valign" method="post">
+						
 
 						<div class="input-field">
 							<input type="password" id="password" th:name="senha"
