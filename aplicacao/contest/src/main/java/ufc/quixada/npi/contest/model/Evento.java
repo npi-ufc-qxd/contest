@@ -71,11 +71,11 @@ public class Evento {
 	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<ParticipacaoEvento> participacoes;
 	
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=false)
 	@OrderBy("nome ASC")
 	private List<Trilha> trilhas;
 	
-	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=false)
 	private List<Secao> secoes;
 
 	public Long getId() {
