@@ -274,13 +274,6 @@ public class RevisorController {
 		return "redirect:/revisor";
 	}
 
-//	public Pessoa getRevisorLogado() {
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		String cpf = auth.getName();
-//		Pessoa revisorLogado = pessoaService.getByCpf(cpf);
-//		return revisorLogado;
-//	}
-
 	@RequestMapping(value = "/")
 	public String paginaRevisor(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
