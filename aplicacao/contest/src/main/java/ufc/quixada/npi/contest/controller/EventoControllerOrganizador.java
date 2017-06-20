@@ -428,7 +428,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 				break;
 			}
 	
-			if (flag == false) {
+			if (!flag) {
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
 			} else {
 				redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
