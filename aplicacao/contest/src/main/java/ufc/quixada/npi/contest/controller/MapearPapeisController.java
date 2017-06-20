@@ -12,15 +12,15 @@ import ufc.quixada.npi.contest.service.PessoaService;
 @Controller
 @RequestMapping("/")
 public class MapearPapeisController {
-	
+
 	@Autowired
 	private PessoaService pessoaService;
-	
-	public Pessoa getAutorLogado(){
+
+	public Pessoa getAutorLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String cpf = auth.getName();
 		Pessoa autorLogado = pessoaService.getByCpf(cpf);
 		return autorLogado;
 	}
-	
+
 }
