@@ -22,7 +22,6 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -641,10 +640,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 	
 	public Pessoa getUsuarioLogado(){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String cpf = auth.getName();
-		Pessoa usuarioLogado = pessoaService.getByCpf(cpf);
-		return usuarioLogado;
+		return PessoaLogadaUtil.pessoaLogada();
 	}
 	
 	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response)
