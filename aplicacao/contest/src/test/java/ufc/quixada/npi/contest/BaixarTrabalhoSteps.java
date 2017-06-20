@@ -27,6 +27,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 public class BaixarTrabalhoSteps {
 
@@ -83,6 +84,7 @@ public class BaixarTrabalhoSteps {
 			
 			when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
 			when(pessoaService.getByCpf(revisor.getCpf())).thenReturn(revisor);
+			when(PessoaLogadaUtil.pessoaLogada()).thenReturn(revisor);
 			when(participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, revisor.getId())).thenReturn(false);
 			when(participacaoEventoService.isOrganizadorDoEvento(revisor, evento.getId())).thenReturn(false);
 			

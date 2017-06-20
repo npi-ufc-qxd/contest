@@ -22,7 +22,6 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,6 +59,7 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 @RequestMapping("/eventoOrganizador")
@@ -111,7 +111,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@Autowired
 	private SubmissaoService submissaoService;
 
-
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
@@ -120,7 +119,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
-		Pessoa pessoa = getUsuarioLogado();
+		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		Boolean eventoPrivado = false;
 
@@ -164,7 +163,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		Long eventoId = Long.parseLong(id);
 		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
 
-		Pessoa organizadorLogado = getUsuarioLogado();
+		Pessoa organizadorLogado = PessoaLogadaUtil.pessoaLogada();
 
 		if (PapelLdap.Tipo.DOCENTE.equals(organizadorLogado.getPapelLdap())) {
 			if (!revisoes.isEmpty()) {
@@ -233,15 +232,15 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@RequestMapping(value = { "/meusEventos", "" }, method = RequestMethod.GET)
 	public String meusEventos(Model model) {
-		Pessoa revisor = getUsuarioLogado();
+		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
-  
+
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
-		Pessoa p = getUsuarioLogado();
+		Pessoa p = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
 				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
@@ -269,10 +268,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
+
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/inativos", method = RequestMethod.GET)
 	public String listarEventosInativos(Model model) {
-		Pessoa p = getUsuarioLogado();
+		Pessoa p = PessoaLogadaUtil.pessoaLogada();
 
 		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.INATIVO);
 		List<Evento> eventosQueOrganizo = eventoService.buscarEventosInativosQueOrganizo(p.getId());
@@ -289,10 +289,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute(EVENTOS_INATIVOS, eventos);
 		model.addAttribute(EVENTOS_QUE_ORGANIZO, eventosQueOrganizo);
-		
+
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
-	
+
 	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect) {
@@ -364,7 +364,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
 	public String detalhesTrilha(@PathVariable String idTrilha, @PathVariable String idEvento, Model model,
 			RedirectAttributes redirect) {
-		Pessoa pessoaLogado = getUsuarioLogado();
+		Pessoa pessoaLogado = PessoaLogadaUtil.pessoaLogada();
 		try {
 			Long trilhaId = Long.valueOf(idTrilha);
 			Long eventoId = Long.valueOf(idEvento);
@@ -386,7 +386,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String convidarPessoasPorEmail(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		Pessoa professorLogado = getUsuarioLogado();
+		Pessoa professorLogado = PessoaLogadaUtil.pessoaLogada();
 
 		if (EstadoEvento.ATIVO.equals(evento.getEstado())
 				&& PapelLdap.Tipo.DOCENTE.equals(professorLogado.getPapelLdap())) {
@@ -528,7 +528,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			return "redirect:/eventoOrganizador";
 		}
 
-		Pessoa professorLogado = getUsuarioLogado();
+		Pessoa professorLogado = PessoaLogadaUtil.pessoaLogada();
 
 		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
 
@@ -654,7 +654,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		}
 		return "DADOS_TRABALHOS";
 	}
-
+	
+	public Pessoa getUsuarioLogado(){
+		return PessoaLogadaUtil.pessoaLogada();
+	}
+	
 	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response)
 			throws FileNotFoundException, IOException {
 		TableModel modelo = new DefaultTableModel(dados, colunas);
@@ -668,16 +672,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		response.flushBuffer();
 	}
 
-	public Pessoa getUsuarioLogado() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		return (Pessoa) auth.getPrincipal();
-	}
-	
 	@RequestMapping(value = "/")
-	public String paginaOrganizador(Model model){
+	public String paginaOrganizador(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
-		model.addAttribute("pessoa",pessoaAux);
+		model.addAttribute("pessoa", pessoaAux);
 		return "organizador/organizador_meus_eventos";
 	}
 }

@@ -22,6 +22,7 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.SecaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 @RequestMapping(value = "/secao")
@@ -38,9 +39,14 @@ public class SecaoController {
 	@RequestMapping(value = "/paginaSecao")
 	public String indexSecao(Model model) {
 		List<Secao> secoes = secaoService.list();
+		
+		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
+		PessoaLogadaUtil.refreshPessoaLogada(pessoa);
+		
 		model.addAttribute("secoes", secoes);
 		return "secao/indexSecao";
 	}
+	
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/cadastrarSecaoForm", method = RequestMethod.GET)
 	public String cadastrarSecaoForm(Model model) {
@@ -56,7 +62,6 @@ public class SecaoController {
 		if (secao.getEvento() == null || secao.getResponsavel() == null) {
 			return "redirect:/secao/cadastrarSecaoForm";
 		}
-	
 		secaoService.addOrUpdate(secao);
 		return "redirect:/secao/paginaSecao";
 	}
