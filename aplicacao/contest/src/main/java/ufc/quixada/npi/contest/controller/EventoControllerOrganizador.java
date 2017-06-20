@@ -419,7 +419,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			case "REVISOR":
 				for(String e : emails){
 					e.trim();
-					flag = eventoService.adicionarRevisor(email, evento, url);
+					flag = eventoService.adicionarRevisor(e, evento, url);
 				}
 				break;
 	

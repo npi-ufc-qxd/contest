@@ -29,6 +29,7 @@
 
 
 			<!-- Modal Trigger -->
+			<div th:if="${#strings.equals(evento.visibilidade.getVisibilidade(),'Privado')}">
 			<button class="waves-effect waves-light btn modal-trigger  left"
 				data-target="modal1" style="left: 4px;">Adicionar
 				Organizador</button>
@@ -80,7 +81,7 @@
 						<form id="formAdicionarRevisor" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
-									<input id="email_rev" name="email" type="email" class="validate"
+									<input id="email_rev" name="email" type="text" class="validate"
 										required="required" /> <label for="email_rev">E-mail
 										Revisor</label>
 								</div>
@@ -101,6 +102,7 @@
 					<button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
 				</div>
 				
+			</div>
 			</div>
 
 			<div class="row">
