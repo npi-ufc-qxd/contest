@@ -22,6 +22,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -132,13 +133,18 @@ public class EventoController extends EventoGenericoController {
 			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 			
 			List<Trilha> trilhas = new ArrayList<>();
+			List<ParticipacaoEvento> participacoes = new ArrayList<>();
+			List<Secao> secoes = new ArrayList<>();
 
 			Trilha trilha = new Trilha();
+			//Secao secao = new Secao();
 			trilha.setEvento(evento);
 			trilha.setNome("Principal");
 			trilhas.add(trilha);
 
 			evento.setTrilhas(trilhas);
+			evento.setParticipacoes(participacoes);
+			evento.setSecoes(secoes);
 			
 			eventoService.adicionarOuAtualizarEvento(evento);
 			flag = eventoService.adicionarOrganizador(organizador.getEmail(), evento, url);

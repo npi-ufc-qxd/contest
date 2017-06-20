@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Token;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 import ufc.quixada.npi.contest.util.Constants;
@@ -116,7 +119,7 @@ public class EventoService {
 					&& evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoInicial())
 					&& evento.getPrazoRevisaoInicial().before(evento.getPrazoRevisaoFinal())
 					&& evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoFinal())) {
-
+				
 				eventoRepository.save(evento);
 				return true;
 			}
