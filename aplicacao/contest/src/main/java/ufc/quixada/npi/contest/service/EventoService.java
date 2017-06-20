@@ -116,7 +116,7 @@ public class EventoService {
 					&& evento.getPrazoRevisaoInicial().after(evento.getPrazoSubmissaoInicial())
 					&& evento.getPrazoRevisaoInicial().before(evento.getPrazoRevisaoFinal())
 					&& evento.getPrazoRevisaoFinal().before(evento.getPrazoSubmissaoFinal())) {
-
+				
 				eventoRepository.save(evento);
 				return true;
 			}

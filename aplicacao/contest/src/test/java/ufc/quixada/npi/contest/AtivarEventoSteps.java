@@ -82,9 +82,9 @@ public class AtivarEventoSteps {
 	}
 
 	@Dado("^que o organizado deseja ativar um evento com o id (.*)$")
-	public void administradorDesejaAtivarEvento(String id) throws Throwable {
+	public void administradorDesejaAtivarEvento(Long id) throws Throwable {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		action = mockMvc.perform(get(PAGINA_ATIVAR_EVENTO_GET, Long.valueOf(id)))
+		action = mockMvc.perform(get(PAGINA_ATIVAR_EVENTO_GET, id))
 				.andExpect(view().name(TEMPLATE_ADD_OR_EDIT_EVENTO_ORG));
 	}
 

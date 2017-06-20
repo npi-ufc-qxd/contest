@@ -321,16 +321,31 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/ativar/{id}", method = RequestMethod.GET)
-	public String ativarEvento(@PathVariable String id, Model model, RedirectAttributes redirect) {
+	public String ativarEvento(@PathVariable Long id, Model model, RedirectAttributes redirect) {
 		try {
-			Long idEvento = Long.valueOf(id);
-			Evento evento = eventoService.buscarEventoPorId(idEvento);
+			Evento evento = eventoService.buscarEventoPorId(id);
 			model.addAttribute("evento", evento);
 			return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
 		} catch (NumberFormatException e) {
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
 		return "redirect:/eventoOrganizador/inativos";
+	}
+
+	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
+	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect) {
+		Evento eventoBd = eventoService.buscarEventoPorId(evento.getId());
+		
+		eventoBd.setPrazoRevisaoFinal(evento.getPrazoRevisaoFinal());
+		eventoBd.setPrazoRevisaoInicial(evento.getPrazoRevisaoInicial());
+		eventoBd.setPrazoSubmissaoFinal(evento.getPrazoSubmissaoFinal());
+		eventoBd.setPrazoSubmissaoInicial(evento.getPrazoSubmissaoInicial());
+		eventoBd.setVisibilidade(evento.getVisibilidade());
+		eventoBd.setDescricao(evento.getDescricao());
+		eventoBd.setNome(evento.getNome());
+		
+		return ativarOuEditarEvento(eventoBd, result, model, redirect, "redirect:/eventoOrganizador/ativos",
+				Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
 
 	@RequestMapping(value = "/trilhas/{id}", method = RequestMethod.GET)
@@ -367,12 +382,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
 	}
 
-	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
-	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect) {
-		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos",
-				Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
-	}
-
 	@RequestMapping(value = "/convidar/{id}", method = RequestMethod.GET)
 	public String convidarPessoasPorEmail(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
@@ -386,39 +395,46 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 		} else {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
-			return "redirect:/eventoOrganizador/evento" + eventoId;
+			return "redirect:/eventoOrganizador/evento/" + eventoId;
 		}
 	}
 
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam("nome") String nome, @RequestParam("email") String email,
+	public String convidarPorEmail(@RequestParam("email") String email,
 			@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId, Model model,
 			RedirectAttributes redirect, HttpServletRequest request) {
-		String url = request.getRequestURI().toString();
+		
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		boolean flag = false;
 
-		switch (funcao) {
-		case "ORGANIZADOR":
-			flag = eventoService.adicionarOrganizador(email, evento, url);
-			break;
-
-		case "AUTOR":
-			flag = eventoService.adicionarAutor(email, evento, url);
-			break;
-
-		case "REVISOR":
-			flag = eventoService.adicionarRevisor(email, evento, url);
-			break;
-
-		default:
-			break;
-		}
-
-		if (!flag) {
-			redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
+		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
+		
+			boolean flag = false;
+	
+			switch (funcao) {
+			case "ORGANIZADOR":
+				flag = eventoService.adicionarOrganizador(email, evento, url);
+				break;
+	
+			case "AUTOR":
+				flag = eventoService.adicionarAutor(email, evento, url);
+				break;
+	
+			case "REVISOR":
+				flag = eventoService.adicionarRevisor(email, evento, url);
+				break;
+	
+			default:
+				break;
+			}
+	
+			if (!flag) {
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
+			} else {
+				redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+			}
 		} else {
-			redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
 		}
 		return "redirect:/eventoOrganizador/evento/" + eventoId;
 	}
