@@ -10,6 +10,7 @@ import ufc.quixada.npi.contest.model.Pessoa;
 public class ContestUtil {
 	
 	private ContestUtil() {
+		throw new IllegalStateException("Utility class");
 	}
 	
 	public static Pessoa convertUsuarioToPessoa(String encondedPassword, final Usuario usuario) {
