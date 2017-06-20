@@ -259,9 +259,8 @@ public class Evento {
 	
 	public List<String> getNomeOrganizadores(){
 		
-		List<Pessoa> pessoas = new ArrayList<>();
+		List<Pessoa> pessoas = this.getOrganizadores();
 		List<String> nomePessoas = new ArrayList<>();
-		pessoas = this.getOrganizadores();
 		for(Pessoa p : pessoas){
 			nomePessoas.add(p.getNome());
 		}
