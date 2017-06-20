@@ -397,6 +397,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		String[] emails = email.split(",");
 
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 		
