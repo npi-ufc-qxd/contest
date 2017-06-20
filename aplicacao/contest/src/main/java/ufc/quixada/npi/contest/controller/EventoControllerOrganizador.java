@@ -321,16 +321,31 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/ativar/{id}", method = RequestMethod.GET)
-	public String ativarEvento(@PathVariable String id, Model model, RedirectAttributes redirect) {
+	public String ativarEvento(@PathVariable Long id, Model model, RedirectAttributes redirect) {
 		try {
-			Long idEvento = Long.valueOf(id);
-			Evento evento = eventoService.buscarEventoPorId(idEvento);
+			Evento evento = eventoService.buscarEventoPorId(id);
 			model.addAttribute("evento", evento);
 			return Constants.TEMPLATE_ATIVAR_EVENTO_ORG;
 		} catch (NumberFormatException e) {
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
 		return "redirect:/eventoOrganizador/inativos";
+	}
+
+	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
+	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect) {
+		Evento eventoBd = eventoService.buscarEventoPorId(evento.getId());
+		
+		eventoBd.setPrazoRevisaoFinal(evento.getPrazoRevisaoFinal());
+		eventoBd.setPrazoRevisaoInicial(evento.getPrazoRevisaoInicial());
+		eventoBd.setPrazoSubmissaoFinal(evento.getPrazoSubmissaoFinal());
+		eventoBd.setPrazoSubmissaoInicial(evento.getPrazoSubmissaoInicial());
+		eventoBd.setVisibilidade(evento.getVisibilidade());
+		eventoBd.setDescricao(evento.getDescricao());
+		eventoBd.setNome(evento.getNome());
+		
+		return ativarOuEditarEvento(eventoBd, result, model, redirect, "redirect:/eventoOrganizador/ativos",
+				Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
 
 	@RequestMapping(value = "/trilhas/{id}", method = RequestMethod.GET)
@@ -365,12 +380,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			redirect.addFlashAttribute("erro", messageService.getMessage("EVENTO_NAO_EXISTE"));
 		}
 		return Constants.TEMPLATE_LISTAR_TRILHAS_ORG;
-	}
-
-	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
-	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect) {
-		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos",
-				Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
 
 	@RequestMapping(value = "/convidar/{id}", method = RequestMethod.GET)

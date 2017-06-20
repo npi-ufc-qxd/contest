@@ -155,11 +155,7 @@ public class Evento {
 	}
 
 	public void setParticipacoes(List<ParticipacaoEvento> participacoes) {
-		if(this.participacoes == null){
-			this.participacoes = participacoes;
-		}
-		this.participacoes.clear();
-		this.participacoes.addAll(participacoes);
+		this.participacoes = participacoes;
 	}
 
 	@Override

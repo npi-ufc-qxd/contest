@@ -137,11 +137,13 @@ public class EventoController extends EventoGenericoController {
 			List<Secao> secoes = new ArrayList<>();
 
 			Trilha trilha = new Trilha();
-			//Secao secao = new Secao();
+			Secao secao = new Secao();
 			trilha.setEvento(evento);
 			trilha.setNome("Principal");
 			trilhas.add(trilha);
+			secoes.add(secao);
 
+			evento.setSecoes(secoes);
 			evento.setTrilhas(trilhas);
 			evento.setParticipacoes(participacoes);
 			evento.setSecoes(secoes);
