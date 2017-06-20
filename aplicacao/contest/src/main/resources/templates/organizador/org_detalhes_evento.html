@@ -39,21 +39,30 @@
 					<h4>Adicionar Organizador</h4>
 
 					<div class="row">
-						<form class="col s12">
+						<form id="formAdicionarOrganizador" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
-									<input id="email_org" type="email" class="validate"
+									<input id="email_org" type="email" name="email" class="validate"
 										required="required" /> <label for="email_org">E-mail
 										Organizador</label>
 								</div>
+								
+								<div class="input-field">
+									<input type="hidden" th:value="${evento.id}" name="eventoId" />
+								</div>
+								
+								<div class="input-field">
+									<input type="hidden" value="ORGANIZADOR" name="funcao" />
+								</div>
+								
+								
 							</div>
 						</form>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button class="right btn waves-effect teal lighten-1">Enviar</button>
-					<button
-						class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
+					<button type="submit" form="formAdicionarOrganizador" class="right btn waves-effect teal lighten-1">Enviar</button>
+					<button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
 				</div>
 			</div>
 
@@ -68,10 +77,10 @@
 					<h4>Adicionar Revisor</h4>
 
 					<div class="row">
-						<form id="formAdicionarRevisor" th:action="@{'/eventoOrganizador/convidar/' + ${evento.id}}" action="#" method="POST" class="col s12">
+						<form id="formAdicionarRevisor" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
-									<input id="email_rev" type="email" class="validate"
+									<input id="email_rev" name="email" type="email" class="validate"
 										required="required" /> <label for="email_rev">E-mail
 										Revisor</label>
 								</div>
@@ -201,7 +210,7 @@
 
 
 	<form th:if="${eventoPrivado} == true"
-		th:action="@{'/eventoOrganizador/convidar/' + ${evento.id}}" action="#" method="post"
+		th:action="@{/eventoOrganizador/convidar}" action="#" method="post"
 		class="col s12">
 		<div id="modalConvidarPessoas" class="modal">
 			<div class="modal-content">
@@ -213,11 +222,6 @@
 
 								<div class="input-field">
 									<input type="hidden" th:value="${evento.id}" name="eventoId" />
-								</div>
-
-								<div class="input-field">
-									<input id="nome_da_pessoa" name="nome" type="text" /> <label
-										for="nome_da_pessoa">Nome</label>
 								</div>
 
 								<div class="input-field">
