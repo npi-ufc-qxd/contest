@@ -196,7 +196,11 @@ public class Evento {
 	}
 
 	public void setTrilhas(List<Trilha> trilhas) {
-		this.trilhas = trilhas;
+		if(this.trilhas == null){
+			this.trilhas = trilhas;
+		}
+		this.trilhas.clear();
+		this.trilhas.addAll(trilhas);
 	}
 
 	
@@ -253,7 +257,6 @@ public class Evento {
 		return getByPapel(Tipo.ORGANIZADOR);
 	}
 	
-	
 	public List<Pessoa> getRevisores(){
 		return getByPapel(Tipo.REVISOR);
 	}
@@ -263,7 +266,11 @@ public class Evento {
 	}
 
 	public void setSecoes(List<Secao> secoes) {
-		this.secoes = secoes;
+		if(this.secoes == null){
+			this.secoes = secoes;
+		}
+		this.secoes.clear();
+		this.secoes.addAll(secoes);
 	}
 	
 }
