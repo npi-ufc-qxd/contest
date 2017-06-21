@@ -43,6 +43,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 import ufc.quixada.npi.contest.util.RevisaoJSON;
 import ufc.quixada.npi.contest.validator.CriteriosRevisaoValidator;
 
@@ -138,6 +139,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		
 		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
 		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(revisor);
 		when(revisaoService
 				.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))
 				.thenReturn(false);
@@ -219,6 +221,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		
 		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
 		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(revisor);
 		when(revisaoService
 				.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))
 				.thenReturn(false);
@@ -379,6 +382,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		
 		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
 		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(revisor);
 		when(revisaoService
 				.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))
 				.thenReturn(false);
@@ -443,6 +447,7 @@ public class ProfessorRevisaTrabalhoSteps {
 		
 		when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
 		when(pessoaService.getByCpf("11111111101")).thenReturn(revisor);
+		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(revisor);
 		when(trabalho.getEvento()).thenReturn(evento);
 		when(evento.isPeriodoRevisao()).thenReturn(true);
 		when(revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId()))

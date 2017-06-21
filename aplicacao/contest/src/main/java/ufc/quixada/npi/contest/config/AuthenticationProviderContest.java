@@ -17,6 +17,7 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
+import ufc.quixada.npi.contest.util.ContestUtil;
 
 @Component
 public class AuthenticationProviderContest implements AuthenticationProvider {
@@ -50,12 +51,8 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 				
 		} else if (usuario != null && usuarioService.autentica(cpf, password)) { 
 			
-			pessoa = new Pessoa();
-			pessoa.setCpf(usuario.getCpf());
-			pessoa.setNome(usuario.getNome());
-			pessoa.setPassword(pessoaService.encodePassword(password));
-			pessoa.setPapel(Tipo.USER);
-			pessoa.setEmail(usuario.getEmail());
+			String encondedPassword = pessoaService.encodePassword(password);
+			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario);
 			
 			for (Affiliation affiliation : usuario.getAuthorities()) {
 				if (affiliation.getNome().equals(Tipo.ADMIN.getNome())) {
@@ -70,6 +67,8 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 
 		throw new BadCredentialsException(messageService.getMessage("LOGIN_INVALIDO"));
 	}
+
+	
 
 	@Override
 	public boolean supports(Class<?> arg0) {

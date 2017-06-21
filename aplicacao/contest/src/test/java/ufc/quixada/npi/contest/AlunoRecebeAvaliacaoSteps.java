@@ -37,6 +37,7 @@ import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 public class AlunoRecebeAvaliacaoSteps {
 
@@ -109,6 +110,7 @@ public class AlunoRecebeAvaliacaoSteps {
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
 		when(pessoaService.getByCpf(aluno.getCpf())).thenReturn(aluno);
+		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(aluno);
 
 		action = mockMvc
 				.perform(get("/autor/revisao/trabalho/{trabalhoId}",
@@ -140,6 +142,7 @@ public class AlunoRecebeAvaliacaoSteps {
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
 		when(pessoaService.getByCpf(aluno.getCpf())).thenReturn(aluno);
+		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(aluno);
 		
 		action = mockMvc
 				.perform(get("/autor/revisao/trabalho/{trabalhoId}",

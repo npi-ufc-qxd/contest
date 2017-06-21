@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.SecaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 @RequestMapping(value = "/secao")
@@ -33,17 +35,22 @@ public class SecaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
-
+	
 	@RequestMapping(value = "/paginaSecao")
 	public String indexSecao(Model model) {
 		List<Secao> secoes = secaoService.list();
+		
+		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
+		PessoaLogadaUtil.refreshPessoaLogada(pessoa);
+		
 		model.addAttribute("secoes", secoes);
 		return "secao/indexSecao";
 	}
-
+	
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/cadastrarSecaoForm", method = RequestMethod.GET)
 	public String cadastrarSecaoForm(Model model) {
-		List<Pessoa> pessoas = pessoaService.getPossiveisOrganizadores();
+		List<Pessoa> pessoas = pessoaService.getTodos();
 		List<Evento> eventos = eventoService.buscarEventos();
 		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("eventos", eventos);
@@ -58,7 +65,8 @@ public class SecaoController {
 		secaoService.addOrUpdate(secao);
 		return "redirect:/secao/paginaSecao";
 	}
-
+	
+	@PreAuthorize("isResponsavelInSecao(#idSecao)")
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
 	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
 		Secao secao = secaoService.get(idSecao);
@@ -85,7 +93,8 @@ public class SecaoController {
 		model.addAttribute("qtdTrabalhos", secao.getTrabalhos().size());
 		return "secao/secaoTrabalhos";
 	}
-
+	
+	@PreAuthorize("isResponsavelInSecao(#idSecao)")
 	@RequestMapping(value = "/excluirSecao/{id}")
 	public String excluirSecao(@PathVariable("id") Long idSecao) {
 		Secao secao = secaoService.get(idSecao);

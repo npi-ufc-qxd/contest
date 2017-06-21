@@ -12,9 +12,7 @@
 
 	       	<a th:href="@{/secao/paginaSecao}">Visualizar Seções</a>
 
-	       	<a th:if="${eventoPrivado} == true" class="modal-trigger" href="#modalConvidarPessoas">Convidar Pessoas</a>
-
-	       
+	       	<a th:if= "${evento != null} ? ${#strings.equals(evento.visibilidade.getVisibilidade(),'Privado')} and ${#strings.equals(evento.estado,'ATIVO')} and ${#arrays.contains(evento.getNomeOrganizadores(), #authentication.getPrincipal().getNome())} "   class="modal-trigger" href="#modalConvidarPessoas">Convidar Pessoas</a>
 	       <!-- Dropdown Structure -->
 			<ul th:if="${evento}" id='dropdown1' class='dropdown-content'>
 				<li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Dados da Organização</a></li>

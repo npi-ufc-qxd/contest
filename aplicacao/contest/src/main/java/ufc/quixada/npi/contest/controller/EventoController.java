@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -31,13 +33,12 @@ import ufc.quixada.npi.contest.util.Constants;
 
 @Controller
 @RequestMapping("/evento")
-public class EventoController extends EventoGenericoController{
+public class EventoController extends EventoGenericoController {
 
 	private static final String EVENTO_INATIVO_EXCLUIDO_ERRO = "EVENTO_INATIVO_EXCLUIDO_ERRO";
 	private static final String ERRO_EXCLUIR = "erroExcluir";
 	private static final String EVENTO_INATIVO_EXCLUIDO_SUCESSO = "EVENTO_INATIVO_EXCLUIDO_SUCESSO";
 	private static final String SUCESSO_EXCLUIR = "sucessoExcluir";
-	private static final String PESSOA_NAO_ENCONTRADA = "PESSOA_NAO_ENCONTRADA";
 	private static final String EVENTO_CADASTRADO_COM_SUCESSO = "EVENTO_CADASTRADO_COM_SUCESSO";
 	private static final String EVENTO_EDITADO_COM_SUCESSO = "EVENTO_EDITADO_COM_SUCESSO";
 	private static final String SUCESSO_CADASTRAR = "sucessoCadastrar";
@@ -56,7 +57,7 @@ public class EventoController extends EventoGenericoController{
 
 	@Autowired
 	private EventoService eventoService;
-	
+
 	@Autowired
 	private MessageService messageService;
 
@@ -64,12 +65,12 @@ public class EventoController extends EventoGenericoController{
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
-	
-	@RequestMapping(value = {"/ativos", ""}, method = RequestMethod.GET)
+
+	@RequestMapping(value = { "/ativos", "" }, method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		List<Evento> listaEventos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
 		model.addAttribute(EVENTOS_ATIVOS, listaEventos);
-		
+
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ADMIN;
 	}
 
@@ -82,15 +83,24 @@ public class EventoController extends EventoGenericoController{
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento(Model model) {
+		Pessoa organizador = new Pessoa();
+		organizador.setEmail("Email do Organizador");
+		
 		model.addAttribute(EVENTO, new Evento());
+		model.addAttribute("organizador", organizador);
+		
 		return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
-	}	
+	}
 
-	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
-	public String adicionarEvento(@RequestParam(required = false) String organizador, @Valid Evento evento,
-			BindingResult result, RedirectAttributes redirect) {
+	@RequestMapping(value = "/adicionarEvento", method = RequestMethod.POST)
+	public String adicionarEvento(@ModelAttribute("organizador") Pessoa organizador, @Valid Evento evento,
+			BindingResult result, RedirectAttributes redirect, HttpServletRequest request ) {
+		
 
-		if (organizador == null || organizador.isEmpty()) {
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		
+		
+		if (organizador.getEmail() == null || organizador.getEmail().isEmpty()) {
 			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(ORGANIZADOR_VAZIO_ERROR));
 		}
 
@@ -98,41 +108,62 @@ public class EventoController extends EventoGenericoController{
 			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
 		}
 
-		Pessoa pessoa = pessoaService.get(Long.valueOf(organizador));
-		
-		if (pessoa != null) {
-			ParticipacaoEvento participacao = new ParticipacaoEvento();
-			if(evento.getId() != null){
-				participacao = participacaoEventoService.findByEventoId(evento.getId());
-				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
-				addEventoEmParticipacao(evento, participacao, pessoa);
-			}else{
+		boolean flag = true;
 				
-				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
+		if (evento.getId() != null) {
+			
+			Evento eventoBd = eventoService.buscarEventoPorId(evento.getId());
+			
+			if(!eventoBd.getOrganizadores().get(0).getEmail().equals(organizador.getEmail())){
+				
+				eventoBd.getParticipacoes().clear();
+				eventoService.adicionarOuAtualizarEvento(eventoBd);
+				flag = eventoService.adicionarOrganizador(organizador.getEmail(), eventoBd, url);
 			}
 			
-			eventoService.adicionarOuAtualizarEvento(evento);
+			eventoBd.setDescricao(evento.getDescricao());
+			eventoBd.setNome(evento.getNome());
+			eventoService.adicionarOuAtualizarEvento(eventoBd);
+			
+			if (flag) {
+				redirect.addFlashAttribute(SUCESSO_EDITAR, messageService.getMessage(EVENTO_EDITADO_COM_SUCESSO));
+			}
+		} else {
+			evento.setEstado(EstadoEvento.INATIVO);
+			evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 			
 			List<Trilha> trilhas = new ArrayList<>();
-			
-            		Trilha trilha = new Trilha();
-            		trilha.setEvento(evento);
+			List<ParticipacaoEvento> participacoes = new ArrayList<>();
+			List<Secao> secoes = new ArrayList<>();
+
+			Trilha trilha = new Trilha();
+			Secao secao = new Secao();
+			trilha.setEvento(evento);
 			trilha.setNome("Principal");
 			trilhas.add(trilha);
-            
+			secoes.add(secao);
+
+			evento.setSecoes(secoes);
 			evento.setTrilhas(trilhas);
-			addEventoEmParticipacao(evento, participacao, pessoa);
-		} else {
-			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(PESSOA_NAO_ENCONTRADA));
-			return Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN;
+			evento.setParticipacoes(participacoes);
+			evento.setSecoes(secoes);
+			
+			eventoService.adicionarOuAtualizarEvento(evento);
+			flag = eventoService.adicionarOrganizador(organizador.getEmail(), evento, url);
+			if (flag) {
+				redirect.addFlashAttribute(SUCESSO_CADASTRAR, messageService.getMessage(EVENTO_CADASTRADO_COM_SUCESSO));
+			}
 		}
+
+		
 
 		return "redirect:/evento/inativos";
 	}
-	
+
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
-	public String alterarEventoAdmin(@PathVariable String id, Model model, RedirectAttributes redirect){
-		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN, "redirect:/evento/inativos");
+	public String alterarEventoAdmin(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		return alterarEvento(id, model, redirect, Constants.TEMPLATE_ADICIONAR_OU_EDITAR_EVENTO_ADMIN,
+				"redirect:/evento/inativos");
 	}
 
 	@RequestMapping(value = "/remover", method = RequestMethod.POST)
@@ -141,7 +172,7 @@ public class EventoController extends EventoGenericoController{
 			Long idEvento = Long.valueOf(id);
 			Evento evento = eventoService.buscarEventoPorId(idEvento);
 			if (evento != null) {
-				participacaoEventoService.removerParticipacaoEvento(evento);
+				eventoService.removerEvento(evento.getId());
 
 				redirect.addFlashAttribute(SUCESSO_EXCLUIR, messageService.getMessage(EVENTO_INATIVO_EXCLUIDO_SUCESSO));
 			} else {
@@ -153,9 +184,9 @@ public class EventoController extends EventoGenericoController{
 
 		return "redirect:/evento/inativos";
 	}
-	
-	public void addEventoEmParticipacao(Evento evento, ParticipacaoEvento participacao, Pessoa pessoa){
-        evento.setEstado(EstadoEvento.INATIVO);
+
+	public void addEventoEmParticipacao(Evento evento, ParticipacaoEvento participacao, Pessoa pessoa) {
+		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		participacao.setEvento(evento);
 		participacao.setPessoa(pessoa);

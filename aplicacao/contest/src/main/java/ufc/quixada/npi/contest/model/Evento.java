@@ -68,14 +68,14 @@ public class Evento {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoRevisaoFinal;
 
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<ParticipacaoEvento> participacoes;
 	
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=false)
 	@OrderBy("nome ASC")
 	private List<Trilha> trilhas;
 	
-	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=false)
 	private List<Secao> secoes;
 
 	public Long getId() {
@@ -196,7 +196,11 @@ public class Evento {
 	}
 
 	public void setTrilhas(List<Trilha> trilhas) {
-		this.trilhas = trilhas;
+		if(this.trilhas == null){
+			this.trilhas = trilhas;
+		}
+		this.trilhas.clear();
+		this.trilhas.addAll(trilhas);
 	}
 
 	
@@ -253,6 +257,17 @@ public class Evento {
 		return getByPapel(Tipo.ORGANIZADOR);
 	}
 	
+	public List<String> getNomeOrganizadores(){
+		
+		List<Pessoa> pessoas = this.getOrganizadores();
+		List<String> nomePessoas = new ArrayList<>();
+		for(Pessoa p : pessoas){
+			nomePessoas.add(p.getNome());
+		}
+		
+		return nomePessoas;
+	}
+	
 	
 	public List<Pessoa> getRevisores(){
 		return getByPapel(Tipo.REVISOR);
@@ -263,7 +278,11 @@ public class Evento {
 	}
 
 	public void setSecoes(List<Secao> secoes) {
-		this.secoes = secoes;
+		if(this.secoes == null){
+			this.secoes = secoes;
+		}
+		this.secoes.clear();
+		this.secoes.addAll(secoes);
 	}
 	
 }

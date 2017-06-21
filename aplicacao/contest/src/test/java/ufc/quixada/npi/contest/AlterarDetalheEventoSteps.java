@@ -125,7 +125,7 @@ public class AlterarDetalheEventoSteps {
 		when(auth.getName()).thenReturn("92995454310");
 		SecurityContextHolder.setContext(context);
 		
-		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(org);
+		when(eventoControllerOrganizador.getUsuarioLogado()).thenReturn(org);
 		
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
@@ -207,7 +207,6 @@ public class AlterarDetalheEventoSteps {
 		when(submissaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(true);
 		when(revisaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(false);
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(participacaoEventoService.findByEventoId(Mockito.anyLong())).thenReturn(participacao);
 
 		action = mockMvc.perform(
 				get(PAGINA_EDITAR_EVENTO_GET, Long.valueOf(evento.getId())))
@@ -245,7 +244,6 @@ public class AlterarDetalheEventoSteps {
 		when(submissaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(true);
 		when(revisaoService.existeTrabalhoNesseEvento(evento.getId())).thenReturn(false);
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
-		when(participacaoEventoService.findByEventoId(Mockito.anyLong())).thenReturn(participacao);
 
 		action = mockMvc.perform(
 				get(PAGINA_EDITAR_EVENTO_GET, Long.valueOf(evento.getId())))

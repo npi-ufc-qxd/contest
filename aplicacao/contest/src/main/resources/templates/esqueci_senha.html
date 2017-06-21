@@ -18,10 +18,10 @@
 			<div class="row">
 				<h1 class="center header">Esqueci minha senha</h1>
 				<div class="col s12">
-					<form class="valign" method="post">
+					<form th:action="@{/esqueci-minha-senha}" class="valign" method="post">
 
 						<div class="input-field">
-							<input type="email" id="email" required="required" /> <label
+							<input type="email" name="email" id="email" required="required" /> <label
 								for="email">*E-mail</label>
 						</div>
 
