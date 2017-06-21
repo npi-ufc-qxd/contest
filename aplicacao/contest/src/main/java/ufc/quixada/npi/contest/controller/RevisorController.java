@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +35,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 import ufc.quixada.npi.contest.util.RevisaoJSON;
 import ufc.quixada.npi.contest.validator.CriteriosRevisaoValidator;
 
@@ -90,7 +90,7 @@ public class RevisorController {
 			return "redirect:/eventoOrganizador";
 		}
 
-		Pessoa revisor = getRevisorLogado();
+		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
 		model.addAttribute("trabalhosRevisados",
 				trabalhoService.getTrabalhosRevisadosDoRevisor(revisor.getId(), idEvento));
@@ -107,7 +107,7 @@ public class RevisorController {
 
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 		Evento evento;
-		Pessoa revisor = getRevisorLogado();
+		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
 
 		if (trabalho != null) {
 			evento = trabalho.getEvento();
@@ -153,7 +153,7 @@ public class RevisorController {
 			HttpSession session) {
 
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-		Pessoa revisor = getRevisorLogado();
+		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
 
 		if (trabalho == null) {
 			return "redirect:/error";
@@ -249,7 +249,7 @@ public class RevisorController {
 			return "redirect:/revisor";
 		}
 
-		Pessoa professorLogado = getRevisorLogado();
+		Pessoa professorLogado = PessoaLogadaUtil.pessoaLogada();
 		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
 
 		if (evento != null) {
@@ -272,13 +272,6 @@ public class RevisorController {
 		}
 
 		return "redirect:/revisor";
-	}
-
-	public Pessoa getRevisorLogado() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String cpf = auth.getName();
-		Pessoa revisorLogado = pessoaService.getByCpf(cpf);
-		return revisorLogado;
 	}
 
 	@RequestMapping(value = "/")

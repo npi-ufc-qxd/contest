@@ -37,6 +37,7 @@ import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 public class ExcluirTrabalhoSteps {
 	private static final long EVENTO_ID = 1L;
@@ -110,6 +111,7 @@ public class ExcluirTrabalhoSteps {
 		when(trabalhoService.existeTrabalho(trabalho.getId())).thenReturn(true);
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(pessoaService.getByCpf(aluno.getCpf())).thenReturn(aluno);
+		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(aluno);
 		
 		action = mockMvc
 				.perform(post("/autor/excluirTrabalho")
