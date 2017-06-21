@@ -68,7 +68,7 @@ public class Evento {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoRevisaoFinal;
 
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=false)
 	private List<ParticipacaoEvento> participacoes;
 	
 	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=false)
@@ -256,18 +256,6 @@ public class Evento {
 	public List<Pessoa> getOrganizadores(){
 		return getByPapel(Tipo.ORGANIZADOR);
 	}
-	
-	public List<String> getNomeOrganizadores(){
-		
-		List<Pessoa> pessoas = this.getOrganizadores();
-		List<String> nomePessoas = new ArrayList<>();
-		for(Pessoa p : pessoas){
-			nomePessoas.add(p.getNome());
-		}
-		
-		return nomePessoas;
-	}
-	
 	
 	public List<Pessoa> getRevisores(){
 		return getByPapel(Tipo.REVISOR);

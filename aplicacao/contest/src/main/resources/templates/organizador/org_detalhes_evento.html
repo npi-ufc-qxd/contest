@@ -29,6 +29,7 @@
 
 
 			<!-- Modal Trigger -->
+			
 			<button class="waves-effect waves-light btn modal-trigger  left"
 				data-target="modal1" style="left: 4px;">Adicionar
 				Organizador</button>
@@ -42,7 +43,7 @@
 						<form id="formAdicionarOrganizador" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
-									<input id="email_org" type="email" name="email" class="validate"
+									<input id="email_org" type="text" name="email" class="validate"
 										required="required" /> <label for="email_org">E-mail
 										Organizador</label>
 								</div>
@@ -80,7 +81,7 @@
 						<form id="formAdicionarRevisor" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
-									<input id="email_rev" name="email" type="email" class="validate"
+									<input id="email_rev" name="email" type="text" class="validate"
 										required="required" /> <label for="email_rev">E-mail
 										Revisor</label>
 								</div>
@@ -108,7 +109,7 @@
 					<div class="card darken-1">
 						<div class="card-content white-text">
 							<span class="card-title teal-text text-lighten-2">Organizadores</span>
-							<p class="black-text text-darken-2">Lista de Organizadores</p>
+							<p th:each="pessoaOrganizador : ${evento.getOrganizadores()}" class="black-text text-darken-2" th:text="${pessoaOrganizador.getNome()}"></p>
 						</div>
 					</div>
 				</div>
@@ -117,7 +118,8 @@
 					<div class="card">
 						<div class="card-content white-text">
 							<span class="card-title teal-text text-lighten-2">Revisores</span>
-							<p class="black-text text-darken-2">Lista de Revisores</p>
+							<p th:each="pessoaRevisor : ${evento.getRevisores()}" class="black-text text-darken-2" th:text="${pessoaRevisor.getNome()}"></p>
+							<p th:unless="${!#lists.isEmpty(evento.getRevisores())}" class="black-text text-darken-2" >Não há revisores</p>
 						</div>
 					</div>
 				</div>

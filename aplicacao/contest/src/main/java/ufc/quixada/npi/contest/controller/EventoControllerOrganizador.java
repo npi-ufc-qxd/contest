@@ -406,6 +406,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		String[] emails = email.split(",");
 
 		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
 		
@@ -413,7 +414,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	
 			switch (funcao) {
 			case "ORGANIZADOR":
-				flag = eventoService.adicionarOrganizador(email, evento, url);
+				for(String e : emails){
+					e = e.trim();
+					flag = eventoService.adicionarOrganizador(e, evento, url);
+				}
+				
 				break;
 	
 			case "AUTOR":
@@ -421,7 +426,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 				break;
 	
 			case "REVISOR":
-				flag = eventoService.adicionarRevisor(email, evento, url);
+				for(String e : emails){
+					e = e.trim();
+					flag = eventoService.adicionarRevisor(e, evento, url);
+				}
 				break;
 	
 			default:
