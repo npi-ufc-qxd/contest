@@ -406,7 +406,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			switch (funcao) {
 			case "ORGANIZADOR":
 				for(String e : emails){
-					e.trim();
+					e = e.trim();
 					flag = eventoService.adicionarOrganizador(e, evento, url);
 				}
 				
@@ -418,7 +418,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	
 			case "REVISOR":
 				for(String e : emails){
-					e.trim();
+					e = e.trim();
 					flag = eventoService.adicionarRevisor(e, evento, url);
 				}
 				break;

@@ -28,14 +28,15 @@ public class ParticipacaoEventoService {
 			ParticipacaoEvento participacaoTemp = participacaoEventoRepository.findOneByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa());
 			if(participacaoTemp == null){
 				participacaoEventoRepository.save(participacao);
-			}
+			} else {		
 			
-			if(participacaoTemp.getPapel().equals(Tipo.ORGANIZADOR) && !participacao.getPapel().equals(Tipo.ORGANIZADOR)){
-				participacaoEventoRepository.save(participacao);
-			}
-			
-			if(participacaoTemp.getPapel().equals(Tipo.REVISOR) && !participacao.getPapel().equals(Tipo.REVISOR)){
-				participacaoEventoRepository.save(participacao);
+				if(participacaoTemp.getPapel().equals(Tipo.ORGANIZADOR) && !participacao.getPapel().equals(Tipo.ORGANIZADOR)){
+					participacaoEventoRepository.save(participacao);
+				}
+				
+				if(participacaoTemp.getPapel().equals(Tipo.REVISOR) && !participacao.getPapel().equals(Tipo.REVISOR)){
+					participacaoEventoRepository.save(participacao);
+				}
 			}
 			
 			return true;
