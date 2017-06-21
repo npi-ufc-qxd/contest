@@ -76,7 +76,6 @@ public class LoginController {
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model){
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
-		List<Evento> eventos = eventoService.eventosParaParticipar(Long.parseLong(cpf));
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
 		List<ParticipacaoTrabalho> trabalhosQueReviso = participacaoTrabalhoService.getTrabalhosPorRevisorId(pessoaAux.getId());
 		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, pessoaAux.getId());
@@ -84,7 +83,6 @@ public class LoginController {
 		List<ParticipacaoEvento> eventoTrabalhosMinhaAutoria = participacaoEventoService.getEventosDoAutor(EstadoEvento.ATIVO, pessoaAux.getId());
 		model.addAttribute("eventoTrabalhosMinhaAutoria", eventoTrabalhosMinhaAutoria);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
-		model.addAttribute("eventosParaParticipar", eventos);
 		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
 		model.addAttribute("trabalhosMinhaAutoria", trabalhosMinhaAutoria);
 		model.addAttribute("pessoa",pessoaAux);
@@ -102,5 +100,4 @@ public class LoginController {
 		
 		return "esqueci_senha";
 	}
-
 }
