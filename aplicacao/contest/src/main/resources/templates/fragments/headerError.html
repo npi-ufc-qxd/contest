@@ -18,10 +18,10 @@
 				<a th:href="@{/}"><img th:src="@{/img/logotipo_white.png}"
 					alt="Contest" width="200px" /></a>
 				<ul class="white-text right hide-on-med-and-down">
-					<li><form th:action="@{/dashboard}" method="POST"
-							id="dashboard">
-							<a th:href="@{/dashboard}">Ir para Dashboard</a>
-						</form></li>
+					<li sec:authorize="isAuthenticated()">
+						<div sec:authorize = "hasRole('USER')"> <a th:href="@{/dashboard}"> Ir para Dashboard </a> </div>
+						<div sec:authorize = "hasRole('ADMIN')"> <a th:href="@{/evento/ativos}"> Ir para Início </a> </div>
+					</li>
 					<li><form th:action="@{/logout}" method="POST" id="logout">
 							<a
 								onclick="document.getElementById('logout').submit(); return false;">Sair</a>
@@ -30,13 +30,6 @@
 
 				<!-- Dropdown Trigger -->
 				<div class="right">
-					<ul id='dropdown1' class='dropdown-content collection '>
-						<div th:each="notificacoes : ${notificacoes}">
-							<li class="collection-item dismissable left "><span
-								class="title center" th:text="${notificacoes.titulo}"></span>
-								<p th:text="${notificacoes.descricao}"></p></li>
-						</div>
-					</ul>
 					<ul id="nav-mobile" class="side-nav">
 						<li><a href="#">Nome</a></li>
 						<li><a href="#">Sair&nbsp;<i class="fa fa-sign-out"

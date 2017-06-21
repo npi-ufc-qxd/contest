@@ -59,7 +59,6 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 					pessoa.setPapel(Tipo.ADMIN);
 				}
 			}
-
 			pessoaService.addOrUpdate(pessoa);
 
 			return new UsernamePasswordAuthenticationToken(pessoa, pessoaService.encodePassword(password),

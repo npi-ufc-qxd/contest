@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ufc.quixada.npi.contes.exception.ContestException;
 import ufc.quixada.npi.contest.model.EstadoEvento;
-import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
@@ -121,7 +120,6 @@ public class LoginController {
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model){
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
-		List<Evento> eventos = eventoService.eventosParaParticipar(Long.parseLong(cpf));
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
 		List<ParticipacaoTrabalho> trabalhosQueReviso = participacaoTrabalhoService.getTrabalhosPorRevisorId(pessoaAux.getId());
 		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, pessoaAux.getId());
@@ -129,7 +127,6 @@ public class LoginController {
 		List<ParticipacaoEvento> eventoTrabalhosMinhaAutoria = participacaoEventoService.getEventosDoAutor(EstadoEvento.ATIVO, pessoaAux.getId());
 		model.addAttribute("eventoTrabalhosMinhaAutoria", eventoTrabalhosMinhaAutoria);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
-		model.addAttribute("eventosParaParticipar", eventos);
 		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
 		model.addAttribute("trabalhosMinhaAutoria", trabalhosMinhaAutoria);
 		model.addAttribute("pessoa",pessoaAux);
