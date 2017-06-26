@@ -1,12 +1,9 @@
 package ufc.quixada.npi.contest.util;
 
-import org.springframework.stereotype.Component;
-
 import br.ufc.quixada.npi.ldap.model.Usuario;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.Pessoa;
 
-@Component
 public class ContestUtil {
 	
 	private ContestUtil() {
