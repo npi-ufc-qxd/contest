@@ -242,10 +242,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
-				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
-		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
-				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		boolean existeEventos = true;
 
 		if (eventosAtivos.isEmpty())
