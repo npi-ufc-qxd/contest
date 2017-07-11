@@ -100,7 +100,7 @@ public class EventoController extends EventoGenericoController {
 		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		
 		
-		if (organizador.getEmail() == null || organizador.getEmail().isEmpty()) {
+		if (organizador.getEmail() == null || organizador.getEmail().isEmpty() || organizador.getEmail().equalsIgnoreCase("Email do Organizador")) {
 			result.reject(ORGANIZADOR_ERROR, messageService.getMessage(ORGANIZADOR_VAZIO_ERROR));
 		}
 
