@@ -35,15 +35,14 @@
 			<!-- Modal Structure -->
 			<div id="modal1" class="modal">
 				<div class="modal-content">
-					<h4>Adicionar Organizador</h4>
+					<h4>Adicionar Organizador </h4>
 
 					<div class="row">
 						<form id="formAdicionarOrganizador" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
-									<input id="email_org" type="text" name="email" class="validate"
-										required="required" /> <label for="email_org">E-mail
-										Organizador</label>
+									<input id="email_org" type="text" name="email" class="validate"	required="required" /> 
+									<label for="email_org">E-mail Organizador</label>
 								</div>
 								
 								<div class="input-field">
@@ -215,44 +214,46 @@
 	</div>
 	<div th:include="fragments/footer :: footer"></div>
 
-
-	<form th:if="${eventoPrivado} == true"
-		th:action="@{/eventoOrganizador/convidar}" action="#" method="post"
-		class="col s12">
-		<div id="modalConvidarPessoas" class="modal">
-			<div class="modal-content">
-				<h4>Convidar Pessoas</h4>
-				<div class="row">
-					<div class="col s12">
-						<div class="row modal-form-row">
-							<div class="input-field col s12">
-
-								<div class="input-field">
-									<input type="hidden" th:value="${evento.id}" name="eventoId" />
+	<div id="modalConvidarPessoas" class="modal">
+		<form id="formConvidarPessoas"  th:action="@{/eventoOrganizador/convidar}" action="#" method="post"
+			class="col s12">		
+				<div class="modal-content">
+					<h4>Convidar Pessoas</h4>
+					<div class="row">
+						<div class="col s12">
+							<div class="row modal-form-row">
+								<div class="input-field col s12">
+	
+									<div class="input-field">
+										<input type="hidden" th:value="${evento.id}" name="eventoId" />
+									</div>
+	
+									<div class="input-field">
+										<input id="email_da_pessoa" name="email" type="email" required="required" />
+										<label for="email_da_pessoa">Email</label>
+									</div>
+	
+									<select name="funcao" required="required">
+										<option value="ORGANIZADOR">Organizador</option>
+										<option value="REVISOR">Revisor</option>
+										<option value="AUTOR">Autor</option>
+									</select>
 								</div>
-
-								<div class="input-field">
-									<input id="email_da_pessoa" name="email" type="email" /> <label
-										for="email_da_pessoa">Email</label>
-								</div>
-
-								<select name="funcao">
-									<option value="ORGANIZADOR">Organizador</option>
-									<option value="REVISOR">Revisor</option>
-									<option value="AUTOR">Autor</option>
-								</select>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="submit" value="Confirmar"
-					class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-				<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
-			</div>
-		</div>
-	</form>
+		</form>
+				
+		 <div class="modal-footer">
+			 <!--   <button type="submit" value="Confirmar"	class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+			  <a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>-->
+			  <button type="submit" form="formConvidarPessoas" class="right btn waves-effect teal lighten-1">Convidar</button>
+			  <button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
+		 </div>
+		 
+	</div>
+	
 
 	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
 	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
