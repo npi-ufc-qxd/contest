@@ -25,10 +25,12 @@ public class Constants {
 	public static final String TEMPLATE_GERAR_CERTIFICADOS_TRABALHO = "organizador/org_gerar_certificados_trabalhos";
 	public static final String TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES = "organizador/org_gerar_certificados_organizadores";
 	public static final String TEMPLATE_GERAR_CERTIFICADOS_REVISORES = "organizador/org_gerar_certificados_revisores";
+	public static final String TEMPLATE_LISTAR_EVENTOS_ATIVOS_REV = "revisor/revisor_eventos_listar_ativos";
 	
 	public static final String TEMPLATE_LISTAR_TRILHAS_ORG = "organizador/org_trilhas";
 	public static final String TEMPLATE_DETALHES_TRILHA_ORG = "organizador/org_detalhes_trilha";
 	public static final String TEMPLATE_DETALHES_EVENTO_ORG = "organizador/org_detalhes_evento";
+	public static final String TEMPLATE_DETALHES_EVENTO_REV = "revisor/revisor_detalhes_evento";
 	public static final String TEMPLATE_ATRIBUIR_REVISOR_ORG = "organizador/org_atribuir_revisores";
 	public static final String TEMPLATE_CONSIDERACOES_REVISORES_ORG = "organizador/org_consideracoes_dos_revisores";
 	public static final String TEMPLATE_ORGANIZADOR_SEM_PERMISSAO = "organizador/erro_permissao_de_org";

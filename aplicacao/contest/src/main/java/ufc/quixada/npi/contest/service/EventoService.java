@@ -188,6 +188,9 @@ public class EventoService {
 		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idOrganizador,
 				Tipo.ORGANIZADOR, EstadoEvento.INATIVO);
 	}
+	public List<Evento> buscarEventosQueReviso(Long idRevisor) {
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idRevisor, Tipo.REVISOR, EstadoEvento.ATIVO);
+	}
 
 	public List<Evento> getEventosByEstadoEVisibilidadePublica(EstadoEvento estado) {
 		return eventoRepository.findEventoByEstadoAndVisibilidade(estado, VisibilidadeEvento.PUBLICO);

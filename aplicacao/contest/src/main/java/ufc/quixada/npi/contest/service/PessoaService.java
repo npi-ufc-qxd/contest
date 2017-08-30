@@ -93,4 +93,5 @@ public class PessoaService {
 	public List<Pessoa> getTodos(){
 		return pessoaRepository.findAll();
 	}
+	
 }

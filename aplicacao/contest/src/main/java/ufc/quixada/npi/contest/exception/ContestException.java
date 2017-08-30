@@ -1,4 +1,4 @@
-package ufc.quixada.npi.contes.exception;
+package ufc.quixada.npi.contest.exception;
 
 public class ContestException extends RuntimeException {
 	public ContestException(String message) {

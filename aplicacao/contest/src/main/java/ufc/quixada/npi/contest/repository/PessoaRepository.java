@@ -36,4 +36,5 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long>{
 	public List<Pessoa> getPossiveisOrganizadoresDoEvento(@Param("idEvento")Long idEvento);
 	
 	public List<Pessoa> findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoIdOrderByParticipacoesEventoPessoaNome(Tipo papel, Long id);
+	
 }

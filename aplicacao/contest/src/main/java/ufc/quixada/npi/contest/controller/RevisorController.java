@@ -3,6 +3,8 @@ package ufc.quixada.npi.contest.controller;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,6 +30,7 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -35,6 +38,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 import ufc.quixada.npi.contest.util.RevisaoJSON;
 import ufc.quixada.npi.contest.validator.CriteriosRevisaoValidator;
@@ -276,10 +280,82 @@ public class RevisorController {
 
 	@RequestMapping(value = "/")
 	public String paginaRevisor(Model model) {
-		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
+		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();		
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
+		List<Evento> eventos = eventoService.buscarEventos();
 		model.addAttribute("pessoa", pessoaAux);
-		return "revisor/revisor_index";
+		model.addAttribute("eventos", eventos);
+		return "revisor/revisor_meus_eventos";
 	}
+	//@PreAuthorize("isRevisor()")
+	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
+	public String listarEventosAtivos(Model model) {
+		Pessoa p = PessoaLogadaUtil.pessoaLogada();
+		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
+		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
+		boolean existeEventos = true;
 
+		if (eventosAtivos.isEmpty())
+			existeEventos = false;
+
+		List<Long> eventosComoRevisor = new ArrayList<>();
+		List<Long> eventosComoOrganizador = new ArrayList<>();
+
+		for (ParticipacaoEvento participacaoEvento : participacoesComoRevisor) {
+			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
+		}
+
+		for (ParticipacaoEvento participacaoEvento : participacoesComoOrganizador) {
+			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
+		}
+
+		model.addAttribute("existeEventos", existeEventos);
+		model.addAttribute("eventosAtivos", eventosAtivos);
+		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
+		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
+		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_REV;
+		
+	}
+	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
+	public String detalhesEvento(@PathVariable String id, Model model) {
+		Long eventoId = Long.parseLong(id);
+		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		Boolean eventoPrivado = false;
+
+		if (evento.getVisibilidade() == VisibilidadeEvento.PRIVADO) {
+			eventoPrivado = true;
+		}
+
+		List<Pessoa> pessoas = pessoaService.getTodos();
+		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
+
+		model.addAttribute("organizaEvento", organizaEvento);
+		model.addAttribute("evento", evento);
+		model.addAttribute("pessoas", pessoas);
+		model.addAttribute("eventoPrivado", eventoPrivado);
+
+		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
+		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
+
+		List<Pessoa> organizadores = pessoaService.getOrganizadoresEvento(eventoId);
+
+		for (Pessoa p : organizadores) {
+			if (p.getId() == pessoa.getId()) {
+				model.addAttribute("gerarCertificado", true);
+				break;
+			}
+		}
+
+		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
+		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
+		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
+
+		model.addAttribute("comentarios",
+				trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+
+		return Constants.TEMPLATE_DETALHES_EVENTO_REV;
+	}
 }
