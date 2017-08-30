@@ -32,6 +32,10 @@ public class ParticipacaoTrabalhoService {
 		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.AUTOR, idAutor);
 	}
 	
+	public List<ParticipacaoTrabalho> getParticipacaoTrabalhoPorCoautorId(Long idCoautor){
+		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.COAUTOR, idCoautor);
+	}
+	
 	public List<ParticipacaoTrabalho> getTrabalhosPorRevisorId(Long idRevisor){
 		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.REVISOR, idRevisor);
 	}

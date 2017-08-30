@@ -125,10 +125,12 @@ public class LoginController {
 		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, pessoaAux.getId());
 		List<ParticipacaoTrabalho> trabalhosMinhaAutoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorAutorId(pessoaAux.getId());
 		List<ParticipacaoEvento> eventoTrabalhosMinhaAutoria = participacaoEventoService.getEventosDoAutor(EstadoEvento.ATIVO, pessoaAux.getId());
+		List<ParticipacaoTrabalho> trabalhosMinhaCoautoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorCoautorId(pessoaAux.getId());
 		model.addAttribute("eventoTrabalhosMinhaAutoria", eventoTrabalhosMinhaAutoria);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
 		model.addAttribute("trabalhosMinhaAutoria", trabalhosMinhaAutoria);
+		model.addAttribute("TrabalhosMinhaCoautoria", trabalhosMinhaCoautoria);
 		model.addAttribute("pessoa",pessoaAux);
 		return "dashboard";
 	}

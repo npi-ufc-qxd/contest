@@ -185,7 +185,7 @@ public class AutorController {
 	}
 
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
-	public String listarEventosInativos(Model model) {
+	public String listarEventosAtivos(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
 		if (eventos != null) {
