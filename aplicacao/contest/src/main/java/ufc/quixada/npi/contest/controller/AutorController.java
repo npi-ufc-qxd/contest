@@ -111,6 +111,7 @@ public class AutorController {
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
+	@PreAuthorize("isAutor()")
 	@RequestMapping
 	public String index(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();

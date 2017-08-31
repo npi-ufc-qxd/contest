@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <div th:include="fragments/head :: head"></div>
+    <link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page"><br/>
+      <div th:include="fragments/revisor_menu_navegacao :: revisor_menu_navegacao"></div>
+    
+      
+      <div class="row">
+        <h2>Lista de Eventos</h2>
+        <div>
+        <div th:if="${eventoVazioError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoVazioError}">
+				<i class="material-icons">close</i>
+		  </div>
+			
+			<div th:if="${eventoInexistenteError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${eventoInexistenteError}">
+				<i class="material-icons">close</i>
+			</div>
+			
+			<div th:if="${participarEventoInativoError != null}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${participarEventoInativoError}">
+				<i class="material-icons">close</i>
+			</div>
+			
+			<div th:if="${particapacaoEventoSucesso != null}" id="success_area" class="row chip green white-text" style="margin-right: 5px;margin-left: 5px;" th:text="${particapacaoEventoSucesso}">
+				<i class="material-icons">close</i>
+			</div>
+			
+			<div id="error_area" class="row chip red white-text" th:if="${periodoRevisaoError}">
+          		<span th:text="${periodoRevisaoError}"></span>
+          		<i class="material-icons">close</i>
+          	</div>
+			
+        </div>
+        <div class="row">
+          <div class="input-field">
+            <input id="pesquisar" type="text" oninput="buscar(this,'card-stacked','card-content')" class="col s11"/>
+            <label for="pesquisar">Procurando um evento específico?</label><a class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">search</i></a>
+          </div>
+        </div>
+        
+        <div class="row" th:if="${not #lists.isEmpty(eventos)} and ${revisor != null}">
+          <div class="row" th:each="evento : ${eventos}">
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+                <div class="card-action">
+                	<a th:if="${evento.isPeriodoRevisao()}" th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a>
+                	<a  th:if="${evento.isPeriodoFinal()}" class="btn disabled grey white-text">Prazo de revisão encerrado</a>
+                    <a th:href="@{'/revisor/evento/' + ${evento.id}}" class="purple-text">Detalhes </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div th:unless="${#lists.isEmpty(eventos)}" class="row holder center"></div>
+      </div>
+    </div>
+    <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+     <script type="text/javascript">
+		$(document).ready(function(){
+			
+			buscar = function(e,componente,elementoABuscar) {
+				var filtro = e;
+				var componente = componente;
+				var elementoABuscar = elementoABuscar;
+				
+				var nomeFiltro = removerAcentos(filtro.value.toLowerCase());
+				var componenteCompleto = document.getElementsByClassName(componente);
+				var elemento = document.getElementsByClassName(elementoABuscar);
+				
+				
+				 for (var i = elemento.length - 1; i >=0; i--){
+					var conteudoBusca = removerAcentos(elemento[i].firstElementChild.innerHTML);
+					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
+					componenteCompleto[i].style.display = corresponde ? '' : 'none';
+			    } 
+				
+			};
+		});
+		
+		/**
+		 * Remove acentos de strings
+		 * @param  {String} string acentuada
+		 * @return {String} string sem acento
+		 */
+		var map={"â":"a","Â":"A","à":"a","À":"A","á":"a","Á":"A","ã":"a","Ã":"A","ê":"e","Ê":"E","è":"e","È":"E","é":"e","É":"E","î":"i","Î":"I","ì":"i","Ì":"I","í":"i","Í":"I","õ":"o","Õ":"O","ô":"o","Ô":"O","ò":"o","Ò":"O","ó":"o","Ó":"O","ü":"u","Ü":"U","û":"u","Û":"U","ú":"u","Ú":"U","ù":"u","Ù":"U","ç":"c","Ç":"C"};
+
+		function removerAcentos(s){ return s.replace(/[\W\[\] ]/g,function(a){return map[a]||a}) };
+		
+		
+	</script>
+  </body>
+</html>

@@ -85,7 +85,7 @@ public class RevisorController {
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
 	private static final String FORA_PERIODO_REVISAO = "FORA_PERIODO_REVISAO";
 
-	@PreAuthorize("isRevisorInEvento(#idEvento)")
+	@PreAuthorize("isRevisorInEvento(#eventoId)")
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
@@ -262,6 +262,8 @@ public class RevisorController {
 				participacaoEvento.setEvento(evento);
 				participacaoEvento.setPessoa(professorLogado);
 				participacaoEvento.setPapel(Tipo.REVISOR);
+				
+				//TEM QUE ATUALIZAR O USUARIO DA SESSÂO (getPrincipal())
 
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
 				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO,
@@ -277,17 +279,20 @@ public class RevisorController {
 
 		return "redirect:/revisor";
 	}
-
+	
+	@PreAuthorize("isRevisor()")
 	@RequestMapping(value = "/")
 	public String paginaRevisor(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();		
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
 		List<Evento> eventos = eventoService.buscarEventos();
+		Tipo revisor = Tipo.REVISOR;
 		model.addAttribute("pessoa", pessoaAux);
 		model.addAttribute("eventos", eventos);
+		model.addAttribute("revisor",revisor);
 		return "revisor/revisor_meus_eventos";
 	}
-	//@PreAuthorize("isRevisor()")
+	@PreAuthorize("isRevisor()")
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = PessoaLogadaUtil.pessoaLogada();
@@ -295,6 +300,7 @@ public class RevisorController {
 		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
 		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		boolean existeEventos = true;
+		Tipo revisor = Tipo.REVISOR;
 
 		if (eventosAtivos.isEmpty())
 			existeEventos = false;
@@ -314,16 +320,19 @@ public class RevisorController {
 		model.addAttribute("eventosAtivos", eventosAtivos);
 		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
 		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
+		model.addAttribute("revisor",revisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_REV;
 		
 	}
+	@PreAuthorize("isRevisorInEvento(#id)")
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
 		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		Boolean eventoPrivado = false;
-
+		Tipo revisor = Tipo.REVISOR;
+		
 		if (evento.getVisibilidade() == VisibilidadeEvento.PRIVADO) {
 			eventoPrivado = true;
 		}
@@ -352,10 +361,8 @@ public class RevisorController {
 		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
 		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
 		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
-
-		model.addAttribute("comentarios",
-				trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
-
+		model.addAttribute("comentarios",trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+		model.addAttribute("revisor",revisor);
 		return Constants.TEMPLATE_DETALHES_EVENTO_REV;
 	}
 }
