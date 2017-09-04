@@ -14,7 +14,7 @@
         <div th:unless="${#lists.isEmpty(eventosAtivos)}" class="row holder center"></div>
         <div class="row" id="itemContainer">
            <div th:each="evento : ${eventosAtivos}" class="col m6 s12">
-              <div class="card">
+              <div class="card">              
                 <div class="card-content">
 	              <span class="card-title" th:text="${evento.nome}" ></span>
 				  <div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
