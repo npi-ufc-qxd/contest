@@ -16,14 +16,53 @@
 
 				<div class="col s8 md10">
 					<div class="card white">
-						<div class="card-content">
+						<div class="card-content"
+							th:switch="${not #lists.isEmpty(trabalhosQueReviso)}">
 							<h5>Eventos Ativos</h5>
+							<div th:if="${#lists.isEmpty(eventos)}">
+								<b>Não Existe nenhum evento disponível no momento!</b>
+							</div>
+							<div class="row" th:if="${not #lists.isEmpty(eventos)}">
+								<div class="card horizontal">
+									<div class="row" th:each="evento : ${eventos}">
+										<div class="card-stacked">
+											<div
+												th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+											<div class="card-action">
+												<a th:if="${evento.isPeriodoInicial()}"
+													th:attr="href='#modal' + ${evento.id}"
+													class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+												<a th:unless="${evento.isPeriodoInicial()}"
+													class="btn disabled white-text grey">Período de
+													inscrição encerrado</a>
+											</div>
+										</div>
+										<div th:attr="id='modal' + ${evento.id}" class="modal">
+											<div class="modal-content">
+												<h4>Participar do Evento</h4>
+												<h5 th:text="${evento.nome}"></h5>
+												<p>Tem certeza que quer participar deste evento?</p>
+											</div>
+											<form th:action="@{/autor/participarEvento}" method="post">
 
+												<div class="modal-footer">
+													<input type="hidden" name="idEvento"
+														th:value="${evento.id}" />
+													<button type="submit"
+														class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+													<a href="#"
+														class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col s4 md8">
-					<div class="col">
+					<div class="col s12">
 						<div class="card white">
 							<div class="card-content"
 								th:switch="${not #lists.isEmpty(trabalhosQueReviso)}">
@@ -54,7 +93,7 @@
 						</div>
 					</div>
 
-					<div class="col">
+					<div class="col s12">
 						<div class="card white">
 							<div class="card-content">
 								<h5>Como Organizador</h5>
@@ -83,49 +122,25 @@
 						</div>
 					</div>
 
-					<div class="col">
+					<div class="col s12">
 						<div class="card white">
 							<div class="card-content">
 								<h5>Como Autor</h5>
-								<div th:if="${#lists.isEmpty(eventoTrabalhosMinhaAutoria)}">
-									<b>Você não está participando de nenhum evento ativo.</b>
+								<div th:if="${#lists.isEmpty(trabalhosMinhaAutoria)}">
+									<b>Você não é autor em nenhum trabalho.</b>
 								</div>
-								<div class="card white"
-									th:if="${not #lists.isEmpty(eventoTrabalhosMinhaAutoria)}">
-									<div class="card-content">
-										<div
-											th:each="participacaoEvento : ${eventoTrabalhosMinhaAutoria}">
-											<div class="card horizontal">
-												<div class="card-stacked">
-													<div
-														th:include="fragments/evento_timeline::evento-timeline(evento=${participacaoEvento.evento})"></div>
-													<div class="card-action">
-														<a class="purple-text">Participando</a>
-													</div>
-												</div>
-											</div>
-
-											<div th:attr="id='modal' + ${participacaoEvento.evento.id}"
-												class="modal">
-												<div class="modal-content">
-													<h4>Participar do Evento</h4>
-													<h5 th:text="${participacaoEvento.evento.nome}"></h5>
-													<p>Tem certeza que quer participar deste evento?</p>
-												</div>
-												<form th:action="@{/autor/participarEvento}" method="post">
-
-													<div class="modal-footer">
-														<input type="hidden" name="idEvento"
-															th:value="${participacaoEvento.evento.id}" />
-														<button type="submit"
-															class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-														<a href="#"
-															class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-													</div>
-												</form>
-											</div>
-										</div>
-									</div>
+								<div th:if="${not #lists.isEmpty(trabalhosMinhaAutoria)}">
+									<ul>
+										<li><a
+											th:href="@{|/autor/file/${trabalhosMinhaAutoria[0].trabalho.id}|}"
+											th:text="${trabalhosMinhaAutoria[0].trabalho.titulo}"></a></li>
+										<li><a th:if="${trabalhosMinhaAutoria.size()} > 1"
+											th:href="@{|/autor/file/${trabalhosMinhaAutoria[1].trabalho.id}|}"
+											th:text="${trabalhosMinhaAutoria[1].trabalho.titulo}"></a></li>
+										<li><a th:if="${trabalhosMinhaAutoria.size()} > 2"
+											th:href="@{|/autor/file/${trabalhosMinhaAutoria[2].trabalho.id}|}"
+											th:text="${trabalhosMinhaAutoria[2].trabalho.titulo}"></a></li>
+									</ul>
 								</div>
 							</div>
 							<div class="card-action">
@@ -134,62 +149,37 @@
 									mais</a>
 							</div>
 						</div>
-
 					</div>
 
-					<div class="col">
+					<div class="col s12">
 						<div class="card white">
 							<div class="card-content">
 								<h5>Como Coautor</h5>
-								<div th:if="${#lists.isEmpty(eventoTrabalhosMinhaAutoria)}">
-									<b>Você não é coautor de nenhum trabalho</b>
+								<div th:if="${#lists.isEmpty(trabalhosMinhaCoautoria)}">
+									<b>Você não é Coautor em nenhum trabalho.</b>
 								</div>
-								<div class="card white"
-									th:if="${not #lists.isEmpty(eventoTrabalhosMinhaAutoria)}">
-									<div class="card-content">
-										<div
-											th:each="participacaoEvento : ${eventoTrabalhosMinhaAutoria}">
-											<div class="card horizontal">
-												<div class="card-stacked">
-													<div
-														th:include="fragments/evento_timeline::evento-timeline(evento=${participacaoEvento.evento})"></div>
-													<div class="card-action">
-														<a class="purple-text">Participando</a>
-													</div>
-												</div>
-											</div>
-
-											<div th:attr="id='modal' + ${participacaoEvento.evento.id}"
-												class="modal">
-												<div class="modal-content">
-													<h4>Participar do Evento</h4>
-													<h5 th:text="${participacaoEvento.evento.nome}"></h5>
-													<p>Tem certeza que quer participar deste evento?</p>
-												</div>
-												<form th:action="@{/autor/participarEvento}" method="post">
-
-													<div class="modal-footer">
-														<input type="hidden" name="idEvento"
-															th:value="${participacaoEvento.evento.id}" />
-														<button type="submit"
-															class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-														<a href="#"
-															class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-													</div>
-												</form>
-											</div>
-										</div>
-									</div>
+								<div th:if="${not #lists.isEmpty(TrabalhosMinhaCoautoria)}">
+									<ul>
+										<li><a
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[0].trabalho.id}|}"
+											th:text="${trabalhosMinhaCoautoria[0].trabalho.titulo}"></a></li>
+										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 1"
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[1].trabalho.id}|}"
+											th:text="${trabalhosMinhaCoautoria[1].trabalho.titulo}"></a></li>
+										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 2"
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[2].trabalho.id}|}"
+											th:text="${trabalhosMinhaCoautoria[2].trabalho.titulo}"></a></li>
+									</ul>
 								</div>
 							</div>
 							<div class="card-action">
-								<a th:href="@{/autor}"
+								<a th:href="@{/coautor/meusTrabalhos}"
 									class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
 									mais</a>
 							</div>
 						</div>
-
 					</div>
+
 				</div>
 			</div>
 
