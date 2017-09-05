@@ -134,13 +134,13 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path="resetar-senha/{token}", method=RequestMethod.GET)
-	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws Exception  {
+	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws IllegalArgumentException  {
 		ModelAndView model = new ModelAndView();
 		if (token.getAcao().equals(Constants.ACAO_RECUPERAR_SENHA)){
 			model.setViewName("resetar_senha");
 			model.addObject("token", token);
 		} else {
-			throw new Exception("O token passado não corresponde a ação de recuperar senha.");
+			throw new IllegalArgumentException("O token passado não corresponde a ação de recuperar senha.");
 		}
 		return model;
 	}
