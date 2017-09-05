@@ -16,9 +16,48 @@
 
 				<div class="col s8 md10">
 					<div class="card white">
-						<div class="card-content">
+						<div class="card-content"
+							th:switch="${not #lists.isEmpty(trabalhosQueReviso)}">
 							<h5>Eventos Ativos</h5>
+							<div th:if="${#lists.isEmpty(eventos)}">
+								<b>Não Existe nenhum evento disponível no momento!</b>
+							</div>
+							<div class="row" th:if="${not #lists.isEmpty(eventos)}">
+								<div class="card horizontal">
+									<div class="row" th:each="evento : ${eventos}">
+										<div class="card-stacked">
+											<div
+												th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+											<div class="card-action">
+												<a th:if="${evento.isPeriodoInicial()}"
+													th:attr="href='#modal' + ${evento.id}"
+													class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+												<a th:unless="${evento.isPeriodoInicial()}"
+													class="btn disabled white-text grey">Período de
+													inscrição encerrado</a>
+											</div>
+										</div>
+										<div th:attr="id='modal' + ${evento.id}" class="modal">
+											<div class="modal-content">
+												<h4>Participar do Evento</h4>
+												<h5 th:text="${evento.nome}"></h5>
+												<p>Tem certeza que quer participar deste evento?</p>
+											</div>
+											<form th:action="@{/autor/participarEvento}" method="post">
 
+												<div class="modal-footer">
+													<input type="hidden" name="idEvento"
+														th:value="${evento.id}" />
+													<button type="submit"
+														class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+													<a href="#"
+														class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -116,20 +155,20 @@
 						<div class="card white">
 							<div class="card-content">
 								<h5>Como Coautor</h5>
-								<div th:if="${#lists.isEmpty(TrabalhosMinhaCoautoria)}">
+								<div th:if="${#lists.isEmpty(trabalhosMinhaCoautoria)}">
 									<b>Você não é Coautor em nenhum trabalho.</b>
 								</div>
 								<div th:if="${not #lists.isEmpty(TrabalhosMinhaCoautoria)}">
 									<ul>
 										<li><a
-											th:href="@{|/coautor/file/${TrabalhosMinhaCoautoria[0].trabalho.id}|}"
-											th:text="${TrabalhosMinhaCoautoria[0].trabalho.titulo}"></a></li>
-										<li><a th:if="${TrabalhosMinhaCoautoria.size()} > 1"
-											th:href="@{|/coautor/file/${TrabalhosMinhaCoautoria[1].trabalho.id}|}"
-											th:text="${TrabalhosMinhaCoautoria[1].trabalho.titulo}"></a></li>
-										<li><a th:if="${TrabalhosMinhaCoautoria.size()} > 2"
-											th:href="@{|/coautor/file/${TrabalhosMinhaCoautoria[2].trabalho.id}|}"
-											th:text="${TrabalhosMinhaCoautoria[2].trabalho.titulo}"></a></li>
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[0].trabalho.id}|}"
+											th:text="${trabalhosMinhaCoautoria[0].trabalho.titulo}"></a></li>
+										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 1"
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[1].trabalho.id}|}"
+											th:text="${trabalhosMinhaCoautoria[1].trabalho.titulo}"></a></li>
+										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 2"
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[2].trabalho.id}|}"
+											th:text="${trabalhosMinhaCoautoria[2].trabalho.titulo}"></a></li>
 									</ul>
 								</div>
 							</div>
@@ -140,7 +179,7 @@
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
 			</div>
 

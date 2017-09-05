@@ -28,10 +28,10 @@ public class ParticipacaoTrabalho {
 	@NotNull
 	private Tipo papel;
 
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne
 	private Pessoa pessoa;
 	
-	@ManyToOne
+	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	private Trabalho trabalho;
 
 	public Long getId() {
