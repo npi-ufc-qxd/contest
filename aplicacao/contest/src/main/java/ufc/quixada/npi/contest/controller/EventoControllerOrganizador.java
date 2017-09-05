@@ -115,7 +115,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
-
+	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
@@ -229,7 +229,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		participacaoTrabalhoService.remover(participacao);
 		return "{\"result\":\"ok\"}";
 	}
-
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = { "/meusEventos", "" }, method = RequestMethod.GET)
 	public String meusEventos(Model model) {
 		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
@@ -676,7 +676,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		IOUtils.copy(is, response.getOutputStream());
 		response.flushBuffer();
 	}
-
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/")
 	public String paginaOrganizador(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();

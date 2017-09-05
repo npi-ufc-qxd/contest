@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import ufc.quixada.npi.contes.exception.ContestException;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -136,13 +134,13 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path="resetar-senha/{token}", method=RequestMethod.GET)
-	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws ContestException{
+	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws IllegalArgumentException  {
 		ModelAndView model = new ModelAndView();
 		if (token.getAcao().equals(Constants.ACAO_RECUPERAR_SENHA)){
 			model.setViewName("resetar_senha");
 			model.addObject("token", token);
 		} else {
-			throw new ContestException("O token passado não corresponde a ação de recuperar senha.");
+			throw new IllegalArgumentException("O token passado não corresponde a ação de recuperar senha.");
 		}
 		return model;
 	}

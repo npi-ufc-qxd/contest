@@ -26,6 +26,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	}
     	return false;
     }
+    
     public boolean isOrganizador(){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	
@@ -69,6 +70,18 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     }
     
     //RESTRIÇÕES PARA REVISOR
+    
+    public boolean isRevisor(){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	
+    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
+    		if(participacacao.getPapel()== Tipo.REVISOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public boolean isRevisorInTrabalho(Long trabalhoId){
     	Pessoa pessoa = (Pessoa)getPrincipal();
     	
