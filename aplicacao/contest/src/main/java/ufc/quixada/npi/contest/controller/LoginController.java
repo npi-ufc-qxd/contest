@@ -30,6 +30,7 @@ import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TokenService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
+import java.lang.Exception;
 
 @Controller
 public class LoginController {
@@ -140,7 +141,7 @@ public class LoginController {
 			model.setViewName("resetar_senha");
 			model.addObject("token", token);
 		} else {
-			System.out.println("O token passado não corresponde a ação de recuperar senha.");
+			throw new Exception("O token passado não corresponde a ação de recuperar senha.");
 		}
 		return model;
 	}
