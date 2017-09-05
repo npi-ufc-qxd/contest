@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ufc.quixada.npi.contest.model.EstadoEvento;
+import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
@@ -29,6 +29,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TokenService;
 import ufc.quixada.npi.contest.util.Constants;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 public class LoginController {
@@ -117,17 +118,18 @@ public class LoginController {
 	
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model){
-		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
-		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
-		List<ParticipacaoTrabalho> trabalhosQueReviso = participacaoTrabalhoService.getTrabalhosPorRevisorId(pessoaAux.getId());
-		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, pessoaAux.getId());
-		List<ParticipacaoTrabalho> trabalhosMinhaAutoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorAutorId(pessoaAux.getId());
-		List<ParticipacaoEvento> eventoTrabalhosMinhaAutoria = participacaoEventoService.getEventosDoAutor(EstadoEvento.ATIVO, pessoaAux.getId());
-		model.addAttribute("eventoTrabalhosMinhaAutoria", eventoTrabalhosMinhaAutoria);
-		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
-		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
+		List<ParticipacaoTrabalho> trabalhosQueReviso = participacaoTrabalhoService.getTrabalhosPorRevisorId(PessoaLogadaUtil.pessoaLogada().getId());
+		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, PessoaLogadaUtil.pessoaLogada().getId());
+		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
+		eventosAtivos.removeAll(eventoService.buscarMeusEventos(PessoaLogadaUtil.pessoaLogada().getId()));
+		List<ParticipacaoTrabalho> trabalhosMinhaAutoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorAutorId(PessoaLogadaUtil.pessoaLogada().getId());
+		List<ParticipacaoTrabalho> trabalhosMinhaCoautoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorCoautorId(PessoaLogadaUtil.pessoaLogada().getId());
 		model.addAttribute("trabalhosMinhaAutoria", trabalhosMinhaAutoria);
-		model.addAttribute("pessoa",pessoaAux);
+		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
+		model.addAttribute("eventos", eventosAtivos);
+		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
+		model.addAttribute("trabalhosMinhaCoautoria", trabalhosMinhaCoautoria);
+		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada().getId());
 		return "dashboard";
 	}
 	
