@@ -30,7 +30,6 @@ import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TokenService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
-import java.lang.Exception;
 
 @Controller
 public class LoginController {
@@ -135,7 +134,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path="resetar-senha/{token}", method=RequestMethod.GET)
-	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token)  {
+	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws Exception  {
 		ModelAndView model = new ModelAndView();
 		if (token.getAcao().equals(Constants.ACAO_RECUPERAR_SENHA)){
 			model.setViewName("resetar_senha");
