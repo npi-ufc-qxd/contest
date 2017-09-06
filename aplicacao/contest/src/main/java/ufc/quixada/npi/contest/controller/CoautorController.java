@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Pessoa;
-import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
