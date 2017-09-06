@@ -28,13 +28,13 @@ import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 public class CoautorController {
 
 	@Autowired
-	TrabalhoService trabalhoService;
+	private TrabalhoService trabalhoService;
 	
 	@Autowired
-	ParticipacaoEventoService participacaoEventoService;
+	private ParticipacaoEventoService participacaoEventoService;
 	
 	@Autowired		
-	ParticipacaoTrabalhoService participacaoTrabalhoService;
+	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 	
 	@RequestMapping("/")
 	public String index(Model model) {
