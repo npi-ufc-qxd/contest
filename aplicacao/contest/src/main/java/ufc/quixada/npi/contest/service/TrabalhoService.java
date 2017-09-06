@@ -69,6 +69,10 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosDoCoautor(Pessoa pessoa) {
 		return trabalhoRepository.getTrabalhoDoCoautor(pessoa.getId());
 	}
+	
+	public List<Trabalho> getTrabalhosDoAutor(Pessoa pessoa) {
+		return trabalhoRepository.getTrabalhoDoAutor(pessoa.getId());
+	}
 
 	public void remover(Long id) {
 		trabalhoRepository.delete(id);

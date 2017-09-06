@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <div th:include="fragments/head :: head"></div>
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page"><br/>
+      <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
+      
+      <div>
+		<div th:if="${trabalhoExcluido}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${sucessoEnviarTrabalho}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_ENVIADO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${FORA_DA_DATA_DE_SUBMISSAO}" id="error_area" class="row chip red white-text" th:text="#{FORA_DA_DATA_DE_SUBMISSAO}">
+	          <i class="material-icons">close</i>
+	    </div>
+	    
+	    <div th:if="${ERRO_TRABALHO_EVENTO}" id="error_area" class="row chip red white-text" th:text="#{ERRO_TRABALHO_EVENTO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${ERRO_REENVIAR}" id="error_area" class="row chip red white-text" th:text="#{ERRO_REENVIAR}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${erroExcluir}" id="error_area" class="row chip red white-text" th:text="#{ERRO_EXCLUIR_TRABALHO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${arquivoInvalido}" id="error_area" class="row chip red white-text" th:text="#{FORMATO_ARQUIVO_INVALIDO}">
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${revisao_inexistente}" id="error_area" class="row chip red white-text" th:text="#{REVISAO_INEXISTENTE}">
+          <i class="material-icons">close</i>
+        </div>
+      </div>
+      
+      <div class="col s12">
+        
+        <div th:if="${not #lists.isEmpty(listaTrabalhos)}" class="col s4">
+          <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal ">
+        	<div class="card-stacked"> 
+        	  
+        	  <div class="card-content">
+                <span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span> <br/>
+                <span class="card-title" th:text="'Evento: ' + ${trabalho.evento.nome}"></span>
+                
+                <div class="row">
+                <div class="col s4">
+                	<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
+                </div>
+                
+                <div class="col s4">
+                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
+                	<p><b>SITUAÇÃO: </b> 
+                	
+                	<span th:if="${not #lists.isEmpty(trabalho.revisoes)}" th:text="${trabalho.revisoes[0].avaliacao}"></span>
+                	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>
+                	</p>
+               
+                </div>
+                
+                <div class="col s4">
+                <p><b>Número total de submissões: </b><span th:text="${#lists.size(trabalho.submissoes)}"></span></p>
+                	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(#lists.size(trabalho.submissoes) - 1).dataSubmissao,'dd/MM/yyyy')} "></span></p>
+                </div>
+                </div>
+                 
+              </div>       	  
+        	</div>
+          </div>
+        </div>
+        <div th:if="${#lists.isEmpty(listaTrabalhos)}" class="col s4">
+        	<p>Você não é Coautor de nenhum trabalho</p>
+        </div>
+      </div>
+      
+    </div>
+    <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //Inicialização dos elementos no JS
+        //Parallax BG
+        $('.parallax').parallax();
+        
+        //sideNav
+        $(".button-collapse").sideNav();
+        
+        //Tooltips
+        $('.tooltipped').tooltip({delay: 50});
+        
+        //select_initializer
+        $('select').material_select();
+        
+        //datepicker
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 15, // Creates a dropdown of 15 years to control year
+          //Persnonalizando nomes dos meses do ano
+          monthsFull: [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ],
+          //Persnonalizando nomes dos dias da semana
+          weekdaysFull: [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+          weekdaysShort: [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ],
+          weekdaysLetter: [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+          today: 'Hoje',
+          clear: 'Limpar',
+          close: 'Fechar'
+        });
+        
+        //Trata as datas na tela org_editar_eventos 
+        var calendarioSubmissaoInicial = "#prazo_submissao_inicial";
+        var calendarioSubmissaoFinal = "#prazo_submissao_final";
+        var calendarioRevisaoInicial = "#prazo_revisao_inicial";
+        var calendarioRevisaoFinal = "#prazo_revisao_final";
+        
+        function habilitarCalendario(calendario){
+          $(calendario).removeAttr( "disabled" );
+        }
+        
+        function desabilitarCalendario(calendario){
+          $(calendario).attr( "disabled", true );
+          $(calendario).pickadate("clear");
+        }
+        
+        function definirDataMinimaCalendario(calendario, dataMin){
+          var picker = getPicker(calendario);
+          picker.set("min", dataMin);
+        }
+        
+        function getPicker(idCalendario){
+          var $input = $(idCalendario).pickadate();
+          var picker = $input.pickadate("picker");
+          return picker;
+        }
+        
+        function configurarCalendario(idCalendarioInicial, idCalendarioFinal){
+          var picker = getPicker(idCalendarioInicial);
+          var dataAtual = picker.get();
+          var umDia = 1;
+          
+          var dataMinima = new Date(dataAtual);
+          dataMinima.setDate(dataMinima.getDate()+umDia);
+                
+          if (dataAtual.length == 0) {
+            desabilitarCalendario(idCalendarioFinal);
+          } else {
+            habilitarCalendario(idCalendarioFinal);       
+            
+            definirDataMinimaCalendario(idCalendarioFinal, dataMinima);
+          }
+        }
+        
+        $(calendarioSubmissaoInicial).on("change",function(){
+          configurarCalendario(calendarioSubmissaoInicial, calendarioSubmissaoFinal);
+        });
+        
+        $(calendarioSubmissaoFinal).on("change",function(){
+          configurarCalendario(calendarioSubmissaoFinal, calendarioRevisaoInicial);
+        });
+        
+        $(calendarioRevisaoInicial).on("change",function(){
+          configurarCalendario(calendarioRevisaoInicial, calendarioRevisaoFinal);
+        });
+        
+        //Inicialização do Modal excluir Evento
+        $('.modal-trigger').leanModal();
+        
+      });
+    </script>
+  </body>
+</html>

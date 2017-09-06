@@ -288,7 +288,7 @@ public class RevisorController {
 		return "redirect:/revisor/";
 	}
 
-	@PreAuthorize("isRevisor()")
+
 	@RequestMapping(value = "/")
 	public String paginaRevisor(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
