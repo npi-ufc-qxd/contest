@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -22,12 +23,14 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TokenService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
@@ -36,10 +39,16 @@ public class LoginController {
 	
 	@Autowired
 	PessoaService pessoaService;
+	
 	@Autowired
 	EventoService eventoService;
+	
 	@Autowired
 	ParticipacaoTrabalhoService participacaoTrabalhoService;
+	
+	@Autowired
+	TrabalhoService trabalhoService;
+	
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
 	
@@ -122,13 +131,13 @@ public class LoginController {
 		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, PessoaLogadaUtil.pessoaLogada().getId());
 		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
 		eventosAtivos.removeAll(eventoService.buscarMeusEventos(PessoaLogadaUtil.pessoaLogada().getId()));
-		List<ParticipacaoTrabalho> trabalhosMinhaAutoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorAutorId(PessoaLogadaUtil.pessoaLogada().getId());
-		List<ParticipacaoTrabalho> trabalhosMinhaCoautoria = participacaoTrabalhoService.getParticipacaoTrabalhoPorCoautorId(PessoaLogadaUtil.pessoaLogada().getId());
+		List<Trabalho> trabalhosMinhaCoutoria = trabalhoService.getTrabalhosDoCoautor(PessoaLogadaUtil.pessoaLogada());
+		List<Trabalho> trabalhosMinhaAutoria = trabalhoService.getTrabalhosDoAutor(PessoaLogadaUtil.pessoaLogada());
 		model.addAttribute("trabalhosMinhaAutoria", trabalhosMinhaAutoria);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);
 		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
-		model.addAttribute("trabalhosMinhaCoautoria", trabalhosMinhaCoautoria);
+		model.addAttribute("trabalhosMinhaCoautoria", trabalhosMinhaCoutoria);
 		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada().getId());
 		return "dashboard";
 	}

@@ -159,22 +159,22 @@
 								<div th:if="${#lists.isEmpty(trabalhosMinhaCoautoria)}">
 									<b>Você não é Coautor em nenhum trabalho.</b>
 								</div>
-								<div th:if="${not #lists.isEmpty(TrabalhosMinhaCoautoria)}">
+								<div th:if="${not #lists.isEmpty(trabalhosMinhaCoautoria)}">
 									<ul>
 										<li><a
-											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[0].trabalho.id}|}"
-											th:text="${trabalhosMinhaCoautoria[0].trabalho.titulo}"></a></li>
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[0].id}|}"
+											th:text="${trabalhosMinhaCoautoria[0].titulo}"></a></li>
 										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 1"
-											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[1].trabalho.id}|}"
-											th:text="${trabalhosMinhaCoautoria[1].trabalho.titulo}"></a></li>
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[1].id}|}"
+											th:text="${trabalhosMinhaCoautoria[1].titulo}"></a></li>
 										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 2"
-											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[2].trabalho.id}|}"
-											th:text="${trabalhosMinhaCoautoria[2].trabalho.titulo}"></a></li>
+											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[2].id}|}"
+											th:text="${trabalhosMinhaCoautoria[2].titulo}"></a></li>
 									</ul>
 								</div>
 							</div>
 							<div class="card-action">
-								<a th:href="@{/coautor/meusTrabalhos}"
+								<a th:href="@{/coautor/}"
 									class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
 									mais</a>
 							</div>

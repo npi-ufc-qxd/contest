@@ -676,7 +676,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		IOUtils.copy(is, response.getOutputStream());
 		response.flushBuffer();
 	}
-	@PreAuthorize("isOrganizador()")
+
+	@PreAuthorize("isOrganizador")
 	@RequestMapping(value = "/")
 	public String paginaOrganizador(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
