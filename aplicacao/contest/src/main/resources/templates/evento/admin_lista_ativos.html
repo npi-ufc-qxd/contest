@@ -20,12 +20,9 @@
     		  <div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
               <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
             </div>
-            <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Inativar</a></div>
           </div>
          </div>
         </div>
-        
-        
 
         <h4 th:if="${false}">Não há eventos Ativos</h4>
 
