@@ -199,10 +199,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			return "redirect:/error";
 		}
 
-		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
+		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);		
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhosDoEvento);
+		
 		return TRABALHOS_DO_EVENTO;
 	}
 

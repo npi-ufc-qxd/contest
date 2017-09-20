@@ -48,7 +48,7 @@
 										</div>
 										
 										<div>
-											<a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Arquivo</a>
+											<a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Arquivo </a>
 										</div>
 									</div>
 									
@@ -58,31 +58,31 @@
 											<i class="fa fa-star" aria-hidden="true"></i> <em>Best
 												Paper</em>
 										</div>
+										<div th:each="revisoesArtigo : ${trabalho.revisoes}">
+											
+											<div th:each="statusRevisao : ${revisoesArtigo}">
+												<th:block  th:switch="${statusRevisao}">
+													<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}" class="chip light-blue accent-2">
+													<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
+													</div>
+												</th:block>
+											</div>
+										</div>	
+																			
+									</div>	
 										
-										<th:block  th:switch="${status}">
-										<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}" class="chip light-blue accent-2">
-											<i class="fa fa-thumbs-up" aria-hidden="true"></i>
-											Aprovado
-										</div>
-										<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}" class="chip orange lighten-3">
-											<i class="fa fa-thumbs-up" aria-hidden="true"></i>
-											Aprovado com ressalvas
-										</div>
-										<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}" class="chip red">
-											<i class="fa fa-thumbs-down" aria-hidden="true"></i>
-											Reprovado
-										</div>
-										</th:block>
-										<div class="chip light-green accent-2"
-											th:if="${revisado}">
-											<i class="fa fa-check-circle" aria-hidden="true"></i>
-											Revisado
-										</div>
-										<div class="chip orange lighten-2"
-											th:unless="${revisado}">
-											<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-											Não revisado
-										</div>
+											
+									<div class="chip light-green accent-2"
+										th:if="${artigoRevisado}">
+										<i class="fa fa-check-circle" aria-hidden="true"></i>
+										Revisado
+									</div>
+									<div class="chip orange lighten-2"
+										th:unless="${artigoRevisado}">
+										<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+										Não revisado
+									</div>
+											
 										
 										
 									</div>
@@ -96,7 +96,6 @@
 			</div>
 
 		</div>
-	</div>
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript" th:src="@{/js/filtro_listar_trabalhos.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>

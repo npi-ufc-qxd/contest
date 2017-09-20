@@ -26,6 +26,7 @@ public interface RevisaoRepository extends CrudRepository<Revisao, Long>{
 	
 	public List<Revisao> findRevisaoByTrabalho(Trabalho trabalho);
 	
+	
 	@Query("select r "
 			+ "FROM Revisao r  WHERE r.trabalho.id in (select t.id from Trabalho t where t.evento.id = :idEvento)")
 	public List<Revisao> revisoesEvento(@Param("idEvento") Long evento );

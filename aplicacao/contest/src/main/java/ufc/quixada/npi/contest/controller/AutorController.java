@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -111,7 +109,7 @@ public class AutorController {
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
-	@PreAuthorize("isAutor()")
+	
 	@RequestMapping
 	public String index(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
@@ -120,7 +118,7 @@ public class AutorController {
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 
-	@PreAuthorize("isAutorInEvento(#trabalhoId)")
+	
 	@RequestMapping(value = "/revisao/trabalho/{trabalhoId}", method = RequestMethod.GET)
 	public String verRevisao(@PathVariable String trabalhoId, Model model, RedirectAttributes redirect) {
 		Long idTrabalho = Long.parseLong(trabalhoId);
@@ -306,9 +304,7 @@ public class AutorController {
 	}
 
 	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
-	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,
-			@RequestParam("eventoId") String eventoId,
-			@RequestParam(value = "file", required = true) MultipartFile file, RedirectAttributes redirect) {
+	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,@RequestParam("eventoId") String eventoId,	@RequestParam(value = "file", required = true) MultipartFile file, RedirectAttributes redirect) {
 		Long idEvento = Long.parseLong(eventoId);
 		Long idTrabalho = Long.parseLong(trabalhoId);
 		try {
@@ -346,17 +342,20 @@ public class AutorController {
 		}
 	}
 
-	@PreAuthorize("isAutorInEvento(#id)")
+	//@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
 			Long idEvento = Long.parseLong(id);
 			if (eventoService.existeEvento(idEvento)) {
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();		
+				
+								
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
+				
 				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";
@@ -367,7 +366,7 @@ public class AutorController {
 		}
 	}
 
-	@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
+	//@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/file/{trabalho}", method = RequestMethod.GET, produces = "application/pdf")
 	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho, HttpServletResponse response)
 			throws IOException {
