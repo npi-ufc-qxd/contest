@@ -23,81 +23,99 @@
 							<option value="nao_revisado">Não revisado</option>
 							<option value="best">Best paper</option>
 							<th:block th:each="opcao : ${opcoesFiltro}">
-							<option th:value="${#strings.toLowerCase(opcao)}" th:text="${opcao.tipo}"></option>
+								<option th:value="${#strings.toLowerCase(opcao)}"
+									th:text="${opcao.tipo}"></option>
 							</th:block>
-						</select>
-						 <label>Filtrar por status:</label>
+						</select> <label>Filtrar por status:</label>
 					</div>
 				</form>
 				<div th:unless="${#lists.isEmpty(trabalhos)}"
 					class="row holder center"></div>
-				<div  class="col s12">
-					<div class="col s12" 
-						th:each="trabalho,count : ${trabalhos}" 
+				<div class="col s12">
+					<div class="col s12" th:each="trabalho,count : ${trabalhos}"
 						th:with="revisado=${trabalho.isRevisado()}, status=${trabalho.status}, best=${trabalho.isIndicadoMelhoresTrabalhos()}">
-						<div class="card horizontal" th:attr="revisado=${revisado}, best=${best}" th:classappend="${status} ? ${#strings.toLowerCase(status)}">
+						<div class="card horizontal"
+							th:attr="revisado=${revisado}, best=${best}"
+							th:classappend="${status} ? ${#strings.toLowerCase(status)}">
 							<div class="card-stacked">
 								<div>
 									<div class="card-content">
 										<span class="card-title" th:text="${trabalho.titulo}"></span>
-										<p><b>Trilha : </b> <span th:text="${trabalho.trilha.nome}"></span></p>
+										<p>
+											<b>Trilha : </b> <span th:text="${trabalho.trilha.nome}"></span>
+										</p>
 										<div
 											th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
 										<div
 											th:include="fragments/listar_participacoes :: listar-inline('Revisor(es):', ${trabalho.revisores})">
 										</div>
-										
+
 										<div>
-											<a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Arquivo </a>
+											<a th:href="@{|/autor/file/${trabalho.id}|}"
+												class="teal-text confirmar modal-trigger">Fazer Download
+												do Arquivo </a>
 										</div>
 									</div>
-									
+
 									<div class="card-action">
-										<div class="chip  yellow lighten-1"
-											th:if="${best}">
+										<div class="chip  yellow lighten-1" th:if="${best}">
 											<i class="fa fa-star" aria-hidden="true"></i> <em>Best
 												Paper</em>
 										</div>
 										<div th:each="revisoesArtigo : ${trabalho.revisoes}">
-											
-											<div th:each="statusRevisao : ${revisoesArtigo}">
-												<th:block  th:switch="${statusRevisao}">
-													<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}" class="chip light-blue accent-2">
+
+
+											<th:block th:switch="${revisoesArtigo.avaliacao}">
+												<div
+													th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}"
+													class="chip light-blue accent-2">
 													<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
-													</div>
-												</th:block>
-											</div>
-										</div>	
-																			
+												</div>
+												<div
+													th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}"
+													class="chip orange lighten-3">
+													<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
+													com ressalvas
+												</div>
+												<div
+													th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}"
+													class="chip red">
+													<i class="fa fa-thumbs-down" aria-hidden="true"></i>
+													Reprovado
+												</div>
+											</th:block>
+										</div>
+									</div>
+
+									<div>
+										<div class="chip light-green accent-2"
+											th:if="${revisado}">
+											<i class="fa fa-check-circle" aria-hidden="true"></i> Revisado
+										</div>
+										<div class="chip orange lighten-2"
+											th:unless="${revisado}">
+											<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+											Não revisado
+										</div>
+									
+										<a th:href="@{'/evento/decidir/'+${evento.id}+${trabalho.id}+'{APROVADO}'}" class="btn white-text waves-effect waves-light blue-green">Aprovar</a>
+										<a th:href="@{'/evento/decidir/'+${evento.id}+${trabalho.id}+'{REPROVADO}'}" class="btn white-text waves-effect waves-light blue-green">Reprovar</a>
 									</div>	
-										
-											
-									<div class="chip light-green accent-2"
-										th:if="${artigoRevisado}">
-										<i class="fa fa-check-circle" aria-hidden="true"></i>
-										Revisado
-									</div>
-									<div class="chip orange lighten-2"
-										th:unless="${artigoRevisado}">
-										<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-										Não revisado
-									</div>
-											
-										
-										
-									</div>
+
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div th:unless="${#lists.isEmpty(trabalhos)}"
-					class="row holder center"></div>
 			</div>
-
+			<div th:unless="${#lists.isEmpty(trabalhos)}"
+				class="row holder center"></div>
 		</div>
+
+	</div>
 	<div th:include="fragments/footer :: footer"></div>
-	<script type="text/javascript" th:src="@{/js/filtro_listar_trabalhos.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/js/filtro_listar_trabalhos.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
 </body>
 </html>

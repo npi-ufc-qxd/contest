@@ -38,6 +38,8 @@ public class Trabalho implements Comparable<Trabalho> {
 	@ManyToOne
 	private Trilha trilha;
 	
+	private String status;
+	
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
 	@OrderBy("data_submissao")
 	private List<Submissao> submissoes;
@@ -265,6 +267,14 @@ public class Trabalho implements Comparable<Trabalho> {
 
 	public void setSecao(Secao secao) {
 		this.secao = secao;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setCoautoresInString(String coautoresInString) {
+		this.coautoresInString = coautoresInString;
 	}
 
 	
