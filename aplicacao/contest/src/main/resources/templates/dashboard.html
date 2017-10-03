@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="fragments/head :: head"></div>
-
 </head>
 
 <body>
@@ -144,20 +143,20 @@
 					<div class="card white">
 						<div class="card-content">
 							<h5>Como Autor</h5>
-							<div th:if="${#lists.isEmpty(trabalhosMinhaAutoria)}">
-								<b>Você não é autor em nenhum trabalho.</b>
+							<div th:if="${#lists.isEmpty(eventosQueSouAutor)}">
+								<b>Você não é autor em nenhum evento.</b>
 							</div>
-							<div th:if="${not #lists.isEmpty(trabalhosMinhaAutoria)}">
+							<div th:if="${not #lists.isEmpty(eventosQueSouAutor)}">
 								<ul>
 									<li><a
-										th:href="@{|/autor/file/${trabalhosMinhaAutoria[0].id}|}"
-										th:text="${trabalhosMinhaAutoria[0].titulo}"></a></li>
-									<li><a th:if="${trabalhosMinhaAutoria.size()} > 1"
-										th:href="@{|/autor/file/${trabalhosMinhaAutoria[1].id}|}"
-										th:text="${trabalhosMinhaAutoria[1].titulo}"></a></li>
-									<li><a th:if="${trabalhosMinhaAutoria.size()} > 2"
-										th:href="@{|/autor/file/${trabalhosMinhaAutoria[2].id}|}"
-										th:text="${trabalhosMinhaAutoria[2].titulo}"></a></li>
+										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[0].id}"
+										th:text="${eventosQueSouAutor[0].nome}"></a></li>
+									<li><a th:if="${eventosQueSouAutor.size()} > 1"
+										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[1].id}"
+										th:text="${eventosQueSouAutor[1].nome}"></a></li>
+									<li><a th:if="${eventosQueSouAutor.size()} > 2"
+										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[2].id}"
+										th:text="${eventosQueSouAutor[2].nome}"></a></li>
 								</ul>
 							</div>
 						</div>

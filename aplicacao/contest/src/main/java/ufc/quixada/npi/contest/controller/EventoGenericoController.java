@@ -16,6 +16,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Submissao;
 import ufc.quixada.npi.contest.model.TipoSubmissao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.RevisaoService;
@@ -129,7 +130,6 @@ public class EventoGenericoController {
 		}else{
 			redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
 		}
-
 		return viewSucesso;
 	}
 }

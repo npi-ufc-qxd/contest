@@ -35,18 +35,18 @@ public class SecaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
-	
+
 	@RequestMapping(value = "/paginaSecao")
 	public String indexSecao(Model model) {
 		List<Secao> secoes = secaoService.list();
-		
+
 		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
 		PessoaLogadaUtil.refreshPessoaLogada(pessoa);
-		
+
 		model.addAttribute("secoes", secoes);
 		return "secao/indexSecao";
 	}
-	
+
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/cadastrarSecaoForm", method = RequestMethod.GET)
 	public String cadastrarSecaoForm(Model model) {
@@ -65,8 +65,8 @@ public class SecaoController {
 		secaoService.addOrUpdate(secao);
 		return "redirect:/secao/paginaSecao";
 	}
-	
-	@PreAuthorize("isResponsavelInSecao(#idSecao)")
+
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
 	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
 		Secao secao = secaoService.get(idSecao);
@@ -93,8 +93,8 @@ public class SecaoController {
 		model.addAttribute("qtdTrabalhos", secao.getTrabalhos().size());
 		return "secao/secaoTrabalhos";
 	}
-	
-	@PreAuthorize("isResponsavelInSecao(#idSecao)")
+
+	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/excluirSecao/{id}")
 	public String excluirSecao(@PathVariable("id") Long idSecao) {
 		Secao secao = secaoService.get(idSecao);
@@ -124,5 +124,14 @@ public class SecaoController {
 			trabalhoService.adicionarTrabalho(trabalho);
 		}
 		return "redirect:/secao/secaoTrabalhos/" + idSecao;
+	}
+	
+	@RequestMapping("/listarParticipantes/{idSecao}")
+	public String listarParticipantes(@PathVariable("idSecao") Long idSecao, Model model){
+		Secao secao = secaoService.get(idSecao);
+		model.addAttribute("secao", secao);
+		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSecao(idSecao));
+		return "secao/listaParticipantes";
+		
 	}
 }

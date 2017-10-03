@@ -63,6 +63,8 @@
 			<h6 class="right-align" th:text="'Data: '+${secao.dataSecao}"></h6>
 			<h6 class="right-align" th:text="'Local: '+${secao.local}"></h6>
 			<h6 class="right-align" th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
+			<a th:href="@{'/secao/listarParticipantes/'+ ${secao.id}}"
+                class="teal-text right">LISTAR PARTICIPANTES</a>
 		</div>
 		
 		<div th:if="${#lists.isEmpty(trabalhosSecao)}">
@@ -82,10 +84,10 @@
 
         <tbody th:each="trabalho:${trabalhosSecao}">
         <tr>
-            <td th:text="${trabalho.pessoa.nome}"></td>
-            <td th:text="${trabalho.trabalho.titulo}"></td>
-            <td th:text="${trabalho.trabalho.trilha.nome}"></td>
-            <td><a th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${trabalho.trabalho.id}}" class="waves-effect btn-flat red accent-4" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
+            <td  width="250" th:text="${trabalho.pessoa.nome}"></td>
+            <td  width="400" th:text="${trabalho.trabalho.titulo}"></td>
+            <td  width="100" th:text="${trabalho.trabalho.trilha.nome}"></td>
+            <td><a th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${trabalho.trabalho.id}}" class="waves-effect btn-flat red accent-4 white-text" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
         </tr>
         </tbody>
     </table>
