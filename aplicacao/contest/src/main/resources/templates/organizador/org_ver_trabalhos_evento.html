@@ -37,6 +37,8 @@
 						<div class="card horizontal"
 							th:attr="revisado=${revisado}, best=${best}"
 							th:classappend="${status} ? ${#strings.toLowerCase(status)}">
+
+
 							<div class="card-stacked">
 								<div>
 									<div class="card-content">
@@ -62,57 +64,54 @@
 											<i class="fa fa-star" aria-hidden="true"></i> <em>Best
 												Paper</em>
 										</div>
-										<div th:each="revisoesArtigo : ${trabalho.revisoes}">
-
-
-											<th:block th:switch="${revisoesArtigo.avaliacao}">
-												<div
-													th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}"
-													class="chip light-blue accent-2">
-													<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
-												</div>
-												<div
-													th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}"
-													class="chip orange lighten-3">
-													<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
-													com ressalvas
-												</div>
-												<div
-													th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}"
-													class="chip red">
-													<i class="fa fa-thumbs-down" aria-hidden="true"></i>
-													Reprovado
-												</div>
-											</th:block>
+										
+										<div th:each="trabalho : ${trabalhos}">
+																				
+										<th:block th:switch="${trabalho.status}">
+											<p th:text="${trabalho.status}"></p>
+											<div th:case="APROVADO" class="chip light-blue accent-2">
+												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
+											</div>
+											<div th:case="MODERADO" class="chip orange lighten-3">
+												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
+												com ressalvas
+											</div>
+											<div th:case="REPROVADO" class="chip red">
+												<i class="fa fa-thumbs-down" aria-hidden="true"></i>
+												Reprovado
+											</div>
+										</th:block>
+										
 										</div>
-									</div>
 
-									<div>
-										<div class="chip light-green accent-2"
-											th:if="${revisado}">
-											<i class="fa fa-check-circle" aria-hidden="true"></i> Revisado
+
+										<p>Resultado Final do artigo</p>
+										<div class="chip light-green accent-2" th:if="${revisado}">
+											<i class="fa fa-check-circle" aria-hidden="true"></i>
+											Revisado
+
 										</div>
-										<div class="chip orange lighten-2"
-											th:unless="${revisado}">
+										<div class="chip orange lighten-2" th:unless="${revisado}">
 											<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 											Não revisado
 										</div>
-									
-										<a th:href="@{'/evento/decidir/'+${evento.id}+${trabalho.id}+'{APROVADO}'}" class="btn white-text waves-effect waves-light blue-green">Aprovar</a>
-										<a th:href="@{'/evento/decidir/'+${evento.id}+${trabalho.id}+'{REPROVADO}'}" class="btn white-text waves-effect waves-light blue-green">Reprovar</a>
-									</div>	
+
+									</div>
 
 								</div>
+
 							</div>
+
 						</div>
 					</div>
+
 				</div>
 			</div>
-			<div th:unless="${#lists.isEmpty(trabalhos)}"
-				class="row holder center"></div>
 		</div>
-
+		<div th:unless="${#lists.isEmpty(trabalhos)}"
+			class="row holder center"></div>
 	</div>
+
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript"
 		th:src="@{/js/filtro_listar_trabalhos.js}"></script>

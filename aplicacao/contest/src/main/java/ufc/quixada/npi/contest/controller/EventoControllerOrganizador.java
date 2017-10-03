@@ -115,6 +115,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public List<Pessoa> listaPossiveisOrganizadores() {
 		return pessoaService.getPossiveisOrganizadores();
 	}
+
 	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
@@ -155,7 +156,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("comentarios",
 				trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
 
-	return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
 
 	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
@@ -192,36 +193,49 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return Constants.TEMPLATE_ATRIBUIR_REVISOR_ORG;
 	}
 
-	@RequestMapping(value = "/evento/{id}/trabalhos", method = RequestMethod.GET)
+	@RequestMapping("/evento/{id}/trabalhos")
 	public String verTrabalhosDoEvento(@PathVariable("id") Long idEvento, Model model) {
+		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
+		String resultado;
+		
+		for(Trabalho trabalho : trabalhos){
+			resultado = trabalhoService.mensurarAvaliacoes(trabalho);
+			trabalho.setStatus(resultado);
+		}
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
 		if (evento == null) {
 			return "redirect:/error";
 		}
 
-		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);		
+		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhosDoEvento);
-		
-		return TRABALHOS_DO_EVENTO;
-	}
-	//Método adicionado para aprovar ou reprovar revisoes
-	@RequestMapping(value = "/evento/decidir/{idEvento}{idTrabalho}{resultado}", method = RequestMethod.GET)
-	public String decidirStatus(@PathVariable("idEvento") Long idEvento,@PathVariable("idTrabalho") Long idTrabalho, Model model,@PathVariable("resultado") String resultado) {
-		Trabalho trab =trabalhoService.getTrabalhoById(idTrabalho);
-		trab.setStatus(resultado);
-		Evento evento = eventoService.buscarEventoPorId(idEvento);
-		
-		
-		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);		
-		model.addAttribute("evento", evento);
-		model.addAttribute("opcoesFiltro", Avaliacao.values());
-		model.addAttribute("trabalhos", trabalhosDoEvento);
-		
 		return TRABALHOS_DO_EVENTO;
 	}
 
+	/* Método adicionado para aprovar ou reprovar trabalhos
+	@RequestMapping(value = "/decidir/{idEvento}/{idTrabalho}/", method = RequestMethod.POST)
+	public String decidirStatus(@PathVariable("idEvento") Long idEvento, @PathVariable("idTrabalho") Long idTrabalho,
+			Trabalho trabalho, Model model, @RequestParam("resultado") String resultado) {
+
+		Trabalho trab = trabalhoService.getTrabalhoById(idTrabalho);
+
+		resultado = trabalhoService.mensurarAvaliacoes(trabalho);
+
+		trab.setStatus(resultado);
+
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+
+		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
+		model.addAttribute("evento", evento);
+		model.addAttribute("opcoesFiltro", Avaliacao.values());
+		model.addAttribute("trabalhos", trabalhosDoEvento);
+		model.addAttribute("resultado", resultado);
+
+		return TRABALHOS_DO_EVENTO;
+	}
+	*/
 	@RequestMapping(value = "/evento/trabalho/revisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String atibuirRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
 
@@ -245,6 +259,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		participacaoTrabalhoService.remover(participacao);
 		return "{\"result\":\"ok\"}";
 	}
+
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = { "/meusEventos", "" }, method = RequestMethod.GET)
 	public String meusEventos(Model model) {
@@ -258,8 +273,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
-		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
+				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
+		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
+				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		boolean existeEventos = true;
 
 		if (eventosAtivos.isEmpty())
@@ -349,7 +366,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/ativar", method = RequestMethod.POST)
 	public String ativarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect) {
 		Evento eventoBd = eventoService.buscarEventoPorId(evento.getId());
-		
+
 		eventoBd.setPrazoRevisaoFinal(evento.getPrazoRevisaoFinal());
 		eventoBd.setPrazoRevisaoInicial(evento.getPrazoRevisaoInicial());
 		eventoBd.setPrazoSubmissaoFinal(evento.getPrazoSubmissaoFinal());
@@ -357,7 +374,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		eventoBd.setVisibilidade(evento.getVisibilidade());
 		eventoBd.setDescricao(evento.getDescricao());
 		eventoBd.setNome(evento.getNome());
-		
+
 		return ativarOuEditarEvento(eventoBd, result, model, redirect, "redirect:/eventoOrganizador/ativos",
 				Constants.TEMPLATE_ATIVAR_EVENTO_ORG);
 	}
@@ -414,41 +431,43 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/convidar", method = RequestMethod.POST)
-	public String convidarPorEmail(@RequestParam("email") String email,@RequestParam("funcao") String funcao, @RequestParam("eventoId") Long eventoId,
-			Model model,RedirectAttributes redirect, HttpServletRequest request) {
-		
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+	public String convidarPorEmail(@RequestParam("email") String email, @RequestParam("funcao") String funcao,
+			@RequestParam("eventoId") Long eventoId, Model model, RedirectAttributes redirect,
+			HttpServletRequest request) {
+
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String[] emails = email.split(",");
 
-		if(EstadoEvento.ATIVO.equals(evento.getEstado())){
-		
+		if (EstadoEvento.ATIVO.equals(evento.getEstado())) {
+
 			boolean flag = false;
-	
+
 			switch (funcao) {
 			case "ORGANIZADOR":
-				for(String e : emails){
+				for (String e : emails) {
 					e = e.trim();
 					flag = eventoService.adicionarOrganizador(e, evento, url);
 				}
-				
+
 				break;
-	
+
 			case "AUTOR":
 				flag = eventoService.adicionarAutor(email, evento, url);
 				break;
-	
+
 			case "REVISOR":
-				for(String e : emails){
+				for (String e : emails) {
 					e = e.trim();
 					flag = eventoService.adicionarRevisor(e, evento, url);
 				}
 				break;
-	
+
 			default:
 				break;
 			}
-	
+
 			if (!flag) {
 				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
 			} else {
@@ -675,11 +694,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		}
 		return "DADOS_TRABALHOS";
 	}
-	
-	public Pessoa getUsuarioLogado(){
+
+	public Pessoa getUsuarioLogado() {
 		return PessoaLogadaUtil.pessoaLogada();
 	}
-	
+
 	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response)
 			throws FileNotFoundException, IOException {
 		TableModel modelo = new DefaultTableModel(dados, colunas);

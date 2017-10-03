@@ -112,7 +112,7 @@ public class RevisorController {
 		return REVISOR_TRABALHOS_REVISAO;
 	}
 
-	@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
+	//@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/{idTrabalho}/revisar", method = RequestMethod.GET)
 	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
 			RedirectAttributes redirect) {

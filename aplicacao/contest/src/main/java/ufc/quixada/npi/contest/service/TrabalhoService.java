@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.RevisaoRepository;
@@ -15,6 +16,11 @@ import ufc.quixada.npi.contest.repository.TrabalhoRepository;
 
 @Service
 public class TrabalhoService {
+
+	public static final String APROVADO = "APROVADO";
+	public static final String RESSALVAS = "RESSALVAS";
+	public static final String REPROVADO = "REPROVADO";
+	public static final String MODERACAO = "MODERACAO";
 
 	@Autowired
 	private TrabalhoRepository trabalhoRepository;
@@ -65,11 +71,11 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosDoAutorNoEvento(Pessoa pessoa, Evento evento) {
 		return trabalhoRepository.getTrabalhoDoAutorNoEvento(pessoa.getId(), evento.getId());
 	}
-	
+
 	public List<Trabalho> getTrabalhosDoCoautor(Pessoa pessoa) {
 		return trabalhoRepository.getTrabalhoDoCoautor(pessoa.getId());
 	}
-	
+
 	public List<Trabalho> getTrabalhosDoAutor(Pessoa pessoa) {
 		return trabalhoRepository.getTrabalhoDoAutor(pessoa.getId());
 	}
@@ -97,5 +103,32 @@ public class TrabalhoService {
 
 	public List<Trabalho> buscarTodosTrabalhos() {
 		return trabalhoRepository.findAll();
+	}
+
+	public String mensurarAvaliacoes(Trabalho trabalho) {
+		int numeroDeAprovacao = 0;
+		int numeroDeReprovacao = 0;
+		
+		List<Revisao> revisoes = trabalho.getRevisoes();
+		for (int i = 0; i < revisoes.size(); i++) {
+			
+			if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO")) {
+				numeroDeAprovacao++;
+				if (numeroDeAprovacao == trabalho.getRevisoes().size()) {
+					return APROVADO;
+
+				}
+			} else if (revisoes.get(i).getAvaliacao().toString().equals("REPROVADO")) {
+				numeroDeReprovacao++;
+				if (numeroDeReprovacao == trabalho.getRevisoes().size()) {
+					return REPROVADO;
+				}
+			} else {
+				return MODERACAO;
+			}
+
+		}
+		return MODERACAO;
+
 	}
 }
