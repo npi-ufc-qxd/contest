@@ -84,7 +84,6 @@ public class EventoController extends EventoGenericoController {
 	@RequestMapping(value = "/adicionar", method = RequestMethod.GET)
 	public String adicionarEvento(Model model) {
 		Pessoa organizador = new Pessoa();
-		organizador.setEmail("Email do Organizador");
 		
 		model.addAttribute(EVENTO, new Evento());
 		model.addAttribute("organizador", organizador);
