@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,6 @@ import ufc.quixada.npi.contest.repository.SecaoRepository;
 public class SecaoService {
 	@Autowired
 	private SecaoRepository secaoRepository;
-	
-	private TrabalhoService trabalhoService;
 	
 	public void addOrUpdate(Secao secao) {
 		secaoRepository.save(secao);

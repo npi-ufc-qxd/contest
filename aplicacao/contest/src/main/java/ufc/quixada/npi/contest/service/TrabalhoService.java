@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
-import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.RevisaoRepository;
