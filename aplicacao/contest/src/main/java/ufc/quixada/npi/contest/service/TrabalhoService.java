@@ -98,4 +98,8 @@ public class TrabalhoService {
 	public List<Trabalho> buscarTodosTrabalhos() {
 		return trabalhoRepository.findAll();
 	}
+	
+	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
+		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
+	}
 }
