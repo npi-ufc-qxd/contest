@@ -214,28 +214,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return TRABALHOS_DO_EVENTO;
 	}
 
-	/* Método adicionado para aprovar ou reprovar trabalhos
-	@RequestMapping(value = "/decidir/{idEvento}/{idTrabalho}/", method = RequestMethod.POST)
-	public String decidirStatus(@PathVariable("idEvento") Long idEvento, @PathVariable("idTrabalho") Long idTrabalho,
-			Trabalho trabalho, Model model, @RequestParam("resultado") String resultado) {
-
-		Trabalho trab = trabalhoService.getTrabalhoById(idTrabalho);
-
-		resultado = trabalhoService.mensurarAvaliacoes(trabalho);
-
-		trab.setStatus(resultado);
-
-		Evento evento = eventoService.buscarEventoPorId(idEvento);
-
-		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
-		model.addAttribute("evento", evento);
-		model.addAttribute("opcoesFiltro", Avaliacao.values());
-		model.addAttribute("trabalhos", trabalhosDoEvento);
-		model.addAttribute("resultado", resultado);
-
-		return TRABALHOS_DO_EVENTO;
-	}
-	*/
 	@RequestMapping(value = "/evento/trabalho/revisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String atibuirRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
 

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
@@ -16,11 +17,6 @@ import ufc.quixada.npi.contest.repository.TrabalhoRepository;
 
 @Service
 public class TrabalhoService {
-
-	public static final String APROVADO = "APROVADO";
-	public static final String RESSALVAS = "RESSALVAS";
-	public static final String REPROVADO = "REPROVADO";
-	public static final String MODERACAO = "MODERACAO";
 
 	@Autowired
 	private TrabalhoRepository trabalhoRepository;
@@ -37,7 +33,7 @@ public class TrabalhoService {
 	}
 
 	public List<Trabalho> getTrabalhosEvento(Evento evento) {
-		return trabalhoRepository.findByEvento(evento);
+		return trabalhoRepository.getByEvento(evento);
 	}
 
 	public List<Trabalho> getTrabalhosTrilha(Trilha trilha) {
@@ -110,25 +106,20 @@ public class TrabalhoService {
 		int numeroDeReprovacao = 0;
 		
 		List<Revisao> revisoes = trabalho.getRevisoes();
+		if(!revisoes.isEmpty()) {
 		for (int i = 0; i < revisoes.size(); i++) {
 			
 			if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO")) {
 				numeroDeAprovacao++;
-				if (numeroDeAprovacao == trabalho.getRevisoes().size()) {
-					return APROVADO;
+				if (numeroDeAprovacao == trabalho.getRevisoes().size()) return "APROVADO";
 
-				}
 			} else if (revisoes.get(i).getAvaliacao().toString().equals("REPROVADO")) {
 				numeroDeReprovacao++;
-				if (numeroDeReprovacao == trabalho.getRevisoes().size()) {
-					return REPROVADO;
-				}
-			} else {
-				return MODERACAO;
+				if (numeroDeReprovacao == trabalho.getRevisoes().size()) return "REPROVADO";
 			}
-
 		}
-		return MODERACAO;
-
+		return "MODERACAO";
+	}
+		return null;
 	}
 }

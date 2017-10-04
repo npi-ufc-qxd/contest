@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -238,13 +239,8 @@ public class Trabalho implements Comparable<Trabalho> {
 		return false;
 	}
 	
-	public Avaliacao getStatus(){
-		if(this.isRevisado()){
-			for(Revisao revisao : revisoes){
-				return revisao.getAvaliacao();
-			}
-		}
-		return null;
+	public String getStatus(){
+		return status;
 	}
 	
 	@Override
@@ -279,6 +275,4 @@ public class Trabalho implements Comparable<Trabalho> {
 	public void setCoautoresInString(String coautoresInString) {
 		this.coautoresInString = coautoresInString;
 	}
-
-	
 }

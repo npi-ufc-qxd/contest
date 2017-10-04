@@ -64,28 +64,26 @@
 											<i class="fa fa-star" aria-hidden="true"></i> <em>Best
 												Paper</em>
 										</div>
-										
-										<div th:each="trabalho : ${trabalhos}">
-																				
-										<th:block th:switch="${trabalho.status}">
-											<p th:text="${trabalho.status}"></p>
-											<div th:case="APROVADO" class="chip light-blue accent-2">
-												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
-											</div>
-											<div th:case="MODERADO" class="chip orange lighten-3">
-												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
-												com ressalvas
-											</div>
-											<div th:case="REPROVADO" class="chip red">
-												<i class="fa fa-thumbs-down" aria-hidden="true"></i>
-												Reprovado
-											</div>
-										</th:block>
-										
+
+										<div th:if="${#strings.equals(trabalho.status, 'REPROVADO')}"
+											class="chip red">
+											<i class="fa fa-thumbs-down" aria-hidden="true"></i>
+											Reprovado
 										</div>
+										<div th:if="${#strings.equals(trabalho.status, 'APROVADO')}"
+											class="chip light-blue accent-2">
+											<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
+										</div>
+										<div th:if="${#strings.equals(trabalho.status, 'MODERACAO')}"
+											class="chip orange lighten-3">
+											<i class="fa fa-thumbs-up" aria-hidden="true"></i> Moderado
 
-
-										<p>Resultado Final do artigo</p>
+											<div>
+												<a href="#modalStatus" data-target="modalLogin"
+													class="btn waves-effect waves-light modal-trigger">Decidir
+													Status</a>
+											</div>
+										</div>
 										<div class="chip light-green accent-2" th:if="${revisado}">
 											<i class="fa fa-check-circle" aria-hidden="true"></i>
 											Revisado
@@ -93,13 +91,11 @@
 										</div>
 										<div class="chip orange lighten-2" th:unless="${revisado}">
 											<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-											Não revisado
+											N�o revisado
 										</div>
 
 									</div>
-
 								</div>
-
 							</div>
 
 						</div>
@@ -111,10 +107,57 @@
 		<div th:unless="${#lists.isEmpty(trabalhos)}"
 			class="row holder center"></div>
 	</div>
+	<div id="modalStatus" class="modal">
+		<div class="modal-content">
+			<h4>Status</h4>
+			<form class="col s12" th:action="@{/usuario/logar}" method="post">
+				<div class="row">
+					<div class="input-field col s12">
+						
+						<select name="funcao" required="required">
+										<option value="APROVADO">APROVADO</option>
+										<option value="REPROVADO">REPROVADO</option>
+										<option value="RESSALVAS">APROVADO COM RESSALVAS</option>
+									</select>
+					</div>
+				</div>
+				<div class="modal-footer">
 
+
+					<a class=" modal-action modal-close btn waves-effect waves-light red">Cancelar</a>
+
+					<button class="left btn waves-effect waves-light" type="submit"	name="action">Aplicar status</button>
+
+				</div>
+			</form>
+
+		</div>
+
+	</div>
 	<div th:include="fragments/footer :: footer"></div>
+	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
 	<script type="text/javascript"
 		th:src="@{/js/filtro_listar_trabalhos.js}"></script>
-	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('select').material_select();
+
+			//Inicialização do Modal excluir Evento
+			$('.modal-trigger').leanModal();
+
+			$('.dropdown-button').dropdown({
+				inDuration : 300,
+				outDuration : 225,
+				constrain_width : false, // Does not change width of dropdown to that of the activator
+				hover : true, // Activate on hover
+				gutter : 0, // Spacing from edge
+				belowOrigin : false, // Displays dropdown below the button
+				alignment : 'left' // Displays dropdown with edge aligned to the left of button
+			});
+
+		});
+	</script>
 </body>
 </html>
