@@ -104,22 +104,53 @@ public class TrabalhoService {
 	public String mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
-		
-		List<Revisao> revisoes = trabalho.getRevisoes();
-		if(!revisoes.isEmpty()) {
-		for (int i = 0; i < revisoes.size(); i++) {
-			
-			if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO")) {
-				numeroDeAprovacao++;
-				if (numeroDeAprovacao == trabalho.getRevisoes().size()) return "APROVADO";
 
-			} else if (revisoes.get(i).getAvaliacao().toString().equals("REPROVADO")) {
-				numeroDeReprovacao++;
-				if (numeroDeReprovacao == trabalho.getRevisoes().size()) return "REPROVADO";
+		List<Revisao> revisoes = trabalho.getRevisoes();
+		if (!revisoes.isEmpty()) {
+			for (int i = 0; i < revisoes.size(); i++) {
+
+				if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO")) {
+					numeroDeAprovacao++;
+					if (numeroDeAprovacao == trabalho.getRevisoes().size())
+						return "APROVADO";
+
+				} else if (revisoes.get(i).getAvaliacao().toString().equals("REPROVADO")) {
+					numeroDeReprovacao++;
+					if (numeroDeReprovacao == trabalho.getRevisoes().size())
+						return "REPROVADO";
+				}
 			}
+			return "MODERACAO";
 		}
-		return "MODERACAO";
-	}
 		return null;
+	}
+
+public String pegarConteudo(Trabalho trabalho) {
+		
+		String conteudoAux, conteudo; 
+		List<String> resultadoAvaliacoes = new ArrayList<>();
+		for (Revisao revisao : trabalho.getRevisoes()) {
+			conteudo = revisao.getConteudo().substring(1, revisao.getConteudo().length()-1);	
+			
+			while(!conteudo.isEmpty()) {
+				if(conteudo.contains(",")) {
+					conteudoAux = conteudo.substring(0,conteudo.indexOf(","));
+					if(!conteudoAux.contentEquals("comentarios")) {
+						resultadoAvaliacoes.add((conteudoAux.replaceAll("\"", " ").replaceAll("_", " ").replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO").replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase());
+						conteudoAux = "";
+						conteudoAux = conteudo.substring(conteudo.indexOf(",")+1);
+						conteudo = "";
+						conteudo = conteudoAux;
+					}
+				}else {
+					resultadoAvaliacoes.add(("AVALIAÇÃO FINAL : "+revisao.getAvaliacao()));
+					conteudo = "";
+				}
+			}
+			conteudo = "";
+		}
+		
+		return resultadoAvaliacoes.toString();
+		
 	}
 }

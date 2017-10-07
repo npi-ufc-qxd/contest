@@ -197,23 +197,29 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String verTrabalhosDoEvento(@PathVariable("id") Long idEvento, Model model) {
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
 		String resultado;
-		
-		for(Trabalho trabalho : trabalhos){
-			resultado = trabalhoService.mensurarAvaliacoes(trabalho);
-			trabalho.setStatus(resultado);
+		List<String> resultadoRevisoes = new ArrayList<>();
+
+		for (Trabalho trabalho : trabalhos) {
+			if (trabalho.getStatus() == null) {
+				resultado = trabalhoService.mensurarAvaliacoes(trabalho);
+				trabalho.setStatus(resultado);
+			}
+			resultadoRevisoes.add(trabalhoService.pegarConteudo(trabalho));
 		}
+
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
 		if (evento == null) {
 			return "redirect:/error";
 		}
 
 		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
+		model.addAttribute("resultadoRevisoes", resultadoRevisoes);
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhosDoEvento);
 		return TRABALHOS_DO_EVENTO;
 	}
-
+	
 	@RequestMapping(value = "/evento/trabalho/revisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String atibuirRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
 
@@ -697,5 +703,25 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);
 		model.addAttribute("pessoa", pessoaAux);
 		return "organizador/organizador_meus_eventos";
+	}
+
+	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
+	@RequestMapping(value = "/avaliar/", method = RequestMethod.POST)
+	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String funcao,
+			@RequestParam Long idTrabalho, Model model) {
+		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+		trabalho.setStatus(funcao);
+		trabalhoService.adicionarTrabalho(trabalho);
+		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
+
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		if (evento == null) {
+			return "redirect:/error";
+		}
+
+		model.addAttribute("evento", evento);
+		model.addAttribute("opcoesFiltro", Avaliacao.values());
+		model.addAttribute("trabalhos", trabalhos);
+		return TRABALHOS_DO_EVENTO;
 	}
 }
