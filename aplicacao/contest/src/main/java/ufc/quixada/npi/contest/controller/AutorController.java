@@ -287,8 +287,8 @@ public class AutorController {
 				if (evento.isPeriodoInicial()) {
 					if (saveFile(file, trabalho)) {
 						submissaoService.adicionarOuEditar(submissao);
-						redirect.addFlashAttribute("sucessoEnviarTrabalho",
-								messageService.getMessage(TRABALHO_ENVIADO));
+						redirect.addFlashAttribute("sucessoEnviarTrabalho",	messageService.getMessage(TRABALHO_ENVIADO));
+						
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";

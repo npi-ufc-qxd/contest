@@ -406,8 +406,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			@RequestParam("eventoId") Long eventoId, Model model, RedirectAttributes redirect,
 			HttpServletRequest request) {
 
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-				+ request.getContextPath();
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()	+ request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String[] emails = email.split(",");
 
@@ -449,6 +448,50 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		}
 		return "redirect:/eventoOrganizador/evento/" + eventoId;
 	}
+	@RequestMapping(value = "/notificar", method = RequestMethod.POST)
+	public String notificarPorEmail(@RequestParam("email") String email, @RequestParam("funcao") String funcao,
+			@RequestParam("eventoId") Long eventoId,@RequestParam("idTrabalho") Long idTrabalho, Model model, RedirectAttributes redirect,
+			HttpServletRequest request) {
+
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()	+ request.getContextPath();
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		String[] emails = email.split(",");
+		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+		
+		
+		if (EstadoEvento.ATIVO.equals(evento.getEstado())) {
+
+			boolean flag = false;
+
+			switch (funcao) {
+
+			case "AUTOR":
+				flag = eventoService.notificarAutor(email, evento, url, trabalho);
+				break;
+
+			case "COAUTOR":
+				for (String e : emails) {
+					e = e.trim();
+					flag = eventoService.notificarCoautor(email, evento, url, trabalho);
+				}
+				break;
+
+			default:
+				break;
+			}
+
+			if (!flag) {
+				redirect.addFlashAttribute("organizadorError", messageService.getMessage(ERRO_ENVIO_EMAIL));
+			} else {
+				redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+			}
+		} else {
+			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
+		}
+		return "redirect:/eventoOrganizador/evento/" + eventoId;
+	}
+	
+	
 
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model,
