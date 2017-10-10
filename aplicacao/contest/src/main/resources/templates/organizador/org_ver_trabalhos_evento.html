@@ -113,12 +113,11 @@
 								<div th:id="${'modal'+trabalho.id}" class="modal">
 									<div class="modal-content">
 										<ul class="collapsible" data-collapsible="accordion">
-											
 											<li th:each="conteudo,count : ${resultadoRevisoes}">
 												<div class="collapsible-header"
-													th:if="${#strings.contains(conteudo, '${trabalho.id}')}">
+													th:if="${#strings.contains(conteudo, trabalho.id)}">
 													<i class="material-icons">description</i> <span
-														th:text="'Revisão ' +${count.index + 1}+ ' - ' + ${#strings.substringBefore(conteudo, ',')}" ></span>
+														th:text="'Revisão - ' + ${#strings.substringBefore(conteudo, ',')}" ></span>
 												</div>
 
 												<div class="collapsible-body"

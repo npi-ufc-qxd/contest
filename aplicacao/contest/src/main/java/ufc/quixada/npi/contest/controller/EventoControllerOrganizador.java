@@ -217,8 +217,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		resultadoRevisoes.toString().replaceAll("]", "");
 		
-		System.out.println(resultadoRevisoes);
-		
 		model.addAttribute("resultadoRevisoes", resultadoRevisoes);
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
