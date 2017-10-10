@@ -204,15 +204,21 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 				resultado = trabalhoService.mensurarAvaliacoes(trabalho);
 				trabalho.setStatus(resultado);
 			}
-			resultadoRevisoes.add(trabalhoService.pegarConteudo(trabalho));
+			
+			resultadoRevisoes.addAll(trabalhoService.pegarConteudo(trabalho));
 		}
 
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
 		if (evento == null) {
 			return "redirect:/error";
 		}
-
+		
 		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
+		
+		resultadoRevisoes.toString().replaceAll("]", "");
+		
+		System.out.println(resultadoRevisoes);
+		
 		model.addAttribute("resultadoRevisoes", resultadoRevisoes);
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
