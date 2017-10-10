@@ -448,8 +448,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		}
 		return "redirect:/eventoOrganizador/evento/" + eventoId;
 	}
-	@RequestMapping(value = "/notificar", method = RequestMethod.POST)
-	public String notificarPorEmail(@RequestParam("email") String email, @RequestParam("funcao") String funcao,
+	public void notificarPorEmail(@RequestParam("email") String email, @RequestParam("funcao") String funcao,
 			@RequestParam("eventoId") Long eventoId,@RequestParam("idTrabalho") Long idTrabalho, Model model, RedirectAttributes redirect,
 			HttpServletRequest request) {
 
@@ -466,13 +465,13 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			switch (funcao) {
 
 			case "AUTOR":
-				flag = eventoService.notificarAutor(email, evento, url, trabalho);
+				flag = eventoService.notificarAutor(email, evento, trabalho);
 				break;
 
 			case "COAUTOR":
 				for (String e : emails) {
 					e = e.trim();
-					flag = eventoService.notificarCoautor(email, evento, url, trabalho);
+					flag = eventoService.notificarCoautor(email, evento, trabalho);
 				}
 				break;
 
@@ -488,7 +487,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		} else {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
 		}
-		return "redirect:/eventoOrganizador/evento/" + eventoId;
 	}
 	
 	

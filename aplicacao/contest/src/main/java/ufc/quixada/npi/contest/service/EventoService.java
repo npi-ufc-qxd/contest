@@ -23,9 +23,10 @@ import ufc.quixada.npi.contest.util.ContestUtil;
 @Service
 public class EventoService {
 
-	private static final String TITULO_EMAIL_ORGANIZADOR = "TITULO_EMAIL_CONVITE_ORGANIZADOR";
-	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
-	private static final String TEXTO_EMAIL_CONFIRMACAO = "TEXTO_EMAIL_CONFIRMACAO";
+	private static final String TEXTO_EMAIL_ORGANIZADOR = "TITULO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String TITULO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String ASSUNTO_EMAIL_CONFIRMACAO = "ASSUNTO_EMAIL_CONFIRMACAO";
+	private static final String TEXTO_EMAIL_CONFIRMACAO = ".Fique atento aos prazos, o próximo passo será a fase das revisões, confira no edital os prazos. Boa sorte!";
 	
 	@Autowired
 	EventoRepository eventoRepository;
@@ -114,17 +115,15 @@ public class EventoService {
 		return adicionarPessoa(email, evento, papel, url);
 	}
 	
-	private boolean notificarPessoa(String email, Evento evento, Tipo papel, String url, Trabalho trabalho) {
+	private boolean notificarPessoa(String email, Evento evento, Tipo papel, Trabalho trabalho) {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		String nome = "Nome Temporário";
 
-		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
-		String corpo = "Olá, seu trabalho"+ trabalho.getTitulo() + "foi enviado com sucesso para o evento" + evento.getNome() +
-				messageService.getMessage(TEXTO_EMAIL_CONFIRMACAO);
-		String titulo = "[CONTEST] confirmação de envio de trabalho : " + trabalho.getTitulo();
-		String pageCadastro = "/completar-cadastro/";
-		Token token =  new Token();
+		String assunto = messageService.getMessage(ASSUNTO_EMAIL_CONFIRMACAO) + " " + trabalho.getTitulo();
+		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + " foi enviado com sucesso para o evento " + evento.getNome() + TEXTO_EMAIL_CONFIRMACAO;
+		String titulo = "[CONTEST] Confirmação de envio do trabalho: " + trabalho.getTitulo();
+		
 		
 		if (pessoa == null) {
 			
@@ -139,15 +138,11 @@ public class EventoService {
 				}
 				pessoaService.addOrUpdate(pessoa);
 			
-				token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
-		} else {
-			corpo = corpo + ". Realize o login em " + url + "/login";
 		}
+			
 		
 		
 		if (!emailService.enviarEmail(titulo, assunto, email, corpo)) {
@@ -163,14 +158,14 @@ public class EventoService {
 		return true;
 	}
 	
-	public boolean notificarAutor(String email, Evento evento, String url, Trabalho trabalho) {
+	public boolean notificarAutor(String email, Evento evento, Trabalho trabalho) {
 		Tipo papel = Tipo.AUTOR;
-		return notificarPessoa(email, evento, papel, url,trabalho);
+		return notificarPessoa(email, evento, papel,trabalho);
 	}
 
-	public boolean notificarCoautor(String email, Evento evento, String url,Trabalho trabalho) {
+	public boolean notificarCoautor(String email, Evento evento,Trabalho trabalho) {
 		Tipo papel = Tipo.COAUTOR;
-		return notificarPessoa(email, evento, papel, url, trabalho);
+		return notificarPessoa(email, evento, papel,trabalho);
 	}
 	
 	public boolean adicionarOuAtualizarEvento(Evento evento) {
@@ -264,5 +259,6 @@ public class EventoService {
 	public List<Evento> getEventosByEstadoEVisibilidadePublica(EstadoEvento estado) {
 		return eventoRepository.findEventoByEstadoAndVisibilidade(estado, VisibilidadeEvento.PUBLICO);
 	}
+
 
 }
