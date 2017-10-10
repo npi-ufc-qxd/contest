@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
@@ -127,7 +126,10 @@ public class TrabalhoService {
 
 public List<String> pegarConteudo(Trabalho trabalho) {
 		
-		String conteudoAux, conteudo, aux=""; 
+		String conteudoAux;
+		String conteudo;
+		String aux="";
+		
 		List<String> resultadoAvaliacoes = new ArrayList<>();
 		
 		for (Revisao revisao : trabalho.getRevisoes()) {
