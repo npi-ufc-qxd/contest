@@ -24,7 +24,7 @@
             </div>
 
             <div class="input-field">
-              <input type="email" id="email" name="email" th:field="*{email}" required="required"/>
+              <input type="email" id="email" name="email" th:field="*{email}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
               <label for="email">*Email</label>
             </div>
             
