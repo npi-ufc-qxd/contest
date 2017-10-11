@@ -129,32 +129,29 @@ public List<String> pegarConteudo(Trabalho trabalho) {
 		
 		String conteudoAux;
 		String conteudo;
-		String aux="";
 		
 		List<String> resultadoAvaliacoes = new ArrayList<>();
 		
+		StringBuilder bld = new StringBuilder();
 		for (Revisao revisao : trabalho.getRevisoes()) {
 			
 			conteudo = revisao.getConteudo().substring(1, revisao.getConteudo().length()-1);	
-			aux = "REVISOR : " + revisao.getRevisor().getNome().toUpperCase() + " , TRABALHO: " + trabalho.getId().toString();
+			bld.append("REVISOR : " + revisao.getRevisor().getNome().toUpperCase() + " , TRABALHO: " + trabalho.getId().toString());
 			
 			while(!conteudo.isEmpty()) {
 				if(conteudo.contains(",")) {
-					conteudoAux = conteudo.substring(0,conteudo.indexOf(","));
+					conteudoAux = conteudo.substring(0,conteudo.indexOf(','));
 					if(!conteudoAux.contentEquals("comentarios")) {
-						aux = aux + (" ," + (conteudoAux.replaceAll("\"", " ").replaceAll("_", " ").replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO").replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase());
-						conteudoAux = "";
-						conteudoAux = conteudo.substring(conteudo.indexOf(",")+1);
-						conteudo = "";
+						bld.append((" ," + (conteudoAux.replaceAll("\"", " ").replaceAll("_", " ").replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO").replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase()));
+						conteudoAux = conteudo.substring(conteudo.indexOf(',')+1);
 						conteudo = conteudoAux;
 					}
 				}else {
-					resultadoAvaliacoes.add(aux + (" , AVALIAÇÃO FINAL : "+revisao.getAvaliacao()));
+					resultadoAvaliacoes.add((bld + (" , AVALIAÇÃO FINAL : "+revisao.getAvaliacao()).toString()));
 					conteudo = "";
 				}
 			}
-			conteudo = "";
-			aux = "";
+			bld.delete(0, bld.length());
 		}
 		
 		return resultadoAvaliacoes;
