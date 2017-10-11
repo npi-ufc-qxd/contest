@@ -726,6 +726,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhos);
-		return TRABALHOS_DO_EVENTO;
+		
+		return verTrabalhosDoEvento(idEvento, model);
 	}
 }
