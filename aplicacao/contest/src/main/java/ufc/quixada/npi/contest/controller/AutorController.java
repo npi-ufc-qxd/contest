@@ -53,7 +53,7 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @Controller
 @RequestMapping("/autor")
 public class AutorController {
-	
+
 	private static final String EXTENSAO_PDF = ".pdf";
 	private static final String FORA_DO_PRAZO_SUBMISSAO = "FORA_DO_PRAZO_SUBMISSAO";
 	private static final String ERRO_EXCLUIR_TRABALHO = "ERRO_EXCLUIR_TRABALHO";
@@ -188,7 +188,7 @@ public class AutorController {
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
-		List<Evento> eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());		
+		List<Evento> eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
 		if (eventos != null) {
 			List<String> trabalhosEventos = new ArrayList<>();
 
@@ -241,8 +241,8 @@ public class AutorController {
 			RedirectAttributes redirect) {
 		Evento evento;
 		Trilha trilha;
-		Submissao submissao;		
-		
+		Submissao submissao;
+
 		try {
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
@@ -288,19 +288,23 @@ public class AutorController {
 				if (evento.isPeriodoInicial()) {
 					if (saveFile(file, trabalho)) {
 						submissaoService.adicionarOuEditar(submissao);
-						redirect.addFlashAttribute("sucessoEnviarTrabalho",	messageService.getMessage(TRABALHO_ENVIADO));
-						System.out.println("teste antes");
+						redirect.addFlashAttribute("sucessoEnviarTrabalho",
+								messageService.getMessage(TRABALHO_ENVIADO));
+
 						eventoService.notificarAutor(PessoaLogadaUtil.pessoaLogada().getEmail(), evento, trabalho);
-						
+
 						if (trabalho.getParticipacoes() != null) {
 							for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
+
 								Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-								eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);								
-								
+								if (participacao.getPessoa().getEmail().equals(coautor.getEmail())
+										&& (trabalho.getId().equals(participacao.getTrabalho().getId())
+												&& participacao.getPapel() == Tipo.COAUTOR)) {
+									eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
+								}
 							}
 						}
-												
-						System.out.println("teste depois");
+
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";
@@ -335,15 +339,21 @@ public class AutorController {
 					if (evento.isPeriodoInicial() || evento.isPeriodoFinal()) {
 						if (saveFile(file, trabalho)) {
 							submissaoService.adicionarOuEditar(submissao);
-							redirect.addFlashAttribute("sucessoEnviarTrabalho",	messageService.getMessage(TRABALHO_ENVIADO));
+							redirect.addFlashAttribute("sucessoEnviarTrabalho",
+									messageService.getMessage(TRABALHO_ENVIADO));
 							eventoService.notificarAutor(PessoaLogadaUtil.pessoaLogada().getEmail(), evento, trabalho);
-							
+
 							if (trabalho.getParticipacoes() != null) {
 								for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
+
 									Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-									eventoService.notificarCoautor(coautor.getEmail(), evento,trabalho);																	
+									if (participacao.getPessoa().getEmail().equals(coautor.getEmail())
+											&& (trabalho.getId().equals(participacao.getTrabalho().getId())
+													&& participacao.getPapel() == Tipo.COAUTOR)) {
+										eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
+									}
 								}
-							}																				
+							}
 							return "redirect:/autor/meusTrabalhos";
 						}
 					} else {
@@ -397,7 +407,8 @@ public class AutorController {
 		} else {
 			Long idEvento = trabalho.getEvento().getId();
 			if (participacaoEventoService.isOrganizadorDoEvento(PessoaLogadaUtil.pessoaLogada(), idEvento)
-					|| participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, PessoaLogadaUtil.pessoaLogada().getId())) {
+					|| participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho,
+							PessoaLogadaUtil.pessoaLogada().getId())) {
 				try {
 					String path = trabalho.getPath();
 					Path file = Paths.get(path);

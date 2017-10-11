@@ -406,7 +406,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			@RequestParam("eventoId") Long eventoId, Model model, RedirectAttributes redirect,
 			HttpServletRequest request) {
 
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()	+ request.getContextPath();
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath();
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String[] emails = email.split(",");
 
@@ -448,16 +449,14 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		}
 		return "redirect:/eventoOrganizador/evento/" + eventoId;
 	}
-	public void notificarPorEmail(@RequestParam("email") String email, @RequestParam("funcao") String funcao,
-			@RequestParam("eventoId") Long eventoId,@RequestParam("idTrabalho") Long idTrabalho, Model model, RedirectAttributes redirect,
-			HttpServletRequest request) {
 
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()	+ request.getContextPath();
+	public void notificarPorEmail(@RequestParam("email") String email, @RequestParam("funcao") String funcao,
+			@RequestParam("eventoId") Long eventoId, @RequestParam("idTrabalho") Long idTrabalho, Model model,
+			RedirectAttributes redirect) {
+
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		String[] emails = email.split(",");
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		
-		
+
 		if (EstadoEvento.ATIVO.equals(evento.getEstado())) {
 
 			boolean flag = false;
@@ -469,10 +468,9 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 				break;
 
 			case "COAUTOR":
-				for (String e : emails) {
-					e = e.trim();
-					flag = eventoService.notificarCoautor(email, evento, trabalho);
-				}
+
+				flag = eventoService.notificarCoautor(email, evento, trabalho);
+
 				break;
 
 			default:
@@ -488,8 +486,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			redirect.addFlashAttribute("organizadorError", messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
 		}
 	}
-	
-	
 
 	@RequestMapping(value = "/trilhas", method = RequestMethod.POST)
 	public String cadastraTrilha(@RequestParam(required = false) String eventoId, @Valid Trilha trilha, Model model,
