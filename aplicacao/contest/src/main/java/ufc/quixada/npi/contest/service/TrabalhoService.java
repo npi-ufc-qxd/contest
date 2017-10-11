@@ -158,7 +158,7 @@ public List<String> pegarConteudo(Trabalho trabalho) {
 		}
 		
 		return resultadoAvaliacoes;
-	
+	}
 	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
 		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
 
