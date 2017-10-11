@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.RevisaoRepository;
@@ -31,7 +32,7 @@ public class TrabalhoService {
 	}
 
 	public List<Trabalho> getTrabalhosEvento(Evento evento) {
-		return trabalhoRepository.findByEvento(evento);
+		return trabalhoRepository.getByEvento(evento);
 	}
 
 	public List<Trabalho> getTrabalhosTrilha(Trilha trilha) {
@@ -65,11 +66,11 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosDoAutorNoEvento(Pessoa pessoa, Evento evento) {
 		return trabalhoRepository.getTrabalhoDoAutorNoEvento(pessoa.getId(), evento.getId());
 	}
-	
+
 	public List<Trabalho> getTrabalhosDoCoautor(Pessoa pessoa) {
 		return trabalhoRepository.getTrabalhoDoCoautor(pessoa.getId());
 	}
-	
+
 	public List<Trabalho> getTrabalhosDoAutor(Pessoa pessoa) {
 		return trabalhoRepository.getTrabalhoDoAutor(pessoa.getId());
 	}
@@ -98,8 +99,65 @@ public class TrabalhoService {
 	public List<Trabalho> buscarTodosTrabalhos() {
 		return trabalhoRepository.findAll();
 	}
-	
+
+
+	public String mensurarAvaliacoes(Trabalho trabalho) {
+		int numeroDeAprovacao = 0;
+		int numeroDeReprovacao = 0;
+
+		List<Revisao> revisoes = trabalho.getRevisoes();
+		if (!revisoes.isEmpty()) {
+			for (int i = 0; i < revisoes.size(); i++) {
+
+				if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO")) {
+					numeroDeAprovacao++;
+					if (numeroDeAprovacao == trabalho.getRevisoes().size())
+						return "APROVADO";
+
+				} else if (revisoes.get(i).getAvaliacao().toString().equals("REPROVADO")) {
+					numeroDeReprovacao++;
+					if (numeroDeReprovacao == trabalho.getRevisoes().size())
+						return "REPROVADO";
+				}
+			}
+			return "MODERACAO";
+		}
+		return null;
+	}
+
+public List<String> pegarConteudo(Trabalho trabalho) {
+		
+		String conteudoAux;
+		String conteudo;
+		
+		List<String> resultadoAvaliacoes = new ArrayList<>();
+		
+		StringBuilder bld = new StringBuilder();
+		for (Revisao revisao : trabalho.getRevisoes()) {
+			
+			conteudo = revisao.getConteudo().substring(1, revisao.getConteudo().length()-1);	
+			bld.append("REVISOR : " + revisao.getRevisor().getNome().toUpperCase() + " , TRABALHO: " + trabalho.getId().toString());
+			
+			while(!conteudo.isEmpty()) {
+				if(conteudo.contains(",")) {
+					conteudoAux = conteudo.substring(0,conteudo.indexOf(','));
+					if(!conteudoAux.contentEquals("comentarios")) {
+						bld.append((" ," + (conteudoAux.replaceAll("\"", " ").replaceAll("_", " ").replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO").replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase()));
+						conteudoAux = conteudo.substring(conteudo.indexOf(',')+1);
+						conteudo = conteudoAux;
+					}
+				}else {
+					resultadoAvaliacoes.add((bld + (" , AVALIAÇÃO FINAL : "+revisao.getAvaliacao()).toString()));
+					conteudo = "";
+				}
+			}
+			bld.delete(0, bld.length());
+		}
+		
+		return resultadoAvaliacoes;
+	}
 	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
 		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
+
 	}
 }

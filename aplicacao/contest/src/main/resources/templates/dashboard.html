@@ -112,7 +112,7 @@
 						</div>
 					</div>
 				</div>
-
+					
 				<div class="col s12">
 					<div class="card white" th:if="${not #lists.isEmpty(eventosQueOrganizo)}">
 						<div class="card-content">
@@ -129,6 +129,7 @@
 										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[2].evento.id}|}"
 										th:text="${eventosQueOrganizo[2].evento.nome}"></a></li>
 								</ul>
+
 							</div>
 						</div>
 						<div class="card-action">

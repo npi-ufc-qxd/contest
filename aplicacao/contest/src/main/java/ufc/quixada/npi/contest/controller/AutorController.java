@@ -313,9 +313,7 @@ public class AutorController {
 	}
 
 	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
-	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,
-			@RequestParam("eventoId") String eventoId,
-			@RequestParam(value = "file", required = true) MultipartFile file, RedirectAttributes redirect) {
+	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,@RequestParam("eventoId") String eventoId,	@RequestParam(value = "file", required = true) MultipartFile file, RedirectAttributes redirect) {
 		Long idEvento = Long.parseLong(eventoId);
 		Long idTrabalho = Long.parseLong(trabalhoId);
 		try {
@@ -369,12 +367,12 @@ public class AutorController {
 			Long idEvento = Long.parseLong(id);
 			if (eventoService.existeEvento(idEvento)) {
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
-
+				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();		
+								
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
-
+				
 				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";

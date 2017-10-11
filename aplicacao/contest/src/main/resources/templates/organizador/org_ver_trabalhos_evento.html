@@ -23,82 +23,181 @@
 							<option value="nao_revisado">Não revisado</option>
 							<option value="best">Best paper</option>
 							<th:block th:each="opcao : ${opcoesFiltro}">
-							<option th:value="${#strings.toLowerCase(opcao)}" th:text="${opcao.tipo}"></option>
+								<option th:value="${#strings.toLowerCase(opcao)}"
+									th:text="${opcao.tipo}"></option>
 							</th:block>
-						</select>
-						 <label>Filtrar por status:</label>
+						</select> <label>Filtrar por status:</label>
 					</div>
 				</form>
 				<div th:unless="${#lists.isEmpty(trabalhos)}"
 					class="row holder center"></div>
-				<div  class="col s12">
-					<div class="col s12" 
-						th:each="trabalho,count : ${trabalhos}" 
+				<div class="col s12">
+					<div class="col s12" th:each="trabalho,count : ${trabalhos}"
 						th:with="revisado=${trabalho.isRevisado()}, status=${trabalho.status}, best=${trabalho.isIndicadoMelhoresTrabalhos()}">
-						<div class="card horizontal" th:attr="revisado=${revisado}, best=${best}" th:classappend="${status} ? ${#strings.toLowerCase(status)}">
+						<div class="card horizontal"
+							th:attr="revisado=${revisado}, best=${best}"
+							th:classappend="${status} ? ${#strings.toLowerCase(status)}">
+
+
 							<div class="card-stacked">
 								<div>
 									<div class="card-content">
 										<span class="card-title" th:text="${trabalho.titulo}"></span>
-										<p><b>Trilha : </b> <span th:text="${trabalho.trilha.nome}"></span></p>
+										<p>
+											<b>Trilha : </b> <span th:text="${trabalho.trilha.nome}"></span>
+										</p>
 										<div
 											th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
 										<div
 											th:include="fragments/listar_participacoes :: listar-inline('Revisor(es):', ${trabalho.revisores})">
 										</div>
-										
+
 										<div>
-											<a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Arquivo</a>
+											<a th:href="@{|/autor/file/${trabalho.id}|}"
+												class="teal-text confirmar modal-trigger">Fazer Download
+												do Arquivo </a>
 										</div>
 									</div>
-									
+
 									<div class="card-action">
-										<div class="chip  yellow lighten-1"
-											th:if="${best}">
+										<div class="chip  yellow lighten-1" th:if="${best}">
 											<i class="fa fa-star" aria-hidden="true"></i> <em>Best
 												Paper</em>
 										</div>
-										
-										<th:block  th:switch="${status}">
-										<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}" class="chip light-blue accent-2">
-											<i class="fa fa-thumbs-up" aria-hidden="true"></i>
-											Aprovado
+
+										<div th:if="${trabalho.status != null}">
+											<div class="left chip light-green accent-2"
+												th:if="${revisado}">
+												<i class="fa fa-check-circle" aria-hidden="true"></i>
+												Revisado
+
+											</div>
+											<div class=" left chip orange lighten-2"
+												th:unless="${revisado}">
+												<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+												N�o revisado
+											</div>
+
+											<div th:if="${#strings.equals(trabalho.status, 'REPROVADO')}"
+												class="left chip red">
+												<i class="fa fa-thumbs-down" aria-hidden="true"></i>
+												Reprovado
+											</div>
+											<div th:if="${#strings.equals(trabalho.status, 'APROVADO')}"
+												class="left chip light-blue accent-2">
+												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
+											</div>
+
+											<div th:if="${#strings.equals(trabalho.status, 'RESSALVAS')}"
+												class="chip orange lighten-3">
+												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
+												com Ressalvas
+											</div>
+
+											<div th:if="${#strings.equals(trabalho.status, 'MODERACAO')}">
+												<div class="left chip orange lighten-3">
+													<i class="fa fa-thumbs-up" aria-hidden="true"></i> Moderado
+												</div>
+												<br /> <br />
+
+												<div>
+													<a th:attr="href='#modal' + ${trabalho.id}"
+														class="btn waves-effect waves-light modal-trigger white-text">Decidir
+														Status</a>
+												</div>
+											</div>
+											<br />
 										</div>
-										<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}" class="chip orange lighten-3">
-											<i class="fa fa-thumbs-up" aria-hidden="true"></i>
-											Aprovado com ressalvas
-										</div>
-										<div th:case="${T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}" class="chip red">
-											<i class="fa fa-thumbs-down" aria-hidden="true"></i>
-											Reprovado
-										</div>
-										</th:block>
-										<div class="chip light-green accent-2"
-											th:if="${revisado}">
-											<i class="fa fa-check-circle" aria-hidden="true"></i>
-											Revisado
-										</div>
-										<div class="chip orange lighten-2"
-											th:unless="${revisado}">
-											<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-											Não revisado
-										</div>
-										
-										
 									</div>
 								</div>
+								<div th:id="${'modal'+trabalho.id}" class="modal">
+									<div class="modal-content">
+										<ul class="collapsible" data-collapsible="accordion">
+											<li th:each="conteudo,count : ${resultadoRevisoes}">
+												<div class="collapsible-header"
+													th:if="${#strings.contains(conteudo, trabalho.id)}">
+													<i class="material-icons">description</i> <span
+														th:text="'Revisão - ' + ${#strings.substringBefore(conteudo, ',')}" ></span>
+												</div>
+
+												<div class="collapsible-body"
+													th:each="conteudo : ${#strings.arraySplit(resultadoRevisoes[count.index], ',')}">
+													
+													<span th:if="${NOT #strings.contains(conteudo,'TRABALHO')} AND ${NOT #strings.contains(conteudo,'REVISOR')}" th:utext="'&lt;strong&gt;' + ${#strings.substringBefore(conteudo, ':')} + ' &lt;/strong&gt;'+ ' : '+${#strings.substringAfter(conteudo, ':')}"></span>
+												
+												</div>
+											</li>
+											
+										</ul>
+
+										<h4>Status</h4>
+										<form class="col s12"
+											th:action="@{/eventoOrganizador/avaliar/}" method="post">
+											<div class="row">
+												<div class="input-field col s12">
+													<input type="hidden" th:value="${trabalho.id}"
+														th:name="idTrabalho" /> <input type="hidden"
+														th:value="${evento.id}" th:name="idEvento" /> <select
+														th:name="funcao" required="required">
+														<option th:value="APROVADO">APROVADO</option>
+														<option th:value="REPROVADO">REPROVADO</option>
+														<option th:value="RESSALVAS">APROVADO COM
+															RESSALVAS</option>
+													</select>
+												</div>
+											</div>
+											<div class="modal-footer">
+
+												<a
+													class=" modal-action modal-close btn waves-effect waves-light red white-text">Cancelar</a>
+
+												<button class="left btn waves-effect waves-light"
+													type="submit" name="action">Aplicar status</button>
+
+											</div>
+										</form>
+
+									</div>
+
+								</div>
+
 							</div>
 						</div>
 					</div>
 				</div>
-				<div th:unless="${#lists.isEmpty(trabalhos)}"
-					class="row holder center"></div>
 			</div>
-
 		</div>
+		<div th:unless="${#lists.isEmpty(trabalhos)}"
+			class="row holder center"></div>
 	</div>
 	<div th:include="fragments/footer :: footer"></div>
-	<script type="text/javascript" th:src="@{/js/filtro_listar_trabalhos.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/js/filtro_listar_trabalhos.js}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('select').material_select();
+
+			//Inicialização do Modal excluir Evento
+			$('.modal-trigger').leanModal();
+
+			$(document).ready(function() {
+				$('.collapsible').collapsible();
+			});
+
+			$('.dropdown-button').dropdown({
+				inDuration : 300,
+				outDuration : 225,
+				constrain_width : false, // Does not change width of dropdown to that of the activator
+				hover : true, // Activate on hover
+				gutter : 0, // Spacing from edge
+				belowOrigin : false, // Displays dropdown below the button
+				alignment : 'left' // Displays dropdown with edge aligned to the left of button
+			});
+
+		});
+	</script>
 </body>
 </html>

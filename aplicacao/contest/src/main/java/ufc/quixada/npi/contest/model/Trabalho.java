@@ -38,6 +38,9 @@ public class Trabalho implements Comparable<Trabalho> {
 	@ManyToOne
 	private Trilha trilha;
 	
+	
+	private String status;
+	
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
 	@OrderBy("data_submissao")
 	private List<Submissao> submissoes;
@@ -233,13 +236,8 @@ public class Trabalho implements Comparable<Trabalho> {
 		return false;
 	}
 	
-	public Avaliacao getStatus(){
-		if(this.isRevisado()){
-			for(Revisao revisao : revisoes){
-				return revisao.getAvaliacao();
-			}
-		}
-		return null;
+	public String getStatus(){
+		return status;
 	}
 	
 	@Override
@@ -267,7 +265,11 @@ public class Trabalho implements Comparable<Trabalho> {
 		this.secao = secao;
 	}
 
-	
-	
-	
+	public void setStatus(String resultado) {
+		this.status = resultado;
+	}
+
+	public void setCoautoresInString(String coautoresInString) {
+		this.coautoresInString = coautoresInString;
+	}
 }
