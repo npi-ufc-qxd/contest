@@ -287,14 +287,7 @@ public class AutorController {
 						redirect.addFlashAttribute("sucessoEnviarTrabalho",
 								messageService.getMessage(TRABALHO_ENVIADO));
 						
-						eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
-
-						if (trabalho.getParticipacoes() != null) {
-							List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
-							for (Pessoa coautor : coautores) {
-								eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
-							}
-						}
+						notificarAutoresEnvioTrabalho(evento, trabalho);
 
 						return "redirect:/autor/meusTrabalhos";
 					} else {
@@ -331,14 +324,8 @@ public class AutorController {
 							redirect.addFlashAttribute("sucessoEnviarTrabalho",
 									messageService.getMessage(TRABALHO_ENVIADO));
 
-							eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
-
-							if (trabalho.getParticipacoes() != null) {
-								List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
-								for (Pessoa coautor : coautores) {
-									eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
-								}
-							}
+							notificarAutoresEnvioTrabalho(evento, trabalho);
+							
 							return "redirect:/autor/meusTrabalhos";
 						}
 					} else {
@@ -357,6 +344,16 @@ public class AutorController {
 		} catch (NumberFormatException e) {
 			redirect.addAttribute("ERRO_REENVIAR", messageService.getMessage(ERRO_REENVIAR));
 			return "redirect:/autor/listarTrabalhos/" + idEvento;
+		}
+	}
+
+	private void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
+		eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
+
+		
+		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
+		for (Pessoa coautor : coautores) {
+			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
 		}
 	}
 
