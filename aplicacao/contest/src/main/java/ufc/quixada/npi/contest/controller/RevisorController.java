@@ -85,7 +85,7 @@ public class RevisorController {
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
 	private static final String FORA_PERIODO_REVISAO = "FORA_PERIODO_REVISAO";
 
-	@PreAuthorize("isRevisorInEvento(#eventoId)")
+	//@PreAuthorize("isRevisorInEvento(#eventoId)")
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
@@ -112,7 +112,7 @@ public class RevisorController {
 		return REVISOR_TRABALHOS_REVISAO;
 	}
 
-	@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
+	//@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/{idTrabalho}/revisar", method = RequestMethod.GET)
 	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
 			RedirectAttributes redirect) {
@@ -302,7 +302,7 @@ public class RevisorController {
 		return "revisor/revisor_meus_eventos";
 	}
 
-	@PreAuthorize("isRevisor()")
+	
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
 		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
@@ -335,7 +335,7 @@ public class RevisorController {
 
 	}
 
-	@PreAuthorize("isRevisorInEvento(#id)")
+	
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
@@ -382,4 +382,6 @@ public class RevisorController {
 
 		return Constants.TEMPLATE_DETALHES_EVENTO_REV;
 	}
+	
+	
 }

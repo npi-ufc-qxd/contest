@@ -53,4 +53,5 @@ public class Constants {
 	public static final String REDIRECIONAR_PARA_LOGIN = "redirect:/login";	
 	
 	public static final String TEMPLATE_INDEX_COAUTOR = "coautor/coautor_listar_trabalhos";
-}
+	
+	}

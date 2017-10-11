@@ -1,7 +1,7 @@
 package ufc.quixada.npi.contest.model;
 
 public enum Avaliacao {
-	APROVADO("Aprovado"), RESSALVAS("Aprovado com ressalvas"), REPROVADO("Reprovado");
+	APROVADO("Aprovado"), RESSALVAS("Aprovado com ressalvas"), REPROVADO("Reprovado"), MODERACAO("Moderacao");
 
 	private String tipo;
 
