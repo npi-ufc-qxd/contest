@@ -215,9 +215,9 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		
 		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
 		
-		resultadoRevisoes.toString().replaceAll("]", "");
+		String revisoes = resultadoRevisoes.toString().replaceAll("]", "");
 		
-		model.addAttribute("resultadoRevisoes", resultadoRevisoes);
+		model.addAttribute("resultadoRevisoes", revisoes);
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhosDoEvento);
