@@ -451,7 +451,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	public void notificarPorEmail(@RequestParam("email") String email, @RequestParam("funcao") String funcao,
-			@RequestParam("eventoId") Long eventoId, @RequestParam("idTrabalho") Long idTrabalho, Model model,
+			@RequestParam("eventoId") Long eventoId, @RequestParam("idTrabalho") Long idTrabalho,
 			RedirectAttributes redirect) {
 
 		Evento evento = eventoService.buscarEventoPorId(eventoId);

@@ -292,19 +292,9 @@ public class AutorController {
 								messageService.getMessage(TRABALHO_ENVIADO));
 
 						eventoService.notificarAutor(PessoaLogadaUtil.pessoaLogada().getEmail(), evento, trabalho);
-
-						if (trabalho.getParticipacoes() != null) {
-							for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
-
-								Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-								if (participacao.getPessoa().getEmail().equals(coautor.getEmail())
-										&& (trabalho.getId().equals(participacao.getTrabalho().getId())
-												&& participacao.getPapel() == Tipo.COAUTOR)) {
-									eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
-								}
-							}
-						}
-
+						
+						enviarEmailParaParticipantesDoTrabalho(trabalho, evento);
+						
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";
@@ -317,6 +307,20 @@ public class AutorController {
 			} else {
 				redirect.addFlashAttribute("erro", messageService.getMessage(FORMATO_ARQUIVO_INVALIDO));
 				return "redirect:/autor/enviarTrabalhoForm/" + eventoId;
+			}
+		}
+	}
+	
+	public void enviarEmailParaParticipantesDoTrabalho(Trabalho trabalho, Evento evento){
+		if (trabalho.getParticipacoes() != null) {
+			for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
+
+				Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+				if (participacao.getPessoa().getEmail().equals(coautor.getEmail())
+						&& (trabalho.getId().equals(participacao.getTrabalho().getId())
+								&& participacao.getPapel() == Tipo.COAUTOR)) {
+					eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
+				}
 			}
 		}
 	}

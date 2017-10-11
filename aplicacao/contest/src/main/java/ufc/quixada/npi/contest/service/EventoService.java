@@ -149,7 +149,7 @@ public class EventoService {
 
 		if (!emailService.enviarEmail(titulo, assunto, email, corpo)) {
 			try {
-				if(!(pessoa == null)) pessoaService.delete(pessoa.getId());
+				if(pessoa != null) pessoaService.delete(pessoa.getId());
 			} catch (Exception ex) {
 				final Logger lOGGER = Logger.getLogger("");
 				lOGGER.log(java.util.logging.Level.INFO, "", ex);
