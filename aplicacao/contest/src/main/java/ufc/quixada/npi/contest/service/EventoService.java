@@ -143,7 +143,7 @@ public class EventoService {
 
 			} catch (Exception e) {
 				final Logger lOGGER = Logger.getLogger("");
-				lOGGER.log(java.util.logging.Level.INFO, "", e);
+				lOGGER.log(java.util.logging.Level.INFO, "Logger linha 146", e);
 			}
 		}
 
@@ -152,7 +152,7 @@ public class EventoService {
 				if(pessoa != null) pessoaService.delete(pessoa.getId());
 			} catch (Exception ex) {
 				final Logger lOGGER = Logger.getLogger("");
-				lOGGER.log(java.util.logging.Level.INFO, "", ex);
+				lOGGER.log(java.util.logging.Level.INFO, "Logger linha 155", ex);
 			}
 			return false;
 		}

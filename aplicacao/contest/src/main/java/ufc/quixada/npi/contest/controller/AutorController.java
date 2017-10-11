@@ -293,7 +293,12 @@ public class AutorController {
 
 						eventoService.notificarAutor(PessoaLogadaUtil.pessoaLogada().getEmail(), evento, trabalho);
 						
-						enviarEmailParaParticipantesDoTrabalho(trabalho, evento);
+						if (trabalho.getParticipacoes() != null) {
+							List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
+							for(Pessoa coautor : coautores){
+									eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
+							}
+					}
 						
 						return "redirect:/autor/meusTrabalhos";
 					} else {
@@ -311,19 +316,6 @@ public class AutorController {
 		}
 	}
 	
-	public void enviarEmailParaParticipantesDoTrabalho(Trabalho trabalho, Evento evento){
-		if (trabalho.getParticipacoes() != null) {
-			for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
-
-				Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-				if (participacao.getPessoa().getEmail().equals(coautor.getEmail())
-						&& (trabalho.getId().equals(participacao.getTrabalho().getId())
-								&& participacao.getPapel() == Tipo.COAUTOR)) {
-					eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
-				}
-			}
-		}
-	}
 
 	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
 	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,
