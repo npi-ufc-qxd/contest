@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -111,7 +110,6 @@ public class AutorController {
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
-	@PreAuthorize("isAutor()")
 	@RequestMapping
 	public String index(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
@@ -120,7 +118,6 @@ public class AutorController {
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 
-	@PreAuthorize("isAutorInEvento(#trabalhoId)")
 	@RequestMapping(value = "/revisao/trabalho/{trabalhoId}", method = RequestMethod.GET)
 	public String verRevisao(@PathVariable String trabalhoId, Model model, RedirectAttributes redirect) {
 		Long idTrabalho = Long.parseLong(trabalhoId);
@@ -242,7 +239,6 @@ public class AutorController {
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
-
 		try {
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
@@ -290,16 +286,16 @@ public class AutorController {
 						submissaoService.adicionarOuEditar(submissao);
 						redirect.addFlashAttribute("sucessoEnviarTrabalho",
 								messageService.getMessage(TRABALHO_ENVIADO));
-
-						eventoService.notificarAutor(PessoaLogadaUtil.pessoaLogada().getEmail(), evento, trabalho);
 						
+						eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
+
 						if (trabalho.getParticipacoes() != null) {
 							List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
-							for(Pessoa coautor : coautores){
-									eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
+							for (Pessoa coautor : coautores) {
+								eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
 							}
-					}
-						
+						}
+
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";
@@ -315,7 +311,6 @@ public class AutorController {
 			}
 		}
 	}
-	
 
 	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
 	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,
@@ -337,17 +332,13 @@ public class AutorController {
 							submissaoService.adicionarOuEditar(submissao);
 							redirect.addFlashAttribute("sucessoEnviarTrabalho",
 									messageService.getMessage(TRABALHO_ENVIADO));
-							eventoService.notificarAutor(PessoaLogadaUtil.pessoaLogada().getEmail(), evento, trabalho);
+
+							eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
 
 							if (trabalho.getParticipacoes() != null) {
-								for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
-
-									Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-									if (participacao.getPessoa().getEmail().equals(coautor.getEmail())
-											&& (trabalho.getId().equals(participacao.getTrabalho().getId())
-													&& participacao.getPapel() == Tipo.COAUTOR)) {
-										eventoService.notificarCoautor(coautor.getEmail(), evento, trabalho);
-									}
+								List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
+								for (Pessoa coautor : coautores) {
+									eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
 								}
 							}
 							return "redirect:/autor/meusTrabalhos";
@@ -371,6 +362,7 @@ public class AutorController {
 		}
 	}
 
+	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
@@ -378,9 +370,11 @@ public class AutorController {
 			if (eventoService.existeEvento(idEvento)) {
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
 				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
+
 				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";
