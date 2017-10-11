@@ -287,7 +287,7 @@ public class AutorController {
 						redirect.addFlashAttribute("sucessoEnviarTrabalho",
 								messageService.getMessage(TRABALHO_ENVIADO));
 						
-						notificarAutoresEnvioTrabalho(evento, trabalho);
+						trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
 
 						return "redirect:/autor/meusTrabalhos";
 					} else {
@@ -324,7 +324,7 @@ public class AutorController {
 							redirect.addFlashAttribute("sucessoEnviarTrabalho",
 									messageService.getMessage(TRABALHO_ENVIADO));
 
-							notificarAutoresEnvioTrabalho(evento, trabalho);
+							trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
 							
 							return "redirect:/autor/meusTrabalhos";
 						}
@@ -347,15 +347,7 @@ public class AutorController {
 		}
 	}
 
-	private void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
-		eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
-
-		
-		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
-		for (Pessoa coautor : coautores) {
-			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
-		}
-	}
+	
 
 	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
