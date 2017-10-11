@@ -100,6 +100,7 @@ public class TrabalhoService {
 		return trabalhoRepository.findAll();
 	}
 
+
 	public String mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
@@ -157,6 +158,9 @@ public List<String> pegarConteudo(Trabalho trabalho) {
 		}
 		
 		return resultadoAvaliacoes;
-		
+	
+	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
+		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
+
 	}
 }

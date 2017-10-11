@@ -47,7 +47,7 @@
 						<div class="card-action" >
 							<a th:if="${evento.isPeriodoInicial()}"
 								th:attr="href='#modal' + ${evento.id}"
-								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar como Autor</a>
 							<a th:unless="${evento.isPeriodoInicial()}"
 								class="btn disabled white-text grey">Período de inscrição encerrado</a>
 						</div>

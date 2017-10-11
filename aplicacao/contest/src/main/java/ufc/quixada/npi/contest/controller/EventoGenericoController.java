@@ -129,7 +129,6 @@ public class EventoGenericoController {
 		}else{
 			redirect.addFlashAttribute("erro", messageService.getMessage(EVENTO_NAO_EXISTE));
 		}
-
 		return viewSucesso;
 	}
 }

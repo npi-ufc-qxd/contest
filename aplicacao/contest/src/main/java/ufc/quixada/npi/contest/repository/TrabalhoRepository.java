@@ -55,4 +55,7 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 	public int getTrabalhoRevisadoComentadoEvento(@Param("eventoId") Long eventoId);
 	
 	public List<Trabalho> findAllByEventoId(Long eventoID);
+
+	public List<Trabalho> findTrabalhoBySecaoId(Long idSecao);
+	
 }

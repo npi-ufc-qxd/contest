@@ -342,7 +342,8 @@ public class AutorController {
 		}
 	}
 
-	//@PreAuthorize("isAutorInEvento(#id)")
+
+	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
@@ -366,7 +367,7 @@ public class AutorController {
 		}
 	}
 
-	//@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
+	@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/file/{trabalho}", method = RequestMethod.GET, produces = "application/pdf")
 	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho, HttpServletResponse response)
 			throws IOException {
@@ -376,10 +377,9 @@ public class AutorController {
 			response.sendRedirect("/error/500");
 			response.getOutputStream().flush();
 		} else {
-			Pessoa autor = PessoaLogadaUtil.pessoaLogada();
 			Long idEvento = trabalho.getEvento().getId();
-			if (participacaoEventoService.isOrganizadorDoEvento(autor, idEvento)
-					|| participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, autor.getId())) {
+			if (participacaoEventoService.isOrganizadorDoEvento(PessoaLogadaUtil.pessoaLogada(), idEvento)
+					|| participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, PessoaLogadaUtil.pessoaLogada().getId())) {
 				try {
 					String path = trabalho.getPath();
 					Path file = Paths.get(path);
@@ -415,8 +415,7 @@ public class AutorController {
 
 				if (evento.getPrazoSubmissaoFinal().after(dataDeRequisicaoDeExclusao)) {
 					Trabalho t = trabalhoService.getTrabalhoById(idTrabalho);
-					Pessoa autor = PessoaLogadaUtil.pessoaLogada();
-					if (autor.equals(t.getAutor())) {
+					if (PessoaLogadaUtil.pessoaLogada().equals(t.getAutor())) {
 						storageService.deleteArquivo(t.getPath());
 						trabalhoService.remover(Long.parseLong(trabalhoId));
 						redirect.addFlashAttribute("trabalhoExcluido",

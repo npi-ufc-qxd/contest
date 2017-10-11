@@ -13,6 +13,7 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 import ufc.quixada.npi.contest.util.Constants;
@@ -41,6 +42,9 @@ public class EventoService {
 	
 	@Autowired
 	private TokenService tokenService;
+	
+	@Autowired
+	private TrilhaService trilhaService;
 	
 	@Autowired
 	private UsuarioService usuarioService;
@@ -122,6 +126,10 @@ public class EventoService {
 			}
 			return false;
 		} else {
+			Trilha trilha = new Trilha();
+			trilha.setEvento(evento);
+			trilha.setNome("(DEFAULT)");
+			trilhaService.adicionarOuAtualizarTrilha(trilha);
 			eventoRepository.save(evento);
 			return true;
 		}

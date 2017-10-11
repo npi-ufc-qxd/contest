@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
+	media="screen,projection,print,page" />
+<title>Lista de Participações - Contest</title>
+</head>
+<body>
+	<div class="container page" align="center" style="text-align: center;">
+		<img src="/img/indice.png" height="100" /><br /> <font size="5">
+			<b>UNIVERSIDADE FEDERAL DO CEARÁ</b>
+		</font><br /> <font size="4"> CAMPUS QUIXADÁ</font><br />
+		<br /> <font size="3"> <b
+			th:text="${#strings.toUpperCase(secao.responsavel.nome)}"></b></font><br />
+		<font size="3"> <b
+			th:text="${#strings.toUpperCase(secao.nome)}"></b>
+		</font><br />
+		<br />
+
+		<div class="container col s8 md10 tg"
+			th:if="${not #lists.isEmpty(trabalhos)}">
+			<table class="tg col s12" align="center" width="1200">
+				<thead>
+					<tr>
+						<th width="450"><b> Nome do Trabalho </b></th>
+						<th width="300"><b> Nome do Autor </b></th>
+						<th class="assinatura"><b> Assinatura </b></th>
+					</tr>
+				</thead>
+
+				<tbody th:each="trabalho:${trabalhos}">
+					<tr>
+						<td th:text="${trabalho.titulo}"></td>
+						<td><span th:text="${#strings.toUpperCase(trabalho.participacoes[0].pessoa.nome)}"></span>
+						</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<script src="/webjars/jquery/2.2.4/jquery.js"></script>
+	<script src="/webjars/materializecss/0.97.7/js/materialize.js"></script>
+</body>
+
+</html>

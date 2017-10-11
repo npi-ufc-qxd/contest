@@ -9,5 +9,5 @@ import ufc.quixada.npi.contest.model.Secao;
 @Repository
 @Transactional
 public interface SecaoRepository extends JpaRepository<Secao, Long> {
-
+	
 }

@@ -1,5 +1,6 @@
  package ufc.quixada.npi.contest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,22 +124,29 @@ public class LoginController {
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
 	
-	
-	
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model){
-		List<ParticipacaoTrabalho> trabalhosQueReviso = participacaoTrabalhoService.getTrabalhosPorRevisorId(PessoaLogadaUtil.pessoaLogada().getId());
+		List<Evento> eventosQueReviso = eventoService.buscarEventosQueReviso(PessoaLogadaUtil.pessoaLogada().getId());
 		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, PessoaLogadaUtil.pessoaLogada().getId());
-		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
-		eventosAtivos.removeAll(eventoService.buscarMeusEventos(PessoaLogadaUtil.pessoaLogada().getId()));
+		List<Evento> eventosAtivos = eventoService.eventosParaParticipar(PessoaLogadaUtil.pessoaLogada().getId());
+		List<Evento> eventoAux = new ArrayList<>();
+		for(Evento evento : eventosAtivos){
+			if(!evento.isPeriodoInicial()){
+				eventoAux.add(evento);
+			}
+		}
+		
+		eventosAtivos.removeAll(eventoAux);
 		List<Trabalho> trabalhosMinhaCoutoria = trabalhoService.getTrabalhosDoCoautor(PessoaLogadaUtil.pessoaLogada());
-		List<Trabalho> trabalhosMinhaAutoria = trabalhoService.getTrabalhosDoAutor(PessoaLogadaUtil.pessoaLogada());
-		model.addAttribute("trabalhosMinhaAutoria", trabalhosMinhaAutoria);
+		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(PessoaLogadaUtil.pessoaLogada().getId());
+		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(PessoaLogadaUtil.pessoaLogada().getId());
+		model.addAttribute("eventosQueSouAutor", eventosQueSouAutor);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);
-		model.addAttribute("trabalhosQueReviso", trabalhosQueReviso);
+		model.addAttribute("eventosQueReviso", eventosQueReviso);
 		model.addAttribute("trabalhosMinhaCoautoria", trabalhosMinhaCoutoria);
 		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada().getId());
+		model.addAttribute("eventosInativos",eventosInativos);
 		return "dashboard";
 	}
 	

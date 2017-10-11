@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="fragments/head :: head"></div>
-
 </head>
 
 <body>
@@ -12,178 +11,191 @@
 
 			<h2 class="col s12">Dashboard</h2>
 
+			<div class="col s8 md10">
+				<div class="card white">
+					<div class="card-content" th:if="${not #lists.isEmpty(eventosInativos)}">
+						<h5>Eventos Inativos</h5>
+						<div class="row" th:if="${not #lists.isEmpty(eventosInativos)}">
+							<div class="card horizontal">
+								<div th:each="evento : ${eventosInativos}">
+									<div class="card">
 
-			<div class="row">
-
-				<div class="col s8 md10">
-					<div class="card white">
-						<div class="card-content"
-							th:switch="${not #lists.isEmpty(trabalhosQueReviso)}">
-							<h5>Eventos Ativos</h5>
-							<div th:if="${#lists.isEmpty(eventos)}">
-								<b>Não Existe nenhum evento disponível no momento!</b>
-							</div>
-							<div class="row" th:if="${not #lists.isEmpty(eventos)}">
-								<div class="card horizontal">
-									<div class="row" th:each="evento : ${eventos}">
-										<div class="card-stacked">
+										<div class="card-content">
+											<span class="card-title" th:text="${evento.nome}"></span>
 											<div
-												th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
-											<div class="card-action">
-												<a th:if="${evento.isPeriodoInicial()}"
-													th:attr="href='#modal' + ${evento.id}"
-													class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
-												<a th:unless="${evento.isPeriodoInicial()}"
-													class="btn disabled white-text grey">Período de
-													inscrição encerrado</a>
-											</div>
+												th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
+											<p
+												th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
 										</div>
-										<div th:attr="id='modal' + ${evento.id}" class="modal">
-											<div class="modal-content">
-												<h4>Participar do Evento</h4>
-												<h5 th:text="${evento.nome}"></h5>
-												<p>Tem certeza que quer participar deste evento?</p>
-											</div>
-											<form th:action="@{/autor/participarEvento}" method="post">
+										<div class="card-action">
+											<a th:href="@{'/eventoOrganizador/ativar/' + ${evento.id}}"
+												class="btn white-text waves-effect waves-light">Ativar</a>
+										</div>
 
-												<div class="modal-footer">
-													<input type="hidden" name="idEvento"
-														th:value="${evento.id}" />
-													<button type="submit"
-														class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-													<a href="#"
-														class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-												</div>
-											</form>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				
+				<div class="card white">
+					<div class="card-content"
+						th:switch="${not #lists.isEmpty(eventos)}">
+						<h5>Eventos Ativos</h5>
+						<div th:if="${#lists.isEmpty(eventos)}">
+							<b>Não Existe nenhum evento disponível no momento!</b>
+						</div>
+						<div class="row" th:if="${not #lists.isEmpty(eventos)}">
+							<div class="card horizontal">
+								<div class="card"  th:each="evento : ${eventos}">
+										<div
+											th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+										<div class="card-action">
+											<a th:if="${evento.isPeriodoInicial()}"
+												th:attr="href='#modal' + ${evento.id}"
+												class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar como Autor</a>
+											<a th:unless="${evento.isPeriodoInicial()}"
+												class="btn disabled white-text grey">Período de
+												inscrição encerrado</a>
 										</div>
+									<div th:attr="id='modal' + ${evento.id}" class="modal">
+										<div class="modal-content">
+											<h4>Participar do Evento</h4>
+											<h5 th:text="${evento.nome}"></h5>
+											<p>Tem certeza que quer participar deste evento?</p>
+										</div>
+										<form th:action="@{/autor/participarEvento}" method="post">
+
+											<div class="modal-footer">
+												<input type="hidden" name="idEvento" th:value="${evento.id}" />
+												<button type="submit"
+													class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+												<a href="#"
+													class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col s4 md8">
-					<div class="col s12">
-						<div class="card white">
-							<div class="card-content"
-								th:switch="${not #lists.isEmpty(trabalhosQueReviso)}">
-								<h5>Como Revisor</h5>
-								<div th:if="${#lists.isEmpty(trabalhosQueReviso)}">
-									<b>Você não está revisando nenhum trabalho.</b>
-								</div>
-								<div th:if="${not #lists.isEmpty(trabalhosQueReviso)}">
-									<ul>
-										<li><a
-											th:href="@{|/revisor/trabalho/${trabalhosQueReviso[0].trabalho.id}|}"
-											th:text="${trabalhosQueReviso[0].trabalho.titulo}"></a></li>
-										<li><a th:if="${trabalhosQueReviso.size()} > 1"
-											th:href="@{|/revisor/trabalho/${trabalhosQueReviso[1].trabalho.id}|}"
-											th:text="${trabalhosQueReviso[1].trabalho.titulo}"></a></li>
-										<li><a th:if="${trabalhosQueReviso.size()} > 2"
-											th:href="@{|/revisor/trabalho/${trabalhosQueReviso[2].trabalho.id}|}"
-											th:text="${trabalhosQueReviso[2].trabalho.titulo}"></a></li>
-
-									</ul>
-								</div>
-							</div>
-							<div class="card-action">
-								<a th:href="@{/revisor/}"
-									class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
-									mais</a>
-							</div>
-						</div>
-					</div>
-
-					<div class="col s12">
-						<div class="card white">
-							<div class="card-content">
-								<h5>Como Organizador</h5>
-								<div th:if="${#lists.isEmpty(eventosQueOrganizo)}">
-									<b>Você não está organizando nenhum evento ativo.</b>
-								</div>
-								<div th:if="${not #lists.isEmpty(eventosQueOrganizo)}">
-									<ul>
-										<li><a
-											th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[0].evento.id}|}"
-											th:text="${eventosQueOrganizo[0].evento.nome}"></a></li>
-										<li><a th:if="${eventosQueOrganizo.size()} > 1"
-											th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[1].evento.id}|}"
-											th:text="${eventosQueOrganizo[1].evento.nome}"></a></li>
-										<li><a th:if="${eventosQueOrganizo.size()} > 2"
-											th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[2].evento.id}|}"
-											th:text="${eventosQueOrganizo[2].evento.nome}"></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="card-action">
-								<a th:href="@{/eventoOrganizador}"
-									class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
-									mais</a>
-							</div>
-						</div>
-					</div>
-
-					<div class="col s12">
-						<div class="card white">
-							<div class="card-content">
-								<h5>Como Autor</h5>
-								<div th:if="${#lists.isEmpty(trabalhosMinhaAutoria)}">
-									<b>Você não é autor em nenhum trabalho.</b>
-								</div>
-								<div th:if="${not #lists.isEmpty(trabalhosMinhaAutoria)}">
-									<ul>
-										<li><a
-											th:href="@{|/autor/file/${trabalhosMinhaAutoria[0].id}|}"
-											th:text="${trabalhosMinhaAutoria[0].titulo}"></a></li>
-										<li><a th:if="${trabalhosMinhaAutoria.size()} > 1"
-											th:href="@{|/autor/file/${trabalhosMinhaAutoria[1].id}|}"
-											th:text="${trabalhosMinhaAutoria[1].titulo}"></a></li>
-										<li><a th:if="${trabalhosMinhaAutoria.size()} > 2"
-											th:href="@{|/autor/file/${trabalhosMinhaAutoria[2].id}|}"
-											th:text="${trabalhosMinhaAutoria[2].titulo}"></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="card-action">
-								<a th:href="@{/autor}"
-									class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
-									mais</a>
-							</div>
-						</div>
-					</div>
-
-					<div class="col s12">
-						<div class="card white">
-							<div class="card-content">
-								<h5>Como Coautor</h5>
-								<div th:if="${#lists.isEmpty(trabalhosMinhaCoautoria)}">
-									<b>Você não é Coautor em nenhum trabalho.</b>
-								</div>
-								<div th:if="${not #lists.isEmpty(trabalhosMinhaCoautoria)}">
-									<ul>
-										<li><a
-											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[0].id}|}"
-											th:text="${trabalhosMinhaCoautoria[0].titulo}"></a></li>
-										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 1"
-											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[1].id}|}"
-											th:text="${trabalhosMinhaCoautoria[1].titulo}"></a></li>
-										<li><a th:if="${trabalhosMinhaCoautoria.size()} > 2"
-											th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[2].id}|}"
-											th:text="${trabalhosMinhaCoautoria[2].titulo}"></a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="card-action">
-								<a th:href="@{/coautor/}"
-									class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
-									mais</a>
-							</div>
-						</div>
-					</div>
-
-				</div>
 			</div>
 
+			<div class="col s4 md8">
+				<div class="col s12" th:if="${not #lists.isEmpty(eventosQueReviso)}">
+					<div class="card white">
+						<div class="card-content">
+							<h5>Como Revisor</h5>
+							<div th:if="${not #lists.isEmpty(eventosQueReviso)}">
+								<ul>
+									<li><a
+										th:href="@{|/revisor/evento/${eventosQueReviso[0].id}|}"
+										th:text="${eventosQueReviso[0].nome}"></a></li>
+									<li><a th:if="${eventosQueReviso.size()} > 1"
+										th:href="@{|/revisor/evento/${eventosQueReviso[1].id}|}"
+										th:text="${eventosQueReviso[1].nome}"></a></li>
+									<li><a th:if="${eventosQueReviso.size()} > 2"
+										th:href="@{|/revisor/evento/${eventosQueReviso[2].id}|}"
+										th:text="${eventosQueReviso[2].nome}"></a></li>
+
+								</ul>
+							</div>
+						</div>
+						<div class="card-action">
+							<a th:href="@{/revisor/}"
+								class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
+								mais</a>
+						</div>
+					</div>
+				</div>
+					
+				<div class="col s12">
+					<div class="card white" th:if="${not #lists.isEmpty(eventosQueOrganizo)}">
+						<div class="card-content">
+							<h5>Como Organizador</h5>
+							<div>
+								<ul>
+									<li><a
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[0].evento.id}|}"
+										th:text="${eventosQueOrganizo[0].evento.nome}"></a></li>
+									<li><a th:if="${eventosQueOrganizo.size()} > 1"
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[1].evento.id}|}"
+										th:text="${eventosQueOrganizo[1].evento.nome}"></a></li>
+									<li><a th:if="${eventosQueOrganizo.size()} > 2"
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[2].evento.id}|}"
+										th:text="${eventosQueOrganizo[2].evento.nome}"></a></li>
+								</ul>
+
+							</div>
+						</div>
+						<div class="card-action">
+							<a th:href="@{/eventoOrganizador}"
+								class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
+								mais</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="col s12">
+					<div class="card white">
+						<div class="card-content">
+							<h5>Como Autor</h5>
+							<div th:if="${#lists.isEmpty(eventosQueSouAutor)}">
+								<b>Você não é autor em nenhum evento.</b>
+							</div>
+							<div th:if="${not #lists.isEmpty(eventosQueSouAutor)}">
+								<ul>
+									<li><a
+										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[0].id}"
+										th:text="${eventosQueSouAutor[0].nome}"></a></li>
+									<li><a th:if="${eventosQueSouAutor.size()} > 1"
+										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[1].id}"
+										th:text="${eventosQueSouAutor[1].nome}"></a></li>
+									<li><a th:if="${eventosQueSouAutor.size()} > 2"
+										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[2].id}"
+										th:text="${eventosQueSouAutor[2].nome}"></a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="card-action">
+							<a th:href="@{/autor}"
+								class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
+								mais</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="col s12" th:if="${not #lists.isEmpty(trabalhosMinhaCoautoria)}">
+					<div class="card white">
+						<div class="card-content">
+							<h5>Como Coautor</h5>
+							<div>
+								<ul>
+									<li><a
+										th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[0].id}|}"
+										th:text="${trabalhosMinhaCoautoria[0].titulo}"></a></li>
+									<li><a th:if="${trabalhosMinhaCoautoria.size()} > 1"
+										th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[1].id}|}"
+										th:text="${trabalhosMinhaCoautoria[1].titulo}"></a></li>
+									<li><a th:if="${trabalhosMinhaCoautoria.size()} > 2"
+										th:href="@{|/coautor/file/${trabalhosMinhaCoautoria[2].id}|}"
+										th:text="${trabalhosMinhaCoautoria[2].titulo}"></a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="card-action">
+							<a th:href="@{/coautor/}"
+								class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
+								mais</a>
+						</div>
+					</div>
+				</div>
+
+			</div>
 		</div>
 	</div>
 	<div th:include="fragments/footer :: footer"></div>

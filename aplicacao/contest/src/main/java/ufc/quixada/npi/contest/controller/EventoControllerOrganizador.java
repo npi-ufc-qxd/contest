@@ -683,10 +683,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "DADOS_TRABALHOS";
 	}
 
+
 	public Pessoa getUsuarioLogado() {
 		return PessoaLogadaUtil.pessoaLogada();
 	}
-
 	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response)
 			throws FileNotFoundException, IOException {
 		TableModel modelo = new DefaultTableModel(dados, colunas);
@@ -709,6 +709,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "organizador/organizador_meus_eventos";
 	}
 
+
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/avaliar/", method = RequestMethod.POST)
 	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String funcao,
@@ -728,5 +729,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("trabalhos", trabalhos);
 		
 		return verTrabalhosDoEvento(idEvento, model);
+
 	}
 }
