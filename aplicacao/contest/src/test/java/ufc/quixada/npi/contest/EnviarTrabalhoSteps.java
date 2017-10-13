@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -35,12 +36,14 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Submissao;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
+import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 
@@ -70,6 +73,8 @@ public class EnviarTrabalhoSteps {
 	private TrilhaService trilhaService;
 	@Mock
 	private StorageService storageService;
+	@Mock
+	private TrabalhoService trabalhoService;
 	
 	@Mock
 	private TrabalhoValidator trabalhoValidator;
@@ -157,6 +162,7 @@ public class EnviarTrabalhoSteps {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
 		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
+		doNothing().when(trabalhoService).notificarAutoresEnvioTrabalho(evento, new Trabalho());
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
 		MultipartFile file = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);

@@ -13,6 +13,7 @@ import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.RevisaoRepository;
 import ufc.quixada.npi.contest.repository.TrabalhoRepository;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Service
 public class TrabalhoService {
@@ -22,6 +23,9 @@ public class TrabalhoService {
 
 	@Autowired
 	private RevisaoRepository revisaoRepository;
+	
+	@Autowired
+	private EventoService eventoService;
 
 	public Trabalho getTrabalhoById(Long idTrabalho) {
 		return trabalhoRepository.findOne(idTrabalho);
@@ -159,5 +163,15 @@ public List<String> pegarConteudo(Trabalho trabalho) {
 	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
 		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
 
+	}
+	
+	public void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
+		eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
+
+		
+		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
+		for (Pessoa coautor : coautores) {
+			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
+		}
 	}
 }

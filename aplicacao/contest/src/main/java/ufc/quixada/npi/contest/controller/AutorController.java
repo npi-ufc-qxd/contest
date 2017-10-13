@@ -110,7 +110,6 @@ public class AutorController {
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
-	
 	@RequestMapping
 	public String index(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
@@ -119,7 +118,6 @@ public class AutorController {
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 
-	
 	@RequestMapping(value = "/revisao/trabalho/{trabalhoId}", method = RequestMethod.GET)
 	public String verRevisao(@PathVariable String trabalhoId, Model model, RedirectAttributes redirect) {
 		Long idTrabalho = Long.parseLong(trabalhoId);
@@ -288,6 +286,9 @@ public class AutorController {
 						submissaoService.adicionarOuEditar(submissao);
 						redirect.addFlashAttribute("sucessoEnviarTrabalho",
 								messageService.getMessage(TRABALHO_ENVIADO));
+						
+						trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
+
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";
@@ -322,6 +323,9 @@ public class AutorController {
 							submissaoService.adicionarOuEditar(submissao);
 							redirect.addFlashAttribute("sucessoEnviarTrabalho",
 									messageService.getMessage(TRABALHO_ENVIADO));
+
+							trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
+							
 							return "redirect:/autor/meusTrabalhos";
 						}
 					} else {
@@ -343,6 +347,7 @@ public class AutorController {
 		}
 	}
 
+	
 
 	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
@@ -352,7 +357,6 @@ public class AutorController {
 			if (eventoService.existeEvento(idEvento)) {
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
 				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();		
-				
 								
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
@@ -380,7 +384,8 @@ public class AutorController {
 		} else {
 			Long idEvento = trabalho.getEvento().getId();
 			if (participacaoEventoService.isOrganizadorDoEvento(PessoaLogadaUtil.pessoaLogada(), idEvento)
-					|| participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, PessoaLogadaUtil.pessoaLogada().getId())) {
+					|| participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho,
+							PessoaLogadaUtil.pessoaLogada().getId())) {
 				try {
 					String path = trabalho.getPath();
 					Path file = Paths.get(path);

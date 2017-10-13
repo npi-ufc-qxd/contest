@@ -13,6 +13,7 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
+import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
@@ -24,6 +25,9 @@ public class EventoService {
 
 	private static final String TITULO_EMAIL_ORGANIZADOR = "TITULO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
+	private static final String ASSUNTO_EMAIL_CONFIRMACAO = "ASSUNTO_EMAIL_CONFIRMACAO";
+	private static final String TEXTO_EMAIL_CONFIRMACAO = ".Fique atento aos prazos, o próximo passo será a fase das revisões, confira no edital os prazos. Boa sorte!";
+
 	
 	@Autowired
 	EventoRepository eventoRepository;
@@ -203,5 +207,13 @@ public class EventoService {
 	public List<Evento> getEventosByEstadoEVisibilidadePublica(EstadoEvento estado) {
 		return eventoRepository.findEventoByEstadoAndVisibilidade(estado, VisibilidadeEvento.PUBLICO);
 	}
-
+	
+	public void notificarPessoa (Trabalho trabalho, String email, Evento evento) {
+		String assunto = messageService.getMessage(ASSUNTO_EMAIL_CONFIRMACAO) + " " + trabalho.getTitulo();
+		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + " foi enviado com sucesso para o evento "
+				+ evento.getNome() + TEXTO_EMAIL_CONFIRMACAO;
+		String titulo = "[CONTEST] Confirmação de envio do trabalho: " + trabalho.getTitulo();
+		
+		emailService.enviarEmail(titulo, assunto, email, corpo);
+	}
 }
