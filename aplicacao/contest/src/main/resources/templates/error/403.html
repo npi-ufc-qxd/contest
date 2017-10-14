@@ -4,16 +4,19 @@
 <div th:include="fragments/head :: head"></div>
 </head>
 <body>
-  <div th:include="fragments/headerError :: header"></div>
-  <div class="container page">
-    <h1 class="center">Acesso Negado</h1>
-    <h5 class="center">Você não possui permissão para acessar esta área</h5>
-    <div class="row ">
-      <center>
-    	<a th:href="@{/}" class="waves-effect waves-light btn white-text ">Voltar</a>
-      </center>
-    </div>
-  </div>
-   <div th:include="fragments/footer :: footer"></div>
+	<div th:include="fragments/headerError :: header"></div>
+	<div class="container page">
+		<h1 class="center">Acesso Negado</h1>
+		<h5 class="center">Você não possui permissão para acessar esta
+			área</h5>
+		<div class="row ">
+			<center>
+				<a class="waves-effect waves-light btn white-text"
+					onclick="window.history.back()">Voltar</a>
+			</center>
+		</div>
+	</div>
+	<div th:include="fragments/footer :: footer"></div>
+
 </body>
 </html>

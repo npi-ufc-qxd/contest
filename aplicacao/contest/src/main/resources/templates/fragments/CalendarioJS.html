@@ -34,6 +34,9 @@
 			var calendarioSubmissaoFinal = "#prazo_submissao_final";
 			var calendarioRevisaoInicial = "#prazo_revisao_inicial";
 			var calendarioRevisaoFinal = "#prazo_revisao_final";
+			
+			var picker = $(calendarioSubmissaoInicial).pickadate('picker');
+			picker.set('view', $(calendarioSubmissaoInicial).val(), { format: 'yyyy-mm-dd' })
 
 			function habilitarCalendario(calendario) {
 				$(calendario).removeAttr("disabled");

@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import ufc.quixada.npi.contest.model.Papel.Tipo;
+
 @Entity
 @Table(name = "participacao_evento")
 public class ParticipacaoEvento {
@@ -22,12 +24,12 @@ public class ParticipacaoEvento {
 
 	@Column(name = "papel")
 	@Enumerated(EnumType.STRING)
-	private Papel papel;
+	private Tipo papel;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	private Pessoa pessoa;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	private Evento evento;
 
 	public Long getId() {
@@ -38,11 +40,11 @@ public class ParticipacaoEvento {
 		this.id = id;
 	}
 
-	public Papel getPapel() {
+	public Tipo getPapel() {
 		return papel;
 	}
 
-	public void setPapel(Papel papel) {
+	public void setPapel(Tipo papel) {
 		this.papel = papel;
 	}
 
@@ -60,6 +62,15 @@ public class ParticipacaoEvento {
 
 	public void setEvento(Evento evento) {
 		this.evento = evento;
+	}
+
+	public ParticipacaoEvento(Tipo papel, Pessoa pessoa, Evento evento) {
+		this.papel = papel;
+		this.pessoa = pessoa;
+		this.evento = evento;
+	}
+	
+	public ParticipacaoEvento() {
 	}
 
 	@Override

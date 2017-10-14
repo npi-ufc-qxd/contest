@@ -9,22 +9,33 @@
 		    <a th:href="@{/eventoOrganizador}">Meus Eventos</a>
 	        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
 	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
-	       
+
+	       	<a th:href="@{/secao/paginaSecao}">Visualizar Seções</a>
+			<!-- <a th:text="${#authentication.getPrincipal()}"></a> -->
+	       	<a th:if= "${evento != null} and 
+	       	 ${trilha == null} and
+	       	 ${revisores == null} and       	 		       	 		     
+	       	 ${trabalhos == null} and	       	 
+	       	 ${#strings.equals(evento.estado,'ATIVO')} and 	       	
+	       	 ${#arrays.contains(evento.getOrganizadores(), #authentication.getPrincipal())} " 
+	       	 
+	       	 class="modal-trigger" href="#modalConvidarPessoas">Convidar Pessoas</a>		       	 
 	       <!-- Dropdown Structure -->
 			<ul th:if="${evento}" id='dropdown1' class='dropdown-content'>
-			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Certificados para Organização</a></li>
-			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosRevisores/${evento.id}|}">Certificados para Revisores</a></li>
-			  <li><a th:href="@{|/eventoOrganizador/gerarCertificadosTrabalho/${evento.id}|}">Certificados para Trabalhos</a></li>
+				<li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Dados da Organização</a></li>
+			  	<li><a th:href="@{|/eventoOrganizador/gerarCertificadosRevisores/${evento.id}|}">Dados dos Revisores</a></li>
+			  	<li><a th:href="@{|/eventoOrganizador/gerarCertificadosTrabalho/${evento.id}|}">Dados dos Trabalhos</a></li>
+			  	
 			</ul>
 	       	<!-- Dropdown Trigger -->
- 			<a th:if="${evento}" class='dropdown-button' href='#' data-activates='dropdown1'>Certificados</a>
+ 			<a  th:if="${gerarCertificado}" class='dropdown-button' href='#' data-activates='dropdown1'>Planilhas</a>
  			
  			
 	       
 	       	<a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
-	       		Voltar
+	      		VOLTAR
 	       	</a>
 	    </div>
 	</div>
 </body>
-</html>
+</html> 

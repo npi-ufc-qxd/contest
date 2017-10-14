@@ -22,6 +22,8 @@ import javax.persistence.TemporalType;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import ufc.quixada.npi.contest.model.Papel.Tipo;
+
 @Entity
 @Table(name = "evento")
 public class Evento {
@@ -66,12 +68,15 @@ public class Evento {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date prazoRevisaoFinal;
 
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=false)
 	private List<ParticipacaoEvento> participacoes;
 	
-	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval=false)
 	@OrderBy("nome ASC")
 	private List<Trilha> trilhas;
+	
+	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=false)
+	private List<Secao> secoes;
 
 	public Long getId() {
 		return id;
@@ -191,7 +196,11 @@ public class Evento {
 	}
 
 	public void setTrilhas(List<Trilha> trilhas) {
-		this.trilhas = trilhas;
+		if(this.trilhas == null){
+			this.trilhas = trilhas;
+		}
+		this.trilhas.clear();
+		this.trilhas.addAll(trilhas);
 	}
 
 	
@@ -223,13 +232,18 @@ public class Evento {
         cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date diaAposRevisaoFinal = cal.getTime();
 		boolean comecaAposRevisaoFinal = (dataAtual.compareTo(diaAposRevisaoFinal)>= 0);
-		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(prazoSubmissaoFinal)<= 0);
+		
+		cal.setTime(prazoSubmissaoFinal);
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date diaAposSubmissaoFinal = cal.getTime();
+		boolean terminaNoDiaOuAntesSubissaoFinal = (dataAtual.compareTo(diaAposSubmissaoFinal)<= 0);
 		return (comecaAposRevisaoFinal && terminaNoDiaOuAntesSubissaoFinal);
 	}
-	private List<Pessoa> getByPapel(Papel ...papeis){
+	
+	private List<Pessoa> getByPapel(Tipo ...papeis){
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoEvento p : getParticipacoes()) {
-			for(Papel papel : papeis){
+			for(Tipo papel : papeis){
 				if (p.getPapel() == papel){
 					pessoa.add(p.getPessoa());
 				}
@@ -240,12 +254,23 @@ public class Evento {
 	}
 	
 	public List<Pessoa> getOrganizadores(){
-		return getByPapel(Papel.ORGANIZADOR);
+		return getByPapel(Tipo.ORGANIZADOR);
 	}
 	
-	
 	public List<Pessoa> getRevisores(){
-		return getByPapel(Papel.REVISOR);
+		return getByPapel(Tipo.REVISOR);
+	}
+
+	public List<Secao> getSecoes() {
+		return secoes;
+	}
+
+	public void setSecoes(List<Secao> secoes) {
+		if(this.secoes == null){
+			this.secoes = secoes;
+		}
+		this.secoes.clear();
+		this.secoes.addAll(secoes);
 	}
 	
 }

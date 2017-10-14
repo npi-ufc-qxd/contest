@@ -34,23 +34,21 @@
           
           <input type="hidden" th:value="${eventoId}" name="eventoId"/>
           <div class="input-field col m12 s12">
-            <input id="titulo_do_trabalho" type="text" th:field="*{titulo}"/>
+            <input id="titulo_do_trabalho" type="text" th:field="*{titulo}" required="required"/>
             <label for="titulo_do_trabalho">Titulo do Trabalho</label>
           </div>
           
           
           <div id="autor" class="autor" >
 	          <div class="input-field col m5 s5">
-	            <input id="autor_nome" disabled="disabled"  type="text" th:value="${autor.nome}" />
+	            <input id="autor_nome" disabled="disabled"  type="text" th:value="${pessoa.nome}" />
 	            <label for="autor_nome">Autor</label>
 	          </div>
 	          <div class="input-field col m5 s5">
-	            <input id="autor_email" disabled="disabled" type="text" th:value="${autor.email}" />
+	            <input id="autor_email" disabled="disabled" type="text" th:value="${pessoa.email}" />
 	            <label for="autor_email" >Email Autor</label>
 	          </div>
           </div>
-          
-          
           
           <div id="coautores" class="coautores">
           </div>
@@ -77,7 +75,7 @@
               <input type="text" placeholder="Selecione seu arquivo no formato .pdf" class="file-path validate"/>
             </div>
           </div>
-          <div class="input-field col s4"><button type="submit" class="waves-effect waves-light btn white-text">Salvar Alterações<i aria-hidden="true" class="fa fa-floppy-o left">        </i></button></div>
+          <div class="input-field col s4"><button  type="submit" class="waves-effect waves-light btn white-text">Salvar Alterações<i aria-hidden="true" class="fa fa-floppy-o left"> </i></button></div>
         </form>
       </div>
       

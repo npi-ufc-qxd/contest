@@ -15,6 +15,6 @@ Funcionalidade: Excluir Trabalho
 			
 	Cenário: Excluir trabalho fora do prazo de submissão.    
 		E está fora do prazo de submissão
-		Quando seleciona o trabalho que deverá ser excluir
+		Quando seleciona o trabalho que deverá ser excluido
 		Então o trabalho não deve ser excluído
 		E uma mensagem deve ser mostrada ao usuário

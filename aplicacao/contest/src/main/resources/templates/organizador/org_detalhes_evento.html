@@ -1,140 +1,281 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <div th:include="fragments/head :: head"></div>
-  </head>
-  <body>
-    <div th:include="fragments/header :: header"></div>
-    <div class="container page"><br/>
-      <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
-      <div class="row">
-      <div th:if="${organizadorError}" class="chip red darken-1">
-        	<span class="white-text" th:text= "${organizadorError}"></span>
-        	<i class="material-icons">close</i>
-      </div>
-      
-       <div th:if="${nao_organizador}" class="chip red darken-1">
-        	<span class="white-text" th:text= "${NAO_ORGANIZADOR}"></span>
-        	<i class="material-icons">close</i>
-      </div>
-        <h2>Detalhes do Evento: 
-        	<span class="card-title" th:text="${evento.nome}" ></span>
-        </h2>
-        <p th:text="${evento.descricao}"></p>
-       	<div th:if="${organizaEvento}">
-       		<form th:action="@{/eventoOrganizador/addOrganizadores}"  method="post">
-	       	  <div class="input-field col s10">
-	       	    <input type="hidden" th:value="${evento.id}" name="idEvento"/>
-			    <select multiple="multiple" name="idOrganizadores">
-			      <option value="" disabled="disabled" selected="selected">Selecione os Organizadores</option>
-			      <div th:each="pessoa : ${pessoas}">
-			        <option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
-	                <option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" ></option>   
-			      </div>
-			    </select>
-	            <label>organizadores</label>
-	          </div>
-	          <div class="col s2">
-				<button class="btn waves-effect waves-light" type="submit" name="action">Add
-				  <i class="material-icons right"></i>
-				</button>
-	          </div>
-	       	</form>
-       	
-       	
-       	</div>
-        <div >
-          <div class="col s12">
-            <div class="card horizontal">
-               <div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="col s3">
-            <div class="card horizontal">
-              <div class="card-stacked">
-                <div class="card-content"><span class="card-title">Trilhas</span>
-                  <p th:text="'Cadastradas: '+ ${#lists.size(evento.trilhas)}"></p>
-                  <br /><br />
-                </div>
-                <div class="card-action" th:if="${organizaEvento}">
-                  <a th:href="@{'/eventoOrganizador/trilhas/' + ${evento.id}}" class="btn white-text waves-effect waves-light blue-grey">Gerenciar Trilhas</a>
-                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="col s3">
-            <div class="card horizontal">
-              <div class="card-stacked">
-                <div class="card-content">
-                  <span class="card-title">Revisores</span>
-                  <p th:text="'Cadastrados: '+ ${#lists.size(evento.revisores)}"></p>
-                  <br /><br />
-                </div>
-                <div class="card-action" th:if="${organizaEvento}">
-                  <a th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisores'}" class="btn white-text waves-effect waves-light blue-grey">Atribuir Revisores</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col s3">
-            <div class="card horizontal">
-              <div class="card-stacked">
-                <div class="card-content">
-                  <span class="card-title">Trabalhos</span>
-                  <p th:text="'Submetidos: '+ ${numeroTrabalhos}"></p>
-                  <p th:text="'Revisados: '+ ${numeroTrabalhosRevisados}"></p>
-                  <p th:text="'Não Revisados: '+ ${numeroTrabalhosNaoRevisados}"></p>
-                </div>
-                <div class="card-action" th:if="${organizaEvento}">
-                  <a th:href="@{'/eventoOrganizador/evento/' + ${evento.id} + '/trabalhos'}" class="btn white-text waves-effect waves-light blue-grey">Ver todos</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col s3">
-            <div class="card horizontal">
-              <div class="card-stacked">
-                <div class="card-content">
-                  <span class="card-title">Revisões</span>
-                  <p th:text="'Comentadas: '+ ${comentarios}"></p>
-                  <br /><br />
-                </div>
-                <div class="card-action" th:if="${organizaEvento}">
-                  <a th:if="${comentarios}" th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisoes'}" class="btn white-text waves-effect waves-light blue-grey">Ver todas</a>
-                  <a th:unless="${comentarios} or ${evento.isPeriodoFinal()}" class="btn disabled white-text waves-effect waves-light blue-grey">Ver todas</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-	<div th:include="fragments/footer :: footer"></div>
-	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
-    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-    	$('select').material_select();
+<head>
+<div th:include="fragments/head :: head"></div>
+</head>
+<body>
+	<div th:include="fragments/header :: header"></div>
+	<div class="container page">
+		<br />
+		<div
+			th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
+		<div class="row">
+			<div th:if="${organizadorError}" class="chip red darken-1">
+				<span class="white-text" th:text="${organizadorError}"></span> <i
+					class="material-icons">close</i>
+			</div>
+			<div th:if="${organizadorSucess}" class="chip green darken-1">
+				<span class="white-text" th:text="${organizadorSucess}"></span> <i
+					class="material-icons">close</i>
+			</div>
+			<div th:if="${nao_organizador}" class="chip red darken-1">
+				<span class="white-text" th:text="${NAO_ORGANIZADOR}"></span> <i
+					class="material-icons">close</i>
+			</div>
+			<h2>
+				Detalhes do Evento: <span class="card-title"
+					th:text="${evento.nome}"></span>
+			</h2>
 
-      //Inicialização do Modal excluir Evento
-      $('.modal-trigger').leanModal();
-      
-      $('.dropdown-button').dropdown({
-          inDuration: 300,
-          outDuration: 225,
-          constrain_width: false, // Does not change width of dropdown to that of the activator
-          hover: true, // Activate on hover
-          gutter: 0, // Spacing from edge
-          belowOrigin: false, // Displays dropdown below the button
-          alignment: 'left' // Displays dropdown with edge aligned to the left of button
-        }
-      );
-      
-    });
-    
-    
-  </script>
-  </body>
+
+			<!-- Modal Trigger -->
+			
+		  
+
+			<!-- Modal Structure -->
+			<div id="modal1" class="modal">
+				<div class="modal-content">
+					<h4>Adicionar Organizador </h4>
+
+					<div class="row">
+						<form id="formAdicionarOrganizador" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
+							<div class="row modal-form-row">
+								<div class="input-field col s12">
+									<input id="email_org" type="text" name="email" class="validate"	required="required" /> 
+									<label for="email_org">E-mail Organizador</label>
+								</div>
+								
+								<div class="input-field">
+									<input type="hidden" th:value="${evento.id}" name="eventoId" />
+								</div>
+								
+								<div class="input-field">
+									<input type="hidden" value="ORGANIZADOR" name="funcao" />
+								</div>
+								
+								
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" form="formAdicionarOrganizador" class="right btn waves-effect teal lighten-1">Enviar</button>
+					<button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
+				</div>
+			</div>
+				<!-- Modal Trigger -->
+
+			<!-- Modal Structure -->
+			<div id="modal2" class="modal">
+				<div class="modal-content">
+				
+					<h4>Adicionar Revisor</h4>
+
+					<div class="row">
+						<form id="formAdicionarRevisor" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
+							<div class="row modal-form-row">
+								<div class="input-field col s12">
+									<input id="email_rev" name="email" type="text" class="validate"
+										required="required" /> <label for="email_rev">E-mail Revisor</label>
+								</div>
+								
+								<div class="input-field">
+									<input type="hidden" th:value="${evento.id}" name="eventoId" />
+								</div>
+								
+								<div class="input-field">
+									<input type="hidden" value="REVISOR" name="funcao" />
+								</div>	
+							</div>
+						</form>
+					
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" form="formAdicionarRevisor" class="right btn waves-effect teal lighten-1">Enviar</button>
+					<button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
+				</div>
+				
+			</div>
+			<br/>
+			<br/>
+			<br/>			
+			<div class="row">
+				<div class="col s12 m6">
+					<div class="card darken-1">
+						<div class="card-content white-text">						 
+						<span class="card-title teal-text text-lighten-2">Organizadores:</span>												
+						<p th:each="pessoaOrganizador : ${evento.getOrganizadores()}" class="black-text text-darken-2" th:text="${pessoaOrganizador.getNome()}"></p>
+						<br/>
+						<button class="waves-effect waves-light btn modal-trigger  left" data-target="modal1" style="left:1px">Adicionar Organizador</button>
+						 <br/>
+						 <br/>						 
+						</div>
+					</div>
+				</div>
+
+				<div class="col s12 m6">
+					<div class="card">
+						<div class="card-content white-text">						
+						<span class="card-title teal-text text-lighten-2">Revisores:</span>
+						<p th:each="pessoaRevisor : ${evento.getRevisores()}" class="black-text text-darken-2" th:text="${pessoaRevisor.getNome()}"></p>
+						<p th:unless="${!#lists.isEmpty(evento.getRevisores())}" class="black-text text-darken-2" >Não há revisores</p>						
+						<br/>	
+						<button name="button" class="waves-effect waves-light btn modal-trigger left" data-target="modal2" style="right: 1px">Adicionar Revisor</button>				
+						<br/>
+						<br/>						
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div>
+				<div class="col s12">
+					<div class="card horizontal">
+						<div
+							th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="col s3">
+					<div class="card horizontal">
+						<div class="card-stacked">
+							<div class="card-content">
+								<span class="card-title">Trilhas</span>
+								<p th:text="'Cadastradas: '+ ${#lists.size(evento.trilhas)}"></p>
+								<br /> <br />
+							</div>
+							<div class="card-action" th:if="${organizaEvento}">
+								<a th:href="@{'/eventoOrganizador/trilhas/' + ${evento.id}}"
+									class="btn white-text waves-effect waves-light blue-grey">Gerenciar
+									Trilhas</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col s3">
+					<div class="card horizontal">
+						<div class="card-stacked">
+							<div class="card-content">
+								<span class="card-title">Revisores</span>
+								<p th:text="'Cadastrados: '+ ${#lists.size(evento.revisores)}"></p>
+								<br /> <br />
+							</div>
+							<div class="card-action" th:if="${organizaEvento}">
+								<a
+									th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisores'}"
+									class="btn white-text waves-effect waves-light blue-grey">Atribuir
+									Revisores</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col s3">
+					<div class="card horizontal">
+						<div class="card-stacked">
+							<div class="card-content">
+								<span class="card-title">Trabalhos</span>
+								<p th:text="'Submetidos: '+ ${numeroTrabalhos}"></p>
+								<p th:text="'Revisados: '+ ${numeroTrabalhosRevisados}"></p>
+								<p th:text="'Não Revisados: '+ ${numeroTrabalhosNaoRevisados}"></p>
+							</div>
+							<div class="card-action" th:if="${organizaEvento}">
+								<a
+									th:href="@{'/eventoOrganizador/evento/' + ${evento.id} + '/trabalhos'}"
+									class="btn white-text waves-effect waves-light blue-grey">Ver
+									todos</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col s3">
+					<div class="card horizontal">
+						<div class="card-stacked">
+							<div class="card-content">
+								<span class="card-title">Revisões</span>
+								<p th:text="'Comentadas: '+ ${comentarios}"></p>
+								<br /> <br />
+							</div>
+							<div class="card-action" th:if="${organizaEvento}">
+								<a th:if="${comentarios}"
+									th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisoes'}"
+									class="btn white-text waves-effect waves-light blue-grey">Ver
+									todas</a> <a
+									th:unless="${comentarios} or ${evento.isPeriodoFinal()}"
+									class="btn disabled white-text waves-effect waves-light blue-grey">Ver
+									todas</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="fragments/footer :: footer"></div>
+
+	<div id="modalConvidarPessoas" class="modal">
+		<form id="formConvidarPessoas"  th:action="@{/eventoOrganizador/convidar}" action="#" method="post"
+			class="col s12">		
+				<div class="modal-content">
+					<h4>Convidar Pessoas</h4>
+					<div class="row">
+						<div class="col s12">
+							<div class="row modal-form-row">
+								<div class="input-field col s12">
+	
+									<div class="input-field">
+										<input type="hidden" th:value="${evento.id}" name="eventoId" />
+									</div>
+	
+									<div class="input-field">
+										<input id="email_da_pessoa" name="email" type="email" required="required" />
+										<label for="email_da_pessoa">Email</label>
+									</div>
+	
+									<select name="funcao" required="required">
+										<option value="ORGANIZADOR">Organizador</option>
+										<option value="REVISOR">Revisor</option>
+										<option value="AUTOR">Autor</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		</form>
+				
+		 <div class="modal-footer">
+			 <!--   <button type="submit" value="Confirmar"	class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+			  <a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>-->
+			  <button type="submit" form="formConvidarPessoas" class="right btn waves-effect teal lighten-1">Convidar</button>
+			  <button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
+		 </div>
+		 
+	</div>
+	
+
+	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('select').material_select();
+	
+			//Inicialização do Modal excluir Evento
+			$('.modal-trigger').leanModal();
+	
+			$('.dropdown-button').dropdown({
+				inDuration : 300,
+				outDuration : 225,
+				constrain_width : false, // Does not change width of dropdown to that of the activator
+				hover : true, // Activate on hover
+				gutter : 0, // Spacing from edge
+				belowOrigin : false, // Displays dropdown below the button
+				alignment : 'left' // Displays dropdown with edge aligned to the left of button
+			}
+			);
+	
+		});
+	</script>
+</body>
 </html>

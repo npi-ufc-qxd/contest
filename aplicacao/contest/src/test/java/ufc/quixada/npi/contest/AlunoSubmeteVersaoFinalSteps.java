@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -27,6 +28,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Submissao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -57,6 +59,7 @@ public class AlunoSubmeteVersaoFinalSteps {
 	@Mock
 	private StorageService storageService;
 	
+	
 
 	private MockMvc mockMvc;
 	private ResultActions action;
@@ -74,12 +77,15 @@ public class AlunoSubmeteVersaoFinalSteps {
 		
 		evento = new Evento();
 		pessoa = new Pessoa();
+		
+		
 		submissao = new Submissao();
 		
 		trabalho = new Trabalho();
 		trabalho.setTitulo("Trabalho");
 		trabalho.setId(5L);
 		trabalho.setParticipacoes(new ArrayList<>());
+		trabalho.setEvento(evento);
 	}
 	
 	@Dado("^que existe um aluno$")
@@ -112,6 +118,7 @@ public class AlunoSubmeteVersaoFinalSteps {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(submissaoService.getSubmissaoByTrabalho(trabalho)).thenReturn(submissao);
+		doNothing().when(trabalhoService).notificarAutoresEnvioTrabalho(evento, trabalho);
 		
 		MockMultipartFile  multipartFile = new MockMultipartFile("file", "arquivo.pdf","text/plain",CONTEUDO);
         

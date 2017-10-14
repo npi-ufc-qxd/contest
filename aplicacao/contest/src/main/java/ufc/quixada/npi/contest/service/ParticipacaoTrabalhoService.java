@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.repository.ParticipacaoTrabalhoRepository;
@@ -27,8 +28,20 @@ public class ParticipacaoTrabalhoService {
 		return participacaoTrabalhoRepository.findByTrabalho(trabalho);
 	}
 	
+	public List<ParticipacaoTrabalho> getParticipacaoTrabalhoPorAutorId(Long idAutor){
+		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.AUTOR, idAutor);
+	}
+	
+	public List<ParticipacaoTrabalho> getParticipacaoTrabalhoPorCoautorId(Long idCoautor){
+		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.COAUTOR, idCoautor);
+	}
+	
+	public List<ParticipacaoTrabalho> getTrabalhosPorRevisorId(Long idRevisor){
+		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaId(Papel.Tipo.REVISOR, idRevisor);
+	}
+	
 	public ParticipacaoTrabalho getParticipacaoTrabalhoRevisor(Long idRevisor, Long idTrabalho){
-		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaIdAndTrabalhoId(Papel.REVISOR, idRevisor, idTrabalho);
+		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPapelAndPessoaIdAndTrabalhoId(Tipo.REVISOR, idRevisor, idTrabalho);
 	}
 	
 	public boolean isParticipandoDoTrabalho(Long idTrabalho, Long idPessoa){

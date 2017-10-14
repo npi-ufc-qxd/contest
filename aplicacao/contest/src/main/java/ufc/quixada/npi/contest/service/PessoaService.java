@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.PapelLdap;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.PessoaRepository;
@@ -72,21 +72,26 @@ public class PessoaService {
 	}
 	
 	public List<Pessoa> revisoresNoEvento(Long idEvento){
-		List<Pessoa> revisores = new ArrayList<Pessoa>();
+		List<Pessoa> revisores = new ArrayList<>();
 		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.DOCENTE, idEvento));
 		revisores.addAll(pessoaRepository.pessoasPorPapelNoEvento(PapelLdap.Tipo.STA, idEvento));
 		return revisores;
 	}
 	
 	public List<Pessoa> getRevisoresEvento(Long idEvento){
-		return pessoaRepository.findPessoaByParticipacoesEventoEventoIdAndParticipacoesEventoPapel(idEvento, Papel.REVISOR);
+		return pessoaRepository.findPessoaByParticipacoesEventoEventoIdAndParticipacoesEventoPapel(idEvento, Tipo.REVISOR);
 	}
 	
 	public List<Pessoa> getRevisoresDoEventoQueNaoParticipaDoTrabalho(Long idEvento){
-		return pessoaRepository.findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoIdOrderByParticipacoesEventoPessoaNome(Papel.REVISOR, idEvento);
+		return pessoaRepository.findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoIdOrderByParticipacoesEventoPessoaNome(Tipo.REVISOR, idEvento);
 	}
 	
 	public List<Pessoa> getOrganizadoresEvento(Long idEvento){
-		return pessoaRepository.findPessoaByParticipacoesEventoEventoIdAndParticipacoesEventoPapel(idEvento, Papel.ORGANIZADOR);
+		return pessoaRepository.findPessoaByParticipacoesEventoEventoIdAndParticipacoesEventoPapel(idEvento, Tipo.ORGANIZADOR);
 	}
+	
+	public List<Pessoa> getTodos(){
+		return pessoaRepository.findAll();
+	}
+	
 }

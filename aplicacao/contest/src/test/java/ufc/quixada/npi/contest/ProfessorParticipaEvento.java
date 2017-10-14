@@ -29,10 +29,9 @@ import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
-import ufc.quixada.npi.contest.controller.RevisorController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -42,9 +41,6 @@ import ufc.quixada.npi.contest.service.PessoaService;
 
 public class ProfessorParticipaEvento {
 
-	@InjectMocks
-	private RevisorController revisorController;
-	
 	@InjectMocks
 	private EventoControllerOrganizador eventoOrganizadorController;
 
@@ -89,7 +85,7 @@ public class ProfessorParticipaEvento {
 		
 		SecurityContextHolder.setContext(context);
 		
-		when(eventoOrganizadorController.getOrganizadorLogado()).thenReturn(revisorLogado);
+		when(eventoOrganizadorController.getUsuarioLogado()).thenReturn(revisorLogado);
 	}
 	
 	@E("^Realizo uma busca por eventos ativos no sistema$")
@@ -97,34 +93,35 @@ public class ProfessorParticipaEvento {
 		when(eventoService.buscarEventosAtivosEPublicos()).thenReturn(new ArrayList<Evento>());
 	}
 	
-	@Quando("^Escolho participar de um evento ativo com id (.*)$")
-	public void escolhoParticiparEventoAtivo(String id) throws Exception{
-		Evento evento = new Evento();
-		evento.setId(Long.valueOf(id));
+	@Quando("^Escolho participar de um evento ativo")
+	public void escolhoParticiparEventoAtivo() throws Exception{
+		Long id = Long.valueOf(EVENTO_ID);
+		Evento evento = new Evento();		
+		evento.setId(id);
 		evento.setNome("Racha no Pinheiro");
 		evento.setEstado(EstadoEvento.ATIVO);
 		
 		participacaoEvento.setEvento(evento);
 		participacaoEvento.setPessoa(revisorLogado);
-		participacaoEvento.setPapel(Papel.REVISOR);
+		participacaoEvento.setPapel(Tipo.REVISOR);
 		
-		when(eventoService.existeEvento(Long.valueOf(id))).thenReturn(true);
-		when(eventoService.buscarEventoPorId(Long.valueOf(id))).thenReturn(evento);
+		when(eventoService.existeEvento(id)).thenReturn(true);
+		when(eventoService.buscarEventoPorId(id)).thenReturn(evento);
 		when(participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento)).thenReturn(true);
 		
 		action = mockMvc.perform(post("/eventoOrganizador/participarevento")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("idEvento", id));
+				.param("idEvento", EVENTO_ID));
 	
 	}
 	
-	@Entao("^Confirmo minha incrição$")
+	@E("^Confirmo minha incrição$")
 	public void confirmoInscricao(){
 		verify(eventoService).buscarEventoPorId(Long.valueOf(EVENTO_ID));
 		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(participacaoEvento);
 	}
 	
-	@E("^Deve ser mostrado uma mensagem de feedback$")
+	@Entao("^Deve ser mostrado uma mensagem de feedback$")
 	public void mostrarMensagemFeedback() throws Exception{
 		messageService.getClass();
 		action.andExpect(redirectedUrl("/eventoOrganizador"))
@@ -146,15 +143,9 @@ public class ProfessorParticipaEvento {
 	
 	}
 	
-	@Entao("^Deve ser mostrado apenas eventos públicos$")
+	@Entao("^Deve ser mostrado apenas eventos públicos e ativos$")
 	public void mostrarEventosPublicos() throws Exception{
 		action.andExpect(view().name("organizador/org_eventos_listar_ativos"));
 	}
-	
-	/**
-	 * Cenário 3: Verificar os eventos listados para o professor
-	 * @throws Exception 
-	 */
-	
-	
+
 }

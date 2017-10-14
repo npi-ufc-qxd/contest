@@ -81,14 +81,19 @@
 	                  <div class="input-field col m6 s6">
 	                  	<small>Opções</small>
 	                  	<br/>
-	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a>
+	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a> 
 	                    <a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
-						<a th:if="${trabalho.evento.isPeriodoFinal() AND #lists.size(trabalho.revisoes) > 0}" th:href="@{'/autor/revisao/trabalho/' + ${trabalho.id}}" class="teal-text confirmar modal-trigger">Ver Revisao</a>
-						<a th:if="${trabalho.evento.isPeriodoFinal() AND #lists.size(trabalho.revisoes) == 0}" th:href="@{'/autor/revisao/trabalho/' + ${trabalho.id}}" class="btn disabled gray">Não revisado</a>
+	     				<a th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver revisões</a>              	                   
+	                    <a th:if="${trabalho.evento.isPeriodoFinal() AND #lists.size(trabalho.revisoes) == 0}" th:href="@{'/autor/revisao/trabalho/' + ${trabalho.id}}" class="btn disabled gray">Não revisado</a>
 						<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
 	              </div>
+	              
+	     
+	     		
+	     
+	     
 	              
 	            <div th:attr="id='reenviar' + ${trabalho.id}" class="modal">
 			        <div class="modal-content">

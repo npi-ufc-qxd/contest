@@ -10,39 +10,40 @@
     <div class="row">
       <h2 class="col s12">Adicionar Evento</h2>
     </div>
-    <form class="row" action="#" th:action="@{/evento/adicionar}" th:object="${evento}" method="post">
+    <form class="row" id="form" th:action="@{/evento/adicionarEvento}" th:object="${evento}" method="post">
       <input type="hidden" th:field="*{id}" />
-      <div class="error_area col s12" th:if="${#fields.hasErrors('*')}">
-        <div class="chip row red left" th:each="err : ${#fields.errors('*')}">
-          <span class="white-text" th:text="${err}"></span>
-          <i class="material-icons">close</i>
-        </div>
-      </div>
+	      <div class="error_area col s12" th:if="${#fields.hasErrors('*')}">
+	        <div class="chip row red left" th:each="err : ${#fields.errors('*')}">
+	         	<span class="white-text" th:text="${err}"></span>
+	         	 <i class="material-icons">close</i>
+	        </div>
+      	 </div>
       <div class="input-field col m6 s6">
         <input id="nome_evento" type="text" th:field="*{nome}" />
         <label for="nome_evento">Nome do Evento</label>
       </div>
-      <div class="input-field col m6 s6">
-        <select id="pessoas_select" name="organizador">
-          <option value="" disabled="disabled" selected="selected" >Selecione uma pessoa</option>
-          <div th:each="pessoa : ${pessoas}"  >
-            <option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" selected="selected"></option>
-            <option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}" th:text="${pessoa.nome}" ></option>   
-          </div> 
-        </select> 
-        <label for="pessoas_select">Organizador do Evento</label>
-      </div>
-      <div class="input-field col s12">
+      
+      
+        <div class="input-field col m6 s6">
+        	<input id="email" name="email" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" th:field="${organizador.email}" class="validate"/>
+       	    <label for="email" >Email do Organizador</label>
+      	</div>
+     
+      <div class="input-field col m12 s6">
         <textarea id="descricao" th:field="*{descricao}"  class="materialize-textarea" length="255" maxlength="255"></textarea> 
         <label for="descricao">Descrição</label>
       </div>
-      <div class="input-field col s12">
-        <button type="submit" class="waves-effect waves-light btn white-text">
+      
+       <div class="input-field col s12">
+        <button type="submit" id="verifica" class="waves-effect waves-light btn white-text" onclick="isEmail();">
           Salvar Evento<i aria-hidden="true" class="fa fa-floppy-o left"></i>
         </button>
       </div>
+      
     </form>
   </div>
   <div th:include="fragments/footer :: footer"></div>
+  <script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+
 </body>
 </html>

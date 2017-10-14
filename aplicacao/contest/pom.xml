@@ -16,7 +16,7 @@
 			</activation>
 			<properties>
 				<packaging.type>jar</packaging.type>
-				<npi.ldap.version>0.1.2</npi.ldap.version>
+				<npi.ldap.version>0.3.1</npi.ldap.version>
 				<activatedProperties>dev</activatedProperties>
 			</properties>
 		</profile>
@@ -24,15 +24,16 @@
 			<id>homol</id>
 			<properties>
 				<packaging.type>war</packaging.type>
-				<npi.ldap.version>0.3</npi.ldap.version>
+				<npi.ldap.version>0.3.1</npi.ldap.version>
 				<activatedProperties>homologacao</activatedProperties>
+
 			</properties>
 		</profile>
 		<profile>
 			<id>prod</id>
 			<properties>
 				<packaging.type>war</packaging.type>
-				<npi.ldap.version>0.3</npi.ldap.version>
+				<npi.ldap.version>0.3.1</npi.ldap.version>
 				<activatedProperties>producao</activatedProperties>
 			</properties>
 		</profile>
@@ -52,6 +53,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<cucumber.java.version>1.2.5</cucumber.java.version>
 
 		<!-- Flyway Database Migrations -->
 		<flyway.version>4.0.2</flyway.version>
@@ -66,7 +68,10 @@
 		<font.awesome.version>4.6.3</font.awesome.version>
 		<jquery.version>2.2.4</jquery.version>
 
-		
+		<!-- NPI Mail Version -->
+		<npi.mail.version>1.0.0</npi.mail.version>
+
+		<npi.mail.version>1.0.0</npi.mail.version>
 	</properties>
 
 	<repositories>
@@ -77,18 +82,6 @@
 	</repositories>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>info.cukes</groupId>
-			<artifactId>cucumber-java</artifactId>
-			<version>1.2.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>info.cukes</groupId>
-			<artifactId>cucumber-junit</artifactId>
-			<version>1.2.4</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -111,6 +104,46 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+    	<dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-core</artifactId>
+            <version>${cucumber.java.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.java.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.java.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+              <groupId>info.cukes</groupId>
+              <artifactId>cucumber-spring</artifactId>
+              <version>${cucumber.java.version}</version>
+              <scope>test</scope>
+        </dependency>
+        
+        <!-- Thymeleaf Dialect -->
+	    <dependency>
+	        <groupId>org.thymeleaf.extras</groupId>
+	        <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+	    </dependency>
+	   
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.7.9</version>
+        </dependency>
 
 		<!-- Database Dependencies -->
 		<dependency>
@@ -139,7 +172,7 @@
 			<artifactId>npi-ldap</artifactId>
 			<version>${npi.ldap.version}</version>
 		</dependency>
-		
+
 		<!-- Webjars -->
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
@@ -185,9 +218,9 @@
 		    <artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
-		
-		
-		
+
+
+
 		<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -203,14 +236,14 @@
 			<artifactId>telnetd-x</artifactId>
 			<version>2.1.1</version>
 		</dependency>
-		
+
 		<!-- JSON -->
 		<dependency>
     		<groupId>org.json</groupId>
    			<artifactId>json</artifactId>
     		<version>20160810</version>
 		</dependency>
-		
+
 		<!-- JASPER REPORTS -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -226,10 +259,22 @@
 	        <artifactId>spring-context-support</artifactId>
 	        <version>${spring.version}</version>
 	    </dependency>
-		
-		
-		
-		
+
+
+		<dependency>
+    		<groupId>org.jopendocument</groupId>
+    		<artifactId>jOpenDocument</artifactId>
+    		<version>1.3</version>
+		</dependency>
+
+		<!-- NPI Mail -->
+		  <dependency>
+		    <groupId>br.ufc.quixada.npi</groupId>
+		    <artifactId>npi-mail</artifactId>
+		    <version>${npi.mail.version}</version>
+		  </dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -250,7 +295,28 @@
 					<baselineOnMigrate>true</baselineOnMigrate>
 					<!-- Parametros Default - https://flywaydb.org/documentation/maven/migrate -->
 				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.9</version>
+                    <executions>
+                        <execution>
+                            <id>default-prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

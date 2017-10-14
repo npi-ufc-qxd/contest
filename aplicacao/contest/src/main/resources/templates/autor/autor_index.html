@@ -12,7 +12,7 @@
 			<div th:if="${eventoVazioError}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="#{ID_EVENTO_VAZIO_ERROR}">
 				<i class="material-icons">close</i>
 			</div>
-			
+			<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
 			<div th:if="${eventoInexistenteError}" id="error_area" class="row chip red white-text" style="margin-right: 5px;margin-left: 5px;" th:text="#{EVENTO_NAO_EXISTE}">
 				<i class="material-icons">close</i>
 			</div>
@@ -30,7 +30,7 @@
 			<div class="col s12">
 				<div class="input-field row">
 					<input placeholder="Procurando um evento especifico?"
-						id="filtro-nome" type="text" oninput="buscar(this,'card-stacked')" class="col s11 validate" /><a
+						id="filtro-nome" type="text" oninput="buscar(this,'card-stacked','card-content')" class="col s11 validate" /><a
 						class="btn-floating btn-large waves-effect waves-light right">
 						<i class="material-icons">search</i>
 					</a>
@@ -47,7 +47,7 @@
 						<div class="card-action" >
 							<a th:if="${evento.isPeriodoInicial()}"
 								th:attr="href='#modal' + ${evento.id}"
-								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar</a>
+								class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar como Autor</a>
 							<a th:unless="${evento.isPeriodoInicial()}"
 								class="btn disabled white-text grey">Período de inscrição encerrado</a>
 						</div>
@@ -81,17 +81,7 @@
 				</div>
 			</div>
 		</div>
-<!-- 		
-		<div class="row col s12 center">
-			<ul class="pagination">
-				<li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
-				<li class="active"><a href="#">1</a></li>
-				<li class="waves-effect"><a href="#">2</a></li>
-				<li class="waves-effect"><a href="#"><i
-						class="material-icons">chevron_right</i></a></li>
-			</ul>
-		</div>
- -->		
+				
 	</div>
 	<!-- footer -->
 	<div th:include="fragments/footer :: footer"></div>
@@ -100,17 +90,20 @@
 	 <script type="text/javascript">
 		$(document).ready(function(){
 			
-			buscar = function(e,componente) {
+			buscar = function(e,componente,elementoABuscar) {
 				var filtro = e;
 				var componente = componente;
+				var elementoABuscar = elementoABuscar;
 				
 				var nomeFiltro = removerAcentos(filtro.value.toLowerCase());
-				var elemento = document.getElementsByClassName(componente);
+				var componenteCompleto = document.getElementsByClassName(componente);
+				var elemento = document.getElementsByClassName(elementoABuscar);
 				
 				 for (var i = elemento.length - 1; i >=0; i--){
-					var conteudoBusca = removerAcentos(elemento[i].children[0].children[0].firstElementChild.innerHTML);
+					var conteudoBusca = removerAcentos(elemento[i].firstElementChild.innerHTML);
 					var corresponde = conteudoBusca.toLowerCase().indexOf(nomeFiltro) >= 0;
-					elemento[i].style.display = corresponde ? '' : 'none';
+					componenteCompleto[i].style.display = corresponde ? '' : 'none';
+					
 			    } 
 				
 			};

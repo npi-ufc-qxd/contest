@@ -22,13 +22,13 @@
 	<div th:include="fragments/header :: header"></div>
 	<div class="container page">
 		<br />
-		<div
+		<div class=""
 			th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
 
 		<h4 th:text="'Revisão - ' + ${titulo} "></h4>
 
-		<div class="row">
-			<div class="col s12">
+		<div class="col s5">
+			<div class="row left">
 				<ul class="tabs">
 					<li class="tab col s3" th:each="revisao,iterStat : ${revisoes}"><a
 						class="teal-text" th:href="'#revisao' + ${iterStat.count}"
@@ -36,9 +36,10 @@
 				</ul>
 			</div>
 
-			<div th:each="revisao,iterStat : ${revisoes}">
+			<div th:each="revisao,iterStat : ${revisoes}">				 
 				<div th:id="'revisao'+ ${iterStat.count}" class="col s12">
-
+				<br/><br/><br/>
+				
 
 					<div class="col m6 s6">
 						<div>
@@ -112,9 +113,12 @@
 								mais importante do artigo. No mais, a realização por parte do
 								autor de simulações envolvendo os protocolos citados trariam
 								grande valia a trabalho.</p>
-						</div>
+								
+						</div>												
 					</div>
+					
 				</div>
+				
 			</div>
 		</div>
 	</div>

@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.mockito.InjectMocks;
@@ -51,10 +52,12 @@ public class GerarCertificadoSteps {
 	@Mock
 	private JRDataSource jrDataSource;
 	
+	
+	private Pessoa revisor1, revisor2, revisor3;
 	private List<Pessoa> listaPessoas;
 	private List<Trabalho> listaTrabalho;
 	private Evento evento;
-	private Trabalho trabalho;
+	private Trabalho trabalho1, trabalho2, trabalho3;
 	private MockMvc mockMvc;
 	private ResultActions action;
 	
@@ -65,20 +68,63 @@ public class GerarCertificadoSteps {
 		
 		listaPessoas = new ArrayList<Pessoa>();
 		listaTrabalho = new ArrayList<Trabalho>();
+		List<Pessoa> coautores = new ArrayList<Pessoa>();
 		evento = new Evento();
-		trabalho = new Trabalho();
-		
 		evento.setId(ID_EVENTO);
+		evento.setPrazoSubmissaoFinal(new Date());
+		
+		Pessoa pessoa1 = new Pessoa();
+		Pessoa pessoa2 = new Pessoa();
+		
+		pessoa1.setNome("Joao Paulo Silv aSauro");
+		pessoa2.setNome("Maria Tereza dos Anzois");
+		
+		coautores.add(pessoa2);
+		
+		trabalho1 = new Trabalho();
+		trabalho1.setId(1L);
+		trabalho1.setTitulo("Titulo");
+		trabalho1.setAutores(pessoa1, coautores);
+		trabalho1.setEvento(evento);
+		
+		trabalho2 = new Trabalho();
+		trabalho2.setId(2L);
+		trabalho2.setTitulo("Titulo");
+		trabalho2.setAutores(pessoa1, coautores);
+		trabalho2.setEvento(evento);
+		
+		trabalho3 = new Trabalho();
+		trabalho3.setId(3L);
+		trabalho3.setTitulo("Titulo");
+		trabalho3.setAutores(pessoa1, coautores);
+		trabalho3.setEvento(evento);
+
+				
+		revisor1 = new Pessoa();
+		revisor1.setId(1L);
+		revisor1.setNome("Revisor 1");
+		
+		revisor2 = new Pessoa();
+		revisor2.setId(2L);
+		revisor2.setNome("Revisor 2");
+		
+		revisor3 = new Pessoa();
+		revisor3.setId(3L);
+		revisor3.setNome("Revisor 3");
 	}
 	
-	@Dado("^que o organizador deseja gerar o pdf dos organizadores$")
+	@Dado("^que o organizador deseja gerar a planilha dos organizadores$")
 	public void organizadorDesejaGerarPdfParaOrganizadores() throws Exception{
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
+		when(pessoaService.get(revisor1.getId())).thenReturn(revisor1);
+		when(pessoaService.get(revisor2.getId())).thenReturn(revisor2);
+		when(pessoaService.get(revisor3.getId())).thenReturn(revisor3);
+		
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_ORGANIZADOR, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES));
 	}
 	
-	@Quando("^ele seleciona os organizadores e manda gerar o pdf$")
+	@Quando("^ele seleciona os organizadores e manda gerar a planilha$")
 	public void organizadoSelecionaOrganizadoresParaGerarPdf() throws Throwable {
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		action = mockMvc
@@ -87,19 +133,19 @@ public class GerarCertificadoSteps {
 		
 	}
 	
-	@Então("^o pdf dos organizadores e gerado$")
+	@Então("^a planilha dos organizadores e gerada$")
 	public void pdfDosOrganizadoresEGerado() throws Throwable {
-		action.andExpect(view().name("PDF_ORGANIZADOR"));
+		action.andExpect(view().name("DADOS_ORGANIZADOR"));
 	}
 	
-	@Dado("^que o organizador deseja gerar o pdf dos revisores$")
+	@Dado("^que o organizador deseja gerar a planilha dos revisores$")
 	public void organizadorDesejaGerarPdfParaRevisores() throws Exception{
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_REVISOR, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES));
 	}
 	
-	@Quando("^ele seleciona os revisores e manda gerar o pdf$")
+	@Quando("^ele seleciona os revisores e manda gerar a planilha$")
 	public void organizadoSelecionaRevisoresParaGerarPdf() throws Throwable {
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		action = mockMvc
@@ -108,13 +154,13 @@ public class GerarCertificadoSteps {
 		
 	}
 	
-	@Então("^o pdf dos revisores e gerado$")
+	@Então("^a planilha dos revisores e gerada$")
 	public void pdfDosRevisoresEGerado() throws Throwable {
-		action.andExpect(view().name("PDF_REVISORES"));
+		action.andExpect(view().name("DADOS_REVISORES"));
 	}
 	
 	
-	@Dado("^que o organizador deseja gerar o pdf dos trabalhos$")
+	@Dado("^que o organizador deseja gerar a planilha dos trabalhos$")
 	public void organizadorDesejaGerarPdfParaOsTrabalhos() throws Exception{
 		when(eventoService.buscarEventoPorId(ID_EVENTO)).thenReturn(evento);
 		when(trabalhoService.getTrabalhosEvento(evento)).thenReturn(listaTrabalho);
@@ -122,18 +168,20 @@ public class GerarCertificadoSteps {
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO));
 	}
 	
-	@Quando("^ele seleciona os trabalhos e manda gerar o pdf$")
+	@Quando("^ele seleciona os trabalhos e manda gerar a planilha$")
 	public void organizadoSelecionaOsTrabalhosParaGerarPdf() throws Throwable {
-		when(trabalhoService.getTrabalhoById(ID_EVENTO)).thenReturn(trabalho);
+		when(trabalhoService.getTrabalhoById(trabalho1.getId())).thenReturn(trabalho1);
+		when(trabalhoService.getTrabalhoById(trabalho2.getId())).thenReturn(trabalho2);
+		when(trabalhoService.getTrabalhoById(trabalho3.getId())).thenReturn(trabalho3);
 		action = mockMvc
 				.perform(post("/eventoOrganizador/gerarCertificadosTrabalho")
 				.param("trabalhosIds", IDS));
 		
 	}
 	
-	@Então("^o pdf dos trabalhos e gerado$")
+	@Então("^a planilha dos trabalhos e gerada$")
 	public void pdfDosTrabalhosEGerado() throws Throwable {
-		action.andExpect(view().name("PDF_TRABALHOS"));
+		action.andExpect(view().name("DADOS_TRABALHOS"));
 	}
 	
 }

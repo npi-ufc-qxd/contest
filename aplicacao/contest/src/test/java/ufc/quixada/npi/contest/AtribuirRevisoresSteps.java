@@ -26,13 +26,11 @@ import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Notificacao;
-import ufc.quixada.npi.contest.model.Papel;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
 import ufc.quixada.npi.contest.model.Trabalho;
-import ufc.quixada.npi.contest.service.NotificacaoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
@@ -47,8 +45,6 @@ public class AtribuirRevisoresSteps {
 	private PessoaService pessoaService;
 	@Mock
 	private TrabalhoService trabalhoService;
-	@Mock
-	private NotificacaoService notifficacaoService;
 
 	
 	private MockMvc mockMvc;
@@ -57,7 +53,6 @@ public class AtribuirRevisoresSteps {
 	private Trabalho trabalho;
 	private ParticipacaoTrabalho participacaoTrabalho;
 	private RevisaoJsonWrapper dadosRevisao;
-	private Notificacao notificacao;
 	
 	@Before
 	public void setup() {
@@ -67,7 +62,6 @@ public class AtribuirRevisoresSteps {
 		trabalho = new Trabalho();
 		dadosRevisao = new RevisaoJsonWrapper();
 		participacaoTrabalho = new ParticipacaoTrabalho();
-		notificacao = new Notificacao();
 		dadosRevisao.setRevisorId(1L);
 		dadosRevisao.setTrabalhoId(3L);
 		Evento evento = new Evento();
@@ -88,11 +82,6 @@ public class AtribuirRevisoresSteps {
 		pessoa.setPapelLdap("DOCENTE");
 		trabalho.setTitulo("Meu Trabalho");
 		trabalho.setEvento(evento);
-		
-		notificacao.setTitulo(trabalho.getTitulo());
-		notificacao.setNova(true);
-		notificacao.setPessoa(pessoa);
-		notificacao.setDescricao("asdadasd");
 	}
 	@Dado("^que sou organizador$")
 	public void exitesUmEvento() throws Throwable {
@@ -103,7 +92,7 @@ public class AtribuirRevisoresSteps {
 		
 		SecurityContextHolder.setContext(context);
 		
-		when(eventoControllerOrganizador.getOrganizadorLogado()).thenReturn(pessoa);
+		when(eventoControllerOrganizador.getUsuarioLogado()).thenReturn(pessoa);
 	}
 	@Quando("^o organizador seleciona atribuir um revisor para um trabalho$")
 	public void organizadorAtribuiRevisoresAoTrabalho() throws Exception{
@@ -112,7 +101,7 @@ public class AtribuirRevisoresSteps {
 		
 		participacaoTrabalho.setPessoa(pessoa);
 		participacaoTrabalho.setTrabalho(trabalho);
-		participacaoTrabalho.setPapel(Papel.REVISOR);
+		participacaoTrabalho.setPapel(Tipo.REVISOR);
 
 		String json = String.format("{\"revisorId\": \"1\",\"trabalhoId\": \"3\"}");
 
@@ -123,7 +112,6 @@ public class AtribuirRevisoresSteps {
 
 	@Então("^o revisor selecionado é atribuído ao trabalho selecionado$")
 	public void revisorEAtribuidoAoTrabalho() throws Exception{
-		verify(notifficacaoService).adicionarNotificacao(notificacao);
 		verify(participacaoTrabalhoService).adicionarOuEditar(participacaoTrabalho);
 		action.andExpect(status().isOk());
 	}

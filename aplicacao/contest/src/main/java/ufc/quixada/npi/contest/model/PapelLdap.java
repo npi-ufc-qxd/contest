@@ -3,11 +3,7 @@ package ufc.quixada.npi.contest.model;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-import org.springframework.security.core.GrantedAuthority;
-
-public class PapelLdap implements GrantedAuthority {
-
-	private static final long serialVersionUID = 1L;
+public class PapelLdap {
 
 	@Enumerated(EnumType.STRING)
 	private Tipo nome;
@@ -46,15 +42,5 @@ public class PapelLdap implements GrantedAuthority {
 			this.tipo = tipo;
 		}
 
-	}
-
-	@Override
-	public String getAuthority() {
-		return "ROLE_" + this.nome.name();
-	}
-
-	@Override
-	public String toString() {
-		return "PapelLdap [nome=" + nome + "]";
 	}
 }

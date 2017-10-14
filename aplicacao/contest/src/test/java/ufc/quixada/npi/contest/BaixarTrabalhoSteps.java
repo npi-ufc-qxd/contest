@@ -25,7 +25,9 @@ import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
+import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 public class BaixarTrabalhoSteps {
 
@@ -40,6 +42,9 @@ public class BaixarTrabalhoSteps {
 	
 	@Mock
 	private TrabalhoService trabalhoService;
+	
+	@Mock
+	private PessoaService pessoaService;
 	
 	private MockMvc mockMvc;
 	private ResultActions action;
@@ -75,9 +80,11 @@ public class BaixarTrabalhoSteps {
 			Long idRevisor = 6l;
 			Pessoa revisor = new Pessoa();
 			revisor.setId(idRevisor);
+			revisor.setCpf("11111111102");
 			
 			when(trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho))).thenReturn(trabalho);
-			when(autorController.getAutorLogado()).thenReturn(revisor);
+			when(pessoaService.getByCpf(revisor.getCpf())).thenReturn(revisor);
+			when(PessoaLogadaUtil.pessoaLogada()).thenReturn(revisor);
 			when(participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, revisor.getId())).thenReturn(false);
 			when(participacaoEventoService.isOrganizadorDoEvento(revisor, evento.getId())).thenReturn(false);
 			

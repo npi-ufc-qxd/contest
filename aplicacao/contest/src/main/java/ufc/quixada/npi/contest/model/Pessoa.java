@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import ufc.quixada.npi.contest.model.PapelLdap.Tipo;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 
 @Entity
 @Table(name = "pessoa")
@@ -46,16 +47,41 @@ public class Pessoa implements UserDetails {
 	@NotEmpty
 	private String email;
 
-	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE}, fetch=FetchType.EAGER)
 	private List<ParticipacaoEvento> participacoesEvento;
 
-	@OneToMany(mappedBy = "pessoa")
+	@OneToMany(mappedBy = "pessoa", fetch=FetchType.EAGER)
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 	
+	@OneToMany(mappedBy="responsavel",fetch=FetchType.EAGER)
+	private List<Secao> secoes;
+
 	@Column(name = "papel_ldap")
 	@Enumerated(EnumType.STRING)
 	private PapelLdap.Tipo papelLdap;
+	
+	@Column(name = "papel")
+	@Enumerated(EnumType.STRING)
+	private Papel.Tipo papel;
 
+	
+	public Papel.Tipo getPapel() {
+		return papel;
+	}
+	
+	public void setPapel(Papel.Tipo papel) {
+		this.papel = papel;
+	}
+
+	public Pessoa(String nome, String email) {
+		this.nome = nome;
+		this.email = email;
+	}
+	
+	public Pessoa() {
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -110,10 +136,18 @@ public class Pessoa implements UserDetails {
 
 	public void setPapelLdap(String papelLdap) throws IllegalArgumentException {
 		try {
-			this.papelLdap = Tipo.valueOf(papelLdap);
+			this.papelLdap = PapelLdap.Tipo.valueOf(papelLdap);
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("Papel proveniente do LDAP não condiz com os papéis mapeados pelo sistema [" +papelLdap + "]" );
 		}
+	}
+
+	public List<Secao> getSecoes() {
+		return secoes;
+	}
+
+	public void setSecoes(List<Secao> secoes) {
+		this.secoes = secoes;
 	}
 
 	@Override
@@ -145,12 +179,12 @@ public class Pessoa implements UserDetails {
 	public String toString() {
 		return "Pessoa [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", password=" + password + ", email=" + email
 				+ ", participacoesEvento=" + participacoesEvento + ", participacoesTrabalho=" + participacoesTrabalho
-				+ ", papelLdap=" + papelLdap + "]";
+				+ ", papelSistema=" + papel + "]";
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.asList(new PapelLdap(papelLdap));
+		return Arrays.asList(new Papel(this.papel));
 	}
 
 	@Override
@@ -190,7 +224,7 @@ public class Pessoa implements UserDetails {
 	public int getNumeroTrabalhosRevisar(Evento evento){
 		int trabalhosRevisar = 0;
 		for(ParticipacaoTrabalho participacao: participacoesTrabalho){
-			if(participacao.getPapel() == Papel.REVISOR && participacao.getTrabalho().getEvento().equals(evento)){
+			if(participacao.getPapel() == Tipo.REVISOR && participacao.getTrabalho().getEvento().equals(evento)){
 				trabalhosRevisar++;
 			}
 		}

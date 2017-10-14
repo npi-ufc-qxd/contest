@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="fragments/head :: head"></div>
+<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+<title>Seção - Contest</title>
+</head>
+<body>
+<div th:include="fragments/header :: header"></div>
+
+<div class="container page">
+
+    <div class="row opcoes">
+        <a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus Eventos</a>
+        <a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
+        <a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar Seção</a>
+    
+    <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
+	       		Voltar
+	 </a>
+    </div>
+    
+<br/>
+
+<div class="row" id="itemContainer">
+<div th:if="${#lists.isEmpty(secoes)}">
+ <h1 class="center">Não há seções cadastradas</h1>
+</div>
+    <div class="col s12 m4" th:each="secao:${secoes}">
+        <div  class="card purple darken-4">
+            <div class="card-content white-text">
+                <span class="card-title activator" th:text="${secao.nome}"> <i class="material-icons right" id="tolltip1" title="Descrição da Seção">description</i></span>
+                <p th:text="'Data: '+${secao.dataSecao}"></p>
+                <p th:text="'Hora: '+${secao.horario}"></p>
+                <p th:text="'Local: '+${secao.local}"></p>
+                <p th:text="'Responsável: '+${secao.responsavel.nome}"></p>
+            </div>
+           
+            <div class="card-action">
+                <a th:href="@{'/secao/secaoTrabalhos/'+${secao.id}}" class="orange-text accent-3">Ver Seção</a>
+                <a th:href="@{'/secao/excluirSecao/'+${secao.id}}"
+                class="orange-text accent-3 deleta_secao">Deletar Seção</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row holder center"></div>
+</div>
+
+ <div th:include="fragments/footer :: footer"></div>
+     <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+      	//Inicialização do Jpages para realizar a paginação
+    	 $("div.holder").jPages({
+    	        containerID : "itemContainer",
+    	        perPage : 6
+    	    });
+    	    /* on select change */
+    	    $("select").change(function(){
+    	        /* get new nº of items per page */
+    	      var newPerPage = parseInt( $(this).val() );
+    	      /* destroy jPages and initiate plugin again */
+    	      $("div.holder").jPages("destroy").jPages({
+    	            containerID   : "itemContainer",
+    	            perPage       : newPerPage
+    	        });
+    	    });
+    	    
+    	    $(".deleta_secao").on('click',function(e){
+    	    	 var deleta = confirm("Deletar seção?");
+    	    	 
+    	    	 if(deleta == false){
+    	    		 return false;
+    	    	 }
+    	    });
+    	    
+      });
+    </script>
+</body>
+</html>

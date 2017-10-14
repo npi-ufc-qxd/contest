@@ -3,7 +3,7 @@ Funcionalidade: Enviar Trabalho
 	Eu como autor de um trabalho gostaria de enviar meu trabalho para um evento que participo
 	
 	Contexto:
-		Dado que o autor seleciona um evento que ele participa
+		Dado que o autor seleciona um evento que ele participa e o prazo esta vigente
 			
 	Cenário: Adicionar Trabalho com sucesso
 		Quando ele preenche os campos corretamente e escolhe um arquivo .pdf

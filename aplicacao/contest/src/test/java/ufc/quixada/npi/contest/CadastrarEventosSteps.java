@@ -19,17 +19,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import cucumber.api.java.Before;
-import cucumber.api.java.gl.E;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
 import cucumber.api.java.pt.Quando;
 import ufc.quixada.npi.contest.controller.EventoController;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
+import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -68,6 +66,7 @@ public class CadastrarEventosSteps {
 		eventoService.toString();//Para evitar do codacy reclamar
 		trilhas = new ArrayList<>();
 		evento = new Evento();
+		pessoa = new Pessoa();
 		Trilha trilha = new Trilha();
 		
 		trilha.setNome("Principal");
@@ -82,39 +81,35 @@ public class CadastrarEventosSteps {
 	}
 
 	@Quando("^informar o organizador (.*) e o evento com nome (.*) e descricao (.*)")
-	public void casoTesteQuando(String organizador, String nomeEvento, String descricaoEvento) throws Throwable {
+	public void casoTesteQuando(String email, String nomeEvento, String descricaoEvento) throws Throwable {
 
-		pessoa = new Pessoa();
-		pessoa.setNome(organizador);
+		
+		pessoa.setNome("fulano");
 		pessoa.setCpf("789287454457");
-		pessoa.setEmail("a@a.com");
+		pessoa.setEmail(email);
 
 		
 		evento.setNome(nomeEvento);
 		evento.setDescricao(descricaoEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
+		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		evento.setTrilhas(trilhas);
 		
 		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(pessoa);
 
 		action = mockMvc
-				.perform(post("/evento/adicionar")
+				.perform(post("/evento/adicionarEvento")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("nome", nomeEvento)
 				.param("descricao", descricaoEvento)
-				.param("organizador", PESSOA_ID));
+				.param("email",pessoa.getEmail()));
 		
 	}
 
-	@Então("^o evento deve ser cadastrado com visibilidade privada e estado inativo.$")
+	@Então("^o organizador deve ser convidado por email e o evento deve ser cadastrado com visibilidade privada e estado inativo.$")
 	public void casoTesteEntao() throws Throwable {
-		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
-		ParticipacaoEvento participacao = new ParticipacaoEvento();
-		participacao.setEvento(evento);
-		participacao.setPessoa(pessoa);
-		participacao.setPapel(Papel.ORGANIZADOR);
-		verify(participacaoEventoService).adicionarOuEditarParticipacaoEvento(participacao);
-
+		verify(eventoService).adicionarOuAtualizarEvento(evento);		
+		verify(eventoService).adicionarOrganizador(pessoa.getEmail(), evento, "http://localhost:80");
 		action.andExpect(redirectedUrl("/evento/inativos")).andExpect(model().hasNoErrors());
 	}
 
@@ -124,52 +119,28 @@ public class CadastrarEventosSteps {
 		evento.setNome(nomeEvento);
 		evento.setEstado(EstadoEvento.INATIVO);
 		evento.setTrilhas(trilhas);
+		evento.setVisibilidade(VisibilidadeEvento.PRIVADO);
 		
-		String organizador =  "";
+		String emailOrganizador =  "";
 		
 		when(messageService.getMessage("ORGANIZADOR_VAZIO_ERROR"))
 			.thenReturn("O organizador do evento deve ser informado");
 		
 		action = mockMvc
-				.perform(post("/evento/adicionar")
+				.perform(post("/evento/adicionarEvento")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("nome", nomeEvento)
-				.param("organizador", organizador));
+				.param("email", emailOrganizador));
 		
 	}
 	
 	@Então("^O evento não deve ser cadastrado$")
 	public void casoTesteEntao2() throws Throwable {
-		action.andExpect(view().name(TEMPLATE_ADD_EVENTO)).andExpect(model().attributeHasErrors("evento"));
+		action.andExpect(view().name(TEMPLATE_ADD_EVENTO))
+		.andExpect(model().attributeHasErrors("evento"));
 	}
 	
-	@Quando("^informar o organizador (.*) e o nome evento (.*)")
-	public void casoTesteQuando3(String organizador, String nomeEvento) throws Throwable{
-		
-		evento.setNome(nomeEvento);
-		evento.setEstado(EstadoEvento.INATIVO);
-		evento.setTrilhas(trilhas);
-		
-		when(pessoaService.get(Long.valueOf(PESSOA_ID))).thenReturn(null);
-		when(messageService.getMessage("PESSOA_NAO_ENCONTRADA"))
-			.thenReturn("Pessoa nao encontrada");
-		
-		action = mockMvc
-				.perform(post("/evento/adicionar")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("nome", nomeEvento)
-				.param("organizador", PESSOA_ID));
-	}
 	
-	@E("^o organizador do evento informado não está cadastrado no sistema$")
-	public void casoTesteE3(){
-		verify(pessoaService).get(Long.valueOf(PESSOA_ID));
-	}
-	
-	@Então("^O evento não deve ser cadastrado no sistema$")
-	public void casoTesteEntao3() throws Exception{
-		action.andExpect(view().name(TEMPLATE_ADD_EVENTO));
-	}
 	
 	@Quando("^informar somente o organizador (.*)$")
 	public void casoTesteQuando4(String organizador) throws Exception{
@@ -179,7 +150,7 @@ public class CadastrarEventosSteps {
 		.thenReturn("O nome do evento não pode ser vazio");
 		
 		action = mockMvc
-				.perform(post("/evento/adicionar")
+				.perform(post("/evento/adicionarEvento")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("nome", nomeEvento)
 				.param("organizador", PESSOA_ID));
@@ -188,7 +159,8 @@ public class CadastrarEventosSteps {
 	
 	@Então("^O evento não deve ser cadastrado devido ao nome vazio$")
 	public void casoTesteEntao4() throws Exception{
-		action.andExpect(model().attributeHasFieldErrors("evento", "nome"));
+		action.andExpect(view().name(TEMPLATE_ADD_EVENTO))
+		.andExpect(model().attributeHasFieldErrors("evento", "nome"));
 	}
 	
 }
