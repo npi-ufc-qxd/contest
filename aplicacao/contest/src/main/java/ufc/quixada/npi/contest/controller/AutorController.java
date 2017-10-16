@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -235,7 +237,12 @@ public class AutorController {
 	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model,
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
-			RedirectAttributes redirect) {
+			RedirectAttributes redirect, HttpServletRequest request) {
+		
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+		+ request.getContextPath();
+		
+		List<Pessoa> coautores = new ArrayList<Pessoa>();
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
@@ -252,7 +259,6 @@ public class AutorController {
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
 
-			List<Pessoa> coautores = new ArrayList<Pessoa>();
 			if (trabalho.getParticipacoes() != null) {
 				for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
 					Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
@@ -263,7 +269,6 @@ public class AutorController {
 				}
 			}
 			trabalho.setAutores(PessoaLogadaUtil.pessoaLogada(), coautores);
-
 			submissao = new Submissao();
 			submissao.setTrabalho(trabalho);
 
@@ -288,7 +293,8 @@ public class AutorController {
 								messageService.getMessage(TRABALHO_ENVIADO));
 						
 						trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
-
+						for(Pessoa coautor:coautores) eventoService.adicionarCoautor(coautor.getEmail(), evento, url);
+						
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";
@@ -372,7 +378,7 @@ public class AutorController {
 		}
 	}
 
-	@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
+	@PreAuthorize("isResponsavelInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/file/{trabalho}", method = RequestMethod.GET, produces = "application/pdf")
 	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho, HttpServletResponse response)
 			throws IOException {

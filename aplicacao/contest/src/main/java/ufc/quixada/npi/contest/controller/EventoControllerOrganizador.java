@@ -436,19 +436,25 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			case "ORGANIZADOR":
 				for (String e : emails) {
 					e = e.trim();
-					flag = eventoService.adicionarOrganizador(e, evento, url);
+			//		flag = eventoService.convidarOrganizador(e, evento, url);
 				}
 
 				break;
 
 			case "AUTOR":
-				flag = eventoService.adicionarAutor(email, evento, url);
+			//	flag = eventoService.convidarAutor(email, evento, url);
 				break;
 
 			case "REVISOR":
 				for (String e : emails) {
 					e = e.trim();
-					flag = eventoService.adicionarRevisor(e, evento, url);
+			//		flag = eventoService.convidarRevisor(e, evento, url);
+				}
+				break;
+			case "COAUTOR":
+				for (String e : emails) {
+					e = e.trim();
+			//		flag = eventoService.convidarCoautor(e, evento, url);
 				}
 				break;
 
