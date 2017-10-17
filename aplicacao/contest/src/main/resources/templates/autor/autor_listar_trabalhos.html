@@ -87,9 +87,9 @@
 						<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
 	                </div>
-	              </div>
+	              </div>     
 	              
-	             <form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data"> 
+           	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
 	            <div th:attr="id='reenviar' + ${trabalho.id}" class="modal">
 			        <div class="modal-content">
 			          <h4>Reenviar Trabalho</h4>

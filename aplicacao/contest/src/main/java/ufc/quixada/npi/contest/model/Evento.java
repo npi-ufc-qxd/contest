@@ -206,11 +206,15 @@ public class Evento {
 	
 	public boolean isPeriodoInicial(){
 		Date dataAtual = new Date();
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();		
         cal.setTime(prazoRevisaoInicial);
-        cal.add(Calendar.SECOND, -1);
+        cal.add(Calendar.SECOND, -1);      
 		Date diaAntesDoInicioDaRevisao = cal.getTime();
-		return (dataAtual.compareTo(diaAntesDoInicioDaRevisao) <= 0);
+		
+		cal.setTime(prazoSubmissaoInicial);
+		Date diaInicioSubmissao = cal.getTime();
+		
+		return (dataAtual.compareTo(diaInicioSubmissao) >= 0) && (dataAtual.compareTo(diaAntesDoInicioDaRevisao) <= 0);
 	}
 	
 	public boolean isPeriodoRevisao(){
