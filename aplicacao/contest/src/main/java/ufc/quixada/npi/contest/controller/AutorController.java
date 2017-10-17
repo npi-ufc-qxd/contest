@@ -237,16 +237,13 @@ public class AutorController {
 	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model,
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
-			RedirectAttributes redirect, HttpServletRequest request) {
-		
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-		+ request.getContextPath();
-		
-		List<Pessoa> coautores = new ArrayList<Pessoa>();
+			RedirectAttributes redirect,HttpServletRequest request) {
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
 		try {
+			String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ request.getContextPath();
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
 
@@ -259,16 +256,26 @@ public class AutorController {
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
 
+			List<Pessoa> coautores = new ArrayList<Pessoa>();
 			if (trabalho.getParticipacoes() != null) {
 				for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
+					
 					Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+					
 					if (coautor == null) {
 						coautor = participacao.getPessoa();
+						eventoService.adicionarCoAutor(coautor.getEmail(), evento, url);
+						
+						coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+						
+						coautor.setNome(participacao.getPessoa().getNome());
+						pessoaService.addOrUpdate(coautor);
 					}
 					coautores.add(coautor);
 				}
 			}
 			trabalho.setAutores(PessoaLogadaUtil.pessoaLogada(), coautores);
+
 			submissao = new Submissao();
 			submissao.setTrabalho(trabalho);
 
@@ -293,8 +300,7 @@ public class AutorController {
 								messageService.getMessage(TRABALHO_ENVIADO));
 						
 						trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
-						for(Pessoa coautor:coautores) eventoService.adicionarCoautor(coautor.getEmail(), evento, url);
-						
+
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";
@@ -414,7 +420,7 @@ public class AutorController {
 		}
 	}
 
-	@RequestMapping(value = "/excluirTrabalho", method = RequestMethod.POST)
+	@RequestMapping(value = "/excluirTrabalho/", method = RequestMethod.POST)
 	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId,
 			@RequestParam("eventoId") String eventoId, Model model, RedirectAttributes redirect) {
 		try {
@@ -430,8 +436,8 @@ public class AutorController {
 					if (PessoaLogadaUtil.pessoaLogada().equals(t.getAutor())) {
 						storageService.deleteArquivo(t.getPath());
 						trabalhoService.remover(Long.parseLong(trabalhoId));
-						redirect.addFlashAttribute("trabalhoExcluido",
-								messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						redirect.addFlashAttribute("trabalhoExcluido",messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						
 						return "redirect:/autor/listarTrabalhos/" + eventoId;
 					}
 					model.addAttribute("erroExcluir", messageService.getMessage(AUTOR_SEM_PERMISSAO));

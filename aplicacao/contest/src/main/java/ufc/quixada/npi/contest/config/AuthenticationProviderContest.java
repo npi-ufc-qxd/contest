@@ -40,7 +40,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 		String cpf = authentication.getName();
 		String password = authentication.getCredentials().toString();
 
-		final Usuario usuario = usuarioService.getByCpf(cpf);
+	
 		pessoa = pessoaService.getByCpf(cpf);
 
 		if (pessoa != null) { // Pessoa existe na Base Local entra no trecho abaixo
@@ -49,7 +49,10 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 						pessoa.getAuthorities());
 			}
 				
-		} else if (usuario != null && usuarioService.autentica(cpf, password)) { 
+		} else {
+			final Usuario usuario = usuarioService.getByCpf(cpf);			
+			if (usuario != null && usuarioService.autentica(cpf, password)) { 
+		
 			
 			String encondedPassword = pessoaService.encodePassword(password);
 			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario);
@@ -63,6 +66,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 
 			return new UsernamePasswordAuthenticationToken(pessoa, pessoaService.encodePassword(password),
 					pessoa.getAuthorities());
+			}
 		}
 
 		throw new BadCredentialsException(messageService.getMessage("LOGIN_INVALIDO"));

@@ -28,7 +28,7 @@ public class ParticipacaoTrabalho {
 	@NotNull
 	private Tipo papel;
 
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne
 	private Pessoa pessoa;
 	
 	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
