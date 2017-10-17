@@ -408,7 +408,7 @@ public class AutorController {
 		}
 	}
 
-	@RequestMapping(value = "/excluirTrabalho", method = RequestMethod.POST)
+	@RequestMapping(value = "/excluirTrabalho/", method = RequestMethod.POST)
 	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId,
 			@RequestParam("eventoId") String eventoId, Model model, RedirectAttributes redirect) {
 		try {
@@ -424,8 +424,8 @@ public class AutorController {
 					if (PessoaLogadaUtil.pessoaLogada().equals(t.getAutor())) {
 						storageService.deleteArquivo(t.getPath());
 						trabalhoService.remover(Long.parseLong(trabalhoId));
-						redirect.addFlashAttribute("trabalhoExcluido",
-								messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						redirect.addFlashAttribute("trabalhoExcluido",messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						
 						return "redirect:/autor/listarTrabalhos/" + eventoId;
 					}
 					model.addAttribute("erroExcluir", messageService.getMessage(AUTOR_SEM_PERMISSAO));

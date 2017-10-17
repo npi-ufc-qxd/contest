@@ -114,7 +114,7 @@ public class ExcluirTrabalhoSteps {
 		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(aluno);
 		
 		action = mockMvc
-				.perform(post("/autor/excluirTrabalho")
+				.perform(post("/autor/excluirTrabalho/")
 				.param("trabalhoId", String.valueOf(evento.getId()))
 				.param("eventoId", String.valueOf(trabalho.getId())));
 		
@@ -150,7 +150,7 @@ public class ExcluirTrabalhoSteps {
 		when(trabalhoService.existeTrabalho(TRABALHO_ID)).thenReturn(true);
 		when(eventoService.buscarEventoPorId(EVENTO_ID)).thenReturn(evento);
 		action = mockMvc
-				.perform(post("/autor/excluirTrabalho")
+				.perform(post("/autor/excluirTrabalho/")
 				.param("trabalhoId", String.valueOf(EVENTO_ID))
 				.param("eventoId", String.valueOf(TRABALHO_ID)));
 	}
