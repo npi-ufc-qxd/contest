@@ -16,7 +16,7 @@ import ufc.quixada.npi.contest.service.TrabalhoService;
 public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations{
 	
 	@Autowired
-	TrabalhoService trabalhoService;
+	private TrabalhoService trabalhoService;
 	
 	public CustomMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
