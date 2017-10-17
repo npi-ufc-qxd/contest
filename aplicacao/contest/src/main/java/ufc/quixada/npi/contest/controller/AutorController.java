@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -235,11 +237,14 @@ public class AutorController {
 	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model,
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
-			RedirectAttributes redirect) {
+			RedirectAttributes redirect,
+			HttpServletRequest request) {
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
 		try {
+			String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ request.getContextPath();
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
 
@@ -255,9 +260,17 @@ public class AutorController {
 			List<Pessoa> coautores = new ArrayList<Pessoa>();
 			if (trabalho.getParticipacoes() != null) {
 				for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
+					
 					Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+					
 					if (coautor == null) {
 						coautor = participacao.getPessoa();
+						eventoService.adicionarCoAutor(coautor.getEmail(), evento, url);
+						
+						coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+						
+						coautor.setNome(participacao.getPessoa().getNome());
+						pessoaService.addOrUpdate(coautor);
 					}
 					coautores.add(coautor);
 				}
