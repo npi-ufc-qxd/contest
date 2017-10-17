@@ -82,7 +82,7 @@ public class EnviarTrabalhoSteps {
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Evento evento;
-	private Pessoa pessoa;
+	private Pessoa pessoa, coautor;
 	private ParticipacaoEvento participacao;
 	private Submissao submissao;
 	private Trilha trilha;
@@ -93,6 +93,7 @@ public class EnviarTrabalhoSteps {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(autorController).build();
 		evento = new Evento();
 		pessoa = new Pessoa();
+		coautor = new Pessoa();
 		submissao = new Submissao();
 		trilha = new Trilha();
 		participacao = new ParticipacaoEvento();
@@ -132,6 +133,9 @@ public class EnviarTrabalhoSteps {
 		pessoa.setEmail("teste@tes.com");
 		pessoa.setId(1L);
 		
+		coautor.setCpf("000");
+		coautor.setEmail("coautor@gmail.com");
+		
 		participacao.setId(1L);
 		participacao.setPessoa(pessoa);
 		participacao.setEvento(evento);
@@ -149,7 +153,7 @@ public class EnviarTrabalhoSteps {
 		
 		when(trilhaService.buscarTrilhas(1L)).thenReturn(trilhas);
 		when(context.getAuthentication()).thenReturn(auth);
-		when(auth.getName()).thenReturn("123");
+		when(auth.getPrincipal()).thenReturn(pessoa);
 		
 		SecurityContextHolder.setContext(context);
 		action = mockMvc.perform(
@@ -161,7 +165,7 @@ public class EnviarTrabalhoSteps {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
-		when(pessoaService.getByEmail(pessoa.getEmail())).thenReturn(pessoa);
+		when(pessoaService.getByEmail(coautor.getEmail())).thenReturn(coautor);
 		doNothing().when(trabalhoService).notificarAutoresEnvioTrabalho(evento, new Trabalho());
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);
@@ -175,8 +179,8 @@ public class EnviarTrabalhoSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "Teste")
-                        .param(NOME_PARTICIPANTES, "joao")
-                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
+                        .param(NOME_PARTICIPANTES, coautor.getNome())
+                        .param(EMAIL_PARTICIPANTES , coautor.getEmail())
                         .param(TRILHA_ID, "3"));
 	}
 	@Então("^o autor deve ser redirecionado para a página meusTrabalhos com uma mensagem de sucesso$")
@@ -195,8 +199,8 @@ public class EnviarTrabalhoSteps {
                         .file(multipartFile)
                         .param(EVENTO_ID, "1")
                         .param(TITULO, "")
-                        .param(NOME_PARTICIPANTES, "joao")
-                        .param(EMAIL_PARTICIPANTES , "joao@gmail.com")
+                        .param(NOME_PARTICIPANTES, coautor.getNome())
+                        .param(EMAIL_PARTICIPANTES , coautor.getEmail())
                         .param(TRILHA_ID, "3"));
 	}
 	@Então("^deve ser mostrado uma mensagem de erro dizendo que o titulo está em branco$")
