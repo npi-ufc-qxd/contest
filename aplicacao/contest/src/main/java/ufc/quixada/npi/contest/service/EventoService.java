@@ -115,6 +115,12 @@ public class EventoService {
 		Tipo papel = Tipo.AUTOR;
 		return adicionarPessoa(email, evento, papel, url);
 	}
+	
+	public boolean adicionarCoAutor(String email, Evento evento, String url) {
+		Tipo papel = Tipo.COAUTOR;
+		return adicionarPessoa(email, evento, papel, url);
+	}
+	
 
 	public boolean adicionarOuAtualizarEvento(Evento evento) {
 		if (evento.getPrazoSubmissaoInicial() != null && evento.getPrazoSubmissaoFinal() != null
