@@ -237,8 +237,7 @@ public class AutorController {
 	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model,
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
-			RedirectAttributes redirect,
-			HttpServletRequest request) {
+			RedirectAttributes redirect,HttpServletRequest request) {
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
