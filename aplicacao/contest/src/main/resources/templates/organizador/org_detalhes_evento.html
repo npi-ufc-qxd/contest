@@ -47,16 +47,12 @@
 										required="required" /> <label for="email_org">E-mail
 										Organizador</label>
 								</div>
-
 								<div class="input-field">
 									<input type="hidden" th:value="${evento.id}" name="eventoId" />
 								</div>
-
 								<div class="input-field">
 									<input type="hidden" value="ORGANIZADOR" name="funcao" />
 								</div>
-
-
 							</div>
 						</form>
 					</div>
@@ -73,7 +69,6 @@
 			<!-- Modal Structure -->
 			<div id="modal2" class="modal">
 				<div class="modal-content">
-
 					<h4>Adicionar Revisor</h4>
 
 					<div class="row">
@@ -112,7 +107,7 @@
 				<div class="card col s6" style="float:left; width: 48%">
 					<span class="card-title teal-text text-lighten-2">Organizadores:</span>
 					<br /> <br />
-					<div class="" style="height: 150px; overflow-x: auto; white-space: nowrap">
+					<div class="" style="max-height: 150px; overflow-x: auto; white-space: nowrap">
 						<div class="card-content white-text">
 							<div th:each="pessoaOrganizador : ${evento.getOrganizadores()}"
 								class="black-text text-darken-2">
@@ -131,14 +126,14 @@
 				<div class="card col s6" style="float:right; width: 48%">
 					<span class="card-title teal-text text-lighten-2">Revisores:</span>
 					<br /> <br />
-					<div class="" style="height: 150px; overflow-x: auto; white-space: nowrap">
+					<div class="" style="max-height: 150px; overflow-x: auto; white-space: nowrap">
 						<div class="card-content white-text">
 							<div th:each="pessoaRevisor : ${evento.getRevisores()}"
 								class="black-text text-darken-2">
 								<p th:text="${pessoaRevisor.getNome()}"></p>
-								<p th:unless="${!#lists.isEmpty(evento.getRevisores())}"
-									class="black-text text-darken-2">Não há revisores</p>
 							</div>
+							<p th:unless="${!#lists.isEmpty(evento.getRevisores())}"
+									class="black-text text-darken-2">Não há revisores</p>
 						</div>
 					</div>
 					<br />
