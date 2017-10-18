@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
