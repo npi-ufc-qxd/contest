@@ -10,13 +10,9 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Secao;
-import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 
 public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations{
-	
-	@Autowired
-	private TrabalhoService trabalhoService;
 	
 	public CustomMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
@@ -142,16 +138,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	return false;
     }
     
-    public boolean isResponsavelInTrabalho(Long trabalhoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoTrabalho participacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacao.getTrabalho().getId() == trabalhoId && (participacao.getPapel()== Tipo.COAUTOR || participacao.getPapel()== Tipo.REVISOR || participacao.getPapel()== Tipo.AUTOR)) return true;
-    	}
-    	Trabalho trabalho = trabalhoService.getTrabalhoById(trabalhoId);
-    	
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getEvento() == trabalho.getEvento() && participacao.getPapel() == Tipo.ORGANIZADOR) return true;
-    	}
+    public boolean isResponsavelInTrabalho(Long trabalhoId, Long eventoId){
+    	if (isAutorInTrabalho(trabalhoId) || isOrientadorInTrabalho(trabalhoId) || isCoautorInTrabalho(trabalhoId) || isRevisorInTrabalho(trabalhoId) || isOrganizadorInEvento(eventoId)) return true;
     	return false;
     }
     
