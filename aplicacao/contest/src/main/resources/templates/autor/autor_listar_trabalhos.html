@@ -57,8 +57,17 @@
                 
                 <div class="col s4">
                 	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
+                	
                 </div>
-                
+                 <div class="col s4">
+                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
+                	<p><b>SITUAÇÃO DO ARTIGO: </b> 
+                	
+                	<span th:if="${not #lists.isEmpty(trabalho.revisoes)}" th:text="${trabalho.revisoes[0].avaliacao}"></span>
+                	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>
+                	</p>
+               
+                </div>
                 <div class="col s4">
                 <p><b>Número total de submissões: </b><span th:text="${#lists.size(trabalho.submissoes)}"></span></p>
                 	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(#lists.size(trabalho.submissoes) - 1).dataSubmissao,'dd/MM/yyyy')} "></span></p>
