@@ -160,16 +160,16 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
-	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect, Evento evento) {
+	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
 		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
-		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(evento);
+		
 		Pessoa organizadorLogado = PessoaLogadaUtil.pessoaLogada();
+		Boolean participacaoComoOrganizador = participacaoEventoService.isOrganizadorDoEvento(organizadorLogado, eventoId);
 
-		if (organizadorLogado != null) {
+		if (participacaoComoOrganizador) {
 			if (!revisoes.isEmpty()) {
 				model.addAttribute("revisoes", revisoes);
-				model.addAttribute("trabalhos", trabalhos);
 				return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;
 			}
 			redirect.addFlashAttribute("revisao_inexistente", messageService.getMessage("REVISAO_INEXISTENTE"));
