@@ -137,8 +137,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     }
     
     public boolean isResponsavelInTrabalho(Long trabalhoId, Long eventoId){
-    	if (isAutorInTrabalho(trabalhoId) || isOrientadorInTrabalho(trabalhoId) || isCoautorInTrabalho(trabalhoId) || isRevisorInTrabalho(trabalhoId) || isOrganizadorInEvento(eventoId)) return true;
-    	return false;
+    	if (isAutorInTrabalho(trabalhoId) || isCoautorInTrabalho(trabalhoId) || isRevisorInTrabalho(trabalhoId) || isOrganizadorInEvento(eventoId)) return true;
+    	else return false;
     }
     
 	@Override
