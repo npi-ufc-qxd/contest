@@ -29,103 +29,118 @@
 
 
 			<!-- Modal Trigger -->
-			
-		  
+
+
 
 			<!-- Modal Structure -->
 			<div id="modal1" class="modal">
 				<div class="modal-content">
-					<h4>Adicionar Organizador </h4>
+					<h4>Adicionar Organizador</h4>
 
 					<div class="row">
-						<form id="formAdicionarOrganizador" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
+						<form id="formAdicionarOrganizador"
+							th:action="@{/eventoOrganizador/convidar}" action="#"
+							method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
-									<input id="email_org" type="text" name="email" class="validate"	required="required" /> 
-									<label for="email_org">E-mail Organizador</label>
+									<input id="email_org" type="text" name="email" class="validate"
+										required="required" /> <label for="email_org">E-mail
+										Organizador</label>
 								</div>
-								
 								<div class="input-field">
 									<input type="hidden" th:value="${evento.id}" name="eventoId" />
 								</div>
-								
 								<div class="input-field">
 									<input type="hidden" value="ORGANIZADOR" name="funcao" />
 								</div>
-								
-								
 							</div>
 						</form>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="submit" form="formAdicionarOrganizador" class="right btn waves-effect teal lighten-1">Enviar</button>
-					<button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
+					<button type="submit" form="formAdicionarOrganizador"
+						class="right btn waves-effect teal lighten-1">Enviar</button>
+					<button
+						class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
 				</div>
 			</div>
-				<!-- Modal Trigger -->
+			<!-- Modal Trigger -->
 
 			<!-- Modal Structure -->
 			<div id="modal2" class="modal">
 				<div class="modal-content">
-				
 					<h4>Adicionar Revisor</h4>
 
 					<div class="row">
-						<form id="formAdicionarRevisor" th:action="@{/eventoOrganizador/convidar}" action="#" method="POST" class="col s12">
+						<form id="formAdicionarRevisor"
+							th:action="@{/eventoOrganizador/convidar}" action="#"
+							method="POST" class="col s12">
 							<div class="row modal-form-row">
 								<div class="input-field col s12">
 									<input id="email_rev" name="email" type="text" class="validate"
-										required="required" /> <label for="email_rev">E-mail Revisor</label>
+										required="required" /> <label for="email_rev">E-mail
+										Revisor</label>
 								</div>
-								
+								<small>Você pode adicionar mais de um revisor, basta adicionar os emails separados por vírgula. Ex.: "nome@email.com,nome@email2.com,nome@emails3.com"</small>
 								<div class="input-field">
 									<input type="hidden" th:value="${evento.id}" name="eventoId" />
 								</div>
-								
+
 								<div class="input-field">
 									<input type="hidden" value="REVISOR" name="funcao" />
-								</div>	
+								</div>
 							</div>
 						</form>
-					
+
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="submit" form="formAdicionarRevisor" class="right btn waves-effect teal lighten-1">Enviar</button>
-					<button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
-				</div>
-				
-			</div>
-			<br/>
-			<br/>
-			<br/>			
-			<div class="row">
-				<div class="col s12 m6">
-					<div class="card darken-1">
-						<div class="card-content white-text">						 
-						<span class="card-title teal-text text-lighten-2">Organizadores:</span>												
-						<p th:each="pessoaOrganizador : ${evento.getOrganizadores()}" class="black-text text-darken-2" th:text="${pessoaOrganizador.getNome()}"></p>
-						<br/>
-						<button class="waves-effect waves-light btn modal-trigger  left" data-target="modal1" style="left:1px">Adicionar Organizador</button>
-						 <br/>
-						 <br/>						 
-						</div>
-					</div>
+					<button type="submit" form="formAdicionarRevisor"
+						class="right btn waves-effect teal lighten-1">Enviar</button>
+					<button
+						class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
 				</div>
 
-				<div class="col s12 m6">
-					<div class="card">
-						<div class="card-content white-text">						
-						<span class="card-title teal-text text-lighten-2">Revisores:</span>
-						<p th:each="pessoaRevisor : ${evento.getRevisores()}" class="black-text text-darken-2" th:text="${pessoaRevisor.getNome()}"></p>
-						<p th:unless="${!#lists.isEmpty(evento.getRevisores())}" class="black-text text-darken-2" >Não há revisores</p>						
-						<br/>	
-						<button name="button" class="waves-effect waves-light btn modal-trigger left" data-target="modal2" style="right: 1px">Adicionar Revisor</button>				
-						<br/>
-						<br/>						
+			</div>
+			<br /> <br /> <br />
+			<div class="row">
+				<div class="card col s6" style="float:left; width: 48%">
+					<span class="card-title teal-text text-lighten-2">Organizadores:</span>
+					<br /> <br />
+					<div class="" style="max-height: 150px; overflow-x: auto; white-space: nowrap">
+						<div class="card-content white-text">
+							<div th:each="pessoaOrganizador : ${evento.getOrganizadores()}"
+								class="black-text text-darken-2">
+								<p th:text="${pessoaOrganizador.getNome()}"></p>
+							</div>
 						</div>
 					</div>
+					<br />
+					<button class="waves-effect waves-light btn modal-trigger  left"
+						data-target="modal1" style="left: 1px">Adicionar
+						Organizador</button>
+					<br /> <br /> <br />
+				</div>
+				 
+				
+				<div class="card col s6" style="float:right; width: 48%">
+					<span class="card-title teal-text text-lighten-2">Revisores:</span>
+					<br /> <br />
+					<div class="" style="max-height: 150px; overflow-x: auto; white-space: nowrap">
+						<div class="card-content white-text">
+							<div th:each="pessoaRevisor : ${evento.getRevisores()}"
+								class="black-text text-darken-2">
+								<p th:text="${pessoaRevisor.getNome()}"></p>
+							</div>
+							<p th:unless="${!#lists.isEmpty(evento.getRevisores())}"
+									class="black-text text-darken-2">Não há revisores</p>
+						</div>
+					</div>
+					<br />
+					<button name="button"
+						class="waves-effect waves-light btn modal-trigger left"
+						data-target="modal2" style="right: 1px">Adicionar Revisor</button>
+					<br /> <br /> <br />
 				</div>
 
 			</div>
@@ -215,55 +230,57 @@
 	<div th:include="fragments/footer :: footer"></div>
 
 	<div id="modalConvidarPessoas" class="modal">
-		<form id="formConvidarPessoas"  th:action="@{/eventoOrganizador/convidar}" action="#" method="post"
-			class="col s12">		
-				<div class="modal-content">
-					<h4>Convidar Pessoas</h4>
-					<div class="row">
-						<div class="col s12">
-							<div class="row modal-form-row">
-								<div class="input-field col s12">
-	
-									<div class="input-field">
-										<input type="hidden" th:value="${evento.id}" name="eventoId" />
-									</div>
-	
-									<div class="input-field">
-										<input id="email_da_pessoa" name="email" type="email" required="required" />
-										<label for="email_da_pessoa">Email</label>
-									</div>
-	
-									<select name="funcao" required="required">
-										<option value="ORGANIZADOR">Organizador</option>
-										<option value="REVISOR">Revisor</option>
-										<option value="AUTOR">Autor</option>
-									</select>
+		<form id="formConvidarPessoas"
+			th:action="@{/eventoOrganizador/convidar}" action="#" method="post"
+			class="col s12">
+			<div class="modal-content">
+				<h4>Convidar Pessoas</h4>
+				<div class="row">
+					<div class="col s12">
+						<div class="row modal-form-row">
+							<div class="input-field col s12">
+
+								<div class="input-field">
+									<input type="hidden" th:value="${evento.id}" name="eventoId" />
 								</div>
+
+								<div class="input-field">
+									<input id="email_da_pessoa" name="email" type="email"
+										required="required" /> <label for="email_da_pessoa">Email</label>
+								</div>
+
+								<select name="funcao" required="required">
+									<option value="ORGANIZADOR">Organizador</option>
+									<option value="REVISOR">Revisor</option>
+									<option value="AUTOR">Autor</option>
+								</select>
 							</div>
 						</div>
 					</div>
 				</div>
+			</div>
 		</form>
-				
-		 <div class="modal-footer">
-			 <!--   <button type="submit" value="Confirmar"	class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+
+		<div class="modal-footer">
+			<!--   <button type="submit" value="Confirmar"	class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
 			  <a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>-->
-			  <button type="submit" form="formConvidarPessoas" class="right btn waves-effect teal lighten-1">Convidar</button>
-			  <button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
-		 </div>
-		 
+			<button type="submit" form="formConvidarPessoas"
+				class="right btn waves-effect teal lighten-1">Convidar</button>
+			<button class="modal-action modal-close left btn waves-effect orange">Cancelar</button>
+		</div>
+
 	</div>
-	
+
 
 	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
 	<script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('select').material_select();
-	
+
 			//Inicialização do Modal excluir Evento
 			$('.modal-trigger').leanModal();
-	
+
 			$('.dropdown-button').dropdown({
 				inDuration : 300,
 				outDuration : 225,
@@ -272,9 +289,8 @@
 				gutter : 0, // Spacing from edge
 				belowOrigin : false, // Displays dropdown below the button
 				alignment : 'left' // Displays dropdown with edge aligned to the left of button
-			}
-			);
-	
+			});
+
 		});
 	</script>
 </body>

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -235,11 +237,13 @@ public class AutorController {
 	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model,
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
-			RedirectAttributes redirect) {
+			RedirectAttributes redirect,HttpServletRequest request) {
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
 		try {
+			String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ request.getContextPath();
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
 
@@ -255,9 +259,17 @@ public class AutorController {
 			List<Pessoa> coautores = new ArrayList<Pessoa>();
 			if (trabalho.getParticipacoes() != null) {
 				for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
+					
 					Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+					
 					if (coautor == null) {
 						coautor = participacao.getPessoa();
+						eventoService.adicionarCoAutor(coautor.getEmail(), evento, url);
+						
+						coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+						
+						coautor.setNome(participacao.getPessoa().getNome());
+						pessoaService.addOrUpdate(coautor);
 					}
 					coautores.add(coautor);
 				}
@@ -372,7 +384,7 @@ public class AutorController {
 		}
 	}
 
-	@PreAuthorize("isAutorInTrabalho(#idTrabalho)")
+	@PreAuthorize("isResponsavelInTrabalho(#idTrabalho, #idEvento)")
 	@RequestMapping(value = "/file/{trabalho}", method = RequestMethod.GET, produces = "application/pdf")
 	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho, HttpServletResponse response)
 			throws IOException {
@@ -408,7 +420,7 @@ public class AutorController {
 		}
 	}
 
-	@RequestMapping(value = "/excluirTrabalho", method = RequestMethod.POST)
+	@RequestMapping(value = "/excluirTrabalho/", method = RequestMethod.POST)
 	public String excluirTrabalho(@RequestParam("trabalhoId") String trabalhoId,
 			@RequestParam("eventoId") String eventoId, Model model, RedirectAttributes redirect) {
 		try {
@@ -424,8 +436,8 @@ public class AutorController {
 					if (PessoaLogadaUtil.pessoaLogada().equals(t.getAutor())) {
 						storageService.deleteArquivo(t.getPath());
 						trabalhoService.remover(Long.parseLong(trabalhoId));
-						redirect.addFlashAttribute("trabalhoExcluido",
-								messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						redirect.addFlashAttribute("trabalhoExcluido",messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+						
 						return "redirect:/autor/listarTrabalhos/" + eventoId;
 					}
 					model.addAttribute("erroExcluir", messageService.getMessage(AUTOR_SEM_PERMISSAO));

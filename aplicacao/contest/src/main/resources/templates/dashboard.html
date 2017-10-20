@@ -150,13 +150,13 @@
 							<div th:if="${not #lists.isEmpty(eventosQueSouAutor)}">
 								<ul>
 									<li><a
-										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[0].id}"
+										th:href="@{|/autor/listarTrabalhos/${eventosQueSouAutor[0].id}|}"
 										th:text="${eventosQueSouAutor[0].nome}"></a></li>
 									<li><a th:if="${eventosQueSouAutor.size()} > 1"
-										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[1].id}"
+										th:href="@{|/autor/listarTrabalhos/${eventosQueSouAutor[1].id}|}"
 										th:text="${eventosQueSouAutor[1].nome}"></a></li>
 									<li><a th:if="${eventosQueSouAutor.size()} > 2"
-										th:href="'/autor/listarTrabalhos/' + ${eventosQueSouAutor[2].id}"
+										th:href="@{|/autor/listarTrabalhos/${eventosQueSouAutor[2].id}|}"
 										th:text="${eventosQueSouAutor[2].nome}"></a></li>
 								</ul>
 							</div>

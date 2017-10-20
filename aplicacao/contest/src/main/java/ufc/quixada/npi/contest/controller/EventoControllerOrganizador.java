@@ -163,10 +163,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
 		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
-
+		
 		Pessoa organizadorLogado = PessoaLogadaUtil.pessoaLogada();
+		Boolean participacaoComoOrganizador = participacaoEventoService.isOrganizadorDoEvento(organizadorLogado, eventoId);
 
-		if (PapelLdap.Tipo.DOCENTE.equals(organizadorLogado.getPapelLdap())) {
+		if (participacaoComoOrganizador) {
 			if (!revisoes.isEmpty()) {
 				model.addAttribute("revisoes", revisoes);
 				return Constants.TEMPLATE_CONSIDERACOES_REVISORES_ORG;

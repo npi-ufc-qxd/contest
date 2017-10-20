@@ -56,7 +56,7 @@ public class EventoService {
 	private boolean adicionarPessoa(String email, Evento evento, Tipo papel, String url) {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
-		String nome = "Nome Temporário";
+		String nome = "Nome Temporário "+"<"+ email +">";
 
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
 		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
@@ -115,6 +115,12 @@ public class EventoService {
 		Tipo papel = Tipo.AUTOR;
 		return adicionarPessoa(email, evento, papel, url);
 	}
+	
+	public boolean adicionarCoAutor(String email, Evento evento, String url) {
+		Tipo papel = Tipo.COAUTOR;
+		return adicionarPessoa(email, evento, papel, url);
+	}
+	
 
 	public boolean adicionarOuAtualizarEvento(Evento evento) {
 		if (evento.getPrazoSubmissaoInicial() != null && evento.getPrazoSubmissaoFinal() != null

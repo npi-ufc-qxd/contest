@@ -19,8 +19,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     public boolean isOrganizadorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	
-    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.ORGANIZADOR){
+    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    		if(participacao.getEvento().getId()==eventoId && participacao.getPapel()== Tipo.ORGANIZADOR){
     			return true;
     		}
     	}
@@ -30,8 +30,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     public boolean isOrganizador(){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	
-    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getPapel()== Tipo.ORGANIZADOR){
+    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    		if(participacao.getPapel()== Tipo.ORGANIZADOR){
     			return true;
     		}
     	}
@@ -41,8 +41,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     
     public boolean isAutor(){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getPapel()== Tipo.AUTOR){
+    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    		if(participacao.getPapel()== Tipo.AUTOR){
     			return true;
     		}
     	}
@@ -51,8 +51,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     
     public boolean isAutorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getEvento().getId()==eventoId && participacacao.getPapel()== Tipo.AUTOR){
+    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    		if(participacao.getEvento().getId()==eventoId && participacao.getPapel()== Tipo.AUTOR){
     			return true;
     		}
     	}
@@ -61,8 +61,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     
     public boolean isAutorInTrabalho(Long trabalhoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacacao.getTrabalho().getId() == trabalhoId && participacacao.getPapel()== Tipo.AUTOR){
+    	for(ParticipacaoTrabalho participacao : pessoa.getParticipacoesTrabalho()){
+    		if(participacao.getTrabalho().getId() == trabalhoId && participacao.getPapel()== Tipo.AUTOR){
     			return true;
     		}
     	}
@@ -74,8 +74,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     public boolean isRevisor(){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	
-    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getPapel()== Tipo.REVISOR){
+    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    		if(participacao.getPapel()== Tipo.REVISOR){
     			return true;
     		}
     	}
@@ -85,8 +85,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     public boolean isRevisorInTrabalho(Long trabalhoId){
     	Pessoa pessoa = (Pessoa)getPrincipal();
     	
-    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacacao.getTrabalho().getId()== trabalhoId && participacacao.getPapel() == Tipo.REVISOR){
+    	for(ParticipacaoTrabalho participacao : pessoa.getParticipacoesTrabalho()){
+    		if(participacao.getTrabalho().getId()== trabalhoId && participacao.getPapel() == Tipo.REVISOR){
     			return true;
     		}
     	}
@@ -96,8 +96,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     public boolean isRevisorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa)getPrincipal();
     	
-    	for(ParticipacaoEvento participacacao : pessoa.getParticipacoesEvento()){
-    		if(participacacao.getEvento().getId() == eventoId && participacacao.getPapel()== Tipo.REVISOR){
+    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    		if(participacao.getEvento().getId() == eventoId && participacao.getPapel()== Tipo.REVISOR){
     			return true;
     		}
     	}
@@ -117,8 +117,8 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     
     public boolean isCoautorInTrabalho(Long trabalhoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacacao.getTrabalho().getId() == trabalhoId && participacacao.getPapel()== Tipo.COAUTOR){
+    	for(ParticipacaoTrabalho participacao : pessoa.getParticipacoesTrabalho()){
+    		if(participacao.getTrabalho().getId() == trabalhoId && participacao.getPapel()== Tipo.COAUTOR){
     			return true;
     		}
     	}
@@ -136,7 +136,10 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	return false;
     }
     
-    
+    public boolean isResponsavelInTrabalho(Long trabalhoId, Long eventoId){
+    	if (isAutorInTrabalho(trabalhoId) || isCoautorInTrabalho(trabalhoId) || isRevisorInTrabalho(trabalhoId) || isOrganizadorInEvento(eventoId)) return true;
+    	else return false;
+    }
     
 	@Override
 	public void setFilterObject(Object filterObject) {
