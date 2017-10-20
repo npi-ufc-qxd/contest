@@ -15,7 +15,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<packaging.type>war</packaging.type>
+				<packaging.type>jar</packaging.type>
 				<npi.ldap.version>0.3.1</npi.ldap.version>
 				<activatedProperties>dev</activatedProperties>
 			</properties>
@@ -132,13 +132,13 @@
               <version>${cucumber.java.version}</version>
               <scope>test</scope>
         </dependency>
-        
+
         <!-- Thymeleaf Dialect -->
 	    <dependency>
 	        <groupId>org.thymeleaf.extras</groupId>
 	        <artifactId>thymeleaf-extras-springsecurity4</artifactId>
 	    </dependency>
-	   
+
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -193,7 +193,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc-portlet</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-undertow</artifactId>
@@ -202,7 +202,7 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
 		</dependency>
-		
+
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
 		<dependency>
