@@ -35,7 +35,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
-		Pessoa pessoa = new Pessoa();
+		Pessoa pessoa;
 		
 		String cpf = authentication.getName();
 		String password = authentication.getCredentials().toString();
@@ -53,9 +53,13 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 			final Usuario usuario = usuarioService.getByCpf(cpf);			
 			if (usuario != null && usuarioService.autentica(cpf, password)) { 
 		
-			
-			String encondedPassword = pessoaService.encodePassword(password);
-			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario);
+				pessoa = pessoaService.getByEmail(usuario.getEmail());
+
+				String encondedPassword = pessoaService.encodePassword(password);
+
+				if (pessoa != null) {
+					pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario, pessoa);
+				}
 			
 			for (Affiliation affiliation : usuario.getAuthorities()) {
 				if (affiliation.getNome().equals(Tipo.ADMIN.getNome())) {
