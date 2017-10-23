@@ -24,7 +24,7 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 
 @Entity
 @Table(name = "pessoa")
-public class Pessoa implements UserDetails {
+public class Pessoa implements UserDetails, Comparable<Pessoa> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -229,5 +229,10 @@ public class Pessoa implements UserDetails {
 			}
 		}
 		return trabalhosRevisar;
+	}
+
+	@Override
+	public int compareTo(Pessoa o) {
+		return this.nome.toUpperCase().compareTo(o.getNome().toUpperCase());
 	}
 }
