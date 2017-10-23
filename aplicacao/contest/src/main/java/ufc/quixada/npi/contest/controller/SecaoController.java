@@ -36,34 +36,37 @@ public class SecaoController {
 	@Autowired
 	private PessoaService pessoaService;
 
-	@RequestMapping(value = "/paginaSecao")
-	public String indexSecao(Model model) {
-		List<Secao> secoes = secaoService.list();
+	@RequestMapping(value = "{eventoId}/paginaSecao")
+	public String indexSecao(Model model, @PathVariable("eventoId") Long eventoId) {
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		List<Secao> secoes = secaoService.listByEvento(evento);
 
 		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
 		PessoaLogadaUtil.refreshPessoaLogada(pessoa);
 
 		model.addAttribute("secoes", secoes);
+		model.addAttribute("evento", evento);
 		return "secao/indexSecao";
 	}
 
 	@PreAuthorize("isOrganizador()")
-	@RequestMapping(value = "/cadastrarSecaoForm", method = RequestMethod.GET)
-	public String cadastrarSecaoForm(Model model) {
-		List<Pessoa> pessoas = pessoaService.getTodos();
-		List<Evento> eventos = eventoService.buscarEventos();
+	@RequestMapping(value = "{eventoId}/cadastrarSecaoForm", method = RequestMethod.GET)
+	public String cadastrarSecaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
 		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("eventos", eventos);
+		model.addAttribute("evento", evento);
 		return "secao/cadastroSecao";
 	}
 
-	@RequestMapping(value = "/cadastrarSecao")
-	public String cadastrarSecao(Secao secao) {
+	@RequestMapping(value = "{eventoId}/cadastrarSecao", method = RequestMethod.POST)
+	public String cadastrarSecao(Secao secao,  @PathVariable("eventoId") Long eventoId) {
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		if (secao.getEvento() == null || secao.getResponsavel() == null) {
-			return "redirect:/secao/cadastrarSecaoForm";
+			return "redirect:/secao/"+evento.getId()+"/cadastrarSecaoForm";
 		}
 		secaoService.addOrUpdate(secao);
-		return "redirect:/secao/paginaSecao";
+		return "redirect:/secao/"+evento.getId()+"/paginaSecao";
 	}
 
 	@PreAuthorize("isOrganizador()")
