@@ -37,6 +37,9 @@ public class ParticipacaoEventoService {
 				if(participacaoTemp.getPapel().equals(Tipo.REVISOR) && !participacao.getPapel().equals(Tipo.REVISOR)){
 					participacaoEventoRepository.save(participacao);
 				}
+				if(participacao.getPapel().equals(Tipo.AUTOR)){
+					participacaoEventoRepository.save(participacao);
+				}
 			}
 			
 			return true;
