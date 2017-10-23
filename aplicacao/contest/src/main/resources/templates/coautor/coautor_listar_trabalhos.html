@@ -59,7 +59,7 @@
                 
                 <div class="col s4">
                 	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
-                	<p><b>SITUAÇÃO: </b> 
+                	<p><b>SITUAÇÃO DO ARTIGO: </b> 
                 	
                 	<span th:if="${not #lists.isEmpty(trabalho.revisoes)}" th:text="${trabalho.revisoes[0].avaliacao}"></span>
                 	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>

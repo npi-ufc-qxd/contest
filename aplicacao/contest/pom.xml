@@ -132,13 +132,13 @@
               <version>${cucumber.java.version}</version>
               <scope>test</scope>
         </dependency>
-        
+
         <!-- Thymeleaf Dialect -->
 	    <dependency>
 	        <groupId>org.thymeleaf.extras</groupId>
 	        <artifactId>thymeleaf-extras-springsecurity4</artifactId>
 	    </dependency>
-	   
+
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -193,11 +193,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc-portlet</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>2.11.0</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-undertow</artifactId>
@@ -206,20 +202,13 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-
-
-
 
 		<dependency>
             <groupId>org.springframework.boot</groupId>
@@ -231,11 +220,7 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>net.wimpi</groupId>
-			<artifactId>telnetd-x</artifactId>
-			<version>2.1.1</version>
-		</dependency>
+
 
 		<!-- JSON -->
 		<dependency>

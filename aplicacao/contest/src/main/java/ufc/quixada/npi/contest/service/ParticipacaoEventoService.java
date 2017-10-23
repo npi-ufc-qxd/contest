@@ -99,4 +99,8 @@ public class ParticipacaoEventoService {
 	public ParticipacaoEvento buscarOrganizadorPorPessoaEEvento(Evento evento, Pessoa pessoa){
 		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.ORGANIZADOR);
 	}
+	
+	public List<ParticipacaoEvento> getParticipacoesPorEvento(Evento e){
+		return participacaoEventoRepository.findByEvento(e);
+	}
 }

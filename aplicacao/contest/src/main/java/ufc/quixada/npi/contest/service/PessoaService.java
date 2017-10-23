@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.PapelLdap;
+import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.repository.PessoaRepository;
 
@@ -20,6 +22,9 @@ public class PessoaService {
 
 	@Autowired
 	private PessoaRepository pessoaRepository;
+	
+	@Autowired
+	private ParticipacaoEventoService participacaoEventoService;
 
 	public void addOrUpdate(Pessoa pessoa) {
 		pessoaRepository.save(pessoa);
@@ -92,6 +97,17 @@ public class PessoaService {
 	
 	public List<Pessoa> getTodos(){
 		return pessoaRepository.findAll();
+	}
+	
+	public List<Pessoa> getTodosInEvento(Evento e){
+		List<Pessoa> pessoas = new ArrayList<>();
+		List<ParticipacaoEvento> participacoes = participacaoEventoService.getParticipacoesPorEvento(e);
+		
+		for(ParticipacaoEvento partipacao : participacoes){
+			pessoas.add(partipacao.getPessoa());
+		}
+		
+		return pessoas;		
 	}
 	
 }
