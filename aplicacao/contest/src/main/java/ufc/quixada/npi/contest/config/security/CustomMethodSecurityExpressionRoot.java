@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
@@ -10,7 +9,6 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Secao;
-import ufc.quixada.npi.contest.service.TrabalhoService;
 
 public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations{
 	
@@ -135,11 +133,6 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     			return true;
     		}
     	}
-    	return false;
-    }
-    
-    public boolean isResponsavelInTrabalho(Long trabalhoId, Long eventoId){
-    	if (isAutorInTrabalho(trabalhoId) || isOrientadorInTrabalho(trabalhoId) || isCoautorInTrabalho(trabalhoId) || isRevisorInTrabalho(trabalhoId) || isOrganizadorInEvento(eventoId)) return true;
     	return false;
     }
     
