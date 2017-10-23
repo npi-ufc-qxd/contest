@@ -75,7 +75,7 @@
 												class="purple-text">Ver participação</a>
 												
 												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'COAUTOR'}"
-												th:href="@{|/coautor/listarTrabalhos/evento.id}|}" 
+												th:href="@{|/coautor/listarTrabalhos/${evento.id}|}" 
 												class="purple-text">Ver participação</a>
 													
 											</span>
@@ -121,7 +121,7 @@
 													class="btn">Visão de revisor</a>
 													
 													<a th:if="${participacao.papel.name() == 'COAUTOR'}"
-													th:href="@{|/coautor/listarTrabalhos/evento.id}|}" 
+													th:href="@{|/coautor/listarTrabalhos/${evento.id}|}" 
 													class="btn">Visao de coautor</a>
 											</span>
 										</div>
