@@ -25,19 +25,20 @@ public class ParticipacaoEventoService {
 	
 	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacao){
 		try{
-			ParticipacaoEvento participacaoTemp = participacaoEventoRepository.findOneByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa());
-			if(participacaoTemp == null){
+			List<ParticipacaoEvento> participacoes = participacaoEventoRepository.findByEventoAndPessoa(participacao.getEvento(), participacao.getPessoa());
+			if(participacoes.isEmpty()){
 				participacaoEventoRepository.save(participacao);
 			} else {		
 			
-				if(participacaoTemp.getPapel().equals(Tipo.ORGANIZADOR) && !participacao.getPapel().equals(Tipo.ORGANIZADOR)){
-					participacaoEventoRepository.save(participacao);
+				boolean save = false;
+				
+				for(ParticipacaoEvento participacaoTemp : participacoes){
+					if(!participacaoTemp.getPapel().equals(participacao.getPapel())){
+						save = true;
+					}
 				}
 				
-				if(participacaoTemp.getPapel().equals(Tipo.REVISOR) && !participacao.getPapel().equals(Tipo.REVISOR)){
-					participacaoEventoRepository.save(participacao);
-				}
-				if(participacao.getPapel().equals(Tipo.AUTOR)){
+				if(save){
 					participacaoEventoRepository.save(participacao);
 				}
 			}
