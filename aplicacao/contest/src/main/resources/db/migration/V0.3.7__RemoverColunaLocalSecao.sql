@@ -29,4 +29,4 @@ CREATE SEQUENCE hibernate_sequence
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
-ALTER TABLE hibernate_sequence OWNER TO postgres;
+ALTER TABLE hibernate_sequence OWNER TO contest_user;

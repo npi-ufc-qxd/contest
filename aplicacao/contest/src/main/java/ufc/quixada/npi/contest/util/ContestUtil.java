@@ -10,9 +10,7 @@ public class ContestUtil {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static Pessoa convertUsuarioToPessoa(String encondedPassword, final Usuario usuario) {
-		Pessoa pessoa;
-		pessoa = new Pessoa();
+	public static Pessoa convertUsuarioToPessoa(String encondedPassword, final Usuario usuario, Pessoa pessoa) {
 		pessoa.setCpf(usuario.getCpf());
 		pessoa.setNome(usuario.getNome());
 		pessoa.setPassword(encondedPassword);

@@ -70,7 +70,7 @@ public class EventoService {
 				Usuario usuarioLdap = usuarioService.getByEmail(email);
 				
 				if(usuarioLdap != null){
-					pessoa = ContestUtil.convertUsuarioToPessoa("", usuarioLdap);
+					pessoa = ContestUtil.convertUsuarioToPessoa("", usuarioLdap, new Pessoa());
 				}else{
 					pessoa = new Pessoa(nome, email);
 					pessoa.setPapel(Tipo.USER);
