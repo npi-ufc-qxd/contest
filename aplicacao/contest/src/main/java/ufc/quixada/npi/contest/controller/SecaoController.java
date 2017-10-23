@@ -69,7 +69,7 @@ public class SecaoController {
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
 	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
-		Secao secao = secaoService.get(idSecao);
+		Secao secao = secaoService.get(idSecao);		
 		List<ParticipacaoTrabalho> trabalhosSecao = new ArrayList<>();
 		List<Trabalho> trabalhos = new ArrayList<>();
 
@@ -82,11 +82,14 @@ public class SecaoController {
 		}
 
 		for (Trabalho trabalho : trabalhoService.buscarTodosTrabalhos()) {
-			if (trabalho.getSecao() == null) {
+			if (trabalho.getSecao() == null && trabalho.getEvento() == secao.getEvento()) {
 				trabalhos.add(trabalho);
 			}
 		}
 
+		
+		
+		
 		model.addAttribute("trabalhos", trabalhos);
 		model.addAttribute("trabalhosSecao", trabalhosSecao);
 		model.addAttribute("secao", secao);
