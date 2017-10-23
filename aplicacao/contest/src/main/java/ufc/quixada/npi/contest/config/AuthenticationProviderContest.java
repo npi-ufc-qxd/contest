@@ -53,13 +53,10 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 			final Usuario usuario = usuarioService.getByCpf(cpf);			
 			if (usuario != null && usuarioService.autentica(cpf, password)) { 
 		
-				pessoa = pessoaService.getByEmail(usuario.getEmail());
-
 				String encondedPassword = pessoaService.encodePassword(password);
-
-				if (pessoa != null) {
-					pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario, pessoa);
-				}
+				
+				//Gera pessoa de acordo com o UsuarioLDAP
+				pessoa = generatePessoa(usuario, encondedPassword);
 			
 			for (Affiliation affiliation : usuario.getAuthorities()) {
 				if (affiliation.getNome().equals(Tipo.ADMIN.getNome())) {
@@ -74,6 +71,20 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 		}
 
 		throw new BadCredentialsException(messageService.getMessage("LOGIN_INVALIDO"));
+	}
+
+
+
+	private Pessoa generatePessoa(final Usuario usuario, String encondedPassword) {
+		Pessoa pessoa;
+		pessoa = pessoaService.getByEmail(usuario.getEmail());
+
+		if (pessoa != null) {
+			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario, pessoa);
+		}else {
+			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario, new Pessoa());
+		}
+		return pessoa;
 	}
 
 	
