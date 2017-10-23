@@ -174,4 +174,8 @@ public List<String> pegarConteudo(Trabalho trabalho) {
 			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
 		}
 	}
+
+	public List<Trabalho> getTrabalhosDoCoautorNoEvento(Pessoa pessoa, Evento evento) {
+		return trabalhoRepository.getTrabalhoDoCoautorNoEvento(pessoa.getId(), evento.getId());
+	}
 }

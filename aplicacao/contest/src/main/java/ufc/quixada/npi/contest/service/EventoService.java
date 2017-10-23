@@ -222,4 +222,9 @@ public class EventoService {
 		
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
+
+	public List<Evento> buscarEventosParticapacaoCoautor(Long idCoautor) {
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(
+				idCoautor, Tipo.COAUTOR, EstadoEvento.ATIVO);
+	}
 }

@@ -124,6 +124,16 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	}
     	return false;
     }
+    
+    public boolean isCoautorInEvento(Long eventoId){
+    	Pessoa pessoa = (Pessoa) this.getPrincipal();
+    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
+    		if(participacao.getEvento().getId() == eventoId && participacao.getPapel()== Tipo.COAUTOR){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
     
     public boolean isOrientadorInTrabalho(Long trabalhoId){

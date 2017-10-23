@@ -23,7 +23,6 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
-import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -136,15 +135,16 @@ public class LoginController {
 		}
 		
 		eventosAtivos.removeAll(eventoAux);
-		List<Trabalho> trabalhosMinhaCoutoria = trabalhoService.getTrabalhosDoCoautor(PessoaLogadaUtil.pessoaLogada());
-		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(PessoaLogadaUtil.pessoaLogada().getId());
-		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(PessoaLogadaUtil.pessoaLogada().getId());
+		Long pessoa = PessoaLogadaUtil.pessoaLogada().getId();
+		List<Evento> eventosMinhaCoutoria = eventoService.buscarEventosParticapacaoCoautor(pessoa);
+		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(pessoa);
+		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(pessoa);
 		model.addAttribute("eventosQueSouAutor", eventosQueSouAutor);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);
 		model.addAttribute("eventosQueReviso", eventosQueReviso);
-		model.addAttribute("trabalhosMinhaCoautoria", trabalhosMinhaCoutoria);
-		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada().getId());
+		model.addAttribute("eventosMinhaCoautoria", eventosMinhaCoutoria);
+		model.addAttribute("pessoa",pessoa);
 		model.addAttribute("eventosInativos",eventosInativos);
 		return "dashboard";
 	}
