@@ -1,6 +1,7 @@
 package ufc.quixada.npi.contest.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class SecaoController {
 	public String cadastrarSecaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
+		Collections.sort(pessoas);
 		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("evento", evento);
 		return "secao/cadastroSecao";
@@ -91,7 +93,7 @@ public class SecaoController {
 		}
 
 		
-		
+		Collections.sort(trabalhos);
 		
 		model.addAttribute("trabalhos", trabalhos);
 		model.addAttribute("trabalhosSecao", trabalhosSecao);

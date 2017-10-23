@@ -248,13 +248,7 @@ public class Trabalho implements Comparable<Trabalho> {
 
 	@Override
 	public int compareTo(Trabalho o) {
-		if(this.getRevisores().size() < o.getRevisores().size()){
-			return -1;
-		}
-		if(this.getRevisores().size() > o.getRevisores().size()){
-			return 1;
-		}
-		return 0;
+		return this.titulo.toUpperCase().compareTo(o.getTitulo().toUpperCase());
 	}
 
 	public Secao getSecao() {

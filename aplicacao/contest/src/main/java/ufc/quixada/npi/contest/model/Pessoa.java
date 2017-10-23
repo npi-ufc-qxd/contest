@@ -1,7 +1,9 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -24,7 +26,7 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 
 @Entity
 @Table(name = "pessoa")
-public class Pessoa implements UserDetails {
+public class Pessoa implements UserDetails, Comparable<Pessoa> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -116,6 +118,17 @@ public class Pessoa implements UserDetails {
 
 	public List<ParticipacaoEvento> getParticipacoesEvento() {
 		return participacoesEvento;
+	}
+	
+	public List<ParticipacaoEvento> getParticipacoesNoEvento(Evento evento) {
+		List<ParticipacaoEvento> participacoes =  new ArrayList<ParticipacaoEvento>();
+		for (ParticipacaoEvento participacaoEvento : participacoesEvento) {
+			if(participacaoEvento.getEvento().equals(evento)){
+				participacoes.add(participacaoEvento);
+			}
+			
+		}
+		return participacoes;
 	}
 
 	public void setParticipacoesEvento(List<ParticipacaoEvento> participacoesEvento) {
@@ -229,5 +242,10 @@ public class Pessoa implements UserDetails {
 			}
 		}
 		return trabalhosRevisar;
+	}
+
+	@Override
+	public int compareTo(Pessoa o) {
+		return this.nome.toUpperCase().compareTo(o.getNome().toUpperCase());
 	}
 }
