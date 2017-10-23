@@ -54,12 +54,35 @@
 										<div
 											th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
 										<div class="card-action">
-											<a th:if="${evento.isPeriodoInicial()}"
+											<a th:if="${evento.isPeriodoInicial()}
+											and ${not #lists.contains(evento.autores, pessoa)} "
 												th:attr="href='#modal' + ${evento.id}"
 												class="btn white-text waves-effect waves-light confirmar modal-trigger">Participar como Autor</a>
 											<a th:unless="${evento.isPeriodoInicial()}"
 												class="btn disabled white-text grey">Período de
 												inscrição encerrado</a>
+											<span th:if="${#lists.size(pessoa.getParticipacoesNoEvento(evento))} == 1">
+												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'AUTOR'}"
+													th:href="@{|/autor/meusTrabalhos/evento/${evento.id}|}" 
+													class="purple-text">Ver participação</a>
+													
+												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'ORGANIZADOR'}"
+												th:href="@{|/eventoOrganizador/evento/${evento.id}|}" 
+												class="purple-text">Ver participação</a>
+												
+												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'REVISOR'}"
+												th:href="@{|/revisor/evento/${evento.id}|}" 
+												class="purple-text">Ver participação</a>
+												
+												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'COAUTOR'}"
+												th:href="@{|/coautor/listarTrabalhos/evento.id}|}" 
+												class="purple-text">Ver participação</a>
+													
+											</span>
+											<span th:if="${#lists.size(pessoa.getParticipacoesNoEvento(evento))} > 1">
+												<a 	th:attr="href='#modal-participacao' + ${evento.id}"
+													class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver participações</a>
+											</span>											
 										</div>
 									<div th:attr="id='modal' + ${evento.id}" class="modal">
 										<div class="modal-content">
@@ -77,6 +100,34 @@
 													class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
 											</div>
 										</form>
+									</div>
+									
+									<div th:attr="id='modal-participacao' + ${evento.id}" class="modal">
+										<div class="modal-content">
+											<h4>Participações</h4>
+											<h5 th:text="${evento.nome}"></h5>
+										
+											<span  th:each="participacao : ${pessoa.getParticipacoesNoEvento(evento)}">
+													<a th:if="${participacao.papel.name() == 'AUTOR'}"
+														th:href="@{|/autor/meusTrabalhos/evento/${evento.id}|}" 
+														class="btn">Visão de autor</a>
+														
+													<a th:if="${participacao.papel.name() == 'ORGANIZADOR'}"
+													th:href="@{|/eventoOrganizador/evento/${evento.id}|}" 
+													class="btn">Visão de organizador</a>
+													
+													<a th:if="${participacao.papel.name() == 'REVISOR'}"
+													th:href="@{|/revisor/evento/${evento.id}|}" 
+													class="btn">Visão de revisor</a>
+													
+													<a th:if="${participacao.papel.name() == 'COAUTOR'}"
+													th:href="@{|/coautor/listarTrabalhos/evento.id}|}" 
+													class="btn">Visao de coautor</a>
+											</span>
+										</div>
+										<div class="modal-footer">
+								            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat ">Cancelar</a>
+								          </div>
 									</div>
 								</div>
 							</div>

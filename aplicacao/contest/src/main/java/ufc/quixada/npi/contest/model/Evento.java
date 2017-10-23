@@ -2,6 +2,7 @@ package ufc.quixada.npi.contest.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -264,7 +265,11 @@ public class Evento {
 	public List<Pessoa> getRevisores(){
 		return getByPapel(Tipo.REVISOR);
 	}
-
+	
+	public List<Pessoa> getAutores(){
+		return getByPapel(Tipo.AUTOR);
+	}
+	
 	public List<Secao> getSecoes() {
 		return secoes;
 	}

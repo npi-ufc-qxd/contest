@@ -1,7 +1,9 @@
 package ufc.quixada.npi.contest.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -116,6 +118,17 @@ public class Pessoa implements UserDetails, Comparable<Pessoa> {
 
 	public List<ParticipacaoEvento> getParticipacoesEvento() {
 		return participacoesEvento;
+	}
+	
+	public List<ParticipacaoEvento> getParticipacoesNoEvento(Evento evento) {
+		List<ParticipacaoEvento> participacoes =  new ArrayList<ParticipacaoEvento>();
+		for (ParticipacaoEvento participacaoEvento : participacoesEvento) {
+			if(participacaoEvento.getEvento().equals(evento)){
+				participacoes.add(participacaoEvento);
+			}
+			
+		}
+		return participacoes;
 	}
 
 	public void setParticipacoesEvento(List<ParticipacaoEvento> participacoesEvento) {

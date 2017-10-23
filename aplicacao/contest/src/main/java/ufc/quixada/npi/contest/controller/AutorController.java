@@ -183,11 +183,16 @@ public class AutorController {
 		}
 		return "redirect:/autor/enviarTrabalhoForm/" + idEvento;
 	}
-
-	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
-	public String listarEventosAtivos(Model model) {
+	
+	@RequestMapping(value = "/meusTrabalhos/evento/{eventoId}", method = RequestMethod.GET)
+	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
-		List<Evento> eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
+		List<Evento> eventos = new ArrayList<>();
+		if(eventoId != null) {
+			eventos.add(eventoService.buscarEventoPorId(eventoId))	;			
+		} else {
+			eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
+		}
 		if (eventos != null) {
 			List<String> trabalhosEventos = new ArrayList<>();
 
@@ -209,6 +214,11 @@ public class AutorController {
 			model.addAttribute("naoHaTrabalhos", messageService.getMessage(NAO_HA_TRABALHOS));
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
+	}
+
+	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
+	public String listarMeusTrabalhosEmEventosAtivos(Model model) {
+		return listarMeusTrabalhosEmEventosAtivos(null, model);
 	}
 
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)

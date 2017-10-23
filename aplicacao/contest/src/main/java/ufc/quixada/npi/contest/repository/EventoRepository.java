@@ -20,7 +20,8 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 	public List<Evento> findEventoByEstadoAndVisibilidade(EstadoEvento estado, VisibilidadeEvento visibilidade);
 	
 	@Query("select e from Evento e where e.estado = ufc.quixada.npi.contest.model.EstadoEvento.ATIVO and "
-			+ "e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO")
+			+ "e.visibilidade = ufc.quixada.npi.contest.model.VisibilidadeEvento.PUBLICO "
+			+ "ORDER BY prazo_submissao_inicial DESC")
 	public List<Evento> findEventosAtivosEPublicos();
 	
 	@Query("SELECT e FROM Evento e " + 
