@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.repository.SecaoRepository;
@@ -36,5 +37,9 @@ public class SecaoService {
 		List<Trabalho> listAux = secao.getTrabalhos();
 		listAux.add(trabalho);
 		secao.setTrabalhos(listAux);
+	}
+	
+	public List<Secao> listByEvento(Evento e){
+		return secaoRepository.findByEvento(e);	
 	}
 }
