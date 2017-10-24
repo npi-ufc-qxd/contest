@@ -19,8 +19,13 @@ public class ParticipacaoEventoService {
 	@Autowired
 	private ParticipacaoEventoRepository participacaoEventoRepository;
 	
+	
+	
 	public ParticipacaoEvento findParticipacaoEventoPorId(Long id){
 		return participacaoEventoRepository.findOne(id);
+	}
+	public void remover(ParticipacaoEvento participacaoEvento){
+		participacaoEventoRepository.delete(participacaoEvento);
 	}
 	
 	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacao){

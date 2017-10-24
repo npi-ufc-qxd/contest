@@ -21,4 +21,5 @@ public interface ParticipacaoEventoRepository extends JpaRepository<Participacao
 	public ParticipacaoEvento findOneByEventoAndPessoaAndPapel(Evento evento, Pessoa pessoa, Tipo papel);
 	public ParticipacaoEvento findOneByEventoAndPessoa(Evento evento, Pessoa pessoa);
 	public List<ParticipacaoEvento> findByEvento(Evento evento);
+	
 }

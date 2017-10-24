@@ -243,12 +243,21 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@RequestMapping(value = "/evento/trabalho/removerRevisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String removerRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
-		ParticipacaoTrabalho participacao = participacaoTrabalhoService
-				.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
-		participacaoTrabalhoService.remover(participacao);
+		ParticipacaoTrabalho participacao = participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
+		participacaoTrabalhoService.remover(participacao);		
 		return "{\"result\":\"ok\"}";
 	}
 
+	@RequestMapping(value = "/removerOrganizador/", method = RequestMethod.POST)
+	public @ResponseBody String removerOrganizador(@RequestBody Pessoa pessoa) {
+		Evento evento = eventoService.buscarEventoPorId(pessoa.getId());
+		ParticipacaoEvento participacao = participacaoEventoService.buscarOrganizadorPorPessoaEEvento(evento, pessoa);
+		participacaoEventoService.remover(participacao);
+		return "{\"result\":\"ok\"}";
+	}
+	
+	
+	
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = { "/meusEventos", "" }, method = RequestMethod.GET)
 	public String meusEventos(Model model) {
