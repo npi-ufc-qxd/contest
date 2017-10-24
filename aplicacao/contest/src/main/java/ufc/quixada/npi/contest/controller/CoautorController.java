@@ -49,7 +49,6 @@ public class CoautorController {
 		return Constants.TEMPLATE_INDEX_COAUTOR;
 	}
 	
-	@PreAuthorize("isCoautorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 
