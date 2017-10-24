@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import br.ufc.quixada.npi.ldap.model.Usuario;
+import br.ufc.quixada.npi.ldap.service.UsuarioService;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -112,6 +114,9 @@ public class AutorController {
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
 
+	@Autowired
+	private UsuarioService usuarioService;
+
 	@RequestMapping
 	public String index(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
@@ -183,13 +188,13 @@ public class AutorController {
 		}
 		return "redirect:/autor/enviarTrabalhoForm/" + idEvento;
 	}
-	
+
 	@RequestMapping(value = "/meusTrabalhos/evento/{eventoId}", method = RequestMethod.GET)
 	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventos = new ArrayList<>();
-		if(eventoId != null) {
-			eventos.add(eventoService.buscarEventoPorId(eventoId))	;			
+		if (eventoId != null) {
+			eventos.add(eventoService.buscarEventoPorId(eventoId));
 		} else {
 			eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
 		}
@@ -247,13 +252,13 @@ public class AutorController {
 	public String enviarTrabalhoForm(@Valid Trabalho trabalho, BindingResult result, Model model,
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
-			RedirectAttributes redirect,HttpServletRequest request) {
+			RedirectAttributes redirect, HttpServletRequest request) {
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
 		try {
 			String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-			+ request.getContextPath();
+					+ request.getContextPath();
 			Long idEvento = Long.parseLong(eventoId);
 			Long idTrilha = Long.parseLong(trilhaId);
 
@@ -269,17 +274,26 @@ public class AutorController {
 			List<Pessoa> coautores = new ArrayList<Pessoa>();
 			if (trabalho.getParticipacoes() != null) {
 				for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
+
+					Usuario usuarioLdap = usuarioService.getByEmail(participacao.getPessoa().getEmail());
+					Pessoa coautor; 
 					
-					Pessoa coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-					
+					if(usuarioLdap==null){
+						coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
+					}else{
+						coautor = pessoaService.getByCpf(usuarioLdap.getCpf());
+					}
+
 					if (coautor == null) {
+
 						coautor = participacao.getPessoa();
 						eventoService.adicionarCoAutor(coautor.getEmail(), evento, url);
-						
+
 						coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-						
+
 						coautor.setNome(participacao.getPessoa().getNome());
 						pessoaService.addOrUpdate(coautor);
+
 					}
 					coautores.add(coautor);
 				}
@@ -308,7 +322,7 @@ public class AutorController {
 						submissaoService.adicionarOuEditar(submissao);
 						redirect.addFlashAttribute("sucessoEnviarTrabalho",
 								messageService.getMessage(TRABALHO_ENVIADO));
-						
+
 						trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
 
 						return "redirect:/autor/meusTrabalhos";
@@ -328,7 +342,9 @@ public class AutorController {
 	}
 
 	@RequestMapping(value = "/reenviarTrabalho", method = RequestMethod.POST)
-	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,@RequestParam("eventoId") String eventoId,	@RequestParam(value = "file", required = true) MultipartFile file, RedirectAttributes redirect) {
+	public String reenviarTrabalhoForm(@RequestParam("trabalhoId") String trabalhoId,
+			@RequestParam("eventoId") String eventoId,
+			@RequestParam(value = "file", required = true) MultipartFile file, RedirectAttributes redirect) {
 		Long idEvento = Long.parseLong(eventoId);
 		Long idTrabalho = Long.parseLong(trabalhoId);
 		try {
@@ -347,7 +363,7 @@ public class AutorController {
 									messageService.getMessage(TRABALHO_ENVIADO));
 
 							trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
-							
+
 							return "redirect:/autor/meusTrabalhos";
 						}
 					} else {
@@ -369,8 +385,6 @@ public class AutorController {
 		}
 	}
 
-	
-
 	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
@@ -378,12 +392,12 @@ public class AutorController {
 			Long idEvento = Long.parseLong(id);
 			if (eventoService.existeEvento(idEvento)) {
 				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();		
-								
+				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
-				
+
 				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";
@@ -445,8 +459,9 @@ public class AutorController {
 					if (PessoaLogadaUtil.pessoaLogada().equals(t.getAutor())) {
 						storageService.deleteArquivo(t.getPath());
 						trabalhoService.remover(Long.parseLong(trabalhoId));
-						redirect.addFlashAttribute("trabalhoExcluido",messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
-						
+						redirect.addFlashAttribute("trabalhoExcluido",
+								messageService.getMessage(TRABALHO_EXCLUIDO_COM_SUCESSO));
+
 						return "redirect:/autor/listarTrabalhos/" + eventoId;
 					}
 					model.addAttribute("erroExcluir", messageService.getMessage(AUTOR_SEM_PERMISSAO));
