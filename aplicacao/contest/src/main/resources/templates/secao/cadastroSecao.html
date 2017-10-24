@@ -12,8 +12,8 @@
 	<div class="container pagination">
 
 		<div class="row opcoes">
-			<a th:href="@{/secao/paginaSecao}" style="color: #6a1b9a;">Seções</a>
-			<a th:href="@{/secao/cadastrarSecaoForm}" style="color: #6a1b9a;">Cadastrar
+			<a th:href="@{|/secao/${evento.id}/paginaSecao|}" style="color: #6a1b9a;">Seções</a>
+			<a th:href="@{|/secao/${evento.id}/cadastrarSecaoForm|}" style="color: #6a1b9a;">Cadastrar
 				Seção</a> <a
 				class=" btn-large waves-effect waves-light purple right white-text"
 				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
@@ -22,7 +22,7 @@
 		<div class="row">
 			<h1 class="center header">Cadastro de Seção</h1>
 			<div class="col s12">
-				<form name="cadastroForm" th:action="@{/secao/cadastrarSecao}"
+				<form name="cadastroForm" th:action="@{|/secao/${evento.id}/cadastrarSecao|}"
 					class="valign" method="post" id="formCadastro">
 
 					<div class="input-field">
@@ -47,11 +47,8 @@
 
 					<div class="input-field">
 						<select id="eventos_select" name="evento" required="required">
-							<option value="" disabled="disabled"
-							 selected="selected">*Selecione um evento</option>
-							<div th:each="evento : ${eventos}">
-								<option th:value="${evento.id}" th:text="${evento.nome}"></option>
-							</div>
+							<option th:value="${evento.id}" th:text="${evento.nome}"></option>
+							
 						</select>
 					</div>
 					<br />
@@ -88,6 +85,11 @@
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
 	<script type="text/javascript">
+		
+		$(document).ready(function() {
+		    $('select').material_select();
+		  });
+	
 		//datepicker
 		$('.datepicker').pickadate({
 			selectMonths : true, // Creates a dropdown to control month

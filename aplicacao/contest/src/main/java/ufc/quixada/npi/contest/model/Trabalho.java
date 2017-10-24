@@ -110,10 +110,6 @@ public class Trabalho implements Comparable<Trabalho> {
 		this.evento = evento;
 	}
 
-	public Trilha getTrilha() {
-		return trilha;
-	}
-
 	public void setTrilha(Trilha trilha) {
 		this.trilha = trilha;
 	}
@@ -248,13 +244,7 @@ public class Trabalho implements Comparable<Trabalho> {
 
 	@Override
 	public int compareTo(Trabalho o) {
-		if(this.getRevisores().size() < o.getRevisores().size()){
-			return -1;
-		}
-		if(this.getRevisores().size() > o.getRevisores().size()){
-			return 1;
-		}
-		return 0;
+		return this.titulo.toUpperCase().compareTo(o.getTitulo().toUpperCase());
 	}
 
 	public Secao getSecao() {
@@ -272,4 +262,10 @@ public class Trabalho implements Comparable<Trabalho> {
 	public void setCoautoresInString(String coautoresInString) {
 		this.coautoresInString = coautoresInString;
 	}
+
+	public Trilha getTrilha() {
+		return trilha;
+	}
+	
+	
 }

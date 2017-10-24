@@ -70,7 +70,7 @@ public class EventoService {
 				Usuario usuarioLdap = usuarioService.getByEmail(email);
 				
 				if(usuarioLdap != null){
-					pessoa = ContestUtil.convertUsuarioToPessoa("", usuarioLdap);
+					pessoa = ContestUtil.convertUsuarioToPessoa("", usuarioLdap, new Pessoa());
 				}else{
 					pessoa = new Pessoa(nome, email);
 					pessoa.setPapel(Tipo.USER);
@@ -188,18 +188,22 @@ public class EventoService {
 	}
 
 	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idAutor,
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(idAutor,
 				Tipo.AUTOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(
 				idRevisor, Tipo.REVISOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> buscarEventosParticapacaoOrganizador(Long idOrganizador) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(
 				idOrganizador, Tipo.ORGANIZADOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
+	}
+	
+	public List<Evento> buscarEventosParticapacaoCoautor(Long idCoautor) {
+		return eventoRepository.eventosQueTenhoCoautoria(idCoautor);
 	}
 
 	public List<Evento> buscarEventosInativosQueOrganizo(Long idOrganizador) {
@@ -222,4 +226,6 @@ public class EventoService {
 		
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
+
+	
 }

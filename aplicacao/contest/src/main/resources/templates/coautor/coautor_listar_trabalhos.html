@@ -72,6 +72,8 @@
                 	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(#lists.size(trabalho.submissoes) - 1).dataSubmissao,'dd/MM/yyyy')} "></span></p>
                 </div>
                 </div>
+                
+                 <a th:href= "@{|/coautor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Trabalho</a>
                  
               </div>       	  
         	</div>

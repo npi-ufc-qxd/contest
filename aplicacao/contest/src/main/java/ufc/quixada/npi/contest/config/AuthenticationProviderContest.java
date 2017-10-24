@@ -35,7 +35,7 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
-		Pessoa pessoa = new Pessoa();
+		Pessoa pessoa;
 		
 		String cpf = authentication.getName();
 		String password = authentication.getCredentials().toString();
@@ -53,9 +53,10 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 			final Usuario usuario = usuarioService.getByCpf(cpf);			
 			if (usuario != null && usuarioService.autentica(cpf, password)) { 
 		
-			
-			String encondedPassword = pessoaService.encodePassword(password);
-			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario);
+				String encondedPassword = pessoaService.encodePassword(password);
+				
+				//Gera pessoa de acordo com o UsuarioLDAP
+				pessoa = generatePessoa(usuario, encondedPassword);
 			
 			for (Affiliation affiliation : usuario.getAuthorities()) {
 				if (affiliation.getNome().equals(Tipo.ADMIN.getNome())) {
@@ -70,6 +71,20 @@ public class AuthenticationProviderContest implements AuthenticationProvider {
 		}
 
 		throw new BadCredentialsException(messageService.getMessage("LOGIN_INVALIDO"));
+	}
+
+
+
+	private Pessoa generatePessoa(final Usuario usuario, String encondedPassword) {
+		Pessoa pessoa;
+		pessoa = pessoaService.getByEmail(usuario.getEmail());
+
+		if (pessoa != null) {
+			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario, pessoa);
+		}else {
+			pessoa = ContestUtil.convertUsuarioToPessoa(encondedPassword, usuario, new Pessoa());
+		}
+		return pessoa;
 	}
 
 	

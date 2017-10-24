@@ -1,6 +1,5 @@
  package ufc.quixada.npi.contest.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,6 @@ import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
-import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
@@ -125,26 +123,21 @@ public class LoginController {
 	
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model){
-		List<Evento> eventosQueReviso = eventoService.buscarEventosQueReviso(PessoaLogadaUtil.pessoaLogada().getId());
-		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, PessoaLogadaUtil.pessoaLogada().getId());
-		List<Evento> eventosAtivos = eventoService.eventosParaParticipar(PessoaLogadaUtil.pessoaLogada().getId());
-		List<Evento> eventoAux = new ArrayList<>();
-		for(Evento evento : eventosAtivos){
-			if(!evento.isPeriodoInicial()){
-				eventoAux.add(evento);
-			}
-		}
+		Long idPessoaLogada = PessoaLogadaUtil.pessoaLogada().getId();
+		List<Evento> eventosQueReviso = eventoService.buscarEventosQueReviso(idPessoaLogada);
+		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, idPessoaLogada);
+		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
 		
-		eventosAtivos.removeAll(eventoAux);
-		List<Trabalho> trabalhosMinhaCoutoria = trabalhoService.getTrabalhosDoCoautor(PessoaLogadaUtil.pessoaLogada());
-		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(PessoaLogadaUtil.pessoaLogada().getId());
-		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(PessoaLogadaUtil.pessoaLogada().getId());
+		
+		List<Evento> eventosMinhaCoutoria = eventoService.buscarEventosParticapacaoCoautor(idPessoaLogada);
+		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(idPessoaLogada);
+		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(idPessoaLogada);
 		model.addAttribute("eventosQueSouAutor", eventosQueSouAutor);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);
 		model.addAttribute("eventosQueReviso", eventosQueReviso);
-		model.addAttribute("trabalhosMinhaCoautoria", trabalhosMinhaCoutoria);
-		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada().getId());
+		model.addAttribute("eventosMinhaCoautoria", eventosMinhaCoutoria);
+		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada());
 		model.addAttribute("eventosInativos",eventosInativos);
 		return "dashboard";
 	}
