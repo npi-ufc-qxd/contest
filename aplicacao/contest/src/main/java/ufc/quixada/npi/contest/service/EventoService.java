@@ -201,6 +201,10 @@ public class EventoService {
 		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(
 				idOrganizador, Tipo.ORGANIZADOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
+	
+	public List<Evento> buscarEventosParticapacaoCoautor(Long idCoautor) {
+		return eventoRepository.eventosQueTenhoCoautoria(idCoautor);
+	}
 
 	public List<Evento> buscarEventosInativosQueOrganizo(Long idOrganizador) {
 		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idOrganizador,
@@ -223,8 +227,5 @@ public class EventoService {
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
 
-	public List<Evento> buscarEventosParticapacaoCoautor(Long idCoautor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(
-				idCoautor, Tipo.COAUTOR, EstadoEvento.ATIVO);
-	}
+	
 }
