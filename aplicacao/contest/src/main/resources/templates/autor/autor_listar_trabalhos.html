@@ -75,7 +75,7 @@
                 </div>
                  
               </div>
-              
+              <form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
 	              <div class="card-action">
 	                <div class="row">
 	                  <div th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" class="file-field input-field col m6 s6">
@@ -98,7 +98,7 @@
 	                </div>
 	              </div>     
 	              
-           	<form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
+           	
 	            <div th:attr="id='reenviar' + ${trabalho.id}" class="modal">
 			        <div class="modal-content">
 			          <h4>Reenviar Trabalho</h4>
