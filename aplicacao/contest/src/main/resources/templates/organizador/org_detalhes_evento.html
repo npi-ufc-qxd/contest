@@ -114,27 +114,25 @@
 						<div class="card-content white-text">
 							<div th:each="pessoaOrganizador : ${evento.getOrganizadores()}"
 								class="black-text text-darken-2">
-								<span th:text="${pessoaOrganizador.getNome()}"></span> <a
-									th:attr="href='#modalRemoverOrganizador' + ${pessoaOrganizador.id}"
+								<span th:text="${pessoaOrganizador.getNome()}"></span>
+
+
+								<a th:attr="href='#modalRemoverOrganizador' + ${pessoaOrganizador.id}"
 									class="red-text confirmar modal-trigger">Excluir</a>
 
-								<div
-									th:attr="id='modalRemoverOrganizador' + ${pessoaOrganizador.id}"
+								<div th:attr="id='modalRemoverOrganizador' + ${pessoaOrganizador.id}"
 									class="modal">
 									<div class="modal-content">
 										<h4>Remover Organizador</h4>
 										<h5 th:text="${pessoaOrganizador.getNome()}"></h5>
 										<p>Você está removendo o organizador</p>
 									</div>
-									<form th:action="@{/eventoOrganizador/removerOrganizador}"
-										method="post">
+									<form th:action="@{/eventoOrganizador/removerOrganizador}" method="post">
 
 										<div class="modal-footer">
 											<input type="hidden" name="eventoId" th:value="${evento.id}" />
-											<button type="submit"
-												class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-											<a href="#"
-												class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+											<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+											<a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
 										</div>
 									</form>
 								</div>
@@ -159,36 +157,31 @@
 						<div class="card-content white-text">
 							<div th:each="pessoaRevisor : ${evento.getRevisores()}"
 								class="black-text text-darken-2">
-								<span th:text="${pessoaRevisor.getNome()}"></span> <a
-									th:attr="href='#modalRemoverRevisor' + ${pessoaRevisor.id}"
-									class="red-text confirmar modal-trigger">excluir</a>
-							</div>
-						</div>
+								<span th:text="${pessoaRevisor.getNome()}"></span>
+								<a th:attr="href='#modalRemoverRevisor' + ${pessoaRevisor.id}" class="red-text confirmar modal-trigger">excluir</a>
 
-						<form
-							th:action="@{/eventoOrganizador/evento/trabalho/removerRevisor}"
-							method="post">
-							<div th:attr="id='modalRemoverRevisor' + ${evento.id}"
-								class="modal">
-								<div class="modal-content">
-									<h4>Remover Revisor</h4>
-									<h5 th:text="${pessoaRevisor.getNome()}"></h5>
-									<p>Você está removendo o revisor</p>
+								<div th:attr="id='modalRemoverRevisor' + ${pessoaRevisor.id}"
+									class="modal">
+									<div class="modal-content">
+										<h4>Remover Revisor</h4>
+										<h5 th:text="${pessoaRevisor.getNome()}"></h5>
+										<p>Você está removendo o revisor</p>
+									</div>
+									<form th:action="@{/eventoOrganizador/evento/trabalho/removerRevisor}"	method="post">
+
+										<div class="modal-footer">											
+											<input type="hidden" name="eventoId" th:value="${evento.id}"/>
+											<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+											<a href="#"	class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+										</div>
+									</form>
 								</div>
-							</div>
-							<div class="modal-footer">
-								<input type="hidden" name="eventoId" th:value="${evento.id}" />
-								<button type="submit"
-									class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
-								<a href="#"
-									class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
-							</div>
-						</form>
 
-						<p th:unless="${!#lists.isEmpty(evento.getRevisores())}"
-							class="black-text text-darken-2">Não há revisores</p>
+							</div>
+							<p th:unless="${!#lists.isEmpty(evento.getRevisores())}"
+								class="black-text text-darken-2">Não há revisores</p>
+						</div>
 					</div>
-
 					<br />
 					<button name="button"
 						class="waves-effect waves-light btn modal-trigger left"
@@ -197,8 +190,8 @@
 				</div>
 
 			</div>
-
-
+			
+			
 			<div>
 				<div class="col s12">
 					<div class="card horizontal">
