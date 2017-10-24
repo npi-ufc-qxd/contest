@@ -25,6 +25,7 @@ import ufc.quixada.npi.contest.controller.EventoControllerOrganizador;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
@@ -81,23 +82,31 @@ public class GerarCertificadoSteps {
 		
 		coautores.add(pessoa2);
 		
+		Trilha trilha = new Trilha();
+		trilha.setId(1L);
+		trilha.setEvento(evento);
+		trilha.setNome("Trilha Padrao");
+		
 		trabalho1 = new Trabalho();
 		trabalho1.setId(1L);
 		trabalho1.setTitulo("Titulo");
 		trabalho1.setAutores(pessoa1, coautores);
 		trabalho1.setEvento(evento);
+		trabalho1.setTrilha(trilha);
 		
 		trabalho2 = new Trabalho();
 		trabalho2.setId(2L);
 		trabalho2.setTitulo("Titulo");
 		trabalho2.setAutores(pessoa1, coautores);
 		trabalho2.setEvento(evento);
+		trabalho2.setTrilha(trilha);
 		
 		trabalho3 = new Trabalho();
 		trabalho3.setId(3L);
 		trabalho3.setTitulo("Titulo");
 		trabalho3.setAutores(pessoa1, coautores);
 		trabalho3.setEvento(evento);
+		trabalho3.setTrilha(trilha);
 
 				
 		revisor1 = new Pessoa();
