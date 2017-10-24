@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.ufc.quixada.npi.ldap.service.UsuarioService;
 import cucumber.api.java.Before;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
@@ -75,6 +76,9 @@ public class EnviarTrabalhoSteps {
 	private StorageService storageService;
 	@Mock
 	private TrabalhoService trabalhoService;
+	@Mock
+	private UsuarioService usuarioService;
+	
 	
 	@Mock
 	private TrabalhoValidator trabalhoValidator;
