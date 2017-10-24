@@ -131,16 +131,15 @@ public class LoginController {
 		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
 		
 		
-		List<Trabalho> trabalhosMinhaCoutoria = trabalhoService.getTrabalhosDoCoautor(PessoaLogadaUtil.pessoaLogada());
+		List<Evento> eventosMinhaCoutoria = eventoService.buscarEventosParticapacaoCoautor(idPessoaLogada);
 		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(idPessoaLogada);
 		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(idPessoaLogada);
-		
 		model.addAttribute("eventosQueSouAutor", eventosQueSouAutor);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);
 		model.addAttribute("eventosQueReviso", eventosQueReviso);
-		model.addAttribute("trabalhosMinhaCoautoria", trabalhosMinhaCoutoria);
-		model.addAttribute("pessoa", PessoaLogadaUtil.pessoaLogada());
+		model.addAttribute("eventosMinhaCoautoria", eventosMinhaCoutoria);
+		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada());
 		model.addAttribute("eventosInativos",eventosInativos);
 		return "dashboard";
 	}

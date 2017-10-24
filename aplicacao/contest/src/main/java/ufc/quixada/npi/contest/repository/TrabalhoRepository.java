@@ -58,4 +58,8 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 
 	public List<Trabalho> findTrabalhoBySecaoId(Long idSecao);
 	
+	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :eventoId AND t.id in (SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
+			+ " pt where pt.pessoa.id = :autorId AND pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.COAUTOR)")
+	public List<Trabalho> getTrabalhoDoCoautorNoEvento(@Param("autorId") Long pessoaId, @Param("eventoId") Long eventoId);
+	
 }

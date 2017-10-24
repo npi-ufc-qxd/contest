@@ -188,17 +188,17 @@ public class EventoService {
 	}
 
 	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(idAutor,
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(idAutor,
 				Tipo.AUTOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(
 				idRevisor, Tipo.REVISOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> buscarEventosParticapacaoOrganizador(Long idOrganizador) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(
 				idOrganizador, Tipo.ORGANIZADOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
 	}
 
@@ -221,5 +221,10 @@ public class EventoService {
 		String titulo = "[CONTEST] Confirmação de envio do trabalho: " + trabalho.getTitulo();
 		
 		emailService.enviarEmail(titulo, assunto, email, corpo);
+	}
+
+	public List<Evento> buscarEventosParticapacaoCoautor(Long idCoautor) {
+		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(
+				idCoautor, Tipo.COAUTOR, EstadoEvento.ATIVO);
 	}
 }

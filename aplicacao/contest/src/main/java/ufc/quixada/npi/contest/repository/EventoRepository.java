@@ -33,7 +33,7 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 	
 	public List<Evento> findDistinctEventoByParticipacoesPessoaIdAndVisibilidade(Long id, VisibilidadeEvento visbilidade);
 	
-	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado(Long id,Tipo papel,VisibilidadeEvento visibilidade, EstadoEvento estado);
+	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(Long id,Tipo papel,VisibilidadeEvento visibilidade, EstadoEvento estado);
 	
 	public List<Evento> findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(Long id, Tipo papel, EstadoEvento estado);
 	
@@ -43,4 +43,5 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 	@Query("select case when count(*) > 0 then true else false end "
 			+ "FROM Revisao as r, Trabalho as t  WHERE r.trabalho.id = t.id and t.evento.id = :idEvento")
 	public boolean organizadorParticipaEvento(@Param("idEvento") Long idEvento);
+
 }
