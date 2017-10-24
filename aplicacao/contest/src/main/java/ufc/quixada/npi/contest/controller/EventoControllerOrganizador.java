@@ -675,9 +675,9 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 					String data = formatadorData.format(t.getEvento().getPrazoSubmissaoFinal());
 
 					dados[i] = new Object[] { t.getAutor().getNome().toUpperCase(),
-							t.getCoautoresInString().toUpperCase(), t.getTitulo().toUpperCase(), data };
+							t.getCoautoresInString().toUpperCase(), t.getTitulo().toUpperCase(),t.getTrilha().getNome().toUpperCase(), data };
 				}
-				String[] colunas = new String[] { "Nome", "Coautores", "Título", "Data" };
+				String[] colunas = new String[] { "Nome", "Coautores", "Título", "Trilha", "Data"};
 				gerarODS("trabalhos", colunas, dados, response);
 			}
 		}

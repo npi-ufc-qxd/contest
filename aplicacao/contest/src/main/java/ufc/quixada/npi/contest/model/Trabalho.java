@@ -110,10 +110,6 @@ public class Trabalho implements Comparable<Trabalho> {
 		this.evento = evento;
 	}
 
-	public Trilha getTrilha() {
-		return trilha;
-	}
-
 	public void setTrilha(Trilha trilha) {
 		this.trilha = trilha;
 	}
@@ -266,4 +262,10 @@ public class Trabalho implements Comparable<Trabalho> {
 	public void setCoautoresInString(String coautoresInString) {
 		this.coautoresInString = coautoresInString;
 	}
+
+	public Trilha getTrilha() {
+		return trilha;
+	}
+	
+	
 }
