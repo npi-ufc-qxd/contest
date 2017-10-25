@@ -7,7 +7,7 @@
     <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
       <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
-      <h2 th:text="'Evento:' + ${evento.nome}"></h2>
+      <h2 th:if="${evento}" th:text="'Evento:' + ${evento.nome}"></h2>
       
       <div>
 		<div th:if="${trabalhoExcluido}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}">
@@ -50,8 +50,10 @@
         	<div class="card-stacked"> 
         	  
         	  <div class="card-content">
+ 				<span th:if="not ${evento}" class="card-title" th:text="'Evento: ' + ${trabalho.evento.nome}"></span> <br/>
                 <span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span> <br/>
                 
+ 
                 
                 <div class="row">
                 <div class="col s4">

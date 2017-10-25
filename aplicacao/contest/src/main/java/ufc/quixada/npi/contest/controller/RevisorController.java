@@ -289,11 +289,21 @@ public class RevisorController {
 	}
 
 
-	@RequestMapping(value = "/")
-	public String paginaRevisor(Model model) {
+	
+	@RequestMapping(value = "/evento/{id}")
+	public String paginaRevisor(@PathVariable Long id, Model model) {
+		
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
 		Pessoa pessoaAux = pessoaService.getByCpf(cpf);		
-		List<Evento> eventos = eventoService.buscarEventosQueReviso(pessoaAux.getId());		
+		
+		List<Evento> eventos;
+		
+		if(id != null) {
+			eventos = new ArrayList<Evento>();
+			eventos.add(eventoService.buscarEventoPorId(id));
+		} else {
+			eventos = eventoService.buscarEventosQueReviso(pessoaAux.getId());		
+		}
 		
 		model.addAttribute("pessoa", pessoaAux);
 		
@@ -302,6 +312,10 @@ public class RevisorController {
 		return "revisor/revisor_meus_eventos";
 	}
 
+	@RequestMapping(value = "/")
+	public String paginaRevisor(Model model) {
+		return paginaRevisor(null, model);
+	}
 	
 	@RequestMapping(value = "/ativos", method = RequestMethod.GET)
 	public String listarEventosAtivos(Model model) {
@@ -336,7 +350,7 @@ public class RevisorController {
 	}
 
 	
-	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/evento/{id}/detalhes", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
 		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
