@@ -1,15 +1,11 @@
 package ufc.quixada.npi.contest.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+
+
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +17,6 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
-import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
-import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
@@ -36,13 +30,7 @@ public class CoautorController {
 	
 	@Autowired
 	private EventoService eventoService;
-	
-	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
-	
-	@Autowired		
-	private ParticipacaoTrabalhoService participacaoTrabalhoService;
-	
+		
 	@RequestMapping("/")
 	public String index(Model model) {
 		model.addAttribute("listaTrabalhos", trabalhoService.getTrabalhosDoCoautor(PessoaLogadaUtil.pessoaLogada()));
