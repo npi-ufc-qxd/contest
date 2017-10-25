@@ -64,41 +64,5 @@ public class CoautorController {
 				return Constants.TEMPLATE_INDEX_COAUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";
-	}
-	
-	@PreAuthorize("isCoautorInTrabalho(#idTrabalho)")
-	@RequestMapping(value = "/file/{trabalho}", method = RequestMethod.GET, produces = "application/pdf")
-	public void downloadPDFFile(@PathVariable("trabalho") Long idTrabalho, HttpServletResponse response)
-			throws IOException {
-		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		if (trabalho == null) {
-			response.reset();
-			response.sendRedirect("/error/500");
-			response.getOutputStream().flush();
-		} else {
-			Pessoa autor = PessoaLogadaUtil.pessoaLogada();
-			Long idEvento = trabalho.getEvento().getId();
-			if (participacaoEventoService.isOrganizadorDoEvento(autor, idEvento)
-					|| participacaoTrabalhoService.isParticipandoDoTrabalho(idTrabalho, autor.getId())) {
-				try {
-					String path = trabalho.getPath();
-					Path file = Paths.get(path);
-					response.setContentType("application/pdf");
-					response.addHeader("Content-Disposition", "attachment; filename=" + path);
-					Files.copy(file, response.getOutputStream());
-					response.getOutputStream().flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-					response.reset();
-					response.sendRedirect("/error/404");
-					response.addHeader("Status", "404 Not Found");
-					response.getOutputStream().flush();
-				}
-			} else {
-				response.reset();
-				response.sendRedirect("/error/500");
-				response.getOutputStream().flush();
-			}
-		}
-	}
+	}	
 }
