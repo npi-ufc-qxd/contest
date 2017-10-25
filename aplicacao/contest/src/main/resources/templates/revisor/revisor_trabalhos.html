@@ -6,11 +6,11 @@
 </head>
 <body>
 	<div th:include="fragments/header :: header"></div>
-	<div class="container page">
+	<div class="container page">"src/main/java/ufc/quixada/npi/contest/model/Pessoa.java"
 		 <div th:include="fragments/revisor_menu_navegacao :: revisor_menu_navegacao"></div>
 		<div class="row">
-			<h1 th:text="${evento.nome}"></h1>
-			<h2>Lista de Artigos para Revisão</h2>
+			<h3 th:text="${evento.nome}"></h3>
+			<h5>Lista de Artigos para Revisão</h5>
 			<div>
 				<div id="success_area" class="row chip green white-text" th:if="${trabalhoRevisado}">
 				<span th:text="${trabalhoRevisado}"></span><i class="material-icons">close</i>
@@ -32,7 +32,11 @@
 						<div class="card-stacked">
 							<div class="card-content">
 								<span class="card-title" th:text="${trabalho.titulo}"></span>
-								<div th:include="fragments/listar_participacoes :: listar('Revisor(es):', ${trabalho.revisores})"></div>
+								<div th:include="fragments/listar_participacoes :: listar-inline('Revisor(es):', ${trabalho.revisores})"></div>
+								<div th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${trabalho.autor})"></div>
+								<P><b>Status: </b>
+									<span th:if="${not #lists.isEmpty(trabalho.revisoes)}" th:text="${trabalho.revisoes[0].avaliacao}"></span>
+								</P>
 								<h6 th:text="'Trilha: ' + ${trabalho.trilha.nome}"></h6>
 							</div>
 							<div class="card-action" th:switch="${#lists.contains(trabalhosRevisados, trabalho.id)}">
