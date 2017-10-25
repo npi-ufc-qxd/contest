@@ -19,6 +19,10 @@
 	       	 ${#arrays.contains(evento.getOrganizadores(), #authentication.getPrincipal())} " 
 	       	 
 	       	 class="modal-trigger" href="#modalConvidarPessoas">Convidar Pessoas</a>		       	 
+
+	       	<!-- Dropdown Trigger -->
+ 			<a  th:if="${gerarCertificado}" class='dropdown-button' href='#' data-activates='dropdown1'>Relatórios</a>
+ 			
 	       <!-- Dropdown Structure -->
 			<ul th:if="${evento}" id='dropdown1' class='dropdown-content'>
 				<li><a th:href="@{|/eventoOrganizador/gerarCertificadosOrganizador/${evento.id}|}">Dados da Organização</a></li>
@@ -26,9 +30,6 @@
 			  	<li><a th:href="@{|/eventoOrganizador/gerarCertificadosTrabalho/${evento.id}|}">Dados dos Trabalhos</a></li>
 			  	
 			</ul>
-	       	<!-- Dropdown Trigger -->
- 			<a  th:if="${gerarCertificado}" class='dropdown-button' href='#' data-activates='dropdown1'>Planilhas</a>
- 			
  			
 	       
 	       	<a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >

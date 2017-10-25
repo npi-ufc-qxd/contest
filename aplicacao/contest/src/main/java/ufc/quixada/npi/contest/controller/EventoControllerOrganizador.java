@@ -143,8 +143,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 		List<Pessoa> organizadores = pessoaService.getOrganizadoresEvento(eventoId);
 
-		for (Pessoa p : organizadores) {
-			if (p.getId() == pessoa.getId()) {
+		for (Pessoa organizador : organizadores) {
+			if (organizador.getId().equals(pessoa.getId())) {
 				model.addAttribute("gerarCertificado", true);
 				break;
 			}
@@ -616,6 +616,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "redirect:/eventoOrganizador";
 	}
 
+	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model,
 			HttpServletResponse response) throws FileNotFoundException, IOException {
@@ -635,6 +636,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "DADOS_ORGANIZADOR";
 	}
 
+	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, Model model)
 			throws FileNotFoundException, IOException {
@@ -676,6 +678,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		}
 	}
 
+	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model, HttpServletResponse response)
 			throws FileNotFoundException, IOException {
