@@ -143,8 +143,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 		List<Pessoa> organizadores = pessoaService.getOrganizadoresEvento(eventoId);
 
-		for (Pessoa p : organizadores) {
-			if (p.getId() == pessoa.getId()) {
+		for (Pessoa organizador : organizadores) {
+			if (organizador.getId().equals(pessoa.getId())) {
 				model.addAttribute("gerarCertificado", true);
 				break;
 			}
