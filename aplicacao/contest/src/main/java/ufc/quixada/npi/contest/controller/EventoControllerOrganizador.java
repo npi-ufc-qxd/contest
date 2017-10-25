@@ -232,6 +232,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 		Pessoa revisor = pessoaService.get(dadosRevisao.getRevisorId());
 		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId());
+		
+		if(!trabalho.isAutorInTrabalho(revisor)){
+			throw new IllegalArgumentException("Revisor selecionado é autor no trabalho");
+		}
 
 		ParticipacaoTrabalho participacaoTrabalho = new ParticipacaoTrabalho();
 		participacaoTrabalho.setPapel(Tipo.REVISOR);

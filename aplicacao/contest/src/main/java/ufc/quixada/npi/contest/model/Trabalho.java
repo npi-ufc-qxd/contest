@@ -175,7 +175,7 @@ public class Trabalho implements Comparable<Trabalho> {
 		}
 	}
 	
-	private List<Pessoa> getParticipacaoPapelTrabalho(Tipo... papeis) {
+	public List<Pessoa> getParticipacaoPapelTrabalho(Tipo... papeis) {
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
 			for(Tipo papel : papeis){
@@ -265,6 +265,13 @@ public class Trabalho implements Comparable<Trabalho> {
 
 	public Trilha getTrilha() {
 		return trilha;
+	}
+	
+	public boolean isAutorInTrabalho(Pessoa pessoa){
+		if(this.getAutor().equals(pessoa) || this.getCoAutoresDoTrabalho().contains(pessoa)){
+			return false;
+		}
+		return true;
 	}
 	
 	
