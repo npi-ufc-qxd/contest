@@ -175,7 +175,7 @@ public class Trabalho implements Comparable<Trabalho> {
 		}
 	}
 	
-	private List<Pessoa> getParticipacaoPapelTrabalho(Tipo... papeis) {
+	public List<Pessoa> getParticipacaoPapelTrabalho(Tipo... papeis) {
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
 			for(Tipo papel : papeis){
