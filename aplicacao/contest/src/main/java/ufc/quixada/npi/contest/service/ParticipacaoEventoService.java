@@ -90,6 +90,10 @@ public class ParticipacaoEventoService {
 		return participacaoEventoRepository.findByEventoIdAndPapel(id, Tipo.REVISOR);
 	}
 	
+	public List<ParticipacaoEvento> getOrganizadoresNoEvento(Long id){
+		return participacaoEventoRepository.findByEventoIdAndPapel(id, Tipo.ORGANIZADOR);
+	}
+	
 	public boolean isOrganizadorDoEvento(Pessoa organizador, Long idEvento){
 		if(organizador.getParticipacoesEvento() != null){
 			for(ParticipacaoEvento participacaoEvento : organizador.getParticipacoesEvento()){
@@ -103,6 +107,10 @@ public class ParticipacaoEventoService {
 	
 	public ParticipacaoEvento buscarOrganizadorPorPessoaEEvento(Evento evento, Pessoa pessoa){
 		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.ORGANIZADOR);
+	}
+	
+	public ParticipacaoEvento buscarRevisorPorPessoaEEvento(Evento evento, Pessoa pessoa){
+		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.REVISOR);
 	}
 	
 	public List<ParticipacaoEvento> getParticipacoesPorEvento(Evento e){

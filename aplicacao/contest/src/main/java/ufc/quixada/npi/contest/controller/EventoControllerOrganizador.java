@@ -163,9 +163,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
 		List<Revisao> revisoes = revisaoService.getRevisaoByEvento(eventoId);
-		
+
 		Pessoa organizadorLogado = PessoaLogadaUtil.pessoaLogada();
-		Boolean participacaoComoOrganizador = participacaoEventoService.isOrganizadorDoEvento(organizadorLogado, eventoId);
+		Boolean participacaoComoOrganizador = participacaoEventoService.isOrganizadorDoEvento(organizadorLogado,
+				eventoId);
 
 		if (participacaoComoOrganizador) {
 			if (!revisoes.isEmpty()) {
@@ -205,7 +206,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 				resultado = trabalhoService.mensurarAvaliacoes(trabalho);
 				trabalho.setStatus(resultado);
 			}
-			
+
 			resultadoRevisoes.addAll(trabalhoService.pegarConteudo(trabalho));
 		}
 
@@ -213,18 +214,18 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		if (evento == null) {
 			return "redirect:/error";
 		}
-		
+
 		List<Trabalho> trabalhosDoEvento = trabalhoService.getTrabalhosEvento(evento);
-		
+
 		String revisoes = resultadoRevisoes.toString().replaceAll("]", "");
-		
+
 		model.addAttribute("resultadoRevisoes", revisoes);
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhosDoEvento);
 		return TRABALHOS_DO_EVENTO;
 	}
-	
+
 	@RequestMapping(value = "/evento/trabalho/revisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String atibuirRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
 
@@ -243,21 +244,42 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@RequestMapping(value = "/evento/trabalho/removerRevisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String removerRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
-		ParticipacaoTrabalho participacao = participacaoTrabalhoService.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
-		participacaoTrabalhoService.remover(participacao);		
+		ParticipacaoTrabalho participacao = participacaoTrabalhoService
+				.getParticipacaoTrabalhoRevisor(dadosRevisao.getRevisorId(), dadosRevisao.getTrabalhoId());
+		participacaoTrabalhoService.remover(participacao);
 		return "{\"result\":\"ok\"}";
 	}
 
-	@RequestMapping(value = "/removerOrganizador/", method = RequestMethod.POST)
-	public @ResponseBody String removerOrganizador(@RequestBody Pessoa pessoa) {
-		Evento evento = eventoService.buscarEventoPorId(pessoa.getId());
-		ParticipacaoEvento participacao = participacaoEventoService.buscarOrganizadorPorPessoaEEvento(evento, pessoa);
-		participacaoEventoService.remover(participacao);
-		return "{\"result\":\"ok\"}";
+	@RequestMapping(value = "/removerOrganizador/{eventoId}", method = RequestMethod.POST)
+	public String removerOrganizador(@RequestParam("pessoaId") Long pessoaId, @PathVariable Long eventoId,
+			RedirectAttributes redirect) {
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		List<ParticipacaoEvento> organizadores = participacaoEventoService.getOrganizadoresNoEvento(eventoId);
+		if (organizadores.size() <= 1) {
+			redirect.addFlashAttribute("organizadorError", "Deve existir pelo menos um organizador no evento.");
+		} else {
+			Pessoa pessoa = pessoaService.get(pessoaId);
+			ParticipacaoEvento participacao = participacaoEventoService.buscarOrganizadorPorPessoaEEvento(evento,
+					pessoa);
+			participacaoEventoService.remover(participacao);
+			redirect.addFlashAttribute("organizadorSucess", "Organizador removido do evento.");
+		}
+
+		return "redirect:/eventoOrganizador/evento/" + evento.getId();
 	}
-	
-	
-	
+
+	@RequestMapping(value = "/removerRevisor/{eventoId}", method = RequestMethod.POST)
+	public String removerRevisorDoEvento(@RequestParam("pessoaId") Long pessoaId, @PathVariable Long eventoId,
+			RedirectAttributes redirect) {
+		Evento evento = eventoService.buscarEventoPorId(eventoId);
+		Pessoa pessoa = pessoaService.get(pessoaId);
+		ParticipacaoEvento participacao = participacaoEventoService.buscarRevisorPorPessoaEEvento(evento, pessoa);
+		participacaoEventoService.remover(participacao);
+		redirect.addFlashAttribute("organizadorSucess", "Revisor removido do evento.");
+
+		return "redirect:/eventoOrganizador/evento/" + evento.getId();
+	}
+
 	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = { "/meusEventos", "" }, method = RequestMethod.GET)
 	public String meusEventos(Model model) {
@@ -693,10 +715,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "DADOS_TRABALHOS";
 	}
 
-
 	public Pessoa getUsuarioLogado() {
 		return PessoaLogadaUtil.pessoaLogada();
 	}
+
 	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response)
 			throws FileNotFoundException, IOException {
 		TableModel modelo = new DefaultTableModel(dados, colunas);
@@ -719,7 +741,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "organizador/organizador_meus_eventos";
 	}
 
-
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/avaliar/", method = RequestMethod.POST)
 	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String funcao,
@@ -737,7 +758,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("evento", evento);
 		model.addAttribute("opcoesFiltro", Avaliacao.values());
 		model.addAttribute("trabalhos", trabalhos);
-		
+
 		return verTrabalhosDoEvento(idEvento, model);
 
 	}
