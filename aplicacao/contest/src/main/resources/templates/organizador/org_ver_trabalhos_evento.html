@@ -117,7 +117,7 @@
 												<div class="collapsible-header"
 													th:if="${#strings.contains(conteudo, trabalho.id)}">
 													<i class="material-icons">description</i> <span
-														th:text="'Revisão - ' + ${#strings.substringBefore(conteudo, ',')}" ></span>
+														th:text="'Revisão '+ ${count.index + 1}+ ' - ' + ${#strings.substringBefore(conteudo, ',')}" ></span>
 												</div>
 
 												<div class="collapsible-body"
