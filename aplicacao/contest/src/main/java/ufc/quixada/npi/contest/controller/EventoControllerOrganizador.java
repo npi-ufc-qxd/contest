@@ -227,11 +227,15 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return TRABALHOS_DO_EVENTO;
 	}
 
-	@RequestMapping(value = "/evento/trabalho/revisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/evento/trabalho/revisor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String atibuirRevisor(@RequestBody RevisaoJsonWrapper dadosRevisao) {
 
 		Pessoa revisor = pessoaService.get(dadosRevisao.getRevisorId());
 		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId());
+		
+		if(!trabalho.isAutorInTrabalho(revisor)){
+			throw new IllegalArgumentException("Revisor selecionado é autor no trabalho");
+		}
 
 		ParticipacaoTrabalho participacaoTrabalho = new ParticipacaoTrabalho();
 		participacaoTrabalho.setPapel(Tipo.REVISOR);

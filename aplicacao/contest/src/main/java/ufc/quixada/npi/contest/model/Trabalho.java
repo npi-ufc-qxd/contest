@@ -267,5 +267,12 @@ public class Trabalho implements Comparable<Trabalho> {
 		return trilha;
 	}
 	
+	public boolean isAutorInTrabalho(Pessoa pessoa){
+		if(this.getAutor().equals(pessoa) || this.getCoAutoresDoTrabalho().contains(pessoa)){
+			return false;
+		}
+		return true;
+	}
+	
 	
 }
