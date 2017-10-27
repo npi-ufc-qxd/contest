@@ -295,8 +295,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String listarEventosAtivos(Model model) {
 		Pessoa p = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventosAtivos = eventoService.buscarEventoPorEstado(EstadoEvento.ATIVO);
-		List<ParticipacaoEvento> participacoesComoRevisor = participacaoEventoService
-				.getEventosDoRevisor(EstadoEvento.ATIVO, p.getId());
 		List<ParticipacaoEvento> participacoesComoOrganizador = participacaoEventoService
 				.getEventosDoOrganizador(EstadoEvento.ATIVO, p.getId());
 		boolean existeEventos = true;
@@ -304,12 +302,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		if (eventosAtivos.isEmpty())
 			existeEventos = false;
 
-		List<Long> eventosComoRevisor = new ArrayList<>();
 		List<Long> eventosComoOrganizador = new ArrayList<>();
-
-		for (ParticipacaoEvento participacaoEvento : participacoesComoRevisor) {
-			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
-		}
 
 		for (ParticipacaoEvento participacaoEvento : participacoesComoOrganizador) {
 			eventosComoOrganizador.add(participacaoEvento.getEvento().getId());
@@ -318,7 +311,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute("eventosAtivos", eventosAtivos);
 		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
-		model.addAttribute("eventosComoRevisor", eventosComoRevisor);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
@@ -580,39 +572,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			return "redirect:/eventoOrganizador/evento/" + idEvento;
 		}
 		return "redirect:/eventoOrganizador/evento/" + idEvento;
-	}
-
-	@RequestMapping(value = "/participarevento", method = RequestMethod.POST)
-	public String professorParticipa(@RequestParam String idEvento, Model model, RedirectAttributes redirect) {
-		if (!eventoService.existeEvento(Long.parseLong(idEvento))) {
-			redirect.addFlashAttribute(EVENTO_VAZIO_ERROR, messageService.getMessage(ID_EVENTO_VAZIO_ERROR));
-			return "redirect:/eventoOrganizador";
-		}
-
-		Pessoa professorLogado = PessoaLogadaUtil.pessoaLogada();
-
-		Evento evento = eventoService.buscarEventoPorId(Long.parseLong(idEvento));
-
-		if (evento != null) {
-			if (evento.getEstado() == EstadoEvento.ATIVO) {
-				ParticipacaoEvento participacaoEvento = new ParticipacaoEvento();
-				participacaoEvento.setEvento(evento);
-				participacaoEvento.setPessoa(professorLogado);
-				participacaoEvento.setPapel(Tipo.REVISOR);
-
-				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
-				redirect.addFlashAttribute(PARTICAPACAO_EVENTO_SUCESSO,
-						messageService.getMessage(PARTICAPAR_EVENTO_SUCESSO));
-			} else {
-				redirect.addFlashAttribute(PARTICIPAR_EVENTO_INATIVO_ERROR,
-						messageService.getMessage(PARTICIPAR_EVENTO_INATIVO));
-			}
-		} else {
-			redirect.addFlashAttribute(EVENTO_INEXISTENTE_ERROR, messageService.getMessage(EVENTO_NAO_EXISTE));
-			return "redirect:/eventoOrganizador";
-		}
-
-		return "redirect:/eventoOrganizador";
 	}
 
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
