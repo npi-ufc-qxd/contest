@@ -22,6 +22,7 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.SecaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
@@ -48,9 +49,9 @@ public class SecaoController {
 				model.addAttribute("evento", evento);
 				return "secao/indexSecao";
 			} 
-			return "error/403";
+			return Constants.ERROR_403;
 		}
-		return "error/404";
+		return Constants.ERROR_404;
 	}
 
 	@RequestMapping(value = "{eventoId}/cadastrarSecaoForm", method = RequestMethod.GET)
@@ -66,9 +67,9 @@ public class SecaoController {
 				model.addAttribute("evento", evento);
 				return "secao/cadastroSecao";
 			} 				
-			return "error/403";
+			return Constants.ERROR_403;
 		}
-		return "error/404";
+		return Constants.ERROR_404;
 	}
 
 	@RequestMapping(value = "{eventoId}/cadastrarSecao", method = RequestMethod.POST)
@@ -83,9 +84,9 @@ public class SecaoController {
 				secaoService.addOrUpdate(secao);
 				return "redirect:/secao/"+evento.getId()+"/paginaSecao";
 			}
-			return "error/403";
+			return Constants.ERROR_403;
 		}
-		return "error/404";
+		return Constants.ERROR_404;
 	}
 
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)

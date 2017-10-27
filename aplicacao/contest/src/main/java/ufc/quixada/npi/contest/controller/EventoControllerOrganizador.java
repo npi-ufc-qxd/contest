@@ -74,14 +74,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	private static final String TRABALHOS_DO_EVENTO = "organizador/org_ver_trabalhos_evento";
 
-	private static final String EVENTO_VAZIO_ERROR = "eventoVazioError";
-	private static final String ID_EVENTO_VAZIO_ERROR = "ID_EVENTO_VAZIO_ERROR";
-	private static final String PARTICAPACAO_EVENTO_SUCESSO = "particapacaoEventoSucesso";
-	private static final String PARTICIPAR_EVENTO_INATIVO_ERROR = "participarEventoInativoError";
-	private static final String PARTICAPAR_EVENTO_SUCESSO = "PARTICAPAR_EVENTO_SUCESSO";
-	private static final String PARTICIPAR_EVENTO_INATIVO = "PARTICIPAR_EVENTO_INATIVO";
-	private static final String EVENTO_INEXISTENTE_ERROR = "eventoInexistenteError";
-	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
 	private static final String CONVIDAR_EVENTO_INATIVO = "CONVIDAR_EVENTO_INATIVO";
 	private static final String EMAIL_ENVIADO_SUCESSO = "EMAIL_ENVIADO_SUCESSO";
 
