@@ -63,8 +63,11 @@
                 <div class="col s4">
                 	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
                 	<p><b>SITUAÇÃO DO ARTIGO: </b> 
+                	<div th:if="${not #lists.isEmpty(trabalho.revisoes)}">
+                		<span>Revisado</span>
+                		<a th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver revisões</a>
+                	</div>
                 	
-                	<span th:if="${not #lists.isEmpty(trabalho.revisoes)}" >Revisado</span>
                 	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>
                 	</p>
                
