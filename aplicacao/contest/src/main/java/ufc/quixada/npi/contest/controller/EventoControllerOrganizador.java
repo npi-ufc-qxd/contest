@@ -222,17 +222,22 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 		Pessoa revisor = pessoaService.get(dadosRevisao.getRevisorId());
 		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId());
-		
-		if(!trabalho.isAutorInTrabalho(revisor)){
+
+		if (!trabalho.isAutorInTrabalho(revisor)) {
 			throw new IllegalArgumentException("Revisor selecionado é autor no trabalho");
 		}
 
-		ParticipacaoTrabalho participacaoTrabalho = new ParticipacaoTrabalho();
-		participacaoTrabalho.setPapel(Tipo.REVISOR);
-		participacaoTrabalho.setPessoa(revisor);
-		participacaoTrabalho.setTrabalho(trabalho);
+		ParticipacaoTrabalho participacaoTrabalho = participacaoTrabalhoService
+				.getParticipacaoTrabalhoRevisor(revisor.getId(), trabalho.getId());
 
-		participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalho);
+		if (participacaoTrabalho == null) {
+			ParticipacaoTrabalho participacaoTrabalhoTemp = new ParticipacaoTrabalho();
+			participacaoTrabalhoTemp.setPapel(Tipo.REVISOR);
+			participacaoTrabalhoTemp.setPessoa(revisor);
+			participacaoTrabalhoTemp.setTrabalho(trabalho);
+
+			participacaoTrabalhoService.adicionarOuEditar(participacaoTrabalhoTemp);
+		}
 
 		return "{\"result\":\"ok\"}";
 	}
@@ -250,7 +255,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		List<ParticipacaoEvento> organizadores = participacaoEventoService.getOrganizadoresNoEvento(eventoId);
-		 
+
 		if (organizadores.size() <= 1) {
 			redirect.addFlashAttribute(ORGANIZADOR_ERROR, "Deve existir pelo menos um organizador no evento.");
 		} else {
@@ -661,9 +666,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 					String data = formatadorData.format(t.getEvento().getPrazoSubmissaoFinal());
 
 					dados[i] = new Object[] { t.getAutor().getNome().toUpperCase(),
-							t.getCoautoresInString().toUpperCase(), t.getTitulo().toUpperCase(),t.getTrilha().getNome().toUpperCase(), data };
+							t.getCoautoresInString().toUpperCase(), t.getTitulo().toUpperCase(),
+							t.getTrilha().getNome().toUpperCase(), data };
 				}
-				String[] colunas = new String[] { "Nome", "Coautores", "Título", "Trilha", "Data"};
+				String[] colunas = new String[] { "Nome", "Coautores", "Título", "Trilha", "Data" };
 				gerarODS("trabalhos", colunas, dados, response);
 			}
 		}

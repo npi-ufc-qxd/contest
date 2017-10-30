@@ -27,6 +27,7 @@ $(document).ready(function(){
 	});
 
 	add = function(e,modal) {//vai receber o Objeto vindo da linkRevisor
+		var action_link = e.attr("onClick");
 
 		var seletor_lista = "#"+modal +" div.listaEscolhidos.collection";
 
@@ -52,6 +53,8 @@ $(document).ready(function(){
 		    		  	'trabalhoId': 	trabalhoId,
 		    		  };
 
+	      e.attr("onClick", null);
+	      
 	      $.ajax({
 	    	  contentType: 'application/json;charset=UTF-8',
 	    	  url: '../trabalho/revisor',
@@ -65,6 +68,7 @@ $(document).ready(function(){
 	    		  		  listaescolhidos.append(a);
 	        			},
 	          error: function (data, error) {
+	        	  e.attr('onClick', action_link);
 	        	  Materialize.toast('O revisor é autor no trabalho.', 3000, 'red rounded');
 	        	}
 	    	});
