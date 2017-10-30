@@ -54,4 +54,7 @@ public class Constants {
 	
 	public static final String TEMPLATE_INDEX_COAUTOR = "coautor/coautor_listar_trabalhos";
 	
+	public static final String ERROR_403 = "error/403";
+	public static final String ERROR_404 = "error/404";
+	
 	}

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +22,7 @@ import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.SecaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
@@ -40,38 +40,55 @@ public class SecaoController {
 	@RequestMapping(value = "{eventoId}/paginaSecao")
 	public String indexSecao(Model model, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		List<Secao> secoes = secaoService.listByEvento(evento);
-
-		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
-		PessoaLogadaUtil.refreshPessoaLogada(pessoa);
-
-		model.addAttribute("secoes", secoes);
-		model.addAttribute("evento", evento);
-		return "secao/indexSecao";
+		if(evento != null) {
+			Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
+			if(evento.getOrganizadores().contains(pessoa)) {
+				List<Secao> secoes = secaoService.listByEvento(evento);
+				
+				model.addAttribute("secoes", secoes);
+				model.addAttribute("evento", evento);
+				return "secao/indexSecao";
+			} 
+			return Constants.ERROR_403;
+		}
+		return Constants.ERROR_404;
 	}
 
-	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "{eventoId}/cadastrarSecaoForm", method = RequestMethod.GET)
 	public String cadastrarSecaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
+		
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
-		Collections.sort(pessoas);
-		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("evento", evento);
-		return "secao/cadastroSecao";
+		if(evento != null) {
+			Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
+			if(evento.getOrganizadores().contains(pessoa)) {
+				List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
+				Collections.sort(pessoas);
+				model.addAttribute("pessoas", pessoas);
+				model.addAttribute("evento", evento);
+				return "secao/cadastroSecao";
+			} 				
+			return Constants.ERROR_403;
+		}
+		return Constants.ERROR_404;
 	}
 
 	@RequestMapping(value = "{eventoId}/cadastrarSecao", method = RequestMethod.POST)
 	public String cadastrarSecao(Secao secao,  @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		if (secao.getEvento() == null || secao.getResponsavel() == null) {
-			return "redirect:/secao/"+evento.getId()+"/cadastrarSecaoForm";
+		if(evento != null) {
+			Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
+			if(evento.getOrganizadores().contains(pessoa)) {
+				if (secao.getEvento() == null || secao.getResponsavel() == null) {
+					return "redirect:/secao/"+evento.getId()+"/cadastrarSecaoForm";
+				}
+				secaoService.addOrUpdate(secao);
+				return "redirect:/secao/"+evento.getId()+"/paginaSecao";
+			}
+			return Constants.ERROR_403;
 		}
-		secaoService.addOrUpdate(secao);
-		return "redirect:/secao/"+evento.getId()+"/paginaSecao";
+		return Constants.ERROR_404;
 	}
 
-	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
 	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
 		Secao secao = secaoService.get(idSecao);		
@@ -102,7 +119,6 @@ public class SecaoController {
 		return "secao/secaoTrabalhos";
 	}
 
-	@PreAuthorize("isOrganizador()")
 	@RequestMapping(value = "/excluirSecao/{id}")
 	public String excluirSecao(@PathVariable("id") Long idSecao) {
 		Secao secao = secaoService.get(idSecao);
