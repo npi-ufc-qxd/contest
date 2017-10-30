@@ -27,6 +27,7 @@ $(document).ready(function(){
 	});
 
 	add = function(e,modal) {//vai receber o Objeto vindo da linkRevisor
+		var action_link = $(e).attr("onClick");
 
 		var seletor_lista = "#"+modal +" div.listaEscolhidos.collection";
 
@@ -39,7 +40,7 @@ $(document).ready(function(){
 	    var seletorRevisorEscolhido = "#esc_"+ seletor;
 
 	    if (listaescolhidos.find(seletorRevisorEscolhido).length > 0){
-	    	Materialize.toast('O mesmo organizador não pode ser alocado mais de uma vez no mesmo evento', 4000, 'rounded')
+	    	Materialize.toast('O mesmo revisor não pode ser alocado mais de uma vez no mesmo trabalho', 4000, 'rounded')
 	    }else{
 	      var a = $(e).clone(true);
 	      a.attr('onclick',"remover(this,'"+modal+"');");
@@ -52,6 +53,8 @@ $(document).ready(function(){
 		    		  	'trabalhoId': 	trabalhoId,
 		    		  };
 
+	      $(e).attr("onClick", null);
+	      
 	      $.ajax({
 	    	  contentType: 'application/json;charset=UTF-8',
 	    	  url: '../trabalho/revisor',
@@ -65,6 +68,7 @@ $(document).ready(function(){
 	    		  		  listaescolhidos.append(a);
 	        			},
 	          error: function (data, error) {
+	        	  $(e).attr('onClick', action_link);
 	        	  Materialize.toast('O revisor é autor no trabalho.', 3000, 'red rounded');
 	        	}
 	    	});
