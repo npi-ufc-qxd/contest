@@ -8,7 +8,9 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +62,7 @@ import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
+import ufc.quixada.npi.contest.util.RevisaoJSON;
 
 @Controller
 @RequestMapping("/eventoOrganizador")
@@ -191,16 +194,15 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping("/evento/{id}/trabalhos")
 	public String verTrabalhosDoEvento(@PathVariable("id") Long idEvento, Model model) {
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
-		String resultado;
-		List<String> resultadoRevisoes = new ArrayList<>();
-
-		for (Trabalho trabalho : trabalhos) {
-			if (trabalho.getStatus() == null) {
-				resultado = trabalhoService.mensurarAvaliacoes(trabalho);
-				trabalho.setStatus(resultado);
+		
+		Map<Long, List<Map<String, String>>> resultadoRevisoes = new HashMap<>();
+		for (Trabalho trabalho : trabalhos) {			
+			List<Map<String, String>> revisoesWrappers = new ArrayList<>();
+			List<Revisao> revisoes = trabalho.getRevisoes();
+			for (Revisao revisao : revisoes) {
+				revisoesWrappers.add(RevisaoJSON.fromJson(revisao));					
 			}
-
-			resultadoRevisoes.addAll(trabalhoService.pegarConteudo(trabalho));
+			resultadoRevisoes.put(trabalho.getId(), revisoesWrappers);
 		}
 
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
