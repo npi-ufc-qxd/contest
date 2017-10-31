@@ -59,12 +59,12 @@
 		<!--Dados da Seção-->
 		<div class="">
 			<h4 class="center-align" th:text="${secao.nome}"></h4>
-			<h6 class="right-align" th:text="'Horário: '+${secao.horario}"></h6>
-			<h6 class="right-align" th:text="'Data: '+${secao.dataSecao}"></h6>
-			<h6 class="right-align" th:text="'Local: '+${secao.local}"></h6>
-			<h6 class="right-align" th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
+			<h6 th:text="'Horário: '+${secao.horario}"></h6>
+			<h6 th:text="'Data: '+${secao.dataSecao}"></h6>
+			<h6 th:text="'Local: '+${secao.local}"></h6>
+			<h6 th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
 			<a th:href="@{'/secao/listarParticipantes/'+ ${secao.id}}"
-                class="teal-text right">LISTAR PARTICIPANTES</a>
+                class=" waves-effect btn-flat teal white-text" target="_blank">LISTAR PARTICIPANTES</a>
 		</div>
 		
 		<div th:if="${#lists.isEmpty(trabalhosSecao)}">
