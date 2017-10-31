@@ -87,7 +87,7 @@
                 </div>
                 
                  <a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Trabalho</a>
-                 <a th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisões</a>
+                 <a th:if="${not evento.isPeriodoRevisao()}" th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisões</a>
                  
               </div>       	  
         	</div>
