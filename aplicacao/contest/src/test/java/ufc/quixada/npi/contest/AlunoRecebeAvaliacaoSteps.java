@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.mockito.InjectMocks;
@@ -77,6 +78,9 @@ public class AlunoRecebeAvaliacaoSteps {
 		evento = new Evento();
 		evento.setId(3L);
 		
+		evento.setPrazoRevisaoInicial(new GregorianCalendar(2015, 9, 5).getTime());
+		evento.setPrazoRevisaoFinal(new GregorianCalendar(2015, 9, 10).getTime());
+		
 		aluno = new Pessoa();
 		aluno.setCpf("00000");
 		aluno.setId(1L);
@@ -88,6 +92,7 @@ public class AlunoRecebeAvaliacaoSteps {
 		when(auth.getName()).thenReturn(aluno.getCpf());
 		SecurityContextHolder.setContext(context);
 		
+		
 	}
 	
 	@Dado("^que o aluno deseja ver a revisão de seu trabalho$")
@@ -98,6 +103,8 @@ public class AlunoRecebeAvaliacaoSteps {
 		trabalho.setParticipacoes(new ArrayList<>());
 		trabalho.setEvento(evento);
 		trabalho.setAutores(aluno, new ArrayList<Pessoa>());
+		
+		
 		
 		revisoes = new ArrayList<Revisao>();
 		
@@ -111,7 +118,7 @@ public class AlunoRecebeAvaliacaoSteps {
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
 		when(pessoaService.getByCpf(aluno.getCpf())).thenReturn(aluno);
 		when(PessoaLogadaUtil.pessoaLogada()).thenReturn(aluno);
-
+		
 		action = mockMvc
 				.perform(get("/autor/revisao/trabalho/{trabalhoId}",
 						trabalho.getId().toString()));
@@ -137,7 +144,6 @@ public class AlunoRecebeAvaliacaoSteps {
 		revisoes.add(revisao);
 		
 		trabalho.setRevisoes(revisoes);
-
 		
 		when(trabalhoService.getTrabalhoById(trabalho.getId())).thenReturn(trabalho);
 		when(revisaoService.getRevisaoByTrabalho(trabalho)).thenReturn(revisoes);
