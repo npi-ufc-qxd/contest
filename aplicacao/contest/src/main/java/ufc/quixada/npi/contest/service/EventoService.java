@@ -196,7 +196,7 @@ public class EventoService {
 	}
 	
 	public List<Evento> getMeusEventosAtivosComoOrganizador(Long idAutor){
-		return eventoRepository.eventosPorPapelVisibilidade(idAutor, Tipo.ORGANIZADOR, EstadoEvento.ATIVO);
+		return eventoRepository.eventosComoOrganizadorlVisibilidade(idAutor, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> getMeusEventosInativosComoOrganizador(Long idOrganizador) {
