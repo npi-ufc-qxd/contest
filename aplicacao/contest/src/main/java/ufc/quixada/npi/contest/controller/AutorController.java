@@ -397,7 +397,9 @@ public class AutorController {
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
-
+				model.addAttribute("hoje");
+				model.addAttribute("data_hoje");
+				model.addAttribute("dataFinal");
 				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";

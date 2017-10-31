@@ -56,13 +56,19 @@
                 </div>
                 
                 <div class="col s4">
-                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
-                	<p><b>SITUAÇÃO DO ARTIGO: </b> 
+                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>                	                
                 	
-                	<span th:if="${not #lists.isEmpty(trabalho.revisoes)}">Revisado</span>
-                	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>
-                	</p>
-               
+                	<p th:with="dataFinal=${#dates.format({trabalho.evento.PrazoRevisaoFinal},'dd/MM/YYYY')},hoje=${#dates.createToday()},data_hoje=${#dates.format({hoje},'dd/MM/YYYY')}">
+						<b>SITUAÇÃO DO ARTIGO: </b>
+						
+						<th:block th:if="${trabalho.isRevisado()}">
+							<span th:if="${data_hoje.compareTo(dataFinal) == 1}" th:text="${trabalho.status}"></span> 				
+							<span th:unless="${data_hoje.compareTo(dataFinal) == 1}"> EM REVISÃO</span>				
+						</th:block>
+						
+						<span th:if="${not trabalho.isRevisado()}">NÃO REVISADO</span> 					
+					</p>
+                              		
                 </div>
                 <div class="col s4">
                 <p><b>Número total de submissões: </b><span th:text="${#lists.size(trabalho.submissoes)}"></span></p>
