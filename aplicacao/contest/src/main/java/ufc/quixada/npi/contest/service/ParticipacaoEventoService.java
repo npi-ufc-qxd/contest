@@ -19,7 +19,9 @@ public class ParticipacaoEventoService {
 	@Autowired
 	private ParticipacaoEventoRepository participacaoEventoRepository;
 	
-	
+	public List<ParticipacaoEvento> findParticipacaoEventoPorPessoa(Long id){
+		return participacaoEventoRepository.findParticipacaoEventoByPessoaId(id);
+	}
 	
 	public ParticipacaoEvento findParticipacaoEventoPorId(Long id){
 		return participacaoEventoRepository.findOne(id);

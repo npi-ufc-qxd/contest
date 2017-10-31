@@ -17,5 +17,6 @@ public interface ParticipacaoTrabalhoRepository extends CrudRepository<Participa
 	public List<ParticipacaoTrabalho> findByTrabalho(Trabalho trabalho);
 	public ParticipacaoTrabalho findParticipacaoTrabalhoByPapelAndPessoaIdAndTrabalhoId(Tipo papel, Long idPessoa, Long idTrabalho);
 	public List<ParticipacaoTrabalho> findParticipacaoTrabalhoByPessoaIdAndTrabalhoId(Long idPessoa, Long idTrabalho); 
-	public List<ParticipacaoTrabalho>  findParticipacaoTrabalhoByPapelAndPessoaId(Tipo papel, Long idPessoa);
+	public List<ParticipacaoTrabalho> findParticipacaoTrabalhoByPapelAndPessoaId(Tipo papel, Long idPessoa);
+	public List<ParticipacaoTrabalho> findParticipacaoTrabalhoByPessoaId(Long id);
 }

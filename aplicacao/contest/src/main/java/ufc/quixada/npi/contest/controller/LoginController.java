@@ -1,4 +1,4 @@
- package ufc.quixada.npi.contest.controller;
+package ufc.quixada.npi.contest.controller;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoEvento;
+import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
@@ -34,33 +35,32 @@ import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 public class LoginController {
-	
+
 	@Autowired
 	PessoaService pessoaService;
-	
+
 	@Autowired
 	EventoService eventoService;
-	
+
 	@Autowired
 	ParticipacaoTrabalhoService participacaoTrabalhoService;
-	
+
 	@Autowired
 	TrabalhoService trabalhoService;
-	
+
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
-	
+
 	@Autowired
 	private TokenService tokenService;
-	
+
 	@Autowired
 	private EnviarEmailService enviarEmailService;
-	
-	@RequestMapping(value = "/login", method = RequestMethod.GET  )
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "login";
 	}
-	
 
 	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
 	public String loginfailed(Authentication auth, RedirectAttributes redirectAttributes) {
@@ -71,64 +71,93 @@ public class LoginController {
 		redirectAttributes.addFlashAttribute("loginError", true);
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
-	
+
 	@RequestMapping(value = "/cadastroForm")
 	public String cadastroForm(Model model) {
 		model.addAttribute("user", new Pessoa());
 		return "cadastro";
 	}
-	
+
 	@RequestMapping(value = "/cadastro")
 	public String cadastro(@Valid Pessoa pessoa, @RequestParam String senha, @RequestParam String senhaConfirma) {
-	
-		if(senhaConfirma.equals(senha)){
+
+		if (senhaConfirma.equals(senha)) {
 			String password = pessoaService.encodePassword(senha);
 			pessoa.setPassword(password);
 			pessoa.setPapel(Tipo.USER);
 			pessoaService.addOrUpdate(pessoa);
 			return Constants.REDIRECIONAR_PARA_LOGIN;
 		}
-		
-		return "cadastro" ;
+
+		return "cadastro";
 	}
-	
-	@RequestMapping(path="/completar-cadastro/{token}", method=RequestMethod.GET)
+
+	@RequestMapping(path = "/completar-cadastro/{token}", method = RequestMethod.GET)
 	public ModelAndView completarCadastroForm(@PathVariable("token") Token token) throws IllegalArgumentException {
 		ModelAndView model = new ModelAndView();
-		
-		
-		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)){
+
+		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)) {
 			model.setViewName("completar-cadastro");
 			model.addObject("pessoa", token.getPessoa());
 		} else {
 			throw new IllegalArgumentException("O token passado não corresponde a ação de completar cadastro.");
 		}
-		
+
 		return model;
 	}
-	
-	@RequestMapping(path="/completar-cadastro", method=RequestMethod.POST)
-	public String completarCadastro(@Valid Pessoa pessoa, @RequestParam String senha, @RequestParam String senhaConfirma){
-		
-		if(senha.equals(senhaConfirma)){
-			String password =  pessoaService.encodePassword(senha);
-			pessoa.setPassword(password);
-			pessoaService.addOrUpdate(pessoa);
-			tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
-			
-		} 		
-		
+
+	@RequestMapping(path = "/completar-cadastro", method = RequestMethod.POST)
+	public String completarCadastro(@Valid Pessoa pessoa, @RequestParam String senha,
+			@RequestParam String senhaConfirma) {
+
+		Pessoa pessoaDB = pessoaService.getByCpf(pessoa.getCpf());
+		if (senha.equals(senhaConfirma)) {
+			if (pessoaDB != null) {
+				pessoaDB.setEmail(pessoa.getEmail());
+				pessoaDB.setNome(pessoa.getNome());
+
+				List<ParticipacaoEvento> participacaoEvento = participacaoEventoService
+						.findParticipacaoEventoPorPessoa(pessoa.getId());
+				List<ParticipacaoTrabalho> participacaoTrabalho = participacaoTrabalhoService
+						.findParticipacaoTrabalhoPorPessoa(pessoa.getId());
+
+				for (ParticipacaoEvento p : participacaoEvento) {
+					p.setPessoa(pessoaDB);
+					participacaoEventoService.adicionarOuEditarParticipacaoEvento(p);
+				}
+
+				for (ParticipacaoTrabalho p : participacaoTrabalho) {
+					p.setPessoa(pessoaDB);
+					participacaoTrabalhoService.adicionarOuEditar(p);
+				}
+
+				String password = pessoaService.encodePassword(senha);
+				pessoaDB.setPassword(password);
+				tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
+				pessoaService.delete(pessoa.getId());
+				pessoaService.addOrUpdate(pessoaDB);
+
+			} else {
+				String password = pessoaService.encodePassword(senha);
+				pessoa.setPassword(password);
+				pessoaService.addOrUpdate(pessoa);
+				tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
+			}
+		} else{
+				return "";
+			}
+
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
-	
+
 	@RequestMapping(value = "/dashboard")
-	public String dashboard(Model model){
+	public String dashboard(Model model) {
 		Long idPessoaLogada = PessoaLogadaUtil.pessoaLogada().getId();
 		List<Evento> eventosQueReviso = eventoService.buscarEventosQueReviso(idPessoaLogada);
-		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, idPessoaLogada);
+		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService
+				.getEventosDoOrganizador(EstadoEvento.ATIVO, idPessoaLogada);
 		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
-		
-		
+
 		List<Evento> eventosMinhaCoutoria = eventoService.buscarEventosParticapacaoCoautor(idPessoaLogada);
 		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(idPessoaLogada);
 		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(idPessoaLogada);
@@ -137,15 +166,15 @@ public class LoginController {
 		model.addAttribute("eventos", eventosAtivos);
 		model.addAttribute("eventosQueReviso", eventosQueReviso);
 		model.addAttribute("eventosMinhaCoautoria", eventosMinhaCoutoria);
-		model.addAttribute("pessoa",PessoaLogadaUtil.pessoaLogada());
-		model.addAttribute("eventosInativos",eventosInativos);
+		model.addAttribute("pessoa", PessoaLogadaUtil.pessoaLogada());
+		model.addAttribute("eventosInativos", eventosInativos);
 		return "dashboard";
 	}
-	
-	@RequestMapping(path="resetar-senha/{token}", method=RequestMethod.GET)
-	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws IllegalArgumentException  {
+
+	@RequestMapping(path = "resetar-senha/{token}", method = RequestMethod.GET)
+	public ModelAndView resetarSenhaForm(@PathVariable("token") Token token) throws IllegalArgumentException {
 		ModelAndView model = new ModelAndView();
-		if (token.getAcao().equals(Constants.ACAO_RECUPERAR_SENHA)){
+		if (token.getAcao().equals(Constants.ACAO_RECUPERAR_SENHA)) {
 			model.setViewName("resetar_senha");
 			model.addObject("token", token);
 		} else {
@@ -153,22 +182,25 @@ public class LoginController {
 		}
 		return model;
 	}
-	
-	@RequestMapping(path="/resetar-senha/{token}", method=RequestMethod.POST)
-	public String resetarSenha(@PathVariable("token") Token token, @RequestParam String senha, @RequestParam String senhaConfirma, RedirectAttributes redirectAttributes){
+
+	@RequestMapping(path = "/resetar-senha/{token}", method = RequestMethod.POST)
+	public String resetarSenha(@PathVariable("token") Token token, @RequestParam String senha,
+			@RequestParam String senhaConfirma, RedirectAttributes redirectAttributes) {
 		enviarEmailService.resetarSenhaEmail(token, senha, senhaConfirma, redirectAttributes);
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
-	
-	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.GET)
-	public String esqueciSenhaForm(){
+
+	@RequestMapping(path = "/esqueci-minha-senha", method = RequestMethod.GET)
+	public String esqueciSenhaForm() {
 		return "esqueci_senha";
 	}
-	
-	@RequestMapping(path="/esqueci-minha-senha", method=RequestMethod.POST)
-	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes, HttpServletRequest request) {
-		
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+
+	@RequestMapping(path = "/esqueci-minha-senha", method = RequestMethod.POST)
+	public String esqueciSenha(@RequestParam String email, RedirectAttributes redirectAttributes,
+			HttpServletRequest request) {
+
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath();
 		try {
 			enviarEmailService.esqueciSenhaEmail(email, redirectAttributes, url);
 		} catch (Exception e) {
