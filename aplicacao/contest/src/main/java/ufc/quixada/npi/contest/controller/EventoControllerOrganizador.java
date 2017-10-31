@@ -284,7 +284,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = { "/meusEventos", "" }, method = RequestMethod.GET)
 	public String meusEventos(Model model) {
 		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
-		model.addAttribute("eventos", eventoService.buscarMeusEventos(revisor.getId()));
+		model.addAttribute("eventos", eventoService.getMeusEventos(revisor.getId()));
 		return Constants.TEMPLATE_MEUS_EVENTOS_ORG;
 	}
 
@@ -317,7 +317,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		Pessoa p = PessoaLogadaUtil.pessoaLogada();
 
 		List<Evento> eventos = eventoService.buscarEventoPorEstado(EstadoEvento.INATIVO);
-		List<Evento> eventosQueOrganizo = eventoService.buscarEventosInativosQueOrganizo(p.getId());
+		List<Evento> eventosQueOrganizo = eventoService.getMeusEventosInativosComoOrganizador(p.getId());
 
 		boolean existeEventos = true;
 

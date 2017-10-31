@@ -121,7 +121,7 @@ public class AutorController {
 	public String index(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("eventosParaParticipar", eventoService.eventosParaParticipar(autorLogado.getId()));
-		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
+		model.addAttribute("eventoParticipando", eventoService.getMeusEventosComoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 
@@ -153,7 +153,7 @@ public class AutorController {
 	public String eventosAtivos(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("eventosParaParticipar", eventoService.eventosParaParticipar(autorLogado.getId()));
-		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
+		model.addAttribute("eventoParticipando", eventoService.getMeusEventosComoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 
@@ -196,7 +196,7 @@ public class AutorController {
 		if (eventoId != null) {
 			eventos.add(eventoService.buscarEventoPorId(eventoId));
 		} else {
-			eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
+			eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());
 		}
 		if (eventos != null) {
 			List<String> trabalhosEventos = new ArrayList<>();
@@ -397,9 +397,7 @@ public class AutorController {
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
-				model.addAttribute("hoje");
-				model.addAttribute("data_hoje");
-				model.addAttribute("dataFinal");
+
 				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";

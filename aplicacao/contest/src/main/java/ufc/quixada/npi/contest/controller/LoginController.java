@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
-import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Token;
 import ufc.quixada.npi.contest.service.EnviarEmailService;
@@ -46,9 +44,6 @@ public class LoginController {
 	
 	@Autowired
 	TrabalhoService trabalhoService;
-	
-	@Autowired
-	private ParticipacaoEventoService participacaoEventoService;
 	
 	@Autowired
 	private TokenService tokenService;
@@ -124,14 +119,14 @@ public class LoginController {
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model){
 		Long idPessoaLogada = PessoaLogadaUtil.pessoaLogada().getId();
-		List<Evento> eventosQueReviso = eventoService.buscarEventosQueReviso(idPessoaLogada);
-		List<ParticipacaoEvento> eventoQueOrganizo = participacaoEventoService.getEventosDoOrganizador(EstadoEvento.ATIVO, idPessoaLogada);
+		List<Evento> eventosQueReviso = eventoService.getMeusEventosAtivosComoRevisor(idPessoaLogada);
+		List<Evento> eventoQueOrganizo = eventoService.getMeusEventosAtivosComoOrganizador(idPessoaLogada);
 		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
 		
 		
-		List<Evento> eventosMinhaCoutoria = eventoService.buscarEventosParticapacaoCoautor(idPessoaLogada);
-		List<Evento> eventosQueSouAutor = eventoService.buscarEventosParticapacaoAutor(idPessoaLogada);
-		List<Evento> eventosInativos = eventoService.buscarEventosInativosQueOrganizo(idPessoaLogada);
+		List<Evento> eventosMinhaCoutoria = eventoService.getMeusEventosComoCoautor(idPessoaLogada);
+		List<Evento> eventosQueSouAutor = eventoService.getMeusEventosComoAutor(idPessoaLogada);
+		List<Evento> eventosInativos = eventoService.getMeusEventosInativosComoOrganizador(idPessoaLogada);
 		model.addAttribute("eventosQueSouAutor", eventosQueSouAutor);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);

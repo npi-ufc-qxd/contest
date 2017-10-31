@@ -302,7 +302,7 @@ public class RevisorController {
 			eventos = new ArrayList<Evento>();
 			eventos.add(eventoService.buscarEventoPorId(id));
 		} else {
-			eventos = eventoService.buscarEventosQueReviso(pessoaAux.getId());		
+			eventos = eventoService.getMeusEventosAtivosComoRevisor(pessoaAux.getId());		
 		}
 		
 		model.addAttribute("pessoa", pessoaAux);
