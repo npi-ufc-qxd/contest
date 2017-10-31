@@ -131,8 +131,8 @@ public class AutorController {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		Evento evento = trabalho.getEvento();
-
-		if (trabalho.getAutoresDoTrabalho().contains(autorLogado)) {
+		
+		if (trabalho.getAutoresDoTrabalho().contains(autorLogado) && !evento.isPeriodoRevisao()) {
 			List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
 			if (!revisoes.isEmpty()) {
 				model.addAttribute("titulo", trabalho.getTitulo());
