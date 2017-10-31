@@ -62,14 +62,15 @@
                 
                 <div class="col s4">
                 	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
-                	<p><b>SITUAÇÃO DO ARTIGO: </b> 
-                	<div th:if="${not #lists.isEmpty(trabalho.revisoes)}">
-                		<span>Revisado</span>
-                		<a th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver revisões</a>
-                	</div>
-                	
-                	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>
-                	</p>
+                	<p th:with="dataFinal=${#dates.format({trabalho.evento.PrazoRevisaoFinal},'dd/MM/YYYY')},hoje=${#dates.createToday()},data_hoje=${#dates.format({hoje},'dd/MM/YYYY')}">
+						<b>SITUAÇÃO DO ARTIGO: </b>
+						<span th:if="${trabalho.isRevisado()}  and ${data_hoje.compareTo(dataFinal) == 1}" th:text="${trabalho.status}"></span> 
+											
+						<span th:if="${trabalho.isRevisado()} and ${data_hoje.compareTo(dataFinal) le 0}"> EM REVISÃO</span>
+											
+						<span th:if="${not trabalho.isRevisado()}">NÃO REVISADO</span> 
+											
+					</p>
                
                 </div>
                 
