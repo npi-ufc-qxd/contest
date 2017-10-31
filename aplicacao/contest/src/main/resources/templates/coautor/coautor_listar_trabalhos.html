@@ -62,6 +62,7 @@
                 
                 <div class="col s4">
                 	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
+
                 	<p th:with="dataFinal=${#dates.format({trabalho.evento.PrazoRevisaoFinal},'dd/MM/YYYY')},hoje=${#dates.createToday()},data_hoje=${#dates.format({hoje},'dd/MM/YYYY')}">
 						<b>SITUAÇÃO DO ARTIGO: </b>
 						
@@ -75,6 +76,7 @@
 						
 											
 					</p>
+
                
                 </div>
                 
@@ -85,6 +87,7 @@
                 </div>
                 
                  <a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Fazer Download do Trabalho</a>
+                 <a th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver Revisões</a>
                  
               </div>       	  
         	</div>
