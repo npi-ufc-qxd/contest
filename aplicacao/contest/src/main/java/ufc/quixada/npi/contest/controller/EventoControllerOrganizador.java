@@ -308,6 +308,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("existeEventos", existeEventos);
 		model.addAttribute("eventosAtivos", eventosAtivos);
 		model.addAttribute("eventosComoOrganizador", eventosComoOrganizador);
+		model.addAttribute("pessoa", p);
 		return Constants.TEMPLATE_LISTAR_EVENTOS_ATIVOS_ORG;
 	}
 
