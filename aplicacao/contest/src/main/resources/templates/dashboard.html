@@ -126,7 +126,7 @@
 											</span>
 										</div>
 										<div class="modal-footer">
-								            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat ">Cancelar</a>
+								            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat ">Fechar</a>
 								          </div>
 									</div>
 								</div>
@@ -207,7 +207,7 @@
 										th:href="@{|/autor/meusTrabalhos/evento/${eventosQueSouAutor[1].id}|}"
 										th:text="${eventosQueSouAutor[1].nome}"></a></li>
 									<li><a th:if="${eventosQueSouAutor.size()} > 2"
-										th:href="@{|/autor/meusTrabalhos/evento/${eventosQueSouAutor[0].id}|}"
+										th:href="@{|/autor/meusTrabalhos/evento/${eventosQueSouAutor[2].id}|}"
 										th:text="${eventosQueSouAutor[2].nome}"></a></li>
 								</ul>
 							</div>
@@ -239,7 +239,7 @@
 							</div>
 						</div>
 						<div class="card-action">
-							<a th:href="@{/coautor/}"
+							<a th:href="@{/coautor/meusTrabalhos}"
 								class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
 								mais</a>
 						</div>

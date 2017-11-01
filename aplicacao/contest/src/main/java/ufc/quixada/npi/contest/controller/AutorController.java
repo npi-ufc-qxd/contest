@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,6 +58,7 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String PAPEL_USUARIO_LOGADO = "papel";
 	private static final String EXTENSAO_PDF = ".pdf";
 	private static final String FORA_DO_PRAZO_SUBMISSAO = "FORA_DO_PRAZO_SUBMISSAO";
 	private static final String ERRO_EXCLUIR_TRABALHO = "ERRO_EXCLUIR_TRABALHO";
@@ -65,9 +67,6 @@ public class AutorController {
 	private static final String ERRO_CADASTRO_TRABALHO = "ERRO_CADASTRO_TRABALHO";
 	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
 	private static final String FORMATO_ARQUIVO_INVALIDO = "FORMATO_ARQUIVO_INVALIDO";
-	private static final String NAO_HA_TRABALHOS = "NAO_HA_TRABALHOS";
-	private static final String NAO_TEM_REVISAO = "NAO_TEM_REVISAO";
-	private static final String TEM_REVISAO = "TEM_REVISAO";
 	private static final String PARTICAPAR_EVENTO_SUCESSO = "PARTICAPAR_EVENTO_SUCESSO";
 	private static final String PARTICAPACAO_EVENTO_SUCESSO = "particapacaoEventoSucesso";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
@@ -190,40 +189,30 @@ public class AutorController {
 	}
 
 	@RequestMapping(value = "/meusTrabalhos/evento/{eventoId}", method = RequestMethod.GET)
-	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, Model model) {
+	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, @ModelAttribute("coautor") String coautor, Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventos = new ArrayList<>();
+		model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
 		if (eventoId != null) {
 			eventos.add(eventoService.buscarEventoPorId(eventoId));
 		} else {
-			eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());
-		}
-		if (eventos != null) {
-			List<String> trabalhosEventos = new ArrayList<>();
-
-			for (Evento evento : eventos) {
-				if (submissaoService.existeTrabalhoNesseEvento(evento.getId())) {
-					if (revisaoService.existeTrabalhoNesseEvento(evento.getId())) {
-						trabalhosEventos.add(TEM_REVISAO);
-					} else {
-						trabalhosEventos.add(NAO_TEM_REVISAO);
-					}
-				} else {
-					trabalhosEventos.add(NAO_TEM_REVISAO);
-				}
+			if(coautor != null){
+				eventos = eventoService.getMeusEventosComoCoautor(autorLogado.getId());
+				model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.COAUTOR);
+			} else {
+				eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());				
 			}
-
+		}
+		
+		if (eventos != null) {
 			model.addAttribute("eventos", eventos);
-			model.addAttribute("trabalhosEvento", trabalhosEventos);
-		} else {
-			model.addAttribute("naoHaTrabalhos", messageService.getMessage(NAO_HA_TRABALHOS));
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
 
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
-	public String listarMeusTrabalhosEmEventosAtivos(Model model) {
-		return listarMeusTrabalhosEmEventosAtivos(null, model);
+	public String listarMeusTrabalhosEmEventosAtivos(@ModelAttribute("coautor") String coautor, Model model) {
+		return listarMeusTrabalhosEmEventosAtivos(null, coautor, model);
 	}
 
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
@@ -387,14 +376,21 @@ public class AutorController {
 
 	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
-	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
+	public String listarTrabalhos(@PathVariable String id, @ModelAttribute("coautor") String coautor, Model model, RedirectAttributes redirect) {
 		try {
-			Long idEvento = Long.parseLong(id);
-			if (eventoService.existeEvento(idEvento)) {
-				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
-
-				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
+			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
+			Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+			model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
+			if (evento != null && evento.getAutores().contains(pessoa)) {
+				
+				List<Trabalho> listaTrabalho; trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
+				if(coautor != null){
+					listaTrabalho = trabalhoService.getTrabalhosDoCoautorNoEvento(pessoa, evento);
+					model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.COAUTOR);					
+				} else {
+					listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
+				}
+				model.addAttribute("pessoa", pessoa);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
 

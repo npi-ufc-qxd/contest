@@ -126,6 +126,13 @@ public class Evento {
 		this.prazoSubmissaoInicial = prazoSubmissaoInicial;
 	}
 	
+	public Date getUltimoDiaSubmissaoInicial() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(prazoRevisaoInicial);
+		c.add(Calendar.DAY_OF_MONTH, -1);
+		return c.getTime();
+	}
+	
 	public Date getPrazoSubmissaoFinal() {
 		return prazoSubmissaoFinal;
 	}
