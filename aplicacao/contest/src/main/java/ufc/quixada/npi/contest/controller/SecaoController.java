@@ -73,11 +73,12 @@ public class SecaoController {
 	public String cadastrarSecao(Secao secao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String validateResult = validateEventParams(evento);
-		if (validateResult.equals(Constants.NO_ERROR)) {
-
-			if (secao.getEvento() == null || secao.getResponsavel() == null) {
-				return "redirect:/secao/" + evento.getId() + "/cadastrarSecaoForm";
-			}
+		
+		if (secao.getEvento() == null || secao.getResponsavel() == null) {
+			return "redirect:/secao/" + evento.getId() + "/cadastrarSecaoForm";
+		}
+		
+		if (validateResult.equals(Constants.NO_ERROR)) {			
 			secaoService.addOrUpdate(secao);
 			return "redirect:/secao/" + evento.getId() + "/paginaSecao";
 
