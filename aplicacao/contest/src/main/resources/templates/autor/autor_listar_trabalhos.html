@@ -66,9 +66,10 @@
                 	<p th:with="dataFinal=${#dates.format({trabalho.evento.PrazoRevisaoFinal},'dd/MM/YYYY')},hoje=${#dates.createToday()},data_hoje=${#dates.format({hoje},'dd/MM/YYYY')}">
 						<b>SITUAÇÃO DO ARTIGO: </b>
 						
+						
 						<th:block th:if="${trabalho.isRevisado()}">
-							<span th:if="${data_hoje.compareTo(dataFinal) == 1}" th:text="${trabalho.status}"></span> 				
-							<span th:unless="${data_hoje.compareTo(dataFinal) == 1}"> EM REVISÃO</span>				
+							<span th:if="${data_hoje.compareTo(dataFinal) != 1}" th:text="${trabalho.status}"></span> 				
+							<span th:unless="${data_hoje.compareTo(dataFinal) != 1}"> EM REVISÃO</span>				
 						</th:block>
 						
 						<span th:if="${not trabalho.isRevisado()}">NÃO REVISADO</span> 					
