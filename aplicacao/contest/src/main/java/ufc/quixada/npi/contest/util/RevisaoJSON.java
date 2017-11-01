@@ -31,6 +31,7 @@ public class RevisaoJSON {
 	
 	public static Map<String, String> fromJson(Revisao revisao){
 		
+		System.out.println(revisao.getTrabalho().getId());
 		Map<String, String> revisaoWrapper = new HashMap<>();
 		JSONObject json = new JSONObject(revisao.getConteudo());
 		for(String key : json.keySet()){
