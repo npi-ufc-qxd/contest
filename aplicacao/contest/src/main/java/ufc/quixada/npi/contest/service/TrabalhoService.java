@@ -23,7 +23,7 @@ public class TrabalhoService {
 
 	@Autowired
 	private RevisaoRepository revisaoRepository;
-	
+
 	@Autowired
 	private EventoService eventoService;
 
@@ -104,7 +104,6 @@ public class TrabalhoService {
 		return trabalhoRepository.findAll();
 	}
 
-
 	public String mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
@@ -112,10 +111,17 @@ public class TrabalhoService {
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
 		if (!revisoes.isEmpty()) {
-			for (int i = 0; i < revisoes.size(); i++) {							
-				
+			for (int i = 0; i < revisoes.size(); i++) {
+
 				if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO") || revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {
 					numeroDeAprovacao++;
+
+					if (revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {					
+						numeroDeRessalvas++;
+						if (numeroDeRessalvas == numeroDeAprovacao) {
+							return "RESSALVAS";
+						}
+					}
 					if (numeroDeAprovacao == trabalho.getRevisoes().size())
 						return "APROVADO";
 
@@ -123,57 +129,56 @@ public class TrabalhoService {
 					numeroDeReprovacao++;
 					if (numeroDeReprovacao == trabalho.getRevisoes().size())
 						return "REPROVADO";
-				}else if (revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {
-					numeroDeRessalvas++;
-					if (numeroDeRessalvas == trabalho.getRevisoes().size())
-						return "RESSALVAS";
-				}
+				} 
 			}
 			return "MODERACAO";
 		}
 		return null;
 	}
 
-public List<String> pegarConteudo(Trabalho trabalho) {
-		
+	public List<String> pegarConteudo(Trabalho trabalho) {
+
 		String conteudoAux;
 		String conteudo;
-		
+
 		List<String> resultadoAvaliacoes = new ArrayList<>();
-		
+
 		StringBuilder bld = new StringBuilder();
 		for (Revisao revisao : trabalho.getRevisoes()) {
-			
-			conteudo = revisao.getConteudo().substring(1, revisao.getConteudo().length()-1);	
-			bld.append("REVISOR : " + revisao.getRevisor().getNome().toUpperCase() + " , TRABALHO: " + trabalho.getId().toString());
-			
-			while(!conteudo.isEmpty()) {
-				if(conteudo.contains(",")) {
-					conteudoAux = conteudo.substring(0,conteudo.indexOf(','));
-					if(!conteudoAux.contentEquals("comentarios")) {
-						bld.append((" ," + (conteudoAux.replaceAll("\"", " ").replaceAll("_", " ").replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO").replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase()));
-						conteudoAux = conteudo.substring(conteudo.indexOf(',')+1);
+
+			conteudo = revisao.getConteudo().substring(1, revisao.getConteudo().length() - 1);
+			bld.append("REVISOR : " + revisao.getRevisor().getNome().toUpperCase() + " , TRABALHO: "
+					+ trabalho.getId().toString());
+
+			while (!conteudo.isEmpty()) {
+				if (conteudo.contains(",")) {
+					conteudoAux = conteudo.substring(0, conteudo.indexOf(','));
+					if (!conteudoAux.contentEquals("comentarios")) {
+						bld.append((" ," + (conteudoAux.replaceAll("\"", " ").replaceAll("_", " ")
+								.replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO")
+								.replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase()));
+						conteudoAux = conteudo.substring(conteudo.indexOf(',') + 1);
 						conteudo = conteudoAux;
 					}
-				}else {
-					resultadoAvaliacoes.add((bld + (" , AVALIAÇÃO FINAL : "+revisao.getAvaliacao()).toString()));
+				} else {
+					resultadoAvaliacoes.add((bld + (" , AVALIAÇÃO FINAL : " + revisao.getAvaliacao()).toString()));
 					conteudo = "";
 				}
 			}
 			bld.delete(0, bld.length());
 		}
-		
+
 		return resultadoAvaliacoes;
 	}
+
 	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
 		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
 
 	}
-	
+
 	public void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
 		eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
 
-		
 		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
 		for (Pessoa coautor : coautores) {
 			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
