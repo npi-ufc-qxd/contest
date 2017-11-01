@@ -56,13 +56,19 @@
                 </div>
                 
                 <div class="col s4">
-                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
-                	<p><b>SITUAÇÃO DO ARTIGO: </b> 
+                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>                	                
                 	
-                	<span th:if="${not #lists.isEmpty(trabalho.revisoes)}">Revisado</span>
-                	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>
-                	</p>
-               
+                	<p th:with="dataFinal=${#dates.format({trabalho.evento.PrazoRevisaoFinal},'dd/MM/YYYY')},hoje=${#dates.createToday()},data_hoje=${#dates.format({hoje},'dd/MM/YYYY')}">
+						<b>SITUAÇÃO DO ARTIGO: </b>
+						
+						<th:block th:if="${trabalho.isRevisado()}">
+							<span th:if="${data_hoje.compareTo(dataFinal) == 1}" th:text="${trabalho.status}"></span> 				
+							<span th:unless="${data_hoje.compareTo(dataFinal) == 1}"> EM REVISÃO</span>				
+						</th:block>
+						
+						<span th:if="${not trabalho.isRevisado()}">NÃO REVISADO</span> 					
+					</p>
+                              		
                 </div>
                 <div class="col s4">
                 <p><b>Número total de submissões: </b><span th:text="${#lists.size(trabalho.submissoes)}"></span></p>
@@ -87,7 +93,7 @@
 	                  	<br/>
 	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a> 
 	                    <a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
-	     				<a th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver revisões</a>              	                   
+	     				<a th:if="${not evento.isPeriodoRevisao()}" th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver revisões</a>              	                   
 	                    <a th:if="${trabalho.evento.isPeriodoFinal() AND #lists.size(trabalho.revisoes) == 0}" th:href="@{'/autor/revisao/trabalho/' + ${trabalho.id}}" class="btn disabled gray">Não revisado</a>
 						<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>

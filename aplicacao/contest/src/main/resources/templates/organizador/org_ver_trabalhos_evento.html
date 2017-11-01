@@ -112,23 +112,72 @@
 								</div>
 								<div th:id="${'modal'+trabalho.id}" class="modal">
 									<div class="modal-content">
-										<ul class="collapsible" data-collapsible="accordion">
-											<li th:each="conteudo,count : ${resultadoRevisoes}">
-												<div class="collapsible-header"
-													th:if="${#strings.contains(conteudo, trabalho.id)}">
-													<i class="material-icons">description</i> <span
-														th:text="'Revisão '+ ${count.index + 1}+ ' - ' + ${#strings.substringBefore(conteudo, ',')}" ></span>
-												</div>
+				
+				
+				<ul class="tabs" th:with="revisoes=${resultadoRevisoes.get(trabalho.id)}">
+					<li class="tab col s3" th:each="revisao,iterStat : ${revisoes}">
+						<a class="teal-text" th:href="'#revisao' + ${iterStat.count}"
+						th:text="'Revisao '+ ${iterStat.count}"></a>
+					</li>
+				</ul>
+								 
+				<div th:each="revisao,iterStat : ${resultadoRevisoes.get(trabalho.id)}" th:id="'revisao'+ ${iterStat.count}" class="col s12">
 
-												<div class="collapsible-body"
-													th:each="conteudo : ${#strings.arraySplit(resultadoRevisoes[count.index], ',')}">
-													
-													<span th:if="${NOT #strings.contains(conteudo,'TRABALHO')} AND ${NOT #strings.contains(conteudo,'REVISOR')}" th:utext="'&lt;strong&gt;' + ${#strings.substringBefore(conteudo, ':')} + ' &lt;/strong&gt;'+ ' : '+${#strings.substringAfter(conteudo, ':')}"></span>
-												
-												</div>
-											</li>
-											
-										</ul>
+					<div class="col s12">
+						<div>
+							<h6 th:text="'Originalidade: ' + ${revisao.originalidade}"></h6>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.originalidade})"></div>
+							
+						</div>
+						<div>
+							<h6 th:text="'Clareza: ' + ${revisao.clareza}"></h6>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.clareza})"></div>
+							
+						</div>
+						<div>
+							<h6 th:text="'Relevância: ' + ${revisao.relevancia}"></h6>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.relevancia})"></div>
+						</div>
+						<div>
+							<h6 th:text="'Merito Técnico: ' + ${revisao.merito}"></h6>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.merito})"></div>
+						</div>
+						<div>
+							<h6 th:text="'Qualidade do Texto: ' + ${revisao.qualidade}"></h6>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.qualidade})"></div>
+						</div>
+						<div>
+							<h6 th:text="'Status: ' + ${revisao.avaliacao_final}"></h6>
+							<div th:replace="fragments/barra_de_progresso :: barra-revisao-status(${revisao.avaliacao_final})"></div>
+						</div>
+						<div>
+							<h6 th:text="'Avaliação geral: ' + ${revisao.avaliacao_geral}"></h6>
+							<div th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.avaliacao_geral})"></div>
+						</div>
+						<div>
+							<h6>Comentários do Revisor:</h6>
+							<div class="progress">
+								<div style="width: 100%" class="determinate"></div>
+							</div>
+							<p th:text="${revisao.comentarios_autores}">O artigo está
+								muito bem escrito, bem claro e objetivo. No entanto, a
+								contribuição do artigo baseia-se fortemente do resultado de
+								outros trabalhos, já que durante o trabalho não foram realizadas
+								simulações. Os resultados obtidos pelos autores da simulação
+								podem ser explicado mais detalhadamente, visto que é a parte
+								mais importante do artigo. No mais, a realização por parte do
+								autor de simulações envolvendo os protocolos citados trariam
+								grande valia a trabalho.</p>
+								
+						</div>	
+					</div>
+				</div>
+				
 
 										<h4>Status</h4>
 										<form class="col s12"

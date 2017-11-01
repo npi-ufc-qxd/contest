@@ -28,7 +28,7 @@ public class Secao {
 	@Column(name="horario")
 	private String horario;
 	
-	@OneToMany(mappedBy = "secao", targetEntity = Trabalho.class, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "secao")
 	private List<Trabalho> trabalhos;
 	
 	@ManyToOne

@@ -121,7 +121,7 @@ public class AutorController {
 	public String index(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("eventosParaParticipar", eventoService.eventosParaParticipar(autorLogado.getId()));
-		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
+		model.addAttribute("eventoParticipando", eventoService.getMeusEventosComoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 
@@ -131,8 +131,8 @@ public class AutorController {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		Evento evento = trabalho.getEvento();
-
-		if (trabalho.getAutoresDoTrabalho().contains(autorLogado)) {
+		
+		if (trabalho.getAutoresDoTrabalho().contains(autorLogado) && !evento.isPeriodoRevisao()) {
 			List<Revisao> revisoes = revisaoService.getRevisaoByTrabalho(trabalho);
 			if (!revisoes.isEmpty()) {
 				model.addAttribute("titulo", trabalho.getTitulo());
@@ -153,7 +153,7 @@ public class AutorController {
 	public String eventosAtivos(Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("eventosParaParticipar", eventoService.eventosParaParticipar(autorLogado.getId()));
-		model.addAttribute("eventoParticipando", eventoService.buscarEventosParticapacaoAutor(autorLogado.getId()));
+		model.addAttribute("eventoParticipando", eventoService.getMeusEventosComoAutor(autorLogado.getId()));
 		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 
@@ -196,7 +196,7 @@ public class AutorController {
 		if (eventoId != null) {
 			eventos.add(eventoService.buscarEventoPorId(eventoId));
 		} else {
-			eventos = eventoService.buscarEventosParticapacaoAutor(autorLogado.getId());
+			eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());
 		}
 		if (eventos != null) {
 			List<String> trabalhosEventos = new ArrayList<>();

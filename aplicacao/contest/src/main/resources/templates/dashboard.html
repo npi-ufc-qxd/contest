@@ -171,14 +171,14 @@
 							<div>
 								<ul>
 									<li><a
-										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[0].evento.id}|}"
-										th:text="${eventosQueOrganizo[0].evento.nome}"></a></li>
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[0].id}|}"
+										th:text="${eventosQueOrganizo[0].nome}"></a></li>
 									<li><a th:if="${eventosQueOrganizo.size()} > 1"
-										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[1].evento.id}|}"
-										th:text="${eventosQueOrganizo[1].evento.nome}"></a></li>
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[1].id}|}"
+										th:text="${eventosQueOrganizo[1].nome}"></a></li>
 									<li><a th:if="${eventosQueOrganizo.size()} > 2"
-										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[2].evento.id}|}"
-										th:text="${eventosQueOrganizo[2].evento.nome}"></a></li>
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[2].id}|}"
+										th:text="${eventosQueOrganizo[2].nome}"></a></li>
 								</ul>
 
 							</div>
