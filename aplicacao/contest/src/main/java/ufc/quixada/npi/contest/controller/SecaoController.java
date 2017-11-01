@@ -40,58 +40,65 @@ public class SecaoController {
 	@RequestMapping(value = "{eventoId}/paginaSecao")
 	public String indexSecao(Model model, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		if(evento != null) {
-			Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
-			if(evento.getOrganizadores().contains(pessoa)) {
-				List<Secao> secoes = secaoService.listByEvento(evento);
-				
-				model.addAttribute("secoes", secoes);
-				model.addAttribute("evento", evento);
-				return "secao/indexSecao";
-			} 
-			return Constants.ERROR_403;
+		String validateResult = validateEventParams(evento);
+		if (validateResult.equals(Constants.NO_ERROR)) {
+			List<Secao> secoes = secaoService.listByEvento(evento);
+			model.addAttribute("secoes", secoes);
+			model.addAttribute("evento", evento);
+			return "secao/indexSecao";
+		} else {
+			return validateResult;
 		}
-		return Constants.ERROR_404;
+
 	}
 
 	@RequestMapping(value = "{eventoId}/cadastrarSecaoForm", method = RequestMethod.GET)
 	public String cadastrarSecaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
-		
+
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		if(evento != null) {
-			Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
-			if(evento.getOrganizadores().contains(pessoa)) {
-				List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
-				Collections.sort(pessoas);
-				model.addAttribute("pessoas", pessoas);
-				model.addAttribute("evento", evento);
-				return "secao/cadastroSecao";
-			} 				
-			return Constants.ERROR_403;
+		String validateResult = validateEventParams(evento);
+		if (validateResult.equals(Constants.NO_ERROR)) {
+			List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
+			Collections.sort(pessoas);
+			model.addAttribute("pessoas", pessoas);
+			model.addAttribute("evento", evento);
+			return "secao/cadastroSecao";
+		} else {
+			return validateResult;
 		}
-		return Constants.ERROR_404;
+
 	}
 
 	@RequestMapping(value = "{eventoId}/cadastrarSecao", method = RequestMethod.POST)
-	public String cadastrarSecao(Secao secao,  @PathVariable("eventoId") Long eventoId) {
+	public String cadastrarSecao(Secao secao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		if(evento != null) {
-			Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
-			if(evento.getOrganizadores().contains(pessoa)) {
-				if (secao.getEvento() == null || secao.getResponsavel() == null) {
-					return "redirect:/secao/"+evento.getId()+"/cadastrarSecaoForm";
-				}
-				secaoService.addOrUpdate(secao);
-				return "redirect:/secao/"+evento.getId()+"/paginaSecao";
-			}
-			return Constants.ERROR_403;
+		String validateResult = validateEventParams(evento);
+		
+		if (secao.getEvento() == null || secao.getResponsavel() == null) {
+			return "redirect:/secao/" + evento.getId() + "/cadastrarSecaoForm";
 		}
-		return Constants.ERROR_404;
+		
+		if (validateResult.equals(Constants.NO_ERROR)) {			
+			secaoService.addOrUpdate(secao);
+			return "redirect:/secao/" + evento.getId() + "/paginaSecao";
+
+		} else {
+			return validateResult;
+		}
+
 	}
 
 	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
 	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
-		Secao secao = secaoService.get(idSecao);		
+		Secao secao = secaoService.get(idSecao);
+		if(secao == null){
+			return Constants.ERROR_404;
+		}
+		String resultValidate = validateEventParams(secao.getEvento());
+		if(!resultValidate.equals(Constants.NO_ERROR)){
+			return resultValidate;
+		}
+		
 		List<ParticipacaoTrabalho> trabalhosSecao = new ArrayList<>();
 		List<Trabalho> trabalhos = new ArrayList<>();
 
@@ -109,9 +116,8 @@ public class SecaoController {
 			}
 		}
 
-		
 		Collections.sort(trabalhos);
-		
+
 		model.addAttribute("trabalhos", trabalhos);
 		model.addAttribute("trabalhosSecao", trabalhosSecao);
 		model.addAttribute("secao", secao);
@@ -122,6 +128,10 @@ public class SecaoController {
 	@RequestMapping(value = "/excluirSecao/{id}")
 	public String excluirSecao(@PathVariable("id") Long idSecao) {
 		Secao secao = secaoService.get(idSecao);
+		
+		if(secao == null){
+			return Constants.ERROR_404;
+		}
 
 		for (Trabalho trabalho : secao.getTrabalhos()) {
 			trabalhoService.removerSecao(trabalho);
@@ -136,26 +146,54 @@ public class SecaoController {
 	public String excluirTrabalhoSecao(@PathVariable("idSecao") Long idSecao,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+		
+		if(trabalho == null){
+			return Constants.ERROR_404;
+		}
+		
 		trabalhoService.removerSecao(trabalho);
 		return "redirect:/secao/secaoTrabalhos/" + idSecao;
 	}
 
 	@RequestMapping("/adicionarTrabalhoSecao")
 	public String adicionarTrabalhoSecao(@RequestParam Long idSecao, @RequestParam List<Long> idTrabalhos) {
+		Secao secao = secaoService.get(idSecao);
+		
+		if(secao == null){
+			return Constants.ERROR_404;
+		}
+		
 		for (int i = 0; i < idTrabalhos.size(); i++) {
 			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalhos.get(i));
-			trabalho.setSecao(secaoService.get(idSecao));
+			trabalho.setSecao(secao);
 			trabalhoService.adicionarTrabalho(trabalho);
 		}
 		return "redirect:/secao/secaoTrabalhos/" + idSecao;
 	}
-	
+
 	@RequestMapping("/listarParticipantes/{idSecao}")
-	public String listarParticipantes(@PathVariable("idSecao") Long idSecao, Model model){
+	public String listarParticipantes(@PathVariable("idSecao") Long idSecao, Model model) {
 		Secao secao = secaoService.get(idSecao);
+		
+		if(secao == null){
+			return Constants.ERROR_404;
+		}
+		
 		model.addAttribute("secao", secao);
 		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSecao(idSecao));
 		return "secao/listaParticipantes";
-		
+
+	}
+
+	private String validateEventParams(Evento evento) {
+		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
+		if (evento == null) {
+			return Constants.ERROR_404;
+		}
+
+		if (!evento.getOrganizadores().contains(pessoa)) {
+			return Constants.ERROR_403;
+		}
+		return Constants.NO_ERROR;
 	}
 }
