@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
@@ -104,34 +105,35 @@ public class TrabalhoService {
 		return trabalhoRepository.findAll();
 	}
 
-	public String mensurarAvaliacoes(Trabalho trabalho) {
+	public Avaliacao mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
 		int numeroDeRessalvas = 0;
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
 		if (!revisoes.isEmpty()) {
-			for (int i = 0; i < revisoes.size(); i++) {
+			for (int i = 0; i < revisoes.size();) {
 
-				if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO") || revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {
+				if (revisoes.get(i).getAvaliacao() == Avaliacao.APROVADO || revisoes.get(i).getAvaliacao() == Avaliacao.RESSALVAS) {
 					numeroDeAprovacao++;
-
-					if (revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {					
+										
+					if (revisoes.get(i).getAvaliacao() == Avaliacao.RESSALVAS) {					
 						numeroDeRessalvas++;
 						if (numeroDeRessalvas == trabalho.getRevisoes().size()) {
-							return "RESSALVAS";
+							return Avaliacao.RESSALVAS;
 						}
 					}
-					if (numeroDeAprovacao == trabalho.getRevisoes().size())
-						return "APROVADO";
+					if (numeroDeAprovacao == trabalho.getRevisoes().size()){
+						return Avaliacao.APROVADO;
+					}	
 
-				} else if (revisoes.get(i).getAvaliacao().toString().equals("REPROVADO")) {
+				} else if (revisoes.get(i).getAvaliacao() == Avaliacao.REPROVADO) {
 					numeroDeReprovacao++;
 					if (numeroDeReprovacao == trabalho.getRevisoes().size())
-						return "REPROVADO";
-				} 
+						return Avaliacao.REPROVADO;	
 			}
-			return "MODERACAO";
+			return Avaliacao.MODERACAO;
+		}		
 		}
 		return null;
 	}

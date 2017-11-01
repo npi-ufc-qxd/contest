@@ -104,8 +104,7 @@ public class RevisorController {
 
 		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("trabalhos", trabalhoService.getTrabalhosParaRevisar(revisor.getId(), idEvento));
-		model.addAttribute("trabalhosRevisados",
-				trabalhoService.getTrabalhosRevisadosDoRevisor(revisor.getId(), idEvento));
+		model.addAttribute("trabalhosRevisados",trabalhoService.getTrabalhosRevisadosDoRevisor(revisor.getId(), idEvento));
 
 		model.addAttribute("evento", evento);
 
@@ -120,11 +119,12 @@ public class RevisorController {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 		Evento evento;
 		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
-
+		
+		
 		if (trabalho != null) {
 			evento = trabalho.getEvento();
 			if (!evento.isPeriodoRevisao()) {
-				redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+				redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));				
 				return "redirect:/eventoOrganizador";
 			} else if (revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())) {
 				return TRABALHO_REVISAO_PELO_REVISOR;
@@ -166,11 +166,10 @@ public class RevisorController {
 
 		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
-
-		if (trabalho == null) {
-			return "redirect:/error";
-		} else if (trabalho.getEvento() == null) {
-			return "redirect:/error";
+		
+		
+		if (trabalho == null || trabalho.getEvento() == null) {
+			return Constants.ERROR_404;
 		} else if (!trabalho.getEvento().isPeriodoRevisao()) {
 			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
 			return "redirect:/eventoOrganizador";
@@ -215,8 +214,13 @@ public class RevisorController {
 			default:
 				break;
 			}
-
+			
 			revisaoService.addOrUpdate(revisao);
+			trabalho.setStatus(trabalhoService.mensurarAvaliacoes(trabalho).getTipo());
+			
+			trabalhoService.adicionarTrabalho(trabalho);
+			
+			
 
 			redirect.addFlashAttribute("trabalhoRevisado", messageService.getMessage(TRABALHO_REVISADO));
 			return "redirect:/revisor/" + idEvento + "/trabalhosRevisao";
