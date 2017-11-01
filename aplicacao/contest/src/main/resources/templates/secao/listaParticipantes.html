@@ -21,9 +21,11 @@
 		<font size="3"> <b
 			th:text="${#strings.toUpperCase(secao.nome)}"></b>
 		</font><br />
-		<p th:text="'Data: '+${secao.dataSecao}"></p>
-        <p th:text="'Hora: '+${secao.horario}"></p>
-        <p th:text="'Local: '+${secao.local}"></p>
+		<p>
+			<span th:text="'Data: '+${secao.dataSecao}"></span> | 
+	        <span th:text="'Hora: '+${secao.horario}"></span> | 
+	        <span th:text="'Local: '+${secao.local}"></span>
+        </p>
 		<br />
 
 		<div class="container col s8 md10 tg"
@@ -57,10 +59,7 @@
 	<script src="/webjars/materializecss/0.97.7/js/materialize.js"></script>
 	
 	<script type="text/javascript">
-		$( document ).ready(function() {
 			window.print();
-		});
-		
 	</script>
 </body>
 
