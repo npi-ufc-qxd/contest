@@ -182,36 +182,28 @@ public class EventoService {
 		return eventoRepository.eventosParaParticipar(idPessoa);
 	}
 
-	public List<Evento> buscarMeusEventos(Long id) {
-		return eventoRepository.findDistinctEventoByParticipacoesPessoaIdAndVisibilidade(id,
-				VisibilidadeEvento.PUBLICO);
-	}
-
-	public List<Evento> buscarEventosParticapacaoAutor(Long idAutor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(idAutor,
-				Tipo.AUTOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
-	}
-
-	public List<Evento> buscarEventosParticapacaoRevisor(Long idRevisor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(
-				idRevisor, Tipo.REVISOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
-	}
-
-	public List<Evento> buscarEventosParticapacaoOrganizador(Long idOrganizador) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndVisibilidadeAndEstado_OrderByPrazoSubmissaoInicialDesc(
-				idOrganizador, Tipo.ORGANIZADOR, VisibilidadeEvento.PUBLICO, EstadoEvento.ATIVO);
+	public List<Evento> getMeusEventos(Long id) {
+		return eventoRepository.findDistinctEventoByParticipacoesPessoaId(id);
 	}
 	
-	public List<Evento> buscarEventosParticapacaoCoautor(Long idCoautor) {
-		return eventoRepository.eventosQueTenhoCoautoria(idCoautor);
+	public List<Evento> getMeusEventosComoAutor(Long idAutor){
+		return eventoRepository.eventosPorPapel(idAutor, Tipo.AUTOR);
+	}
+	
+	
+	public List<Evento> getMeusEventosComoCoautor(Long idAutor){
+		return eventoRepository.eventosPorPapel(idAutor, Tipo.COAUTOR);
+	}
+	
+	public List<Evento> getMeusEventosAtivosComoOrganizador(Long idOrganizador){
+		return eventoRepository.eventosComoOrganizadorEstado(idOrganizador, EstadoEvento.ATIVO);
 	}
 
-	public List<Evento> buscarEventosInativosQueOrganizo(Long idOrganizador) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idOrganizador,
-				Tipo.ORGANIZADOR, EstadoEvento.INATIVO);
+	public List<Evento> getMeusEventosInativosComoOrganizador(Long idOrganizador) {
+		return eventoRepository.eventosPorPapelEstado(idOrganizador, Tipo.ORGANIZADOR, EstadoEvento.INATIVO);
 	}
-	public List<Evento> buscarEventosQueReviso(Long idRevisor) {
-		return eventoRepository.findEventoByParticipacoesPessoaIdAndParticipacoesPapelAndEstado(idRevisor, Tipo.REVISOR, EstadoEvento.ATIVO);
+	public List<Evento> getMeusEventosAtivosComoRevisor(Long idRevisor) {
+		return eventoRepository.eventosPorPapelEstado(idRevisor, Tipo.REVISOR, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> getEventosByEstadoEVisibilidadePublica(EstadoEvento estado) {

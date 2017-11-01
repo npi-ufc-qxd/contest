@@ -2,7 +2,6 @@ package ufc.quixada.npi.contest.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -125,6 +124,13 @@ public class Evento {
 
 	public void setPrazoSubmissaoInicial(Date prazoSubmissaoInicial) {
 		this.prazoSubmissaoInicial = prazoSubmissaoInicial;
+	}
+	
+	public Date getUltimoDiaSubmissaoInicial() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(prazoRevisaoInicial);
+		c.add(Calendar.DAY_OF_MONTH, -1);
+		return c.getTime();
 	}
 	
 	public Date getPrazoSubmissaoFinal() {

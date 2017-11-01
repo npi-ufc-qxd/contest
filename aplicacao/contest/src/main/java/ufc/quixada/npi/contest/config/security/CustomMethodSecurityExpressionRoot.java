@@ -27,28 +27,7 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	return false;
     }
     
-    public boolean isOrganizador(){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getPapel()== Tipo.ORGANIZADOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
     //RESTRIÇÕES PARA AUTOR
-    
-    public boolean isAutor(){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getPapel()== Tipo.AUTOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
     public boolean isAutorInEvento(Long eventoId){
     	Pessoa pessoa = (Pessoa) this.getPrincipal();
     	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
@@ -70,17 +49,6 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     }
     
     //RESTRIÇÕES PARA REVISOR
-    
-    public boolean isRevisor(){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getPapel()== Tipo.REVISOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
     
     public boolean isRevisorInTrabalho(Long trabalhoId){
     	Pessoa pessoa = (Pessoa)getPrincipal();

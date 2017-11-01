@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -35,6 +36,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 
+
 public class AtribuirRevisoresSteps {
 
 	@InjectMocks
@@ -50,6 +52,7 @@ public class AtribuirRevisoresSteps {
 	private MockMvc mockMvc;
 	private ResultActions action;
 	private Pessoa pessoa;
+	private Pessoa autor;
 	private Trabalho trabalho;
 	private ParticipacaoTrabalho participacaoTrabalho;
 	private RevisaoJsonWrapper dadosRevisao;
@@ -59,6 +62,7 @@ public class AtribuirRevisoresSteps {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(eventoControllerOrganizador).build();
 		pessoa = new Pessoa();
+		autor = new Pessoa();
 		trabalho = new Trabalho();
 		dadosRevisao = new RevisaoJsonWrapper();
 		participacaoTrabalho = new ParticipacaoTrabalho();
@@ -82,6 +86,22 @@ public class AtribuirRevisoresSteps {
 		pessoa.setPapelLdap("DOCENTE");
 		trabalho.setTitulo("Meu Trabalho");
 		trabalho.setEvento(evento);
+		
+		
+		autor.setCpf("000");
+		autor.setNome("Joao P Souza");
+		autor.setEmail("jps@b.com");
+		trabalho.setAutores(autor, new ArrayList<>());
+		
+		participacaoTrabalho.setPessoa(autor);
+		participacaoTrabalho.setTrabalho(trabalho);
+		participacaoTrabalho.setPapel(Tipo.AUTOR);
+		
+//		participacoes = new ArrayList<ParticipacaoTrabalho>();
+//		participacoes.add(participacaoTrabalho);
+//		
+//		trabalho.setParticipacoes(participacoes);
+		
 	}
 	@Dado("^que sou organizador$")
 	public void exitesUmEvento() throws Throwable {
@@ -98,10 +118,12 @@ public class AtribuirRevisoresSteps {
 	public void organizadorAtribuiRevisoresAoTrabalho() throws Exception{
 		when(pessoaService.get(dadosRevisao.getRevisorId())).thenReturn(pessoa);
 		when(trabalhoService.getTrabalhoById(dadosRevisao.getTrabalhoId())).thenReturn(trabalho);
+				
 		
 		participacaoTrabalho.setPessoa(pessoa);
 		participacaoTrabalho.setTrabalho(trabalho);
 		participacaoTrabalho.setPapel(Tipo.REVISOR);
+		
 
 		String json = String.format("{\"revisorId\": \"1\",\"trabalhoId\": \"3\"}");
 

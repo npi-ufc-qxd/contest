@@ -41,6 +41,8 @@ public class Trabalho implements Comparable<Trabalho> {
 	
 	private String status;
 	
+	private boolean statusApresentacao;
+	
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
 	@OrderBy("data_submissao")
 	private List<Submissao> submissoes;
@@ -175,7 +177,7 @@ public class Trabalho implements Comparable<Trabalho> {
 		}
 	}
 	
-	private List<Pessoa> getParticipacaoPapelTrabalho(Tipo... papeis) {
+	public List<Pessoa> getParticipacaoPapelTrabalho(Tipo... papeis) {
 		List<Pessoa> pessoa = new ArrayList<Pessoa>();
 		for (ParticipacaoTrabalho p : getParticipacoes()) {
 			for(Tipo papel : papeis){
@@ -267,5 +269,19 @@ public class Trabalho implements Comparable<Trabalho> {
 		return trilha;
 	}
 	
+	public boolean isAutorInTrabalho(Pessoa pessoa){
+		if(this.getAutor().equals(pessoa) || this.getCoAutoresDoTrabalho().contains(pessoa)){
+			return false;
+		}
+		return true;
+	}
+
+	public boolean getStatusApresentacao() {
+		return statusApresentacao;
+	}
+
+	public void setStatusApresentacao(boolean statusApresentacao) {
+		this.statusApresentacao = statusApresentacao;
+	}
 	
 }

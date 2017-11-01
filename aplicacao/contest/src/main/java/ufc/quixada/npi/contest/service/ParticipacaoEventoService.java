@@ -19,8 +19,15 @@ public class ParticipacaoEventoService {
 	@Autowired
 	private ParticipacaoEventoRepository participacaoEventoRepository;
 	
+	public List<ParticipacaoEvento> findParticipacaoEventoPorPessoa(Long id){
+		return participacaoEventoRepository.findParticipacaoEventoByPessoaId(id);
+	}
+	
 	public ParticipacaoEvento findParticipacaoEventoPorId(Long id){
 		return participacaoEventoRepository.findOne(id);
+	}
+	public void remover(ParticipacaoEvento participacaoEvento){
+		participacaoEventoRepository.delete(participacaoEvento);
 	}
 	
 	public boolean adicionarOuEditarParticipacaoEvento(ParticipacaoEvento participacao){
@@ -89,6 +96,10 @@ public class ParticipacaoEventoService {
 		return participacaoEventoRepository.findByEventoIdAndPapel(id, Tipo.REVISOR);
 	}
 	
+	public List<ParticipacaoEvento> getOrganizadoresNoEvento(Long id){
+		return participacaoEventoRepository.findByEventoIdAndPapel(id, Tipo.ORGANIZADOR);
+	}
+	
 	public boolean isOrganizadorDoEvento(Pessoa organizador, Long idEvento){
 		if(organizador.getParticipacoesEvento() != null){
 			for(ParticipacaoEvento participacaoEvento : organizador.getParticipacoesEvento()){
@@ -102,6 +113,10 @@ public class ParticipacaoEventoService {
 	
 	public ParticipacaoEvento buscarOrganizadorPorPessoaEEvento(Evento evento, Pessoa pessoa){
 		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.ORGANIZADOR);
+	}
+	
+	public ParticipacaoEvento buscarRevisorPorPessoaEEvento(Evento evento, Pessoa pessoa){
+		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.REVISOR);
 	}
 	
 	public List<ParticipacaoEvento> getParticipacoesPorEvento(Evento e){

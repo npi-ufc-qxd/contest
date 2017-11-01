@@ -29,15 +29,11 @@
 								<div class="card-content">
 
 									<h5 th:text="${revisao.trabalho.titulo}"></h5>
-									<b>Revisor:</b> <span th:text="${revisao.revisor.nome}"></span>
-
-									<br /> <span>
-
-										<div
-											th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${revisao.trabalho.autoresDoTrabalho})">
-										</div>
-
-									</span>
+									<p><strong>Revisor:</strong><br/><span th:text="${revisao.revisor.nome}"></span></p>
+									<div
+										th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${revisao.trabalho.autoresDoTrabalho})">
+									</div>
+									<p><strong>Considerações:</strong><br/><span th:text="${revisao.observacoes}"></span></p>
 
 								</div>
 							</div>

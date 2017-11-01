@@ -45,8 +45,11 @@ public class ParticipacaoTrabalhoService {
 	}
 	
 	public boolean isParticipandoDoTrabalho(Long idTrabalho, Long idPessoa){
-		return participacaoTrabalhoRepository.
-				findParticipacaoTrabalhoByPessoaIdAndTrabalhoId(idPessoa, idTrabalho) != null ?
-						true : false;
+		return !participacaoTrabalhoRepository.
+				findParticipacaoTrabalhoByPessoaIdAndTrabalhoId(idPessoa, idTrabalho).isEmpty();
+	}
+
+	public List<ParticipacaoTrabalho> findParticipacaoTrabalhoPorPessoa(Long id) {
+		return participacaoTrabalhoRepository.findTrabalhoByPessoaId(id);
 	}
 }

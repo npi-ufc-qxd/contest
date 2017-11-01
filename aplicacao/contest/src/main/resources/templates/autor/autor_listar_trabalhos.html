@@ -7,7 +7,7 @@
     <div th:include="fragments/header :: header"></div>
     <div class="container page"><br/>
       <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
-      <h2 th:text="'Evento:' + ${evento.nome}"></h2>
+      <h2 th:if="${evento}" th:text="'Evento:' + ${evento.nome}"></h2>
       
       <div>
 		<div th:if="${trabalhoExcluido}" id="error_area" class="row chip red white-text green" th:text="#{TRABALHO_EXCLUIDO_COM_SUCESSO}">
@@ -49,36 +49,44 @@
           <div th:each="trabalho : ${listaTrabalhos}" class="card horizontal ">
         	<div class="card-stacked">
         	  
-        	  <div class="card-content"><span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span>
+        	  <div class="card-content">
+ 				<span th:if="not ${evento}" class="card-title" th:text="'Evento: ' + ${trabalho.evento.nome}"></span> <br/>
+                <span class="card-title" th:text="'Trabalho: ' + ${trabalho.titulo}"></span> <br/>
+                
+ 
+                
                 <div class="row">
                 <div class="col s4">
                 	<div th:include="fragments/listar_participacoes :: listar-clean('Autor(es):', ${trabalho.autoresDoTrabalho})"></div>
                 </div>
                 
                 <div class="col s4">
-                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
+                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>                	                
                 	
-                </div>
-                 <div class="col s4">
-                	<p><b>Trilha: </b><span th:text="${trabalho.trilha.nome}"></span></p>
-                	<p><b>SITUAÇÃO DO ARTIGO: </b> 
-                	
-                	<span th:if="${not #lists.isEmpty(trabalho.revisoes)}" th:text="${trabalho.revisoes[0].avaliacao}"></span>
-                	<span th:if="${#lists.isEmpty(trabalho.revisoes)}">Não Revisado</span>
-                	</p>
-               
+                	<p th:with="dataFinal=${#dates.format({trabalho.evento.PrazoRevisaoFinal},'dd/MM/YYYY')},hoje=${#dates.createToday()},data_hoje=${#dates.format({hoje},'dd/MM/YYYY')}">
+						<b>SITUAÇÃO DO ARTIGO: </b>
+						
+						
+						<th:block th:if="${trabalho.isRevisado()}">
+							<span th:if="${data_hoje.compareTo(dataFinal) != 1}" th:text="${trabalho.status}"></span> 				
+							<span th:unless="${data_hoje.compareTo(dataFinal) != 1}"> EM REVISÃO</span>				
+						</th:block>
+						
+						<span th:if="${not trabalho.isRevisado()}">NÃO REVISADO</span> 					
+					</p>
+                              		
                 </div>
                 <div class="col s4">
                 <p><b>Número total de submissões: </b><span th:text="${#lists.size(trabalho.submissoes)}"></span></p>
                 	<p><b>Último envio: </b><span th:text="${#dates.format(trabalho.submissoes.get(#lists.size(trabalho.submissoes) - 1).dataSubmissao,'dd/MM/yyyy')} "></span></p>
                 </div>
                 </div>
-                 
+                
               </div>
               <form th:action="@{/autor/reenviarTrabalho}"  method="POST" enctype="multipart/form-data">
 	              <div class="card-action">
-	                <div class="row">
-	                  <div th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" class="file-field input-field col m6 s6">
+	                <div class="row" th:with="podeEnviar=(${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}) and ${trabalho.autor.equals(pessoa)}">
+	                  <div th:if="${podeEnviar}" class="file-field input-field col m6 s6">
 	                    <div class="btn right"><span>Escolher...</span>
 	                      <input type="file" name="file" class="multiple"/>
 	                    </div>
@@ -89,9 +97,9 @@
 	                  <div class="input-field col m6 s6">
 	                  	<small>Opções</small>
 	                  	<br/>
-	                    <a th:if="${trabalho.evento.isPeriodoInicial()} or ${trabalho.evento.isPeriodoFinal()}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a> 
-	                    <a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver envio</a>
-	     				<a th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver revisões</a>              	                   
+	                    <a th:if="${podeEnviar}" th:attr="href='#reenviar' + ${trabalho.id}" class="teal-text confirmar modal-trigger">Reenviar</a> 
+	                    <a th:href= "@{|/autor/file/${trabalho.id}|}" class="teal-text">Ver envio</a>
+	     				<a th:if="${not evento.isPeriodoRevisao()}" th:href= "@{|/autor/revisao/trabalho/${trabalho.id}|}" class="teal-text confirmar modal-trigger">Ver revisões</a>              	                   
 	                    <a th:if="${trabalho.evento.isPeriodoFinal() AND #lists.size(trabalho.revisoes) == 0}" th:href="@{'/autor/revisao/trabalho/' + ${trabalho.id}}" class="btn disabled gray">Não revisado</a>
 						<a th:if="${trabalho.evento.isPeriodoInicial()}" th:attr="href='#modal' + ${trabalho.id}" class="red-text confirmar modal-trigger">Excluir</a>
 	                  </div>
@@ -112,9 +120,7 @@
 			          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
 			        </div>
       			</div>
-	         </form>
-              
-        	  
+	         </form>                      	  
         	</div>
         	
         	      	
@@ -142,6 +148,7 @@
         <div th:if="${#lists.isEmpty(listaTrabalhos)}" class="col s4">
         	<p>Você não enviou trabalhos para esse evento</p>
         </div>
+
       </div>
       <!-- 
             <div class="row col s12 center">

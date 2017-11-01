@@ -10,7 +10,6 @@
 		<div class="row">
 
 			<h2 class="col s12">Dashboard</h2>
-
 			<div class="col s8 md10">
 				<div class="card white">
 					<div class="card-content" th:if="${not #lists.isEmpty(eventosInativos)}">
@@ -75,7 +74,7 @@
 												class="purple-text">Ver participação</a>
 												
 												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'COAUTOR'}"
-												th:href="@{|/coautor/listarTrabalhos/${evento.id}|}" 
+												th:href="@{|/coautor/meusTrabalhos/evento/${evento.id}|}" 
 												class="purple-text">Ver participação</a>
 													
 											</span>
@@ -121,12 +120,12 @@
 													class="btn">Visão de revisor</a>
 													
 													<a th:if="${participacao.papel.name() == 'COAUTOR'}"
-													th:href="@{|/coautor/listarTrabalhos/${evento.id}|}" 
+													th:href="@{|/coautor/meusTrabalhos/evento/${evento.id}|}" 
 													class="btn">Visao de coautor</a>
 											</span>
 										</div>
 										<div class="modal-footer">
-								            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat ">Cancelar</a>
+								            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat ">Fechar</a>
 								          </div>
 									</div>
 								</div>
@@ -171,14 +170,14 @@
 							<div>
 								<ul>
 									<li><a
-										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[0].evento.id}|}"
-										th:text="${eventosQueOrganizo[0].evento.nome}"></a></li>
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[0].id}|}"
+										th:text="${eventosQueOrganizo[0].nome}"></a></li>
 									<li><a th:if="${eventosQueOrganizo.size()} > 1"
-										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[1].evento.id}|}"
-										th:text="${eventosQueOrganizo[1].evento.nome}"></a></li>
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[1].id}|}"
+										th:text="${eventosQueOrganizo[1].nome}"></a></li>
 									<li><a th:if="${eventosQueOrganizo.size()} > 2"
-										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[2].evento.id}|}"
-										th:text="${eventosQueOrganizo[2].evento.nome}"></a></li>
+										th:href="@{|/eventoOrganizador/evento/${eventosQueOrganizo[2].id}|}"
+										th:text="${eventosQueOrganizo[2].nome}"></a></li>
 								</ul>
 
 							</div>
@@ -207,7 +206,7 @@
 										th:href="@{|/autor/meusTrabalhos/evento/${eventosQueSouAutor[1].id}|}"
 										th:text="${eventosQueSouAutor[1].nome}"></a></li>
 									<li><a th:if="${eventosQueSouAutor.size()} > 2"
-										th:href="@{|/autor/meusTrabalhos/evento/${eventosQueSouAutor[0].id}|}"
+										th:href="@{|/autor/meusTrabalhos/evento/${eventosQueSouAutor[2].id}|}"
 										th:text="${eventosQueSouAutor[2].nome}"></a></li>
 								</ul>
 							</div>
@@ -227,19 +226,19 @@
 							<div>
 								<ul>
 									<li><a
-										th:href="@{|/coautor/listarTrabalhos/${eventosMinhaCoautoria[0].id}|}"
+										th:href="@{|/coautor/meusTrabalhos/evento/${eventosMinhaCoautoria[0].id}|}"
 										th:text="${eventosMinhaCoautoria[0].nome}"></a></li>
 									<li><a th:if="${eventosMinhaCoautoria.size()} > 1"
-										th:href="@{|/coautor/listarTrabalhos/${eventosMinhaCoautoria[1].id}|}"
+										th:href="@{|/coautor/meusTrabalhos/evento/${eventosMinhaCoautoria[1].id}|}"
 										th:text="${eventosMinhaCoautoria[1].nome}"></a></li>
 									<li><a th:if="${eventosMinhaCoautoria.size()} > 2"
-										th:href="@{|/coautor/listarTrabalhos/${eventosMinhaCoautoria[2].id}|}"
+										th:href="@{|/coautor/meusTrabalhos/evento/${eventosMinhaCoautoria[2].id}|}"
 										th:text="${eventosMinhaCoautoria[2].nome}"></a></li>
 								</ul>
 							</div>
 						</div>
 						<div class="card-action">
-							<a th:href="@{/coautor/}"
+							<a th:href="@{/coautor/meusTrabalhos}"
 								class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver
 								mais</a>
 						</div>

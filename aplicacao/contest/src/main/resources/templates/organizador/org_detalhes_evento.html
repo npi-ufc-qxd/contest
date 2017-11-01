@@ -81,7 +81,9 @@
 										required="required" /> <label for="email_rev">E-mail
 										Revisor</label>
 								</div>
-								<small>Você pode adicionar mais de um revisor, basta adicionar os emails separados por vírgula. Ex.: "nome@email.com,nome@email2.com,nome@emails3.com"</small>
+								<small>Você pode adicionar mais de um revisor, basta
+									adicionar os emails separados por vírgula. Ex.:
+									"nome@email.com,nome@email2.com,nome@emails3.com"</small>
 								<div class="input-field">
 									<input type="hidden" th:value="${evento.id}" name="eventoId" />
 								</div>
@@ -104,36 +106,80 @@
 			</div>
 			<br /> <br /> <br />
 			<div class="row">
-				<div class="card col s6" style="float:left; width: 48%">
+				<div class="card col s6" style="float: left; width: 48%">
 					<span class="card-title teal-text text-lighten-2">Organizadores:</span>
 					<br /> <br />
-					<div class="" style="max-height: 150px; overflow-x: auto; white-space: nowrap">
+					<div class=""
+						style="max-height: 150px; overflow-x: auto; white-space: nowrap">
 						<div class="card-content white-text">
 							<div th:each="pessoaOrganizador : ${evento.getOrganizadores()}"
 								class="black-text text-darken-2">
-								<p th:text="${pessoaOrganizador.getNome()}"></p>
+								<span th:text="${pessoaOrganizador.getNome()}"></span>
+									
+
+								<a th:attr="href='#modalRemoverOrganizador' + ${pessoaOrganizador.id}"
+									class="red-text confirmar modal-trigger"><small><b>remover</b></small></a>
+
+								<div th:attr="id='modalRemoverOrganizador' + ${pessoaOrganizador.id}"
+									class="modal">
+									<div class="modal-content">
+										<h4>Remover Organizador</h4>
+										<h5 th:text="${pessoaOrganizador.getNome()}"></h5>
+										<p>Você está removendo o organizador</p>
+									</div>
+									<form th:action="@{|/eventoOrganizador/removerOrganizador/${evento.id}|}" method="post">
+
+										<div class="modal-footer">
+											<input type="hidden" name="pessoaId" th:value="${pessoaOrganizador.id}" />
+											<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+											<a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+										</div>
+									</form>
+								</div>
+
 							</div>
 						</div>
 					</div>
 					<br />
+
 					<button class="waves-effect waves-light btn modal-trigger  left"
 						data-target="modal1" style="left: 1px">Adicionar
 						Organizador</button>
 					<br /> <br /> <br />
 				</div>
-				 
-				
-				<div class="card col s6" style="float:right; width: 48%">
+
+
+				<div class="card col s6" style="float: right; width: 48%">
 					<span class="card-title teal-text text-lighten-2">Revisores:</span>
 					<br /> <br />
-					<div class="" style="max-height: 150px; overflow-x: auto; white-space: nowrap">
+					<div class=""
+						style="max-height: 150px; overflow-x: auto; white-space: nowrap">
 						<div class="card-content white-text">
 							<div th:each="pessoaRevisor : ${evento.getRevisores()}"
 								class="black-text text-darken-2">
-								<p th:text="${pessoaRevisor.getNome()}"></p>
+								<span th:text="${pessoaRevisor.getNome()}"></span>
+								<a th:attr="href='#modalRemoverRevisor' + ${pessoaRevisor.id}" class="red-text confirmar modal-trigger"><small><b>remover</b></small></a>
+
+								<div th:attr="id='modalRemoverRevisor' + ${pessoaRevisor.id}"
+									class="modal">
+									<div class="modal-content">
+										<h4>Remover Revisor</h4>
+										<h5 th:text="${pessoaRevisor.getNome()}"></h5>
+										<p>Você está removendo o revisor</p>
+									</div>
+									<form th:action="@{|/eventoOrganizador/removerRevisor/${evento.id}|}"	method="post">
+
+										<div class="modal-footer">											
+											<input type="hidden" name="pessoaId" th:value="${pessoaRevisor.id}"/>
+											<button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+											<a href="#"	class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+										</div>
+									</form>
+								</div>
+
 							</div>
 							<p th:unless="${!#lists.isEmpty(evento.getRevisores())}"
-									class="black-text text-darken-2">Não há revisores</p>
+								class="black-text text-darken-2">Não há revisores</p>
 						</div>
 					</div>
 					<br />
@@ -144,6 +190,8 @@
 				</div>
 
 			</div>
+			
+			
 			<div>
 				<div class="col s12">
 					<div class="card horizontal">

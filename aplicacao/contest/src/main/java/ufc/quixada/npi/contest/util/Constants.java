@@ -52,6 +52,8 @@ public class Constants {
 	public static final String ACAO_COMPLETAR_CADASTRO = "Completar Cadastro";
 	public static final String REDIRECIONAR_PARA_LOGIN = "redirect:/login";	
 	
-	public static final String TEMPLATE_INDEX_COAUTOR = "coautor/coautor_listar_trabalhos";
+	public static final String ERROR_403 = "error/403";
+	public static final String ERROR_404 = "error/404";
+	public static final String NO_ERROR = "NO_ERROR";
 	
 	}
