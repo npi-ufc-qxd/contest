@@ -118,7 +118,7 @@ public class TrabalhoService {
 
 					if (revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {					
 						numeroDeRessalvas++;
-						if (numeroDeRessalvas == numeroDeAprovacao) {
+						if (numeroDeRessalvas == trabalho.getRevisoes().size()) {
 							return "RESSALVAS";
 						}
 					}
