@@ -198,25 +198,10 @@ public class AutorController {
 		} else {
 			eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());
 		}
+		
 		if (eventos != null) {
-			List<String> trabalhosEventos = new ArrayList<>();
-
-			for (Evento evento : eventos) {
-				if (submissaoService.existeTrabalhoNesseEvento(evento.getId())) {
-					if (revisaoService.existeTrabalhoNesseEvento(evento.getId())) {
-						trabalhosEventos.add(TEM_REVISAO);
-					} else {
-						trabalhosEventos.add(NAO_TEM_REVISAO);
-					}
-				} else {
-					trabalhosEventos.add(NAO_TEM_REVISAO);
-				}
-			}
-
 			model.addAttribute("eventos", eventos);
-			model.addAttribute("trabalhosEvento", trabalhosEventos);
-		} else {
-			model.addAttribute("naoHaTrabalhos", messageService.getMessage(NAO_HA_TRABALHOS));
+			model.addAttribute("papel", Tipo.AUTOR);
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
@@ -389,12 +374,12 @@ public class AutorController {
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
-			Long idEvento = Long.parseLong(id);
-			if (eventoService.existeEvento(idEvento)) {
-				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
+			Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+			if (evento != null && evento.getAutores().contains(pessoa)) {
 
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
+				model.addAttribute("pessoa", pessoa);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
 

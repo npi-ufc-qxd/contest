@@ -37,7 +37,8 @@
                   <a th:if="${evento.isPeriodoInicial()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
                	  <a th:if="${evento.isPeriodoRevisao() or (not evento.isPeriodoInicial())}" class="btn disabled grey white-text">Fora do Prazo de Envio de Trabalho</a>
                	  
-               	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
+               	  <a th:if="${papel ==  T(ufc.quixada.npi.contest.model.Papel$Tipo).AUTOR}" th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
+               	  <a th:if="${papel ==  T(ufc.quixada.npi.contest.model.Papel$Tipo).COAUTOR}" th:href="@{'/coautor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
                 </div>
               </div>
             </div>

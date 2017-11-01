@@ -3,6 +3,7 @@ package ufc.quixada.npi.contest.controller;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
@@ -34,16 +36,16 @@ public class CoautorController {
 	@RequestMapping("/")
 	public String index(Model model) {
 		model.addAttribute("listaTrabalhos", trabalhoService.getTrabalhosDoCoautor(PessoaLogadaUtil.pessoaLogada()));
-		return Constants.TEMPLATE_INDEX_COAUTOR;
+		return Constants.TEMPLATE_INDEX_AUTOR;
 	}
 	
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 
-		Long idEvento = Long.parseLong(id);
-			if (eventoService.existeEvento(idEvento)) {
-				Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
-				Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();		
+			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
+			Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+			if (evento != null && evento.getAutores().contains(pessoa)) {
+
 								
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoCoautorNoEvento(pessoa, evento);
 				model.addAttribute("evento", evento);
@@ -52,8 +54,30 @@ public class CoautorController {
 				model.addAttribute("data_hoje");
 				model.addAttribute("dataFinal");
 				
-				return Constants.TEMPLATE_INDEX_COAUTOR;
+				return Constants.TEMPLATE_LISTAR_TRABALHO_AUTOR;
 			}
 			return "redirect:/autor/meusTrabalhos";
-	}	
+	}
+	
+	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
+	public String listarMeusTrabalhosEmEventosAtivos(Model model) {
+		return listarMeusTrabalhosEmEventosAtivos(null, model);
+	}
+	
+	@RequestMapping(value = "/meusTrabalhos/evento/{eventoId}", method = RequestMethod.GET)
+	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, Model model) {
+		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
+		List<Evento> eventos = new ArrayList<>();
+		if (eventoId != null) {
+			eventos.add(eventoService.buscarEventoPorId(eventoId));
+		} else {
+			eventos = eventoService.getMeusEventosComoCoautor(autorLogado.getId());
+		}
+		
+		if (eventos != null) {
+			model.addAttribute("eventos", eventos);
+			model.addAttribute("papel", Tipo.COAUTOR);
+		}
+		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
+	}
 }
