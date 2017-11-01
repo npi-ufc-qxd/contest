@@ -108,12 +108,13 @@ public class TrabalhoService {
 	public String mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
+		int numeroDeRessalvas = 0;
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
 		if (!revisoes.isEmpty()) {
-			for (int i = 0; i < revisoes.size(); i++) {
-
-				if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO")) {
+			for (int i = 0; i < revisoes.size(); i++) {							
+				
+				if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO") || revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {
 					numeroDeAprovacao++;
 					if (numeroDeAprovacao == trabalho.getRevisoes().size())
 						return "APROVADO";
@@ -122,6 +123,10 @@ public class TrabalhoService {
 					numeroDeReprovacao++;
 					if (numeroDeReprovacao == trabalho.getRevisoes().size())
 						return "REPROVADO";
+				}else if (revisoes.get(i).getAvaliacao().toString().equals("RESSALVAS")) {
+					numeroDeRessalvas++;
+					if (numeroDeRessalvas == trabalho.getRevisoes().size())
+						return "RESSALVAS";
 				}
 			}
 			return "MODERACAO";
