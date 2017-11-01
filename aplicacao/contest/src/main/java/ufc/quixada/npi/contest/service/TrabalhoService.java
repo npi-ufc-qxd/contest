@@ -114,28 +114,33 @@ public class TrabalhoService {
 		if (!revisoes.isEmpty()) {
 			for (int i = 0; i < revisoes.size();) {
 
-				if (revisoes.get(i).getAvaliacao() == Avaliacao.APROVADO || revisoes.get(i).getAvaliacao() == Avaliacao.RESSALVAS) {
-					numeroDeAprovacao++;
-										
-					if (revisoes.get(i).getAvaliacao() == Avaliacao.RESSALVAS) {					
-						numeroDeRessalvas++;
-						if (numeroDeRessalvas == trabalho.getRevisoes().size()) {
-							return Avaliacao.RESSALVAS;
-						}
-					}
-					if (numeroDeAprovacao == trabalho.getRevisoes().size()){
-						return Avaliacao.APROVADO;
-					}	
+				Avaliacao avaliacao = revisoes.get(i).getAvaliacao();
 
-				} else if (revisoes.get(i).getAvaliacao() == Avaliacao.REPROVADO) {
+				if (avaliacao == Avaliacao.APROVADO	|| avaliacao == Avaliacao.RESSALVAS) {
+					numeroDeAprovacao++;
+
+					if (avaliacao == Avaliacao.RESSALVAS) {
+						numeroDeRessalvas++;
+						
+					}
+				} else if (avaliacao == Avaliacao.REPROVADO) {
 					numeroDeReprovacao++;
-					if (numeroDeReprovacao == trabalho.getRevisoes().size())
-						return Avaliacao.REPROVADO;	
+				}
 			}
-			return Avaliacao.MODERACAO;
-		}		
 		}
-		return null;
+		
+		if (numeroDeReprovacao == trabalho.getRevisoes().size())
+			return Avaliacao.REPROVADO;
+		
+		if (numeroDeAprovacao == trabalho.getRevisoes().size()) {
+			return Avaliacao.APROVADO;
+		}
+		
+		if (numeroDeRessalvas == trabalho.getRevisoes().size()) {
+			return Avaliacao.RESSALVAS;
+		}
+		
+		return Avaliacao.MODERACAO;
 	}
 
 	public List<String> pegarConteudo(Trabalho trabalho) {
