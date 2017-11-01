@@ -7,6 +7,9 @@
 <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
 	media="screen,projection,print,page" />
 <title>Lista de Participações - Contest</title>
+<style type="text/css" media="print">
+  @page { size: landscape; }
+</style>
 </head>
 <body>
 	<div class="container page" align="center" style="text-align: center;">
@@ -18,6 +21,11 @@
 		<font size="3"> <b
 			th:text="${#strings.toUpperCase(secao.nome)}"></b>
 		</font><br />
+		<p>
+			<span th:text="'Data: '+${secao.dataSecao}"></span> | 
+	        <span th:text="'Hora: '+${secao.horario}"></span> | 
+	        <span th:text="'Local: '+${secao.local}"></span>
+        </p>
 		<br />
 
 		<div class="container col s8 md10 tg"
@@ -43,9 +51,16 @@
 		</div>
 
 	</div>
+	
+	
 
 	<script src="/webjars/jquery/2.2.4/jquery.js"></script>
+	
 	<script src="/webjars/materializecss/0.97.7/js/materialize.js"></script>
+	
+	<script type="text/javascript">
+			window.print();
+	</script>
 </body>
 
 </html>
