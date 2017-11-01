@@ -19,7 +19,6 @@ import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 @Controller
 public class CoautorController {
 
-	private static final String COAUTOR = "coautor";
 	@Autowired
 	private TrabalhoService trabalhoService;
 	
@@ -31,19 +30,16 @@ public class CoautorController {
 	
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(RedirectAttributes redirAttr, @PathVariable String id, Model model) {
-		redirAttr.addAttribute(COAUTOR, "");
-		return "forward:/autor/listarTrabalhos/" + id;
+		return "forward:/autor/listarTrabalhos/" + id + "?coautor=coautor";
 	}
 	
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
 	public String listarMeusTrabalhosEmEventosAtivos(RedirectAttributes redirAttr) {
-		redirAttr.addAttribute(COAUTOR, "");
-		return "forward:/autor/meusTrabalhos/";
+		return "forward:/autor/meusTrabalhos/?coautor=coautor";
 	}
 	
 	@RequestMapping(value = "/meusTrabalhos/evento/{eventoId}", method = RequestMethod.GET)
 	public String listarMeusTrabalhosEmEventosAtivos(RedirectAttributes redirAttr, @PathVariable Long eventoId) {
-		redirAttr.addAttribute(COAUTOR, "");
-		return "forward:/autor/meusTrabalhos/evento/" + eventoId;
+		return "forward:/autor/meusTrabalhos/evento/" + eventoId + "?coautor=coautor";
 	}
 }

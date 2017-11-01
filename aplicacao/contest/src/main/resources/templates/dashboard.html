@@ -75,7 +75,7 @@
 												class="purple-text">Ver participação</a>
 												
 												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'COAUTOR'}"
-												th:href="@{|/coautor/listarTrabalhos/${evento.id}|}" 
+												th:href="@{|/coautor/meusTrabalhos/evento/${evento.id}|}" 
 												class="purple-text">Ver participação</a>
 													
 											</span>
@@ -121,7 +121,7 @@
 													class="btn">Visão de revisor</a>
 													
 													<a th:if="${participacao.papel.name() == 'COAUTOR'}"
-													th:href="@{|/coautor/listarTrabalhos/${evento.id}|}" 
+													th:href="@{|/coautor/meusTrabalhos/evento/${evento.id}|}" 
 													class="btn">Visao de coautor</a>
 											</span>
 										</div>
@@ -227,13 +227,13 @@
 							<div>
 								<ul>
 									<li><a
-										th:href="@{|/coautor/listarTrabalhos/${eventosMinhaCoautoria[0].id}|}"
+										th:href="@{|/coautor/meusTrabalhos/evento/${eventosMinhaCoautoria[0].id}|}"
 										th:text="${eventosMinhaCoautoria[0].nome}"></a></li>
 									<li><a th:if="${eventosMinhaCoautoria.size()} > 1"
-										th:href="@{|/coautor/listarTrabalhos/${eventosMinhaCoautoria[1].id}|}"
+										th:href="@{|/coautor/meusTrabalhos/evento/${eventosMinhaCoautoria[1].id}|}"
 										th:text="${eventosMinhaCoautoria[1].nome}"></a></li>
 									<li><a th:if="${eventosMinhaCoautoria.size()} > 2"
-										th:href="@{|/coautor/listarTrabalhos/${eventosMinhaCoautoria[2].id}|}"
+										th:href="@{|/coautor/meusTrabalhos/evento/${eventosMinhaCoautoria[2].id}|}"
 										th:text="${eventosMinhaCoautoria[2].nome}"></a></li>
 								</ul>
 							</div>
