@@ -58,6 +58,7 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
+	private static final String PAPEL_USUARIO_LOGADO = "papel";
 	private static final String EXTENSAO_PDF = ".pdf";
 	private static final String FORA_DO_PRAZO_SUBMISSAO = "FORA_DO_PRAZO_SUBMISSAO";
 	private static final String ERRO_EXCLUIR_TRABALHO = "ERRO_EXCLUIR_TRABALHO";
@@ -66,9 +67,6 @@ public class AutorController {
 	private static final String ERRO_CADASTRO_TRABALHO = "ERRO_CADASTRO_TRABALHO";
 	private static final String TRABALHO_ENVIADO = "TRABALHO_ENVIADO";
 	private static final String FORMATO_ARQUIVO_INVALIDO = "FORMATO_ARQUIVO_INVALIDO";
-	private static final String NAO_HA_TRABALHOS = "NAO_HA_TRABALHOS";
-	private static final String NAO_TEM_REVISAO = "NAO_TEM_REVISAO";
-	private static final String TEM_REVISAO = "TEM_REVISAO";
 	private static final String PARTICAPAR_EVENTO_SUCESSO = "PARTICAPAR_EVENTO_SUCESSO";
 	private static final String PARTICAPACAO_EVENTO_SUCESSO = "particapacaoEventoSucesso";
 	private static final String EVENTO_NAO_EXISTE = "EVENTO_NAO_EXISTE";
@@ -194,13 +192,13 @@ public class AutorController {
 	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, @ModelAttribute("coautor") String coautor, Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventos = new ArrayList<>();
-		model.addAttribute("papel", Tipo.AUTOR);
+		model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
 		if (eventoId != null) {
 			eventos.add(eventoService.buscarEventoPorId(eventoId));
 		} else {
 			if(coautor != null){
 				eventos = eventoService.getMeusEventosComoCoautor(autorLogado.getId());
-				model.addAttribute("papel", Tipo.COAUTOR);
+				model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.COAUTOR);
 			} else {
 				eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());				
 			}
@@ -382,13 +380,13 @@ public class AutorController {
 		try {
 			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
 			Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
-			model.addAttribute("papel", Tipo.AUTOR);
+			model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
 			if (evento != null && evento.getAutores().contains(pessoa)) {
 				
 				List<Trabalho> listaTrabalho; trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				if(coautor != null){
 					listaTrabalho = trabalhoService.getTrabalhosDoCoautorNoEvento(pessoa, evento);
-					model.addAttribute("papel", Tipo.COAUTOR);					
+					model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.COAUTOR);					
 				} else {
 					listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
 				}
