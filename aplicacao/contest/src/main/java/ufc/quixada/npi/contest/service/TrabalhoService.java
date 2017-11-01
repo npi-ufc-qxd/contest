@@ -70,6 +70,14 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosDoAutorNoEvento(Pessoa pessoa, Evento evento) {
 		return trabalhoRepository.getTrabalhoDoAutorNoEvento(pessoa.getId(), evento.getId());
 	}
+	
+	public List<Trabalho> getTrabalhosDoCoautorNoEvento(Pessoa pessoa, Evento evento) {
+		return trabalhoRepository.getTrabalhoDoCoautorNoEvento(pessoa.getId(), evento.getId());
+	}
+	
+	public List<Trabalho> getTrabalhosComoAutorECoautorNoEvento(Pessoa pessoa, Evento evento) {
+		return trabalhoRepository.getTrabalhoComoAutorECoautorNoEvento(pessoa.getId(), evento.getId());
+	}
 
 	public List<Trabalho> getTrabalhosDoCoautor(Pessoa pessoa) {
 		return trabalhoRepository.getTrabalhoDoCoautor(pessoa.getId());
@@ -173,9 +181,5 @@ public List<String> pegarConteudo(Trabalho trabalho) {
 		for (Pessoa coautor : coautores) {
 			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
 		}
-	}
-
-	public List<Trabalho> getTrabalhosDoCoautorNoEvento(Pessoa pessoa, Evento evento) {
-		return trabalhoRepository.getTrabalhoDoCoautorNoEvento(pessoa.getId(), evento.getId());
 	}
 }

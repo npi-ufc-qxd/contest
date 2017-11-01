@@ -189,7 +189,7 @@ public class AutorController {
 	}
 
 	@RequestMapping(value = "/meusTrabalhos/evento/{eventoId}", method = RequestMethod.GET)
-	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, @RequestParam(required= false, name="coautor") String coautor, Model model) {
+	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, @RequestParam(required = false, name="coautor") String coautor, Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventos = new ArrayList<>();
 		model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
@@ -376,20 +376,14 @@ public class AutorController {
 
 	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
-	public String listarTrabalhos(@PathVariable String id, @RequestParam(required= false, name="coautor") String coautor, Model model, RedirectAttributes redirect) {
+	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
 			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
 			Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
 			model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
 			if (evento != null && evento.getAutores().contains(pessoa)) {
 				
-				List<Trabalho> listaTrabalho; 
-				if(coautor != null){
-					listaTrabalho = trabalhoService.getTrabalhosDoCoautorNoEvento(pessoa, evento);
-					model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.COAUTOR);					
-				} else {
-					listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
-				}
+				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosComoAutorECoautorNoEvento(pessoa, evento);
 				model.addAttribute("pessoa", pessoa);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
