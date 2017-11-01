@@ -8,8 +8,8 @@
 		<div class="card-content"
 			th:with="data_inicial=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')},
 			data_inicial_label=${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMM')},
-			data_revisao_inicial=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')},
-			data_revisao_inicial_label=${#calendars.format({evento.PrazoRevisaoInicial},'dd MMM')},
+			data_revisao_inicial=${#calendars.format({evento.ultimoDiaSubmissaoInicial},'dd/MM/YYYY')},
+			data_revisao_inicial_label=${#calendars.format({evento.ultimoDiaSubmissaoInicial},'dd MMM')},
 			data_revisao_final=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')},
 			data_revisao_final_label=${#calendars.format({evento.PrazoRevisaoFinal},'dd MMM')},
 			data_fim_envio_final=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')},
@@ -53,7 +53,7 @@
 					</li>
 					 -->
 					<li th:attr="data-date=${data_revisao_inicial}">
-						<em>Terminou o periodo de submissão, hora de começar as Revisões</em>
+						<em>Último dia para submeter trabalho</em>
 					</li>
 					<!-- 
 					<li class="selected" th:if="${evento.isPeriodoRevisao()}" th:attr="data-date=${data_hoje}">
@@ -61,7 +61,7 @@
 					</li>
 					 -->
 					<li th:attr="data-date=${data_revisao_final}">
-						<em>Terminaram as revisões, hora de submeter a versão final</em>
+						<em>Último dia para revisar os trabalhos</em>
 					</li>
 					<!-- 
 					<li class="selected" th:if="${evento.isPeriodoFinal()}" th:attr="data-date=${data_hoje}">
@@ -69,7 +69,7 @@
 					</li>
 					 -->
 					<li href="#0" th:attr="data-date=${data_fim_envio_final}">
-						<em>Ultimo dia para submeter a versão final do artigo</em>
+						<em>Ùltimo dia para submeter a versão final do artigo</em>
 					</li>
 				</ol>
 			</div>
