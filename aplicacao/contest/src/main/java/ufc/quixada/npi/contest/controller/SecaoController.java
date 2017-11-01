@@ -5,17 +5,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.PresencaJsonWrapper;
 import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
@@ -196,4 +200,17 @@ public class SecaoController {
 		}
 		return Constants.NO_ERROR;
 	}
+	
+	@RequestMapping(value = "/presenca", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String atibuirPresenca(@RequestBody PresencaJsonWrapper dadosPresenca) {
+
+		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosPresenca.getTrabalhoId());
+
+		if (trabalho != null) {
+			trabalho.setStatusApresentacao(!trabalho.getStatusApresentacao());
+			trabalhoService.adicionarTrabalho(trabalho);
+		}
+		return "{\"result\":\"ok\"}";
+	}
+	
 }

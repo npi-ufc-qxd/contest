@@ -1,1 +1,1 @@
-ALTER TABLE trabalho ADD column status_Apresentacao character varying(255)
+ALTER TABLE trabalho ADD column status_Apresentacao BOOLEAN NOT NULL DEFAULT FALSE;

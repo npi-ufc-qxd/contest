@@ -147,9 +147,7 @@ public class LoginController {
 				pessoaService.addOrUpdate(pessoa);
 				tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
 			}
-		} else{
-				return "";
-			}
+		}
 
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}

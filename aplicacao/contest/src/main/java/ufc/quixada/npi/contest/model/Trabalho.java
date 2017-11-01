@@ -41,7 +41,7 @@ public class Trabalho implements Comparable<Trabalho> {
 	
 	private String status;
 	
-	private String statusApresentacao;
+	private boolean statusApresentacao;
 	
 	@OneToMany(mappedBy="trabalho", cascade=CascadeType.REMOVE)
 	@OrderBy("data_submissao")
@@ -276,11 +276,11 @@ public class Trabalho implements Comparable<Trabalho> {
 		return true;
 	}
 
-	public String getStatusApresentacao() {
+	public boolean getStatusApresentacao() {
 		return statusApresentacao;
 	}
 
-	public void setStatusApresentacao(String statusApresentacao) {
+	public void setStatusApresentacao(boolean statusApresentacao) {
 		this.statusApresentacao = statusApresentacao;
 	}
 	

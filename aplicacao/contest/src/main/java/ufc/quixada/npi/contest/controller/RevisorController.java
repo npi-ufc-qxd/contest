@@ -85,7 +85,6 @@ public class RevisorController {
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
 	private static final String FORA_PERIODO_REVISAO = "FORA_PERIODO_REVISAO";
 
-	//@PreAuthorize("isRevisorInEvento(#eventoId)")
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
 		Evento evento = eventoService.buscarEventoPorId(idEvento);
@@ -112,7 +111,6 @@ public class RevisorController {
 		return REVISOR_TRABALHOS_REVISAO;
 	}
 
-	//@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/{idTrabalho}/revisar", method = RequestMethod.GET)
 	public String revisarTrabalho(HttpSession session, Model model, @PathVariable("idTrabalho") Long idTrabalho,
 			RedirectAttributes redirect) {
