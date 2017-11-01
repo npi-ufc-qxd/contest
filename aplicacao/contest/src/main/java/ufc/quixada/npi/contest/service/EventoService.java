@@ -195,15 +195,15 @@ public class EventoService {
 		return eventoRepository.eventosPorPapel(idAutor, Tipo.COAUTOR);
 	}
 	
-	public List<Evento> getMeusEventosAtivosComoOrganizador(Long idAutor){
-		return eventoRepository.eventosComoOrganizadorlVisibilidade(idAutor, EstadoEvento.ATIVO);
+	public List<Evento> getMeusEventosAtivosComoOrganizador(Long idOrganizador){
+		return eventoRepository.eventosComoOrganizadorEstado(idOrganizador, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> getMeusEventosInativosComoOrganizador(Long idOrganizador) {
-		return eventoRepository.eventosPorPapelVisibilidade(idOrganizador, Tipo.ORGANIZADOR, EstadoEvento.INATIVO);
+		return eventoRepository.eventosPorPapelEstado(idOrganizador, Tipo.ORGANIZADOR, EstadoEvento.INATIVO);
 	}
 	public List<Evento> getMeusEventosAtivosComoRevisor(Long idRevisor) {
-		return eventoRepository.eventosPorPapelVisibilidade(idRevisor, Tipo.REVISOR, EstadoEvento.ATIVO);
+		return eventoRepository.eventosPorPapelEstado(idRevisor, Tipo.REVISOR, EstadoEvento.ATIVO);
 	}
 
 	public List<Evento> getEventosByEstadoEVisibilidadePublica(EstadoEvento estado) {

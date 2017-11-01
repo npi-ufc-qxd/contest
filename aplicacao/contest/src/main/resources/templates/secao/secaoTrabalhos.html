@@ -77,17 +77,20 @@
 					<th>Nome Autor(es)</th>
 					<th>Nome Trabalho</th>
 					<th>Trilha</th>
-					<th></th>
+					<th>Presença</th>
 				</tr>
 			</thead>
-
-
-        <tbody th:each="trabalho:${trabalhosSecao}">
+			
+        <tbody th:each="participacao,count : ${trabalhosSecao}">
         <tr>
-            <td  width="250" th:text="${trabalho.pessoa.nome}"></td>
-            <td  width="400" th:text="${trabalho.trabalho.titulo}"></td>
-            <td  width="100" th:text="${trabalho.trabalho.trilha.nome}"></td>
-            <td><a th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${trabalho.trabalho.id}}" class="waves-effect btn-flat red accent-4 white-text" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
+            <td  width="250" th:text="${participacao.pessoa.nome}"></td>
+            <td  width="300" th:text="${participacao.trabalho.titulo}"></td>
+            <td  width="100" th:text="${participacao.trabalho.trilha.nome}"></td>
+            <td  width="100" >
+            	<input type="checkbox" th:id="${count.index}"  name="statusApresentacao" th:value="${participacao.trabalho.statusApresentacao}"/>
+            	<label class="black-text" th:for="${count.index}" ></label>
+            </td>
+            <td><a th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${participacao.trabalho.id}}" class="waves-effect btn-flat red accent-4 white-text" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
         </tr>
         </tbody>
     </table>

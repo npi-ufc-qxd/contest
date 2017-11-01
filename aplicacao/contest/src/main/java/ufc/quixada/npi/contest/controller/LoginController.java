@@ -160,7 +160,6 @@ public class LoginController {
 		List<Evento> eventosQueReviso = eventoService.getMeusEventosAtivosComoRevisor(idPessoaLogada);
 		List<Evento> eventoQueOrganizo = eventoService.getMeusEventosAtivosComoOrganizador(idPessoaLogada);
 		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
-	
 		List<Evento> eventosMinhaCoutoria = eventoService.getMeusEventosComoCoautor(idPessoaLogada);
 		List<Evento> eventosQueSouAutor = eventoService.getMeusEventosComoAutor(idPessoaLogada);
 		List<Evento> eventosInativos = eventoService.getMeusEventosInativosComoOrganizador(idPessoaLogada);
