@@ -37,7 +37,7 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 			"AND e.estado = :estado " +
 			"AND pe.papel = ufc.quixada.npi.contest.model.Papel$Tipo.ORGANIZADOR " +
 			"ORDER BY e.prazoSubmissaoInicial DESC")
-	public List<Evento> eventosComoOrganizadorlVisibilidade(@Param("idPessoa") Long idPessoa, @Param("estado") EstadoEvento estado);
+	public List<Evento> eventosComoOrganizadorEstado(@Param("idPessoa") Long idPessoa, @Param("estado") EstadoEvento estado);
 		
 	@Query("SELECT DISTINCT e FROM Evento e, ParticipacaoEvento pe, ParticipacaoTrabalho pt " + 
 			"WHERE pe.pessoa.id = :idPessoa "+ 
@@ -46,7 +46,7 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 			"AND pe.pessoa.id = pt.pessoa.id " +
 			"AND pt.papel = :papel " +
 			"ORDER BY e.prazoSubmissaoInicial DESC")
-	public List<Evento> eventosPorPapelVisibilidade(@Param("idPessoa") Long idPessoa, @Param("papel") Tipo papel, @Param("estado") EstadoEvento estado);
+	public List<Evento> eventosPorPapelEstado(@Param("idPessoa") Long idPessoa, @Param("papel") Tipo papel, @Param("estado") EstadoEvento estado);
 	
 	@Query("SELECT DISTINCT e FROM Evento e, ParticipacaoEvento pe, ParticipacaoTrabalho pt " + 
 			"WHERE pe.pessoa.id = :idPessoa "+ 
