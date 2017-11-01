@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -190,25 +191,30 @@ public class AutorController {
 	}
 
 	@RequestMapping(value = "/meusTrabalhos/evento/{eventoId}", method = RequestMethod.GET)
-	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, Model model) {
+	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, @ModelAttribute("coautor") String coautor, Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventos = new ArrayList<>();
+		model.addAttribute("papel", Tipo.AUTOR);
 		if (eventoId != null) {
 			eventos.add(eventoService.buscarEventoPorId(eventoId));
 		} else {
-			eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());
+			if(coautor != null){
+				eventos = eventoService.getMeusEventosComoCoautor(autorLogado.getId());
+				model.addAttribute("papel", Tipo.COAUTOR);
+			} else {
+				eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());				
+			}
 		}
 		
 		if (eventos != null) {
 			model.addAttribute("eventos", eventos);
-			model.addAttribute("papel", Tipo.AUTOR);
 		}
 		return Constants.TEMPLATE_MEUS_TRABALHOS_AUTOR;
 	}
 
 	@RequestMapping(value = "/meusTrabalhos", method = RequestMethod.GET)
-	public String listarMeusTrabalhosEmEventosAtivos(Model model) {
-		return listarMeusTrabalhosEmEventosAtivos(null, model);
+	public String listarMeusTrabalhosEmEventosAtivos(@ModelAttribute("coautor") String coautor, Model model) {
+		return listarMeusTrabalhosEmEventosAtivos(null, coautor, model);
 	}
 
 	@RequestMapping(value = "/enviarTrabalhoForm/{id}", method = RequestMethod.GET)
@@ -372,13 +378,20 @@ public class AutorController {
 
 	@PreAuthorize("isAutorInEvento(#id)")
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
-	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
+	public String listarTrabalhos(@PathVariable String id, @ModelAttribute("coautor") String coautor, Model model, RedirectAttributes redirect) {
 		try {
 			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
 			Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+			model.addAttribute("papel", Tipo.AUTOR);
 			if (evento != null && evento.getAutores().contains(pessoa)) {
-
-				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
+				
+				List<Trabalho> listaTrabalho; trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
+				if(coautor != null){
+					listaTrabalho = trabalhoService.getTrabalhosDoCoautorNoEvento(pessoa, evento);
+					model.addAttribute("papel", Tipo.COAUTOR);					
+				} else {
+					listaTrabalho = trabalhoService.getTrabalhosDoAutorNoEvento(pessoa, evento);
+				}
 				model.addAttribute("pessoa", pessoa);
 				model.addAttribute("evento", evento);
 				model.addAttribute("listaTrabalhos", listaTrabalho);
