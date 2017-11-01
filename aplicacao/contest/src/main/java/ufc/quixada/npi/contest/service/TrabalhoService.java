@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
@@ -23,7 +24,7 @@ public class TrabalhoService {
 
 	@Autowired
 	private RevisaoRepository revisaoRepository;
-	
+
 	@Autowired
 	private EventoService eventoService;
 
@@ -112,71 +113,87 @@ public class TrabalhoService {
 		return trabalhoRepository.findAll();
 	}
 
-
-	public String mensurarAvaliacoes(Trabalho trabalho) {
+	public Avaliacao mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
+		int numeroDeRessalvas = 0;
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
 		if (!revisoes.isEmpty()) {
-			for (int i = 0; i < revisoes.size(); i++) {
+			for (int i = 0; i < revisoes.size();) {
 
-				if (revisoes.get(i).getAvaliacao().toString().equals("APROVADO")) {
+				Avaliacao avaliacao = revisoes.get(i).getAvaliacao();
+
+				if (avaliacao == Avaliacao.APROVADO	|| avaliacao == Avaliacao.RESSALVAS) {
 					numeroDeAprovacao++;
-					if (numeroDeAprovacao == trabalho.getRevisoes().size())
-						return "APROVADO";
 
-				} else if (revisoes.get(i).getAvaliacao().toString().equals("REPROVADO")) {
+					if (avaliacao == Avaliacao.RESSALVAS) {
+						numeroDeRessalvas++;
+						
+					}
+				} else if (avaliacao == Avaliacao.REPROVADO) {
 					numeroDeReprovacao++;
-					if (numeroDeReprovacao == trabalho.getRevisoes().size())
-						return "REPROVADO";
 				}
 			}
-			return "MODERACAO";
 		}
-		return null;
+		
+		if (numeroDeReprovacao == trabalho.getRevisoes().size())
+			return Avaliacao.REPROVADO;
+		
+		if (numeroDeAprovacao == trabalho.getRevisoes().size()) {
+			return Avaliacao.APROVADO;
+		}
+		
+		if (numeroDeRessalvas == trabalho.getRevisoes().size()) {
+			return Avaliacao.RESSALVAS;
+		}
+		
+		return Avaliacao.MODERACAO;
 	}
 
-public List<String> pegarConteudo(Trabalho trabalho) {
-		
+	public List<String> pegarConteudo(Trabalho trabalho) {
+
 		String conteudoAux;
 		String conteudo;
-		
+
 		List<String> resultadoAvaliacoes = new ArrayList<>();
-		
+
 		StringBuilder bld = new StringBuilder();
 		for (Revisao revisao : trabalho.getRevisoes()) {
-			
-			conteudo = revisao.getConteudo().substring(1, revisao.getConteudo().length()-1);	
-			bld.append("REVISOR : " + revisao.getRevisor().getNome().toUpperCase() + " , TRABALHO: " + trabalho.getId().toString());
-			
-			while(!conteudo.isEmpty()) {
-				if(conteudo.contains(",")) {
-					conteudoAux = conteudo.substring(0,conteudo.indexOf(','));
-					if(!conteudoAux.contentEquals("comentarios")) {
-						bld.append((" ," + (conteudoAux.replaceAll("\"", " ").replaceAll("_", " ").replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO").replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase()));
-						conteudoAux = conteudo.substring(conteudo.indexOf(',')+1);
+
+			conteudo = revisao.getConteudo().substring(1, revisao.getConteudo().length() - 1);
+			bld.append("REVISOR : " + revisao.getRevisor().getNome().toUpperCase() + " , TRABALHO: "
+					+ trabalho.getId().toString());
+
+			while (!conteudo.isEmpty()) {
+				if (conteudo.contains(",")) {
+					conteudoAux = conteudo.substring(0, conteudo.indexOf(','));
+					if (!conteudoAux.contentEquals("comentarios")) {
+						bld.append((" ," + (conteudoAux.replaceAll("\"", " ").replaceAll("_", " ")
+								.replaceAll("avaliacao", "AVALIAÇÃO").replaceAll("OTIMO", "ÓTIMO")
+								.replaceAll("merito", "MÉRITO").replaceAll("relevancia", "RELEVÂNCIA")).toUpperCase()));
+						conteudoAux = conteudo.substring(conteudo.indexOf(',') + 1);
 						conteudo = conteudoAux;
 					}
-				}else {
-					resultadoAvaliacoes.add((bld + (" , AVALIAÇÃO FINAL : "+revisao.getAvaliacao()).toString()));
+				} else {
+					resultadoAvaliacoes.add((bld + (" , AVALIAÇÃO FINAL : " + revisao.getAvaliacao()).toString()));
 					conteudo = "";
 				}
 			}
 			bld.delete(0, bld.length());
 		}
-		
+
 		return resultadoAvaliacoes;
 	}
+
 	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
 		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
 
 	}
-	
+
 	public void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
 		eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
 
-		
 		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
 		for (Pessoa coautor : coautores) {
 			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);

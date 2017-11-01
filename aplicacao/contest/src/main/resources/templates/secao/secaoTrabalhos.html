@@ -29,11 +29,13 @@
 						</div>
 					</div>
 
-				<div class="modal-footer">
-					<a class="modal-action modal-close btn waves-effect waves-light red" style="left:-50px;">Cancelar</a>
-					<button class="btn waves-effect waves-light purple darken-4 left" type="submit"
-						name="action">Adicionar</button>
-				</div>
+					<div class="modal-footer">
+						<a
+							class="modal-action modal-close btn waves-effect waves-light red"
+							style="left: -50px;">Cancelar</a>
+						<button class="btn waves-effect waves-light purple darken-4 left"
+							type="submit" name="action">Adicionar</button>
+					</div>
 				</div>
 			</form>
 
@@ -64,38 +66,82 @@
 			<h6 th:text="'Local: '+${secao.local}"></h6>
 			<h6 th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
 			<a th:href="@{'/secao/listarParticipantes/'+ ${secao.id}}"
-                class=" waves-effect btn-flat teal white-text" target="_blank">LISTAR PARTICIPANTES</a>
+				class=" waves-effect btn-flat teal white-text" target="_blank">LISTAR
+				PARTICIPANTES</a>
 		</div>
-		
+
 		<div th:if="${#lists.isEmpty(trabalhosSecao)}">
-		<h2 class="center">Não há trabalhos na seção</h2>
+			<h2 class="center">Não há trabalhos na seção</h2>
 		</div>
-		
+
 		<table class="bordered centered striped">
 			<thead>
 				<tr>
 					<th>Nome Autor(es)</th>
 					<th>Nome Trabalho</th>
 					<th>Trilha</th>
-					<th></th>
+					<th>Presença</th>
 				</tr>
 			</thead>
 
-
-        <tbody th:each="trabalho:${trabalhosSecao}">
-        <tr>
-            <td  width="250" th:text="${trabalho.pessoa.nome}"></td>
-            <td  width="400" th:text="${trabalho.trabalho.titulo}"></td>
-            <td  width="100" th:text="${trabalho.trabalho.trilha.nome}"></td>
-            <td><a th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${trabalho.trabalho.id}}" class="waves-effect btn-flat red accent-4 white-text" id="btn_excluir_trabalho">Deletar<i class="material-icons right">delete</i></a></td>
-        </tr>
-        </tbody>
-    </table>
+			<tbody th:each="participacao,count : ${trabalhosSecao}">
+				<tr>
+					<td width="250" th:text="${participacao.pessoa.nome}"></td>
+					<td width="300" th:text="${participacao.trabalho.titulo}"></td>
+					<td width="100" th:text="${participacao.trabalho.trilha.nome}"></td>
+					<td width="100">
+						<input type="checkbox" th:id="|check${count.index}|"
+							th:onclick="|addPresenca(${participacao.trabalho.id})|"
+							name="statusApresentacao" th:checked="checked"
+							th:if="${participacao.trabalho.statusApresentacao}"
+						/>
+						<input type="checkbox" th:id="|check${count.index}|"
+							th:onclick="|addPresenca(${participacao.trabalho.id})|"
+							name="statusApresentacao"
+							th:unless="${participacao.trabalho.statusApresentacao}"
+						/>
+						 <label 
+						class="black-text" th:for="|check${count.index}|"> </label></td>
+					<td><a
+						th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${participacao.trabalho.id}}"
+						class="waves-effect btn-flat red accent-4 white-text"
+						id="btn_excluir_trabalho">Deletar<i
+							class="material-icons right">delete</i></a></td>
+				</tr>
+			</tbody>
+		</table>
 
 	</div>
 	<br />
 
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+		});
+		
+		function addPresenca(trabalhoID) {
+
+			var data = {
+				'trabalhoId' : trabalhoID,
+			};
+			var token = $("meta[name='_csrf']").attr("content");
+
+			$.ajax({
+			  	  contentType: 'application/json;charset=UTF-8',
+			  	  url: './../presenca',
+			  	  dataType: 'json',
+			  	  type: 'POST',
+			  	  cache: false,
+			  	  headers: {"X-CSRF-TOKEN":token},
+			  	  processData: false,
+			  	  data: JSON.stringify(data),
+			  	  success: function (data) {
+			  		log.console("Alterado com sucesso");
+			      },
+			  	});
+		};
+	</script>
 </body>
 </html>

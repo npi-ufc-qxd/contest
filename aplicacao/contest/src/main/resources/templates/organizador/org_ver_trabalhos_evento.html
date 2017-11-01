@@ -116,12 +116,12 @@
 				
 				<ul class="tabs" th:with="revisoes=${resultadoRevisoes.get(trabalho.id)}">
 					<li class="tab col s3" th:each="revisao,iterStat : ${revisoes}">
-						<a class="teal-text" th:href="'#revisao' + ${iterStat.count}"
+						<a class="teal-text" th:href="'#revisao' + ${iterStat.count} + '_' + ${trabalho.id}"
 						th:text="'Revisao '+ ${iterStat.count}"></a>
 					</li>
 				</ul>
 								 
-				<div th:each="revisao,iterStat : ${resultadoRevisoes.get(trabalho.id)}" th:id="'revisao'+ ${iterStat.count}" class="col s12">
+				<div th:each="revisao,iterStat : ${resultadoRevisoes.get(trabalho.id)}" th:id="'revisao'+ ${iterStat.count} + '_' + ${trabalho.id}" class="col s12">
 
 					<div class="col s12">
 						<div>

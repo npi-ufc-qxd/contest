@@ -147,9 +147,7 @@ public class LoginController {
 				pessoaService.addOrUpdate(pessoa);
 				tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
 			}
-		} else{
-				return "";
-			}
+		}
 
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
@@ -160,7 +158,6 @@ public class LoginController {
 		List<Evento> eventosQueReviso = eventoService.getMeusEventosAtivosComoRevisor(idPessoaLogada);
 		List<Evento> eventoQueOrganizo = eventoService.getMeusEventosAtivosComoOrganizador(idPessoaLogada);
 		List<Evento> eventosAtivos = eventoService.buscarEventosAtivosEPublicos();
-	
 		List<Evento> eventosMinhaCoutoria = eventoService.getMeusEventosComoCoautor(idPessoaLogada);
 		List<Evento> eventosQueSouAutor = eventoService.getMeusEventosComoAutor(idPessoaLogada);
 		List<Evento> eventosInativos = eventoService.getMeusEventosInativosComoOrganizador(idPessoaLogada);
