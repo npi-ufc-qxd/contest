@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -57,7 +56,6 @@ public class AtribuirRevisoresSteps {
 	private Trabalho trabalho;
 	private ParticipacaoTrabalho participacaoTrabalho;
 	private RevisaoJsonWrapper dadosRevisao;
-	private List<ParticipacaoTrabalho> participacoes;
 	
 	@Before
 	public void setup() {

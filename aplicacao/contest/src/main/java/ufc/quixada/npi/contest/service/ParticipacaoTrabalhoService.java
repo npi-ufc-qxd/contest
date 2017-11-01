@@ -48,4 +48,8 @@ public class ParticipacaoTrabalhoService {
 		return !participacaoTrabalhoRepository.
 				findParticipacaoTrabalhoByPessoaIdAndTrabalhoId(idPessoa, idTrabalho).isEmpty();
 	}
+
+	public List<ParticipacaoTrabalho> findParticipacaoTrabalhoPorPessoa(Long id) {
+		return participacaoTrabalhoRepository.findTrabalhoByPessoaId(id);
+	}
 }
