@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
-import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.repository.ParticipacaoTrabalhoRepository;
 
@@ -51,6 +50,6 @@ public class ParticipacaoTrabalhoService {
 	}
 
 	public List<ParticipacaoTrabalho> findParticipacaoTrabalhoPorPessoa(Long id) {
-		return participacaoTrabalhoRepository.findParticipacaoTrabalhoByPessoaId(id);
+		return participacaoTrabalhoRepository.findTrabalhoByPessoaId(id);
 	}
 }

@@ -113,8 +113,6 @@ public class LoginController {
 		Pessoa pessoaDB = pessoaService.getByCpf(pessoa.getCpf());
 		if (senha.equals(senhaConfirma)) {
 			if (pessoaDB != null) {
-				pessoaDB.setEmail(pessoa.getEmail());
-				pessoaDB.setNome(pessoa.getNome());
 
 				List<ParticipacaoEvento> participacaoEvento = participacaoEventoService
 						.findParticipacaoEventoPorPessoa(pessoa.getId());
@@ -135,6 +133,13 @@ public class LoginController {
 				pessoaDB.setPassword(password);
 				tokenService.deletar(tokenService.buscarPorUsuario(pessoa));
 				pessoaService.delete(pessoa.getId());
+				
+				String emailUsuarioTemp = pessoa.getEmail();
+				String nomeUsuarioTemp = pessoa.getNome();
+				
+				pessoaDB.setEmail(emailUsuarioTemp);
+				pessoaDB.setNome(nomeUsuarioTemp);
+				
 				pessoaService.addOrUpdate(pessoaDB);
 
 			} else {
