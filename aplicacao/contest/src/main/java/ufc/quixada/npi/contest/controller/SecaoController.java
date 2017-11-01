@@ -40,7 +40,7 @@ public class SecaoController {
 	@RequestMapping(value = "{eventoId}/paginaSecao")
 	public String indexSecao(Model model, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		String validateResult = validateParams(evento);
+		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 			List<Secao> secoes = secaoService.listByEvento(evento);
 			model.addAttribute("secoes", secoes);
@@ -56,7 +56,7 @@ public class SecaoController {
 	public String cadastrarSecaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
 
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		String validateResult = validateParams(evento);
+		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 			List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
 			Collections.sort(pessoas);
@@ -72,7 +72,7 @@ public class SecaoController {
 	@RequestMapping(value = "{eventoId}/cadastrarSecao", method = RequestMethod.POST)
 	public String cadastrarSecao(Secao secao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		String validateResult = validateParams(evento);
+		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 
 			if (secao.getEvento() == null || secao.getResponsavel() == null) {
@@ -93,6 +93,11 @@ public class SecaoController {
 		if(secao == null){
 			return Constants.ERROR_404;
 		}
+		String resultValidate = validateEventParams(secao.getEvento());
+		if(!resultValidate.equals(Constants.NO_ERROR)){
+			return resultValidate;
+		}
+		
 		List<ParticipacaoTrabalho> trabalhosSecao = new ArrayList<>();
 		List<Trabalho> trabalhos = new ArrayList<>();
 
@@ -179,7 +184,7 @@ public class SecaoController {
 
 	}
 
-	private String validateParams(Evento evento) {
+	private String validateEventParams(Evento evento) {
 		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
 		if (evento == null) {
 			return Constants.ERROR_404;
