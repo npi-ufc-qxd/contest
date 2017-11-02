@@ -27,27 +27,6 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	return false;
     }
     
-    //RESTRIÇÕES PARA AUTOR
-    public boolean isAutorInEvento(Long eventoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getEvento().getId().equals(eventoId) && participacao.getPapel()== Tipo.AUTOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    public boolean isAutorInTrabalho(Long trabalhoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoTrabalho participacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacao.getTrabalho().getId().equals(trabalhoId) && participacao.getPapel()== Tipo.AUTOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
     //RESTRIÇÕES PARA REVISOR
     
     public boolean isRevisorInTrabalho(Long trabalhoId){
@@ -55,59 +34,6 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
     	
     	for(ParticipacaoTrabalho participacao : pessoa.getParticipacoesTrabalho()){
     		if(participacao.getTrabalho().getId().equals(trabalhoId) && participacao.getPapel() == Tipo.REVISOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    public boolean isRevisorInEvento(Long eventoId){
-    	Pessoa pessoa = (Pessoa)getPrincipal();
-    	
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getEvento().getId().equals(eventoId) && participacao.getPapel()== Tipo.REVISOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    public boolean isResponsavelInSecao(Long secaoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	
-    	for(Secao secao : pessoa.getSecoes()){
-    		if( secao.getId() == secaoId ){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    public boolean isCoautorInTrabalho(Long trabalhoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoTrabalho participacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacao.getTrabalho().getId().equals(trabalhoId) && participacao.getPapel() == Tipo.COAUTOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    public boolean isCoautorInEvento(Long eventoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getEvento().getId().equals(eventoId) && participacao.getPapel()== Tipo.COAUTOR){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-
-    
-    public boolean isOrientadorInTrabalho(Long trabalhoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	for(ParticipacaoTrabalho participacacao : pessoa.getParticipacoesTrabalho()){
-    		if(participacacao.getTrabalho().getId().equals(trabalhoId) && participacacao.getPapel()== Tipo.ORIENTADOR){
     			return true;
     		}
     	}
