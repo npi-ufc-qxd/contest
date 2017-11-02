@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Constest - Controle de Eventos de Submissão</title>
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+<!-- CSS  -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet" />
+<link
+	th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}"
+	type="text/css" rel="stylesheet" media="screen,projection" />
+<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}"
+	type="text/css" rel="stylesheet" />
+<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
+	media="screen,projection" />
+</head>
+<body>
+	<div th:include="fragments/header :: header"></div>
+	<div class="container page">
+		<br />
+		<div class=""
+			th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
+
+		<h4 th:text="${titulo} "></h4>
+
+		
+					<div class="col s12">
+						<div>
+							<h5 th:text="'Originalidade: ' + ${revisao.originalidade}"></h5>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.originalidade})"></div>
+						</div>
+						<div>
+							<h5 th:text="'Clareza: ' + ${revisao.clareza}"></h5>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.clareza})"></div>
+						</div>
+						<div>
+							<h5 th:text="'Relevância: ' + ${revisao.relevancia}"></h5>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.relevancia})"></div>
+						</div>
+						<div>
+							<h5 th:text="'Merito Técnico: ' + ${revisao.merito}"></h5>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.merito})"></div>
+						</div>
+						<div>
+							<h5 th:text="'Qualidade do Texto: ' + ${revisao.qualidade}"></h5>
+							<div
+								th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.qualidade})"></div>
+						</div>
+					</div>
+					<div class="col m6 s6">
+						<div>
+							<h5 th:text="'Status: ' + ${revisao.avaliacao_final}"></h5>
+							<div th:replace="fragments/barra_de_progresso :: barra-revisao-status(${revisao.avaliacao_final})"></div>
+						</div>
+						<div>
+							<h5 th:text="'Avaliação geral: ' + ${revisao.avaliacao_geral}"></h5>
+							<div th:replace="fragments/barra_de_progresso :: barra-revisao(${revisao.avaliacao_geral})"></div>
+						</div>
+						<div>
+							<h5>Comentários do Revisor:</h5>
+							<div class="progress">
+								<div style="width: 100%" class="determinate"></div>
+							</div>
+							<p th:text="${revisao.comentarios_autores}">O artigo está
+								muito bem escrito, bem claro e objetivo. No entanto, a
+								contribuição do artigo baseia-se fortemente do resultado de
+								outros trabalhos, já que durante o trabalho não foram realizadas
+								simulações. Os resultados obtidos pelos autores da simulação
+								podem ser explicado mais detalhadamente, visto que é a parte
+								mais importante do artigo. No mais, a realização por parte do
+								autor de simulações envolvendo os protocolos citados trariam
+								grande valia a trabalho.</p>
+								
+						</div>	
+						<div>
+							<h5>Comentários para comissão:</h5>
+							<div class="progress">
+								<div style="width: 100%" class="determinate"></div>
+							</div>
+							<p th:text="${comentarios_comissao}">O artigo está
+								muito bem escrito, bem claro e objetivo. No entanto, a
+								contribuição do artigo baseia-se fortemente do resultado de
+								outros trabalhos, já que durante o trabalho não foram realizadas
+								simulações. Os resultados obtidos pelos autores da simulação
+								podem ser explicado mais detalhadamente, visto que é a parte
+								mais importante do artigo. No mais, a realização por parte do
+								autor de simulações envolvendo os protocolos citados trariam
+								grande valia a trabalho.</p>
+								
+						</div>												
+					</div>
+					
+			</div>
+				
+	<footer class="page-footer purple darken-4">
+		<div class="footer-copyright">
+			<div class="container">
+				<a href="http://www.npi.quixada.ufc.br" class="white-text">Desenvolvido
+					por NPI - Núcleo de Práticas em Informática</a>
+			</div>
+		</div>
+	</footer>
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script th:attr="src=@{/js/materialize.js}"></script>
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							$('ul.tabs').tabs();
+
+						});
+	</script>
+</body>
+</html>
