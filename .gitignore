@@ -24,6 +24,7 @@ aplicacao/contest/mvnw*
 application.properties
 aplicacao/contest/src/main/resources/application-homologacao.properties
 aplicacao/contest/src/main/resources/application-producao.properties
+aplicacao/contest/src/main/resources/db/migration/V0.3.7__RemoverColunaLocalSecao.sql
 
 *.bak
 *.log

@@ -47,6 +47,9 @@ import ufc.quixada.npi.contest.validator.CriteriosRevisaoValidator;
 @RequestMapping("/revisor")
 public class RevisorController {
 
+	private static final String REVISOR_REVISOR_VER_REVISAO = "revisor/revisor_ver_revisao";
+	
+
 	@Autowired
 	private EventoService eventoService;
 
@@ -142,6 +145,25 @@ public class RevisorController {
 			return REVISOR_AVALIAR_TRABALHO;
 		}
 		return REVISOR_SEM_PERMISSAO;
+
+	}
+	
+	@RequestMapping(value = "/{idTrabalho}/revisao", method = RequestMethod.GET)
+	public String verRevisaoTrabalho(Model model, @PathVariable("idTrabalho") Long idTrabalho) {
+
+		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
+		Pessoa revisor = PessoaLogadaUtil.pessoaLogada();
+		
+		if (trabalho != null &&
+			revisaoService.isTrabalhoRevisadoPeloRevisor(trabalho.getId(), revisor.getId())) {
+				Revisao revisao = revisaoService.getRevisaoTrabalhoFeitoPor(idTrabalho, revisor.getId());
+				model.addAttribute("titulo", trabalho.getTitulo());
+				model.addAttribute("revisao", RevisaoJSON.fromJson(revisao));
+				model.addAttribute("comentarios_revisao", revisao.getObservacoes());
+				return REVISOR_REVISOR_VER_REVISAO; 
+		} else {
+			return REVISOR_SEM_PERMISSAO;
+		}
 
 	}
 
