@@ -39,5 +39,9 @@ public class RevisaoService {
 	public boolean isTrabalhoRevisadoPeloRevisor(Long idTrabalho, Long idRevisor){
 		return revisaoRepository.trabalhoEstaRevisadoPeloRevisor(idTrabalho, idRevisor);
 	}
+	
+	public Revisao getRevisaoTrabalhoFeitoPor(Long idTrabalho, Long idRevisor) {
+		return revisaoRepository.findRevisaoDoAutorNoTrabalho(idTrabalho, idRevisor);
+	}
 
 }
