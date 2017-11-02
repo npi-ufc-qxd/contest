@@ -39,20 +39,24 @@ public interface EventoRepository extends CrudRepository<Evento, Long>{
 			"ORDER BY e.prazoSubmissaoInicial DESC")
 	public List<Evento> eventosComoOrganizadorEstado(@Param("idPessoa") Long idPessoa, @Param("estado") EstadoEvento estado);
 		
-	@Query("SELECT DISTINCT e FROM Evento e, ParticipacaoEvento pe, ParticipacaoTrabalho pt " + 
+	@Query("SELECT DISTINCT e FROM Evento e, ParticipacaoEvento pe, ParticipacaoTrabalho pt, Trabalho t " + 
 			"WHERE pe.pessoa.id = :idPessoa "+ 
 			"AND e.id  = pe.evento.id " +
 			"AND e.estado = :estado " +
 			"AND pe.pessoa.id = pt.pessoa.id " +
 			"AND pt.papel = :papel " +
+			"AND t.id = pt.trabalho.id " +
+			"AND t.evento.id = e.id " +
 			"ORDER BY e.prazoSubmissaoInicial DESC")
 	public List<Evento> eventosPorPapelEstado(@Param("idPessoa") Long idPessoa, @Param("papel") Tipo papel, @Param("estado") EstadoEvento estado);
 	
-	@Query("SELECT DISTINCT e FROM Evento e, ParticipacaoEvento pe, ParticipacaoTrabalho pt " + 
+	@Query("SELECT DISTINCT e FROM Evento e, ParticipacaoEvento pe, ParticipacaoTrabalho pt, Trabalho t " + 
 			"WHERE pe.pessoa.id = :idPessoa "+ 
 			"AND e.id  = pe.evento.id " +
 			"AND pe.pessoa.id = pt.pessoa.id " +
 			"AND pt.papel = :papel " +
+			"AND t.id = pt.trabalho.id " +
+			"AND t.evento.id = e.id " +
 			"ORDER BY e.prazoSubmissaoInicial DESC")
 	public List<Evento> eventosPorPapel(@Param("idPessoa") Long idPessoa, @Param("papel") Tipo papel);
 	
