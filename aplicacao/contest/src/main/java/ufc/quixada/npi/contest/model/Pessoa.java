@@ -54,7 +54,7 @@ public class Pessoa implements UserDetails, Comparable<Pessoa> {
 	@OneToMany(mappedBy = "pessoa", fetch=FetchType.EAGER)
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 	
-	@OneToMany(mappedBy="responsavel",fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="responsavel")
 	private List<Secao> secoes;
 
 	@Column(name = "papel_ldap")
