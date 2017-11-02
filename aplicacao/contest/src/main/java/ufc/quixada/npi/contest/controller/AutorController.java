@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -373,14 +372,13 @@ public class AutorController {
 		}
 	}
 
-	@PreAuthorize("isAutorInEvento(#id)")
+	//TODO: Adicionar verificao de autoria
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
 			Evento evento = eventoService.buscarEventoPorId(Long.parseLong(id));
 			Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
-			model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
-			if (evento != null && evento.getAutores().contains(pessoa)) {
+			if (evento != null) {
 				
 				List<Trabalho> listaTrabalho = trabalhoService.getTrabalhosComoAutorECoautorNoEvento(pessoa, evento);
 				model.addAttribute("pessoa", pessoa);
