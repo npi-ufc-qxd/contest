@@ -45,7 +45,11 @@
         </div>
 
 
-       <div th:unless="${#lists.isEmpty(eventosAtivos)}" class="row holder center"></div>
+       <div th:if="${#lists.isEmpty(eventos)}" class="col s4">
+       	<p>Nenhum evento com participação como autor foi encontrado</p>
+       </div>
+       <div class="row holder center">
+       </div>
     </div>
 
    	<div th:include="fragments/footer :: footer"></div>
