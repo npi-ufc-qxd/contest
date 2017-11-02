@@ -119,10 +119,9 @@ public class TrabalhoService {
 		int numeroDeRessalvas = 0;
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
-		if (!revisoes.isEmpty()) {
-			for (int i = 0; i < revisoes.size();) {
-
-				Avaliacao avaliacao = revisoes.get(i).getAvaliacao();
+		if (revisoes != null && !revisoes.isEmpty()) {
+			for (Revisao revisao : revisoes) {
+				Avaliacao avaliacao = revisao.getAvaliacao();
 
 				if (avaliacao == Avaliacao.APROVADO	|| avaliacao == Avaliacao.RESSALVAS) {
 					numeroDeAprovacao++;
