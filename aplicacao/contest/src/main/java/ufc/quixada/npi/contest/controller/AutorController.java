@@ -56,7 +56,6 @@ import ufc.quixada.npi.contest.validator.TrabalhoValidator;
 @RequestMapping("/autor")
 public class AutorController {
 
-	private static final String PAPEL_USUARIO_LOGADO = "papel";
 	private static final String EXTENSAO_PDF = ".pdf";
 	private static final String FORA_DO_PRAZO_SUBMISSAO = "FORA_DO_PRAZO_SUBMISSAO";
 	private static final String ERRO_EXCLUIR_TRABALHO = "ERRO_EXCLUIR_TRABALHO";
@@ -190,13 +189,14 @@ public class AutorController {
 	public String listarMeusTrabalhosEmEventosAtivos(@PathVariable Long eventoId, @RequestParam(required = false, name="coautor") String coautor, Model model) {
 		Pessoa autorLogado = PessoaLogadaUtil.pessoaLogada();
 		List<Evento> eventos = new ArrayList<>();
-		model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.AUTOR);
 		if (eventoId != null) {
-			eventos.add(eventoService.buscarEventoPorId(eventoId));
+			Evento evento = eventoService.buscarEventoPorId(eventoId);
+			if(evento != null) {
+				eventos.add(evento);
+			}
 		} else {
 			if(coautor != null){
 				eventos = eventoService.getMeusEventosComoCoautor(autorLogado.getId());
-				model.addAttribute(PAPEL_USUARIO_LOGADO, Tipo.COAUTOR);
 			} else {
 				eventos = eventoService.getMeusEventosComoAutor(autorLogado.getId());				
 			}
