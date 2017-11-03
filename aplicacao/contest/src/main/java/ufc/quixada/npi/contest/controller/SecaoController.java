@@ -73,17 +73,17 @@ public class SecaoController {
 
 	}
 
-	@RequestMapping(value = "{eventoId}/cadastrarSecao", method = RequestMethod.POST)
-	public String cadastrarSecao(Secao secao, @PathVariable("eventoId") Long eventoId) {
+	@RequestMapping(value = "{eventoId}/adicionar", method = RequestMethod.POST)
+	public String adicionarSecao(Secao sessao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String validateResult = validateEventParams(evento);
 		
-		if (secao.getEvento() == null || secao.getResponsavel() == null) {
+		if (sessao.getEvento() == null || sessao.getResponsavel() == null) {
 			return "redirect:/secao/" + evento.getId() + "/adicionar";
 		}
 		
 		if (validateResult.equals(Constants.NO_ERROR)) {			
-			sessaoService.addOrUpdate(secao);
+			sessaoService.addOrUpdate(sessao);
 			return "redirect:/secao/" + evento.getId();
 
 		} else {
