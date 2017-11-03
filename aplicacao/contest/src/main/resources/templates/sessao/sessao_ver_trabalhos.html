@@ -46,7 +46,7 @@
 
 		<div class="row opcoes">
 			<a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus
-				Eventos</a> <a th:href="@{|/sessao/${sessao.evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
+				Eventos</a> <a th:href="@{|/evento/${sessao.evento.id}/sessao/|}" style="color: #6a1b9a;">Sessões</a>
 			<a href="#modalAdicionarTrabalho" class="modal-trigger"
 				style="color: #6a1b9a;">Adicionar Trabalhos</a> <a
 				class=" btn-large waves-effect waves-light purple right white-text"
@@ -101,7 +101,7 @@
 						 <label 
 						class="black-text" th:for="|check${count.index}|"> </label></td>
 					<td><a
-						th:href="@{'/sessao/excluirTrabalho/'+${sessao.id}+'/'+${participacao.trabalho.id}}"
+						th:href="@{'/sessao/'+${sessao.id}+'/excluirTrabalho/'+${participacao.trabalho.id}}"
 						class="waves-effect btn-flat red accent-4 white-text"
 						id="btn_excluir_trabalho">Deletar<i
 							class="material-icons right">delete</i></a></td>

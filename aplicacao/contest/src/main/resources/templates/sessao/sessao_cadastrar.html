@@ -12,8 +12,8 @@
 	<div class="container pagination">
 
 		<div class="row opcoes">
-			<a th:href="@{|/sessao/${evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
-			<a th:href="@{|/sessao/${evento.id}/adicionar|}" style="color: #6a1b9a;">Cadastrar
+			<a th:href="@{|/evento/${evento.id}/sessao/|}" style="color: #6a1b9a;">Sessões</a>
+			<a th:href="@{|/evento/${evento.id}/sessao/adicionar|}" style="color: #6a1b9a;">Cadastrar
 				Sessão</a> <a
 				class=" btn-large waves-effect waves-light purple right white-text"
 				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
@@ -22,7 +22,7 @@
 		<div class="row">
 			<h1 class="center header">Cadastro de Sessão</h1>
 			<div class="col s12">
-				<form name="cadastroForm" th:action="@{|/sessao/${evento.id}/adicionar|}"
+				<form name="cadastroForm" th:action="@{|/evento/${evento.id}/sessao/adicionar|}"
 					class="valign" method="post" id="formCadastro">
 
 					<div class="input-field">

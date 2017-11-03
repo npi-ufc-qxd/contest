@@ -30,7 +30,6 @@ import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
-@RequestMapping(value = "/sessao")
 public class SessaoController {
 	@Autowired
 	private SessaoService sessaoService;
@@ -41,7 +40,7 @@ public class SessaoController {
 	@Autowired
 	private PessoaService pessoaService;
 
-	@RequestMapping(value = "{eventoId}")
+	@RequestMapping(value = "/evento/{eventoId}/sessao/")
 	public String indexSessao(Model model, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String validateResult = validateEventParams(evento);
@@ -56,7 +55,7 @@ public class SessaoController {
 
 	}
 
-	@RequestMapping(value = "{eventoId}/adicionar", method = RequestMethod.GET)
+	@RequestMapping(value = "/evento/{eventoId}/sessao/adicionar", method = RequestMethod.GET)
 	public String adicionarSessaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
 
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
@@ -73,7 +72,7 @@ public class SessaoController {
 
 	}
 
-	@RequestMapping(value = "{eventoId}/adicionar", method = RequestMethod.POST)
+	@RequestMapping(value = "evento/{eventoId}/sessao/adicionar", method = RequestMethod.POST)
 	public String adicionarSessao(Sessao sessao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String validateResult = validateEventParams(evento);
@@ -84,7 +83,7 @@ public class SessaoController {
 		
 		if (validateResult.equals(Constants.NO_ERROR)) {			
 			sessaoService.addOrUpdate(sessao);
-			return "redirect:/sessao/" + evento.getId();
+			return "redirect:/evento/" + evento.getId() + "/sessao/";
 
 		} else {
 			return validateResult;
@@ -92,7 +91,7 @@ public class SessaoController {
 
 	}
 
-	@RequestMapping(value = "/ver/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/sessao/ver/{id}", method = RequestMethod.GET)
 	public String verTrabalhos(@PathVariable("id") Long idSessao, Model model) {
 		Sessao sessao = sessaoService.get(idSessao);
 		if(sessao == null){
@@ -127,7 +126,7 @@ public class SessaoController {
 		return "sessao/sessao_ver_trabalhos";
 	}
 
-	@RequestMapping(value = "/excluir/{id}")
+	@RequestMapping(value = "/sessao/excluir/{id}")
 	public String excluirSessao(@PathVariable("id") Long idSessao) {
 		Sessao sessao = sessaoService.get(idSessao);
 		
@@ -143,10 +142,10 @@ public class SessaoController {
 
 		sessaoService.delete(idSessao);
 
-		return "redirect:/sessao/" + eventoId;
+		return "redirect:/evento/" + eventoId + "/sessao/";
 	}
 
-	@RequestMapping("/excluirTrabalho/{idSessao}/{idTrabalho}")
+	@RequestMapping("/sessao/{idSessao}/excluirTrabalho/{idTrabalho}")
 	public String excluirTrabalhoSessao(@PathVariable("idSessao") Long idSessao,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
@@ -159,7 +158,7 @@ public class SessaoController {
 		return "redirect:/sessao/ver/" + idSessao;
 	}
 
-	@RequestMapping("/adicionar/trabalho")
+	@RequestMapping("/sessao/adicionar/trabalho")
 	public String adicionarTrabalhoNaSessao(@RequestParam Long idSessao, @RequestParam List<Long> idTrabalhos) {
 		Sessao sessao = sessaoService.get(idSessao);
 		
@@ -175,7 +174,7 @@ public class SessaoController {
 		return "redirect:/sessao/ver/" + idSessao;
 	}
 
-	@RequestMapping("/listarParticipantes/{idSessao}")
+	@RequestMapping("/sessao/listarParticipantes/{idSessao}")
 	public String listarParticipantes(@PathVariable("idSessao") Long idSessao, Model model) {
 		Sessao sessao = sessaoService.get(idSessao);
 		
@@ -201,7 +200,7 @@ public class SessaoController {
 		return Constants.NO_ERROR;
 	}
 	
-	@RequestMapping(value = "/presenca", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/sessao/presenca", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String atibuirPresenca(@RequestBody PresencaJsonWrapper dadosPresenca) {
 
 		Trabalho trabalho = trabalhoService.getTrabalhoById(dadosPresenca.getTrabalhoId());

@@ -10,7 +10,7 @@
 	        <a th:href="@{/eventoOrganizador/ativos}">Eventos Ativos</a>
 	       	<a th:href="@{/eventoOrganizador/inativos}">Eventos Inativos</a>
 
-	       	<a th:if= "${evento != null}" th:href="@{|/sessao/${evento.id}/|}">Visualizar Sessões</a>
+	       	<a th:if= "${evento != null}" th:href="@{|/evento/${evento.id}/sessao/|}">Visualizar Sessões</a>
 	       	<a th:if= "${evento != null} and 
 	       	 ${trilha == null} and
 	       	 ${revisores == null} and       	 		       	 		     
