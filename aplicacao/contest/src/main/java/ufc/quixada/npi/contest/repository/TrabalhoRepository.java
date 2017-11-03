@@ -65,6 +65,6 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 	
 	public List<Trabalho> findAllByEventoId(Long eventoID);
 
-	public List<Trabalho> findTrabalhoBySecaoId(Long idSecao);
+	public List<Trabalho> findTrabalhoBySessaoId(Long idSessao);
 	
 }

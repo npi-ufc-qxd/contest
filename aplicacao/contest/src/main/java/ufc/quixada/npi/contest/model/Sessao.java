@@ -11,10 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 
 @Entity
-public class Secao {
+@Table(name="secao")
+public class Sessao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -27,7 +29,7 @@ public class Secao {
 	@Column(name="horario")
 	private String horario;
 	
-	@OneToMany(mappedBy = "secao")
+	@OneToMany(mappedBy = "sessao")
 	private List<Trabalho> trabalhos;
 	
 	@ManyToOne

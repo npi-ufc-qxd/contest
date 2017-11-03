@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Secao;
+import ufc.quixada.npi.contest.model.Sessao;
 import ufc.quixada.npi.contest.repository.SessaoRepository;
 
 @Service
@@ -14,24 +14,24 @@ public class SessaoService {
 	@Autowired
 	private SessaoRepository sessaoRepository;
 	
-	public void addOrUpdate(Secao sessao) {
+	public void addOrUpdate(Sessao sessao) {
 		sessaoRepository.save(sessao);
 	}
 
-	public List<Secao> list() {
-		return (List<Secao>) sessaoRepository.findAll();
+	public List<Sessao> list() {
+		return (List<Sessao>) sessaoRepository.findAll();
 	}
 
 	public void delete(Long id) {
-		Secao sessao = sessaoRepository.findOne(id);
+		Sessao sessao = sessaoRepository.findOne(id);
 		sessaoRepository.delete(sessao);
 	}
 
-	public Secao get(Long id) {
+	public Sessao get(Long id) {
 		return sessaoRepository.findOne(id);
 	}
 	
-	public List<Secao> listByEvento(Evento e){
+	public List<Sessao> listByEvento(Evento e){
 		return sessaoRepository.findByEvento(e);	
 	}
 }

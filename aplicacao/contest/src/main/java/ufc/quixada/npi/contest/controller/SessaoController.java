@@ -20,7 +20,7 @@ import ufc.quixada.npi.contest.model.Papel;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.PresencaJsonWrapper;
-import ufc.quixada.npi.contest.model.Secao;
+import ufc.quixada.npi.contest.model.Sessao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
@@ -31,7 +31,7 @@ import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 @RequestMapping(value = "/sessao")
-public class SecaoController {
+public class SessaoController {
 	@Autowired
 	private SessaoService sessaoService;
 	@Autowired
@@ -42,11 +42,11 @@ public class SecaoController {
 	private PessoaService pessoaService;
 
 	@RequestMapping(value = "{eventoId}")
-	public String indexSecao(Model model, @PathVariable("eventoId") Long eventoId) {
+	public String indexSessao(Model model, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
-			List<Secao> sessoes = sessaoService.listByEvento(evento);
+			List<Sessao> sessoes = sessaoService.listByEvento(evento);
 			model.addAttribute("sessoes", sessoes);
 			model.addAttribute("evento", evento);
 			return "sessao/sessao_listar_sessoes";
@@ -74,7 +74,7 @@ public class SecaoController {
 	}
 
 	@RequestMapping(value = "{eventoId}/adicionar", method = RequestMethod.POST)
-	public String adicionarSecao(Secao sessao, @PathVariable("eventoId") Long eventoId) {
+	public String adicionarSessao(Sessao sessao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String validateResult = validateEventParams(evento);
 		
@@ -94,7 +94,7 @@ public class SecaoController {
 
 	@RequestMapping(value = "/ver/{id}", method = RequestMethod.GET)
 	public String verTrabalhos(@PathVariable("id") Long idSessao, Model model) {
-		Secao sessao = sessaoService.get(idSessao);
+		Sessao sessao = sessaoService.get(idSessao);
 		if(sessao == null){
 			return Constants.ERROR_404;
 		}
@@ -115,7 +115,7 @@ public class SecaoController {
 		}
 
 		for (Trabalho trabalho : trabalhoService.getTrabalhosEvento(sessao.getEvento())) {
-			if (trabalho.getSecao() == null) {
+			if (trabalho.getSessao() == null) {
 				trabalhos.add(trabalho);
 			}
 		}
@@ -128,8 +128,8 @@ public class SecaoController {
 	}
 
 	@RequestMapping(value = "/excluir/{id}")
-	public String excluirSecao(@PathVariable("id") Long idSecao) {
-		Secao sessao = sessaoService.get(idSecao);
+	public String excluirSessao(@PathVariable("id") Long idSessao) {
+		Sessao sessao = sessaoService.get(idSessao);
 		
 		if(sessao == null){
 			return Constants.ERROR_404;
@@ -138,16 +138,16 @@ public class SecaoController {
 		Long eventoId = sessao.getEvento().getId();
 
 		for (Trabalho trabalho : sessao.getTrabalhos()) {
-			trabalhoService.removerSecao(trabalho);
+			trabalhoService.removerSessao(trabalho);
 		}
 
-		sessaoService.delete(idSecao);
+		sessaoService.delete(idSessao);
 
 		return "redirect:/sessao/" + eventoId;
 	}
 
-	@RequestMapping("/excluirTrabalho/{idSecao}/{idTrabalho}")
-	public String excluirTrabalhoSecao(@PathVariable("idSecao") Long idSessao,
+	@RequestMapping("/excluirTrabalho/{idSessao}/{idTrabalho}")
+	public String excluirTrabalhoSessao(@PathVariable("idSessao") Long idSessao,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		
@@ -155,13 +155,13 @@ public class SecaoController {
 			return Constants.ERROR_404;
 		}
 		
-		trabalhoService.removerSecao(trabalho);
+		trabalhoService.removerSessao(trabalho);
 		return "redirect:/sessao/ver/" + idSessao;
 	}
 
 	@RequestMapping("/adicionar/trabalho")
 	public String adicionarTrabalhoNaSessao(@RequestParam Long idSessao, @RequestParam List<Long> idTrabalhos) {
-		Secao sessao = sessaoService.get(idSessao);
+		Sessao sessao = sessaoService.get(idSessao);
 		
 		if(sessao == null){
 			return Constants.ERROR_404;
@@ -169,22 +169,22 @@ public class SecaoController {
 		
 		for (int i = 0; i < idTrabalhos.size(); i++) {
 			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalhos.get(i));
-			trabalho.setSecao(sessao);
+			trabalho.setSessao(sessao);
 			trabalhoService.adicionarTrabalho(trabalho);
 		}
 		return "redirect:/sessao/ver/" + idSessao;
 	}
 
-	@RequestMapping("/listarParticipantes/{idSecao}")
-	public String listarParticipantes(@PathVariable("idSecao") Long idSecao, Model model) {
-		Secao sessao = sessaoService.get(idSecao);
+	@RequestMapping("/listarParticipantes/{idSessao}")
+	public String listarParticipantes(@PathVariable("idSessao") Long idSessao, Model model) {
+		Sessao sessao = sessaoService.get(idSessao);
 		
 		if(sessao == null){
 			return Constants.ERROR_404;
 		}
 		
 		model.addAttribute("sessao", sessao);
-		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSecao(idSecao));
+		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSessao(idSessao));
 		return "sessao/sessao_listar_participantes";
 
 	}
