@@ -185,7 +185,7 @@ public class SecaoController {
 		
 		model.addAttribute("secao", secao);
 		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSecao(idSecao));
-		return "secao/listaParticipantes";
+		return "secao/sessao_listar_participantes";
 
 	}
 
