@@ -1,41 +1,34 @@
-		<div th:fragment="mostrarBadge(trabalho)" th:if="${trabalho.status != null}" 
+		<div th:fragment="mostrarStatusBadge(trabalho)" th:if="${trabalho.status != null}" 
 		th:with="revisado=${trabalho.isRevisado()}, status=${trabalho.status}, best=${trabalho.isIndicadoMelhoresTrabalhos()}">
-			<div class="chip  yellow lighten-1" th:if="${best}">
-				<i class="fa fa-star" aria-hidden="true"></i> <em>Best
-					Paper</em>
+			<div th:if="${best}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge('Best Paper', 'fa-star', 'yellow lighten-1')"></div>
 			</div>
-			<div class=" left chip light-green accent-2"
-				th:if="${revisado}">
-				<i class="fa fa-check-circle" aria-hidden="true"></i>
-				Revisado
+			<div th:if="${revisado}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge('Revisado', 'fa-check-circle', 'light-green accent-2')"></div>
 			</div>
-			<div class=" left chip orange lighten-2"
-				th:unless="${revisado}">
-				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-				Não revisado
+			<div th:unless="${revisado}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge('Não revisado', 'fa-exclamation-triangle', 'orange lighten-2')"></div>
 			</div>
-
 			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}"
-				th:inline="text"
-				class="left chip red">
-				<i class="fa fa-thumbs-down" aria-hidden="true"></i>
-				[[${trabalho.status.descricao}]]				
+				 th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-down', 'red')"></div>
 			</div>
 			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}"
-				th:inline="text"
-				class="left chip light-blue accent-2">
-				<i class="fa fa-thumbs-up" aria-hidden="true"></i>
-				[[${trabalho.status.descricao}]]
+				 th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-up', 'light-blue accent-2')"></div>
 			</div>
 			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}"
-				th:inline="text"
-				class="chip orange lighten-3">
-				<i class="fa fa-thumbs-up" aria-hidden="true"></i>
-				[[${trabalho.status.descricao}]]
+				 th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-up', 'orange lighten-3')"></div>
 			</div>
-			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).MODERACAO}">
-				<div class="left chip orange lighten-3" th:inline="text">
-					<i class="fa fa-thumbs-up" aria-hidden="true"></i> [[${trabalho.status.descricao}]]
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).MODERACAO}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-up', 'orange lighten-3')">
 				</div>
 				<br /> <br />
 
@@ -46,4 +39,10 @@
 				</div>
 			</div>
 			<br/>
+	</div>
+	
+	
+	<div th:fragment="mostrarBadge(texto, icone, cssClass)" class="chip" th:inline="text" th:classappend="${cssClass}">
+			<i class="fa" th:classappend="${icone}" aria-hidden="true"></i>
+				[[${texto}]]
 	</div>

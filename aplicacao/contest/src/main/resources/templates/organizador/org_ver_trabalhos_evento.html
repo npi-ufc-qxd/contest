@@ -58,7 +58,7 @@
 										</div>
 									</div>
 
-									<div class="card-action" th:include="fragments/trabalho_status_badge :: mostrarBadge(${trabalho})">
+									<div class="card-action" th:include="fragments/trabalho_status_badge :: mostrarStatusBadge(${trabalho})">
 									</div>
 								</div>
 								<div th:id="${'modal'+trabalho.id}" class="modal">
