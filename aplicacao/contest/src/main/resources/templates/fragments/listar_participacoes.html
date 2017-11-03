@@ -5,20 +5,20 @@
 </head>
 <body>
     <div th:fragment="listar(label, participantes)">
-		<p th:unless="${#lists.isEmpty(participantes)}"><b th:text="${label}"></b></p>
+		<p th:unless="${#lists.isEmpty(participantes)}"><strong th:text="${label}"></strong></p>
 		<blockquote>
 			<p th:each="participante : ${participantes}" th:text="${participante.nome}">Nome de participante</p>
 		</blockquote>
 	</div>
 	
 	 <div th:fragment="listar-inline(label, participantes)">
-		<p th:unless="${#lists.isEmpty(participantes)}"><b th:text="${label}"></b></p>
+		<p th:unless="${#lists.isEmpty(participantes)}"><strong th:text="${label}"></strong></p>
 		<span th:each="participante, count : ${participantes}"  
 			th:text="${count.index != (#lists.size(participantes) - 1)} ? |${participante.nome}, | : ${participante.nome}">Nome de participante</span>
 	</div>
 	
 	<div th:fragment="listar-clean(label, participantes)">
-		<p th:unless="${#lists.isEmpty(participantes)}"><b th:text="${label}"></b></p>
+		<p th:unless="${#lists.isEmpty(participantes)}"><strong th:text="${label}"></strong></p>
 		<p th:each="participante : ${participantes}" th:text="${participante.nome}">Nome de participante</p>
 	</div>
 </body>
