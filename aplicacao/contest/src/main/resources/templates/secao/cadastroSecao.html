@@ -12,15 +12,15 @@
 	<div class="container pagination">
 
 		<div class="row opcoes">
-			<a th:href="@{|/secao/${evento.id}/paginaSecao|}" style="color: #6a1b9a;">Seções</a>
+			<a th:href="@{|/secao/${evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
 			<a th:href="@{|/secao/${evento.id}/cadastrarSecaoForm|}" style="color: #6a1b9a;">Cadastrar
-				Seção</a> <a
+				Sessão</a> <a
 				class=" btn-large waves-effect waves-light purple right white-text"
 				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
 		</div>
 
 		<div class="row">
-			<h1 class="center header">Cadastro de Seção</h1>
+			<h1 class="center header">Cadastro de Sessão</h1>
 			<div class="col s12">
 				<form name="cadastroForm" th:action="@{|/secao/${evento.id}/cadastrarSecao|}"
 					class="valign" method="post" id="formCadastro">

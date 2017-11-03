@@ -4,7 +4,7 @@
 <div th:include="fragments/head :: head"></div>
 <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet"
 	media="screen,projection" />
-<title>Seção - Trabalhos</title>
+<title>Sessão - Trabalhos</title>
 </head>
 <body>
 	<div th:include="fragments/header :: header"></div>
@@ -41,12 +41,12 @@
 
 	</div>
 
-	<!--Seleção de trabalhos da seção-->
+	<!--Seleção de trabalhos da sessão-->
 	<div class="container">
 
 		<div class="row opcoes">
 			<a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus
-				Eventos</a> <a th:href="@{|/secao/${secao.evento.id}/paginaSecao|}" style="color: #6a1b9a;">Seções</a>
+				Eventos</a> <a th:href="@{|/secao/${secao.evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
 			<a href="#modalAdicionarTrabalho" class="modal-trigger"
 				style="color: #6a1b9a;">Adicionar Trabalhos</a> <a
 				class=" btn-large waves-effect waves-light purple right white-text"
@@ -56,7 +56,7 @@
 
 
 	<div class="container">
-		<!--Dados da Seção-->
+		<!--Dados da Sessão-->
 		<div class="">
 			<h4 class="center-align" th:text="${secao.nome}"></h4>
 			<h6 th:text="'Horário: '+${secao.horario}"></h6>
@@ -69,7 +69,7 @@
 		</div>
 
 		<div th:if="${#lists.isEmpty(trabalhosSecao)}">
-			<h2 class="center">Não há trabalhos na seção</h2>
+			<h2 class="center">Não há trabalhos na sessão</h2>
 		</div>
 
 		<table class="bordered centered striped">

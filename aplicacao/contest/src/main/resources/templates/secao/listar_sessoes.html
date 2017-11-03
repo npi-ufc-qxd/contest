@@ -3,7 +3,7 @@
 <head>
 <div th:include="fragments/head :: head"></div>
 <link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
-<title>Seção - Contest</title>
+<title>Sessão - Contest</title>
 </head>
 <body>
 <div th:include="fragments/header :: header"></div>
@@ -12,7 +12,7 @@
 
     <div class="row opcoes">
         <a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus Eventos</a>
-        <a th:href="@{|/secao/${evento.id}/cadastrarSecaoForm|}" style="color: #6a1b9a;">Cadastrar Seção</a>
+        <a th:href="@{|/secao/${evento.id}/cadastrarSecaoForm|}" style="color: #6a1b9a;">Cadastrar Sessão</a>
     
     <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
 	       		Voltar
@@ -22,23 +22,23 @@
 <br/>
 
 <div class="row" id="itemContainer">
-<div th:if="${#lists.isEmpty(secoes)}">
+<div th:if="${#lists.isEmpty(sessoes)}">
  <h1 class="center">Não há seções cadastradas</h1>
 </div>
-    <div class="col s12 m4" th:each="secao:${secoes}">
+    <div class="col s12 m4" th:each="sessao:${sessoes}">
         <div  class="card purple darken-4">
             <div class="card-content white-text">
-                <span class="card-title activator" th:text="${secao.nome}"> <i class="material-icons right" id="tolltip1" title="Descrição da Seção">description</i></span>
-                <p th:text="'Data: '+${secao.dataSecao}"></p>
-                <p th:text="'Hora: '+${secao.horario}"></p>
-                <p th:text="'Local: '+${secao.local}"></p>
-                <p th:text="'Responsável: '+${secao.responsavel.nome}"></p>
+                <span class="card-title activator" th:text="${sessao.nome}"> <i class="material-icons right" id="tolltip1" title="Descrição da Sessão">description</i></span>
+                <p th:text="'Data: '+${sessao.dataSecao}"></p>
+                <p th:text="'Hora: '+${sessao.horario}"></p>
+                <p th:text="'Local: '+${sessao.local}"></p>
+                <p th:text="'Responsável: '+${sessao.responsavel.nome}"></p>
             </div>
            
             <div class="card-action">
-                <a th:href="@{'/secao/secaoTrabalhos/'+${secao.id}}" class="orange-text accent-3">Ver Seção</a>
-                <a th:href="@{'/secao/excluirSecao/'+${secao.id}}"
-                class="orange-text accent-3 deleta_secao">Deletar Seção</a>
+                <a th:href="@{'/secao/secaoTrabalhos/'+${sessao.id}}" class="orange-text accent-3">Ver Sessão</a>
+                <a th:href="@{'/secao/excluirSecao/'+${sessao.id}}"
+                class="orange-text accent-3 deleta_secao">Deletar Sessão</a>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
     	    });
     	    
     	    $(".deleta_secao").on('click',function(e){
-    	    	 var deleta = confirm("Deletar seção?");
+    	    	 var deleta = confirm("Deletar sessão?");
     	    	 
     	    	 if(deleta == false){
     	    		 return false;
