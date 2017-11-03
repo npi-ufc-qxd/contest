@@ -92,39 +92,39 @@ public class SecaoController {
 
 	}
 
-	@RequestMapping(value = "/secaoTrabalhos/{id}", method = RequestMethod.GET)
-	public String secaoTrabalhos(@PathVariable("id") Long idSecao, Model model) {
-		Secao secao = sessaoService.get(idSecao);
-		if(secao == null){
+	@RequestMapping(value = "/ver/{id}", method = RequestMethod.GET)
+	public String verTrabalhos(@PathVariable("id") Long idSessao, Model model) {
+		Secao sessao = sessaoService.get(idSessao);
+		if(sessao == null){
 			return Constants.ERROR_404;
 		}
-		String resultValidate = validateEventParams(secao.getEvento());
+		String resultValidate = validateEventParams(sessao.getEvento());
 		if(!resultValidate.equals(Constants.NO_ERROR)){
 			return resultValidate;
 		}
 		
-		List<ParticipacaoTrabalho> trabalhosSecao = new ArrayList<>();
+		List<ParticipacaoTrabalho> trabalhosSessao = new ArrayList<>();
 		List<Trabalho> trabalhos = new ArrayList<>();
 
-		for (Trabalho trab : secao.getTrabalhos()) {
+		for (Trabalho trab : sessao.getTrabalhos()) {
 			for (ParticipacaoTrabalho part : trab.getParticipacoes()) {
 				if (part.getPapel().equals(Papel.Tipo.AUTOR)) {
-					trabalhosSecao.add(part);
+					trabalhosSessao.add(part);
 				}
 			}
 		}
 
-		for (Trabalho trabalho : trabalhoService.getTrabalhosEvento(secao.getEvento())) {
+		for (Trabalho trabalho : trabalhoService.getTrabalhosEvento(sessao.getEvento())) {
 			if (trabalho.getSecao() == null) {
 				trabalhos.add(trabalho);
 			}
 		}
 
 		model.addAttribute("trabalhos", trabalhos);
-		model.addAttribute("trabalhosSecao", trabalhosSecao);
-		model.addAttribute("secao", secao);
-		model.addAttribute("qtdTrabalhos", secao.getTrabalhos().size());
-		return "secao/secaoTrabalhos";
+		model.addAttribute("trabalhosSecao", trabalhosSessao);
+		model.addAttribute("secao", sessao);
+		model.addAttribute("qtdTrabalhos", sessao.getTrabalhos().size());
+		return "secao/sessao_ver_trabalhos";
 	}
 
 	@RequestMapping(value = "/excluirSecao/{id}")
@@ -147,7 +147,7 @@ public class SecaoController {
 	}
 
 	@RequestMapping("/excluirTrabalho/{idSecao}/{idTrabalho}")
-	public String excluirTrabalhoSecao(@PathVariable("idSecao") Long idSecao,
+	public String excluirTrabalhoSecao(@PathVariable("idSecao") Long idSessao,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		
@@ -156,12 +156,12 @@ public class SecaoController {
 		}
 		
 		trabalhoService.removerSecao(trabalho);
-		return "redirect:/secao/secaoTrabalhos/" + idSecao;
+		return "redirect:/secao/ver/" + idSessao;
 	}
 
 	@RequestMapping("/adicionarTrabalhoSecao")
-	public String adicionarTrabalhoSecao(@RequestParam Long idSecao, @RequestParam List<Long> idTrabalhos) {
-		Secao secao = sessaoService.get(idSecao);
+	public String adicionarTrabalhoSecao(@RequestParam Long idSessao, @RequestParam List<Long> idTrabalhos) {
+		Secao secao = sessaoService.get(idSessao);
 		
 		if(secao == null){
 			return Constants.ERROR_404;
@@ -172,7 +172,7 @@ public class SecaoController {
 			trabalho.setSecao(secao);
 			trabalhoService.adicionarTrabalho(trabalho);
 		}
-		return "redirect:/secao/secaoTrabalhos/" + idSecao;
+		return "redirect:/secao/ver/" + idSessao;
 	}
 
 	@RequestMapping("/listarParticipantes/{idSecao}")
