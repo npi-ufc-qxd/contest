@@ -49,15 +49,15 @@ public class SecaoController {
 			List<Secao> sessoes = sessaoService.listByEvento(evento);
 			model.addAttribute("sessoes", sessoes);
 			model.addAttribute("evento", evento);
-			return "secao/listar_sessoes";
+			return "secao/sessao_listar_sessoes";
 		} else {
 			return validateResult;
 		}
 
 	}
 
-	@RequestMapping(value = "{eventoId}/cadastrarSecaoForm", method = RequestMethod.GET)
-	public String cadastrarSecaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
+	@RequestMapping(value = "{eventoId}/adicionar", method = RequestMethod.GET)
+	public String adicionarSessaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
 
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		String validateResult = validateEventParams(evento);
@@ -66,7 +66,7 @@ public class SecaoController {
 			Collections.sort(pessoas);
 			model.addAttribute("pessoas", pessoas);
 			model.addAttribute("evento", evento);
-			return "secao/cadastroSecao";
+			return "secao/sessao_cadastrar";
 		} else {
 			return validateResult;
 		}
@@ -79,7 +79,7 @@ public class SecaoController {
 		String validateResult = validateEventParams(evento);
 		
 		if (secao.getEvento() == null || secao.getResponsavel() == null) {
-			return "redirect:/secao/" + evento.getId() + "/cadastrarSecaoForm";
+			return "redirect:/secao/" + evento.getId() + "/adicionar";
 		}
 		
 		if (validateResult.equals(Constants.NO_ERROR)) {			
