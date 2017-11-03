@@ -49,7 +49,7 @@ public class SecaoController {
 			List<Secao> sessoes = sessaoService.listByEvento(evento);
 			model.addAttribute("sessoes", sessoes);
 			model.addAttribute("evento", evento);
-			return "secao/sessao_listar_sessoes";
+			return "sessao/sessao_listar_sessoes";
 		} else {
 			return validateResult;
 		}
@@ -66,7 +66,7 @@ public class SecaoController {
 			Collections.sort(pessoas);
 			model.addAttribute("pessoas", pessoas);
 			model.addAttribute("evento", evento);
-			return "secao/sessao_cadastrar";
+			return "sessao/sessao_cadastrar";
 		} else {
 			return validateResult;
 		}
@@ -124,7 +124,7 @@ public class SecaoController {
 		model.addAttribute("trabalhosSecao", trabalhosSessao);
 		model.addAttribute("secao", sessao);
 		model.addAttribute("qtdTrabalhos", sessao.getTrabalhos().size());
-		return "secao/sessao_ver_trabalhos";
+		return "sessao/sessao_ver_trabalhos";
 	}
 
 	@RequestMapping(value = "/excluirSecao/{id}")
@@ -185,7 +185,7 @@ public class SecaoController {
 		
 		model.addAttribute("secao", secao);
 		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSecao(idSecao));
-		return "secao/sessao_listar_participantes";
+		return "sessao/sessao_listar_participantes";
 
 	}
 
