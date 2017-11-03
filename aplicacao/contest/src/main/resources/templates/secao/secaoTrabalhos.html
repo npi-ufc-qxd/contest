@@ -22,9 +22,7 @@
 						<div class="input-field col s12">
 							<select multiple="multiple" th:name="idTrabalhos">
 								<option value="" disabled="disabled" selected="selected">Selecionar</option>
-								<div th:each="trabalho : ${trabalhos}">
-									<option th:value="${trabalho.id}" th:text="${trabalho.titulo}"></option>
-								</div>
+									<option th:each="trabalho : ${trabalhos}" th:value="${trabalho.id}" th:text="${trabalho.titulo}"></option>
 							</select>
 						</div>
 					</div>
