@@ -114,8 +114,8 @@ public class SecaoController {
 			}
 		}
 
-		for (Trabalho trabalho : trabalhoService.buscarTodosTrabalhos()) {
-			if (trabalho.getSecao() == null && trabalho.getEvento() == secao.getEvento()) {
+		for (Trabalho trabalho : trabalhoService.getTrabalhosEvento(secao.getEvento())) {
+			if (trabalho.getSecao() == null) {
 				trabalhos.add(trabalho);
 			}
 		}

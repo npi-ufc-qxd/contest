@@ -109,10 +109,6 @@ public class TrabalhoService {
 		trabalhoRepository.save(trabalho);
 	}
 
-	public List<Trabalho> buscarTodosTrabalhos() {
-		return trabalhoRepository.findAll();
-	}
-
 	public Avaliacao mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
