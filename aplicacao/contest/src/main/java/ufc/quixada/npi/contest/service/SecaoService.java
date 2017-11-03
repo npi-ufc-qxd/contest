@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Secao;
-import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.repository.SecaoRepository;
 
 @Service
@@ -30,13 +29,6 @@ public class SecaoService {
 
 	public Secao get(Long id) {
 		return secaoRepository.findOne(id);
-	}
-	
-	public void adicionarTrabalhoSecao(Long idSecao,Trabalho trabalho){
-		Secao secao = secaoRepository.findOne(idSecao);
-		List<Trabalho> listAux = secao.getTrabalhos();
-		listAux.add(trabalho);
-		secao.setTrabalhos(listAux);
 	}
 	
 	public List<Secao> listByEvento(Evento e){
