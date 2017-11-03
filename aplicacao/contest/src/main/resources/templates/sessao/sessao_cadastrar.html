@@ -12,8 +12,8 @@
 	<div class="container pagination">
 
 		<div class="row opcoes">
-			<a th:href="@{|/secao/${evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
-			<a th:href="@{|/secao/${evento.id}/adicionar|}" style="color: #6a1b9a;">Cadastrar
+			<a th:href="@{|/sessao/${evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
+			<a th:href="@{|/sessao/${evento.id}/adicionar|}" style="color: #6a1b9a;">Cadastrar
 				Sessão</a> <a
 				class=" btn-large waves-effect waves-light purple right white-text"
 				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
@@ -22,12 +22,12 @@
 		<div class="row">
 			<h1 class="center header">Cadastro de Sessão</h1>
 			<div class="col s12">
-				<form name="cadastroForm" th:action="@{|/secao/${evento.id}/adicionar|}"
+				<form name="cadastroForm" th:action="@{|/sessao/${evento.id}/adicionar|}"
 					class="valign" method="post" id="formCadastro">
 
 					<div class="input-field">
-						<input type="text" id="nome_secao" th:name="nome"
-							required="required" /> <label for="nome_secao">*Nome</label>
+						<input type="text" id="nome_sessao" th:name="nome"
+							required="required" /> <label for="nome_sessao">*Nome</label>
 					</div>
 					<br />
 
@@ -55,7 +55,7 @@
 
 					<div class="input-field">
 						<input class="datepicker" type="date" placeholder="*Data"
-							id="data_secao" th:name="dataSecao" required="required" />
+							id="data_sessao" th:name="dataSecao" required="required" />
 					</div>
 					<br />
 
@@ -106,7 +106,7 @@
 		});
 	
 		$("#formCadastro").submit(function() {
-			if ($("#data_secao").val() == "") {
+			if ($("#data_sessao").val() == "") {
 				alert('campo data vazio');
 				return false;
 			}

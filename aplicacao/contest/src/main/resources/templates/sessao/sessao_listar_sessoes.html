@@ -12,7 +12,7 @@
 
     <div class="row opcoes">
         <a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus Eventos</a>
-        <a th:href="@{|/secao/${evento.id}/adicionar|}" style="color: #6a1b9a;">Cadastrar Sessão</a>
+        <a th:href="@{|/sessao/${evento.id}/adicionar|}" style="color: #6a1b9a;">Cadastrar Sessão</a>
     
     <a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
 	       		Voltar
@@ -36,9 +36,9 @@
             </div>
            
             <div class="card-action">
-                <a th:href="@{'/secao/ver/'+${sessao.id}}" class="orange-text accent-3">Ver Sessão</a>
-                <a th:href="@{'/secao/excluirSecao/'+${sessao.id}}"
-                class="orange-text accent-3 deleta_secao">Deletar Sessão</a>
+                <a th:href="@{'/sessao/ver/'+${sessao.id}}" class="orange-text accent-3">Ver Sessão</a>
+                <a th:href="@{'/sessao/excluir/'+${sessao.id}}"
+                class="orange-text accent-3 deleta_sessao">Deletar Sessão</a>
             </div>
         </div>
     </div>
@@ -67,7 +67,7 @@
     	        });
     	    });
     	    
-    	    $(".deleta_secao").on('click',function(e){
+    	    $(".deleta_sessao").on('click',function(e){
     	    	 var deleta = confirm("Deletar sessão?");
     	    	 
     	    	 if(deleta == false){

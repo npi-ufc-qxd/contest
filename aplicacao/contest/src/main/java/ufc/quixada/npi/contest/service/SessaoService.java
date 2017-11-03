@@ -14,8 +14,8 @@ public class SessaoService {
 	@Autowired
 	private SessaoRepository sessaoRepository;
 	
-	public void addOrUpdate(Secao secao) {
-		sessaoRepository.save(secao);
+	public void addOrUpdate(Secao sessao) {
+		sessaoRepository.save(sessao);
 	}
 
 	public List<Secao> list() {
@@ -23,8 +23,8 @@ public class SessaoService {
 	}
 
 	public void delete(Long id) {
-		Secao secao = sessaoRepository.findOne(id);
-		sessaoRepository.delete(secao);
+		Secao sessao = sessaoRepository.findOne(id);
+		sessaoRepository.delete(sessao);
 	}
 
 	public Secao get(Long id) {

@@ -13,9 +13,9 @@
 		style="width: 80%; height: 70%">
 		<div class="modal-content">
 			<h4>Adicionar Trabalho</h4>
-			<form class="col s12" th:action="@{/secao/adicionar/trabalho}"
+			<form class="col s12" th:action="@{/sessao/adicionar/trabalho}"
 				method="post">
-				<input type="hidden" th:value="${secao.id}" th:name="idSessao" />
+				<input type="hidden" th:value="${sessao.id}" th:name="idSessao" />
 				<div class="row">
 
 					<div class="row modal-form-row">
@@ -46,7 +46,7 @@
 
 		<div class="row opcoes">
 			<a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus
-				Eventos</a> <a th:href="@{|/secao/${secao.evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
+				Eventos</a> <a th:href="@{|/sessao/${sessao.evento.id}/|}" style="color: #6a1b9a;">Sessões</a>
 			<a href="#modalAdicionarTrabalho" class="modal-trigger"
 				style="color: #6a1b9a;">Adicionar Trabalhos</a> <a
 				class=" btn-large waves-effect waves-light purple right white-text"
@@ -58,17 +58,17 @@
 	<div class="container">
 		<!--Dados da Sessão-->
 		<div class="">
-			<h4 class="center-align" th:text="${secao.nome}"></h4>
-			<h6 th:text="'Horário: '+${secao.horario}"></h6>
-			<h6 th:text="'Data: '+${secao.dataSecao}"></h6>
-			<h6 th:text="'Local: '+${secao.local}"></h6>
+			<h4 class="center-align" th:text="${sessao.nome}"></h4>
+			<h6 th:text="'Horário: '+${sessao.horario}"></h6>
+			<h6 th:text="'Data: '+${sessao.dataSecao}"></h6>
+			<h6 th:text="'Local: '+${sessao.local}"></h6>
 			<h6 th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
-			<a th:href="@{'/secao/listarParticipantes/'+ ${secao.id}}"
+			<a th:href="@{'/sessao/listarParticipantes/'+ ${sessao.id}}"
 				class=" waves-effect btn-flat teal white-text" target="_blank">LISTAR
 				PARTICIPANTES</a>
 		</div>
 
-		<div th:if="${#lists.isEmpty(trabalhosSecao)}">
+		<div th:if="${#lists.isEmpty(trabalhosSessao)}">
 			<h2 class="center">Não há trabalhos na sessão</h2>
 		</div>
 
@@ -82,7 +82,7 @@
 				</tr>
 			</thead>
 
-			<tbody th:each="participacao,count : ${trabalhosSecao}">
+			<tbody th:each="participacao,count : ${trabalhosSessao}">
 				<tr>
 					<td width="250" th:text="${participacao.pessoa.nome}"></td>
 					<td width="300" th:text="${participacao.trabalho.titulo}"></td>
@@ -101,7 +101,7 @@
 						 <label 
 						class="black-text" th:for="|check${count.index}|"> </label></td>
 					<td><a
-						th:href="@{'/secao/excluirTrabalho/'+${secao.id}+'/'+${participacao.trabalho.id}}"
+						th:href="@{'/sessao/excluirTrabalho/'+${sessao.id}+'/'+${participacao.trabalho.id}}"
 						class="waves-effect btn-flat red accent-4 white-text"
 						id="btn_excluir_trabalho">Deletar<i
 							class="material-icons right">delete</i></a></td>
