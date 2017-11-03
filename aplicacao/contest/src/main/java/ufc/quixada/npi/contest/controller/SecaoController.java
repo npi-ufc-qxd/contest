@@ -159,8 +159,8 @@ public class SecaoController {
 		return "redirect:/secao/ver/" + idSessao;
 	}
 
-	@RequestMapping("/adicionarTrabalhoSecao")
-	public String adicionarTrabalhoSecao(@RequestParam Long idSessao, @RequestParam List<Long> idTrabalhos) {
+	@RequestMapping("/adicionar/trabalho")
+	public String adicionarTrabalhoNaSessao(@RequestParam Long idSessao, @RequestParam List<Long> idTrabalhos) {
 		Secao secao = sessaoService.get(idSessao);
 		
 		if(secao == null){
