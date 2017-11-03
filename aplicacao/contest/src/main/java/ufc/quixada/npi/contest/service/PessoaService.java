@@ -95,9 +95,6 @@ public class PessoaService {
 		return pessoaRepository.findPessoaByParticipacoesEventoEventoIdAndParticipacoesEventoPapel(idEvento, Tipo.ORGANIZADOR);
 	}
 	
-	public List<Pessoa> getTodos(){
-		return pessoaRepository.findAll();
-	}
 	
 	public List<Pessoa> getTodosInEvento(Evento e){
 		List<Pessoa> pessoas = new ArrayList<>();
