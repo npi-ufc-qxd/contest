@@ -20,11 +20,10 @@
 					<div class="input-field col s12">
 						<select name="filtrar_trabalhos" id="filtro">
 							<option value="todos" selected="selected">Todos</option>
-							<option value="nao_revisado">Não revisado</option>
 							<option value="best">Best paper</option>
 							<th:block th:each="opcao : ${opcoesFiltro}">
 								<option th:value="${#strings.toLowerCase(opcao)}"
-									th:text="${opcao.tipo}"></option>
+									th:text="${opcao.descricao}"></option>
 							</th:block>
 						</select> <label>Filtrar por status:</label>
 					</div>
@@ -59,55 +58,7 @@
 										</div>
 									</div>
 
-									<div class="card-action">
-										<div class="chip  yellow lighten-1" th:if="${best}">
-											<i class="fa fa-star" aria-hidden="true"></i> <em>Best
-												Paper</em>
-										</div>
-
-										<div th:if="${trabalho.status != null}">
-											<div class="left chip light-green accent-2"
-												th:if="${revisado}">
-												<i class="fa fa-check-circle" aria-hidden="true"></i>
-												Revisado
-
-											</div>
-											<div class=" left chip orange lighten-2"
-												th:unless="${revisado}">
-												<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-												N�o revisado
-											</div>
-
-											<div th:if="${#strings.equals(trabalho.status, 'REPROVADO')}"
-												class="left chip red">
-												<i class="fa fa-thumbs-down" aria-hidden="true"></i>
-												Reprovado
-											</div>
-											<div th:if="${#strings.equals(trabalho.status, 'APROVADO')}"
-												class="left chip light-blue accent-2">
-												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
-											</div>
-
-											<div th:if="${#strings.equals(trabalho.status, 'RESSALVAS')}"
-												class="chip orange lighten-3">
-												<i class="fa fa-thumbs-up" aria-hidden="true"></i> Aprovado
-												com Ressalvas
-											</div>
-
-											<div th:if="${#strings.equals(trabalho.status, 'MODERACAO')}">
-												<div class="left chip orange lighten-3">
-													<i class="fa fa-thumbs-up" aria-hidden="true"></i> Moderado
-												</div>
-												<br /> <br />
-
-												<div>
-													<a th:attr="href='#modal' + ${trabalho.id}"
-														class="btn waves-effect waves-light modal-trigger white-text">Decidir
-														Status</a>
-												</div>
-											</div>
-											<br />
-										</div>
+									<div class="card-action" th:include="fragments/trabalho_status_badge :: mostrarStatusBadge(${trabalho})">
 									</div>
 								</div>
 								<div th:id="${'modal'+trabalho.id}" class="modal">
@@ -186,13 +137,16 @@
 												<div class="input-field col s12">
 													<input type="hidden" th:value="${trabalho.id}"
 														th:name="idTrabalho" /> <input type="hidden"
-														th:value="${evento.id}" th:name="idEvento" /> <select
-														th:name="funcao" required="required">
-														<option th:value="APROVADO">APROVADO</option>
-														<option th:value="REPROVADO">REPROVADO</option>
-														<option th:value="RESSALVAS">APROVADO COM
-															RESSALVAS</option>
-													</select>
+														th:value="${evento.id}" th:name="idEvento" /> 
+													<select name="avaliacao" required="required">
+						                            	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
+						                                <option th:with="aprovado=${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}" 
+						                                	th:value="${aprovado}" th:text="${aprovado.descricao}">APROVADO</option>
+						                               	<option th:with="ressalvas=${T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}" 
+						                                	th:value="${ressalvas}" th:text="${ressalvas.descricao}">COM RESSALVA</option>
+						                                <option th:with="reprovado=${T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}" 
+						                                	th:value="${reprovado}" th:text="${reprovado.descricao}">REPROVADO</option>
+						                            </select>
 												</div>
 											</div>
 											<div class="modal-footer">
