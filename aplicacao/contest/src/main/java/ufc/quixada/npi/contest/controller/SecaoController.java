@@ -24,7 +24,7 @@ import ufc.quixada.npi.contest.model.Secao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
-import ufc.quixada.npi.contest.service.SecaoService;
+import ufc.quixada.npi.contest.service.SessaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
@@ -33,7 +33,7 @@ import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 @RequestMapping(value = "/secao")
 public class SecaoController {
 	@Autowired
-	private SecaoService sessaoService;
+	private SessaoService sessaoService;
 	@Autowired
 	private TrabalhoService trabalhoService;
 	@Autowired

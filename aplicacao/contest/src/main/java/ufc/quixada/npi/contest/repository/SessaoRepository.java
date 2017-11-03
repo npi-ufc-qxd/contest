@@ -11,7 +11,7 @@ import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Secao;
 @Repository
 @Transactional
-public interface SecaoRepository extends JpaRepository<Secao, Long> {
+public interface SessaoRepository extends JpaRepository<Secao, Long> {
 	
 	public List<Secao> findByEvento(Evento evento);
 	
