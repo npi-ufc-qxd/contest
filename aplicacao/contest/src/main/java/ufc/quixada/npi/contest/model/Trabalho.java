@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,8 +40,8 @@ public class Trabalho implements Comparable<Trabalho> {
 	@ManyToOne
 	private Trilha trilha;
 	
-	
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private Avaliacao status;
 	
 	private boolean statusApresentacao;
 	
@@ -234,7 +236,7 @@ public class Trabalho implements Comparable<Trabalho> {
 		return false;
 	}
 	
-	public String getStatus(){
+	public Avaliacao getStatus(){
 		return status;
 	}
 	
@@ -257,7 +259,7 @@ public class Trabalho implements Comparable<Trabalho> {
 		this.secao = secao;
 	}
 
-	public void setStatus(String resultado) {
+	public void setStatus(Avaliacao resultado) {
 		this.status = resultado;
 	}
 

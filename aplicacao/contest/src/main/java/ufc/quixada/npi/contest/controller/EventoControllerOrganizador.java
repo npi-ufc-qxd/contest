@@ -707,10 +707,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/avaliar/", method = RequestMethod.POST)
-	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String funcao,
+	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String avaliacao,
 			@RequestParam Long idTrabalho, Model model) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		trabalho.setStatus(funcao);
+		trabalho.setStatus(Avaliacao.valueOf(avaliacao));
 		trabalhoService.adicionarTrabalho(trabalho);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
 

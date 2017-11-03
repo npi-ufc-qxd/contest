@@ -69,7 +69,7 @@
 						
 						<span th:if="${periodoInicial}">Submetido</span>
 						<span th:if="${periodoRevisao}">Em revisão</span>
-						<span th:if="${periodoFinal}" th:text="${trabalho.status} ? ${trabalho.status} : 'Não Revisado'">status</span>
+						<span th:if="${periodoFinal}" th:text="${trabalho.status} ? ${trabalho.status.descricao} : 'Não Revisado'">status</span>
 						
 					</p>
                               		

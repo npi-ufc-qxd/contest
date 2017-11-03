@@ -236,7 +236,7 @@ public class RevisorController {
 			}
 			
 			revisaoService.addOrUpdate(revisao);
-			trabalho.setStatus(trabalhoService.mensurarAvaliacoes(trabalho).getTipo());
+			trabalho.setStatus(trabalhoService.mensurarAvaliacoes(trabalho));
 			
 			trabalhoService.adicionarTrabalho(trabalho);
 			
@@ -420,6 +420,5 @@ public class RevisorController {
 
 		return Constants.TEMPLATE_DETALHES_EVENTO_REV;
 	}
-	
 	
 }

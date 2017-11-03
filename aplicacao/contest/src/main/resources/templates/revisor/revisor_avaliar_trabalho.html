@@ -241,9 +241,12 @@
                     	<div class="input-field">
                          	<select name="avaliacao-final">
                             	<option value="" th:selected="${true}" th:disabled="${true}">Escolha uma opção.</option>
-                                <option value="APROVADO">APROVADO</option>
-                                <option value="RESSALVAS">APROVADO COM RESSALVAS</option>
-                                <option value="REPROVADO">REPROVADO</option>
+                                <option th:with="aprovado=${T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}" 
+                                	th:value="${aprovado}" th:text="${aprovado.descricao}">APROVADO</option>
+                               	<option th:with="ressalvas=${T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}" 
+                                	th:value="${ressalvas}" th:text="${ressalvas.descricao}">COM RESSALVA</option>
+                                <option th:with="reprovado=${T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}" 
+                                	th:value="${reprovado}" th:text="${reprovado.descricao}">REPROVADO</option>
                             </select>
                         </div>
                     </div>

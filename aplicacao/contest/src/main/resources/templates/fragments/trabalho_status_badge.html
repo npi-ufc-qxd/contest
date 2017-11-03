@@ -1,0 +1,49 @@
+		<div th:fragment="mostrarBadge(trabalho)" th:if="${trabalho.status != null}" 
+		th:with="revisado=${trabalho.isRevisado()}, status=${trabalho.status}, best=${trabalho.isIndicadoMelhoresTrabalhos()}">
+			<div class="chip  yellow lighten-1" th:if="${best}">
+				<i class="fa fa-star" aria-hidden="true"></i> <em>Best
+					Paper</em>
+			</div>
+			<div class=" left chip light-green accent-2"
+				th:if="${revisado}">
+				<i class="fa fa-check-circle" aria-hidden="true"></i>
+				Revisado
+			</div>
+			<div class=" left chip orange lighten-2"
+				th:unless="${revisado}">
+				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+				Não revisado
+			</div>
+
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}"
+				th:inline="text"
+				class="left chip red">
+				<i class="fa fa-thumbs-down" aria-hidden="true"></i>
+				[[${trabalho.status.descricao}]]				
+			</div>
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}"
+				th:inline="text"
+				class="left chip light-blue accent-2">
+				<i class="fa fa-thumbs-up" aria-hidden="true"></i>
+				[[${trabalho.status.descricao}]]
+			</div>
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}"
+				th:inline="text"
+				class="chip orange lighten-3">
+				<i class="fa fa-thumbs-up" aria-hidden="true"></i>
+				[[${trabalho.status.descricao}]]
+			</div>
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).MODERACAO}">
+				<div class="left chip orange lighten-3" th:inline="text">
+					<i class="fa fa-thumbs-up" aria-hidden="true"></i> [[${trabalho.status.descricao}]]
+				</div>
+				<br /> <br />
+
+				<div>
+					<a th:attr="href='#modal' + ${trabalho.id}"
+						class="btn waves-effect waves-light modal-trigger white-text">Decidir
+						Status</a>
+				</div>
+			</div>
+			<br/>
+	</div>
