@@ -17,7 +17,7 @@ import ufc.quixada.npi.contest.model.Trilha;
 @Repository
 @Transactional
 public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
-	public List<Trabalho> getByEvento(Evento evento);
+	public List<Trabalho> getByEventoOrderByTitulo(Evento evento);
 	
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :idEvento AND t.id in(SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
 			+ " pt where pt.pessoa.id = :idRevisor AND pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.REVISOR)")

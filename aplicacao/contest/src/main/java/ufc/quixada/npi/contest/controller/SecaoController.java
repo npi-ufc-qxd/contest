@@ -120,8 +120,6 @@ public class SecaoController {
 			}
 		}
 
-		Collections.sort(trabalhos);
-
 		model.addAttribute("trabalhos", trabalhos);
 		model.addAttribute("trabalhosSecao", trabalhosSecao);
 		model.addAttribute("secao", secao);

@@ -37,7 +37,7 @@ public class TrabalhoService {
 	}
 
 	public List<Trabalho> getTrabalhosEvento(Evento evento) {
-		return trabalhoRepository.getByEvento(evento);
+		return trabalhoRepository.getByEventoOrderByTitulo(evento);
 	}
 
 	public List<Trabalho> getTrabalhosTrilha(Trilha trilha) {
