@@ -113,9 +113,12 @@ public class TrabalhoService {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
 		int numeroDeRessalvas = 0;
+		int numeroRevisoes = 0;
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
+		
 		if (revisoes != null) {
+			numeroRevisoes = revisoes.size();
 			for (Revisao revisao : revisoes) {
 				Avaliacao avaliacao = revisao.getAvaliacao();
 
@@ -124,20 +127,26 @@ public class TrabalhoService {
 				} else if (avaliacao == Avaliacao.REPROVADO) {
 					numeroDeReprovacao++;
 				} else if (avaliacao == Avaliacao.RESSALVAS) {
-					numeroDeAprovacao++;
 					numeroDeRessalvas++;
 				}
 			}
 		}
 		
-		if (numeroDeReprovacao == trabalho.getRevisoes().size())
+		if(numeroDeAprovacao != 0 && numeroDeReprovacao != 0) {
+			return Avaliacao.MODERACAO;
+		}
+		
+		
+		int maioria = (numeroRevisoes/2) +  1;
+		
+		if (numeroDeReprovacao == numeroRevisoes || numeroDeReprovacao >= maioria)
 			return Avaliacao.REPROVADO;
 		
-		if (numeroDeAprovacao == trabalho.getRevisoes().size()) {
+		if (numeroDeAprovacao == numeroRevisoes || numeroDeAprovacao >= maioria) {
 			return Avaliacao.APROVADO;
 		}
 		
-		if (numeroDeRessalvas == trabalho.getRevisoes().size()) {
+		if (numeroDeRessalvas == numeroRevisoes) {
 			return Avaliacao.RESSALVAS;
 		}
 		

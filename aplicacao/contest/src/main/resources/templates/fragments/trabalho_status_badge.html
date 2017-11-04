@@ -1,0 +1,48 @@
+		<div th:fragment="mostrarStatusBadge(trabalho)" th:if="${trabalho.status != null}" 
+		th:with="revisado=${trabalho.isRevisado()}, status=${trabalho.status}, best=${trabalho.isIndicadoMelhoresTrabalhos()}">
+			<div th:if="${best}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge('Best Paper', 'fa-star', 'yellow lighten-1')"></div>
+			</div>
+			<div th:if="${revisado}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge('Revisado', 'fa-check-circle', 'light-green accent-2')"></div>
+			</div>
+			<div th:unless="${revisado}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge('Não revisado', 'fa-exclamation-triangle', 'orange lighten-2')"></div>
+			</div>
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).REPROVADO}"
+				 th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-down', 'red')"></div>
+			</div>
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).APROVADO}"
+				 th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-up', 'light-blue accent-2')"></div>
+			</div>
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).RESSALVAS}"
+				 th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: 
+					mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-up', 'orange lighten-3')"></div>
+			</div>
+			<div th:if="${trabalho.status == T(ufc.quixada.npi.contest.model.Avaliacao).MODERACAO}" th:remove="tag">
+				<div th:replace="fragments/trabalho_status_badge :: mostrarBadge(${trabalho.status.descricao}, 'fa-thumbs-up', 'orange lighten-3')">
+				</div>
+				<br /> <br />
+
+				<div>
+					<a th:attr="href='#modal' + ${trabalho.id}"
+						class="btn waves-effect waves-light modal-trigger white-text">Decidir
+						Status</a>
+				</div>
+			</div>
+			<br/>
+	</div>
+	
+	
+	<div th:fragment="mostrarBadge(texto, icone, cssClass)" class="chip" th:inline="text" th:classappend="${cssClass}">
+			<i class="fa" th:classappend="${icone}" aria-hidden="true"></i>
+				[[${texto}]]
+	</div>

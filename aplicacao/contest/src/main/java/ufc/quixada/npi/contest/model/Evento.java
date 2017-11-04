@@ -2,6 +2,7 @@ package ufc.quixada.npi.contest.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -76,6 +77,7 @@ public class Evento {
 	private List<Trilha> trilhas;
 	
 	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=false)
+	@OrderBy("nome ASC")
 	private List<Sessao> sessoes;
 
 	public Long getId() {
@@ -265,15 +267,21 @@ public class Evento {
 	}
 	
 	public List<Pessoa> getOrganizadores(){
-		return getByPapel(Tipo.ORGANIZADOR);
+		List<Pessoa> organizadores = getByPapel(Tipo.ORGANIZADOR);
+		Collections.sort(organizadores);
+		return organizadores;
 	}
 	
 	public List<Pessoa> getRevisores(){
-		return getByPapel(Tipo.REVISOR);
+		List<Pessoa> organizadores = getByPapel(Tipo.REVISOR);
+		Collections.sort(organizadores);
+		return organizadores;
 	}
 	
 	public List<Pessoa> getAutores(){
-		return getByPapel(Tipo.AUTOR);
+		List<Pessoa> organizadores = getByPapel(Tipo.AUTOR);
+		Collections.sort(organizadores);
+		return organizadores;
 	}
 	
 	public List<Sessao> getSessoes() {

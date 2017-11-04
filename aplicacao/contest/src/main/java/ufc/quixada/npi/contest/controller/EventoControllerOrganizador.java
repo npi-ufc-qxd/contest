@@ -124,12 +124,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			eventoPrivado = true;
 		}
 
-		List<Pessoa> pessoas = pessoaService.getTodos();
 		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
-		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("eventoPrivado", eventoPrivado);
 
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
@@ -707,10 +705,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/avaliar/", method = RequestMethod.POST)
-	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String funcao,
+	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String avaliacao,
 			@RequestParam Long idTrabalho, Model model) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		trabalho.setStatus(funcao);
+		trabalho.setStatus(Avaliacao.valueOf(avaliacao));
 		trabalhoService.adicionarTrabalho(trabalho);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
 
