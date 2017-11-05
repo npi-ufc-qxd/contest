@@ -12,7 +12,6 @@ import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
-import ufc.quixada.npi.contest.repository.RevisaoRepository;
 import ufc.quixada.npi.contest.repository.TrabalhoRepository;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
@@ -21,9 +20,6 @@ public class TrabalhoService {
 
 	@Autowired
 	private TrabalhoRepository trabalhoRepository;
-
-	@Autowired
-	private RevisaoRepository revisaoRepository;
 
 	@Autowired
 	private EventoService eventoService;
@@ -52,16 +48,8 @@ public class TrabalhoService {
 		return trabalhoRepository.getTrabalhosParaRevisar(idRevisor, idEvento);
 	}
 
-	public List<Long> getTrabalhosRevisadosDoRevisor(Long idRevisor, Long idEvento) {
-		List<Trabalho> trabalhosParaRevisar = this.getTrabalhosParaRevisar(idRevisor, idEvento);
-		List<Long> trabalhosRevisados = new ArrayList<Long>();
-		for (Trabalho trabalho : trabalhosParaRevisar) {
-			if (revisaoRepository.trabalhoEstaRevisadoPeloRevisor(trabalho.getId(), idRevisor)) {
-				trabalhosRevisados.add(trabalho.getId());
-			}
-		}
-
-		return trabalhosRevisados;
+	public List<Trabalho> getTrabalhosRevisadosDoRevisor(Long idRevisor, Long idEvento) {
+		return trabalhoRepository.getTrabalhosRevisados(idRevisor, idEvento);
 	}
 
 	public List<Pessoa> getAutoresDoTrabalho(Long idTrabalho) {
@@ -196,4 +184,5 @@ public class TrabalhoService {
 			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
 		}
 	}
+
 }
