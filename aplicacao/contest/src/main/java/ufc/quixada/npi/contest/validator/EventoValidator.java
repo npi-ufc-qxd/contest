@@ -55,9 +55,7 @@ public class EventoValidator implements Validator{
 	}
 
 	public boolean datasVisibilidadeOuventoNull(Evento evento){
-		if(evento == null){
-			return true;
-		}else if(evento.getPrazoRevisaoFinal() == null || evento.getPrazoRevisaoInicial() == null
+		if(evento == null || evento.getPrazoRevisaoFinal() == null || evento.getPrazoRevisaoInicial() == null
 			|| evento.getPrazoSubmissaoFinal() == null || evento.getPrazoSubmissaoInicial() == null
 			|| evento.getVisibilidade() == null){
 			return true;
