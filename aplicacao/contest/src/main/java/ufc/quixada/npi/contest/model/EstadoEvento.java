@@ -6,14 +6,10 @@ public enum EstadoEvento {
 	private String estado;
 
 	EstadoEvento(String estado) {
-		this.setEstado(estado);
+		this.estado = estado;
 	}
 
 	public String getEstado() {
 		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
 	}
 }

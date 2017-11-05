@@ -6,14 +6,10 @@ public enum TipoSubmissao {
 	private String tipoSubmissao;
 
 	TipoSubmissao(String tipoSubmissao) {
-		this.setTipoSubmissao(tipoSubmissao);
+		this.tipoSubmissao = tipoSubmissao;
 	}
 
 	public String getTipoSubmissao() {
 		return tipoSubmissao;
-	}
-
-	public void setTipoSubmissao(String tipoSubmissao) {
-		this.tipoSubmissao = tipoSubmissao;
 	}
 }
