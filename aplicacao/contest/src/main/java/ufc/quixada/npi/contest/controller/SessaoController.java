@@ -1,7 +1,5 @@
 package ufc.quixada.npi.contest.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.PresencaJsonWrapper;
 import ufc.quixada.npi.contest.model.Sessao;
@@ -62,7 +58,6 @@ public class SessaoController {
 		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 			List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
-			Collections.sort(pessoas);
 			model.addAttribute("pessoas", pessoas);
 			model.addAttribute("evento", evento);
 			return "sessao/sessao_cadastrar";
@@ -71,6 +66,29 @@ public class SessaoController {
 		}
 
 	}
+	
+	@RequestMapping(value = "/sessao/editar/{id}", method = RequestMethod.GET)
+	public String editarSecao(Model model, @PathVariable("id") Long sessaoId) {
+
+		Sessao sessao = sessaoService.get(sessaoId);
+		if(sessao == null){
+			return Constants.ERROR_404;
+		}
+		String resultValidate = validateEventParams(sessao.getEvento());
+		if(!resultValidate.equals(Constants.NO_ERROR)){
+			return resultValidate;
+		}
+		
+		Evento evento = sessao.getEvento();
+		List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
+		model.addAttribute("pessoas", pessoas);
+		model.addAttribute("evento", evento);
+		model.addAttribute("sessao", sessao);
+		model.addAttribute("responsavel", sessao.getResponsavel().getId());
+		return "sessao/sessao_cadastrar";
+
+	}
+
 	
 	@RequestMapping(value = "evento/{eventoId}/sessao/adicionar", method = RequestMethod.POST)
 	public String adicionarSessao(Sessao sessao, @PathVariable("eventoId") Long eventoId) {
