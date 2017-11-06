@@ -26,8 +26,9 @@
 					class="valign" method="post" id="formCadastro">
 
 					<div class="input-field">
+						<input th:if="${sessao}" type="hidden" id="id" name="id" th:value="${sessao.id}"/>
 						<input type="text" id="nome_sessao" th:name="nome"
-							required="required" /> <label for="nome_sessao">*Nome</label>
+							required="required" th:value="${sessao?.nome}"/> <label for="nome_sessao">*Nome</label>
 					</div>
 					<br />
 
@@ -36,10 +37,8 @@
 							<option value="" disabled="disabled" 
 							selected="selected">*Selecione uma pessoa</option>
 							<div th:each="pessoa : ${pessoas}">
-								<option th:if="${pessoa.id == idPessoa}" th:value="${pessoa.id}"
-									th:text="${pessoa.nome}" selected="selected"></option>
-								<option th:if="${pessoa.id != idPessoa}" th:value="${pessoa.id}"
-									th:text="${pessoa.nome}"></option>
+								<option th:value="${pessoa.id}"
+									th:text="${pessoa.nome}" th:selected="${responsavel == pessoa.id}"></option>
 							</div>
 						</select>
 					</div>
@@ -55,19 +54,19 @@
 
 					<div class="input-field">
 						<input class="datepicker" type="date" placeholder="*Data"
-							id="data_sessao" th:name="dataSecao" required="required" />
+							id="data_sessao" th:name="dataSecao" th:value="${sessao?.dataSecao}" required="required" />
 					</div>
 					<br />
 
 					<div class="input-field">
 						*Horário <input type="text" id="horario"
 							placeholder="Exemplo: 00:00" th:name="horario"
-							required="required" />
+							th:value="${sessao?.horario}" required="required"/>
 					</div>
 
 					<div class="input-field">
-						<textarea type="text" class="materialize-textarea validate"
-							id="local" th:name="local" required="required"></textarea>
+						<textarea class="materialize-textarea validate"
+							id="local" th:name="local" th:text="${sessao?.local}" required="required"></textarea>
 						<label for="local">*Local</label>
 					</div>
 					<br /> (*) Campo obrigatório

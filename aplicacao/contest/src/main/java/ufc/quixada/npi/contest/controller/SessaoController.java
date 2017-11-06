@@ -1,7 +1,5 @@
 package ufc.quixada.npi.contest.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ufc.quixada.npi.contest.model.Evento;
-import ufc.quixada.npi.contest.model.Papel;
-import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.PresencaJsonWrapper;
 import ufc.quixada.npi.contest.model.Sessao;
@@ -31,6 +27,11 @@ import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 public class SessaoController {
+	private static final String TRABALHOS = "trabalhos";
+	private static final String SESSAO = "sessao";
+	private static final String PESSOAS = "pessoas";
+	private static final String EVENTO = "evento";
+	private static final String SESSOES = "sessoes";
 	@Autowired
 	private SessaoService sessaoService;
 	@Autowired
@@ -46,8 +47,8 @@ public class SessaoController {
 		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 			List<Sessao> sessoes = sessaoService.listByEvento(evento);
-			model.addAttribute("sessoes", sessoes);
-			model.addAttribute("evento", evento);
+			model.addAttribute(SESSOES, sessoes);
+			model.addAttribute(EVENTO, evento);
 			return "sessao/sessao_listar_sessoes";
 		} else {
 			return validateResult;
@@ -62,16 +63,38 @@ public class SessaoController {
 		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 			List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
-			Collections.sort(pessoas);
-			model.addAttribute("pessoas", pessoas);
-			model.addAttribute("evento", evento);
+			model.addAttribute(PESSOAS, pessoas);
+			model.addAttribute(EVENTO, evento);
 			return "sessao/sessao_cadastrar";
 		} else {
 			return validateResult;
 		}
 
 	}
+	
+	@RequestMapping(value = "/sessao/editar/{id}", method = RequestMethod.GET)
+	public String editarSecao(Model model, @PathVariable("id") Long sessaoId) {
 
+		Sessao sessao = sessaoService.get(sessaoId);
+		if(sessao == null){
+			return Constants.ERROR_404;
+		}
+		String resultValidate = validateEventParams(sessao.getEvento());
+		if(!resultValidate.equals(Constants.NO_ERROR)){
+			return resultValidate;
+		}
+		
+		Evento evento = sessao.getEvento();
+		List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
+		model.addAttribute(PESSOAS, pessoas);
+		model.addAttribute(EVENTO, evento);
+		model.addAttribute(SESSAO, sessao);
+		model.addAttribute("responsavel", sessao.getResponsavel().getId());
+		return "sessao/sessao_cadastrar";
+
+	}
+
+	
 	@RequestMapping(value = "evento/{eventoId}/sessao/adicionar", method = RequestMethod.POST)
 	public String adicionarSessao(Sessao sessao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
@@ -102,26 +125,8 @@ public class SessaoController {
 			return resultValidate;
 		}
 		
-		List<ParticipacaoTrabalho> trabalhosSessao = new ArrayList<>();
-		List<Trabalho> trabalhos = new ArrayList<>();
-
-		for (Trabalho trab : sessao.getTrabalhos()) {
-			for (ParticipacaoTrabalho part : trab.getParticipacoes()) {
-				if (part.getPapel().equals(Papel.Tipo.AUTOR)) {
-					trabalhosSessao.add(part);
-				}
-			}
-		}
-
-		for (Trabalho trabalho : trabalhoService.getTrabalhosEvento(sessao.getEvento())) {
-			if (trabalho.getSessao() == null) {
-				trabalhos.add(trabalho);
-			}
-		}
-
-		model.addAttribute("trabalhos", trabalhos);
-		model.addAttribute("trabalhosSessao", trabalhosSessao);
-		model.addAttribute("sessao", sessao);
+		model.addAttribute(TRABALHOS, trabalhoService.getTrabalhosSemSessaoNoEvento(sessao.getEvento()));
+		model.addAttribute(SESSAO, sessao);
 		model.addAttribute("qtdTrabalhos", sessao.getTrabalhos().size());
 		return "sessao/sessao_ver_trabalhos";
 	}
@@ -182,8 +187,8 @@ public class SessaoController {
 			return Constants.ERROR_404;
 		}
 		
-		model.addAttribute("sessao", sessao);
-		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSessao(idSessao));
+		model.addAttribute(SESSAO, sessao);
+		model.addAttribute(TRABALHOS, trabalhoService.buscarTodosTrabalhosDaSessao(idSessao));
 		return "sessao/sessao_listar_participantes";
 
 	}
