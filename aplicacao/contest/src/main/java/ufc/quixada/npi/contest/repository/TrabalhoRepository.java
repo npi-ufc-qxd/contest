@@ -68,6 +68,11 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 			+ " rev where rev.trabalho.id = t.id AND rev.observacoes <> '')")
 	public int getTrabalhoRevisadoComentadoEvento(@Param("eventoId") Long eventoId);
 	
+	@Query("SELECT t FROM Trabalho t "
+			+ "WHERE t.evento.id = :eventoId AND "
+			+ "t.sessao.id = null ORDER by t.titulo")
+	public List<Trabalho> getTrabalhosSemSessaoNoEvento(@Param("eventoId") Long eventoId);
+	
 	public List<Trabalho> findAllByEventoId(Long eventoID);
 
 	public List<Trabalho> findTrabalhoBySessaoId(Long idSessao);

@@ -35,6 +35,10 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosEvento(Evento evento) {
 		return trabalhoRepository.getByEventoOrderByTitulo(evento);
 	}
+	
+	public List<Trabalho> getTrabalhosSemSessaoNoEvento(Evento evento){
+		return trabalhoRepository.getTrabalhosSemSessaoNoEvento(evento.getId());
+	}
 
 	public List<Trabalho> getTrabalhosTrilha(Trilha trilha) {
 		return trabalhoRepository.findByTrilha(trilha);

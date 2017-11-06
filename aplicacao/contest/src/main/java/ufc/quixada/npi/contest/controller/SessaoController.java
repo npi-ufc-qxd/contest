@@ -71,7 +71,7 @@ public class SessaoController {
 		}
 
 	}
-
+	
 	@RequestMapping(value = "evento/{eventoId}/sessao/adicionar", method = RequestMethod.POST)
 	public String adicionarSessao(Sessao sessao, @PathVariable("eventoId") Long eventoId) {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
@@ -102,25 +102,7 @@ public class SessaoController {
 			return resultValidate;
 		}
 		
-		List<ParticipacaoTrabalho> trabalhosSessao = new ArrayList<>();
-		List<Trabalho> trabalhos = new ArrayList<>();
-
-		for (Trabalho trab : sessao.getTrabalhos()) {
-			for (ParticipacaoTrabalho part : trab.getParticipacoes()) {
-				if (part.getPapel().equals(Papel.Tipo.AUTOR)) {
-					trabalhosSessao.add(part);
-				}
-			}
-		}
-
-		for (Trabalho trabalho : trabalhoService.getTrabalhosEvento(sessao.getEvento())) {
-			if (trabalho.getSessao() == null) {
-				trabalhos.add(trabalho);
-			}
-		}
-
-		model.addAttribute("trabalhos", trabalhos);
-		model.addAttribute("trabalhosSessao", trabalhosSessao);
+		model.addAttribute("trabalhos", trabalhoService.getTrabalhosSemSessaoNoEvento(sessao.getEvento()));
 		model.addAttribute("sessao", sessao);
 		model.addAttribute("qtdTrabalhos", sessao.getTrabalhos().size());
 		return "sessao/sessao_ver_trabalhos";
