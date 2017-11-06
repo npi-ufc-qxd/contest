@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -64,7 +65,8 @@ public class Trabalho implements Comparable<Trabalho> {
 	private String coautoresInString;
 	
 	@ManyToOne
-	private Secao secao;
+	@JoinColumn(name="secao_id")
+	private Sessao sessao;
 	
 	public Long getId() {
 		return id;
@@ -251,12 +253,12 @@ public class Trabalho implements Comparable<Trabalho> {
 		return this.titulo.toUpperCase().compareTo(o.getTitulo().toUpperCase());
 	}
 
-	public Secao getSecao() {
-		return secao;
+	public Sessao getSessao() {
+		return sessao;
 	}
 
-	public void setSecao(Secao secao) {
-		this.secao = secao;
+	public void setSessao(Sessao sessao) {
+		this.sessao = sessao;
 	}
 
 	public void setStatus(Avaliacao resultado) {

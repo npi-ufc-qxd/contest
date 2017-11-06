@@ -17,14 +17,14 @@
 			<b>UNIVERSIDADE FEDERAL DO CEARÁ</b>
 		</font><br /> <font size="4"> CAMPUS QUIXADÁ</font><br />
 		<br /> <font size="3"> <b
-			th:text="${#strings.toUpperCase(secao.responsavel.nome)}"></b></font><br />
+			th:text="${#strings.toUpperCase(sessao.responsavel.nome)}"></b></font><br />
 		<font size="3"> <b
-			th:text="${#strings.toUpperCase(secao.nome)}"></b>
+			th:text="${#strings.toUpperCase(sessao.nome)}"></b>
 		</font><br />
 		<p>
-			<span th:text="'Data: '+${secao.dataSecao}"></span> | 
-	        <span th:text="'Hora: '+${secao.horario}"></span> | 
-	        <span th:text="'Local: '+${secao.local}"></span>
+			<span th:text="'Data: '+${sessao.dataSecao}"></span> | 
+	        <span th:text="'Hora: '+${sessao.horario}"></span> | 
+	        <span th:text="'Local: '+${sessao.local}"></span>
         </p>
 		<br />
 

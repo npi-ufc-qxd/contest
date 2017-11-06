@@ -78,7 +78,7 @@ public class Evento {
 	
 	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=false)
 	@OrderBy("nome ASC")
-	private List<Secao> secoes;
+	private List<Sessao> sessoes;
 
 	public Long getId() {
 		return id;
@@ -284,16 +284,16 @@ public class Evento {
 		return organizadores;
 	}
 	
-	public List<Secao> getSecoes() {
-		return secoes;
+	public List<Sessao> getSessoes() {
+		return sessoes;
 	}
 
-	public void setSecoes(List<Secao> secoes) {
-		if(this.secoes == null){
-			this.secoes = secoes;
+	public void setSessoes(List<Sessao> sessoes) {
+		if(this.sessoes == null){
+			this.sessoes = sessoes;
 		}
-		this.secoes.clear();
-		this.secoes.addAll(secoes);
+		this.sessoes.clear();
+		this.sessoes.addAll(sessoes);
 	}
 	
 }

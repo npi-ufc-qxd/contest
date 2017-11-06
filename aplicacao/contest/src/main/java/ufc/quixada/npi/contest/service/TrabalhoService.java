@@ -33,7 +33,7 @@ public class TrabalhoService {
 	}
 
 	public List<Trabalho> getTrabalhosEvento(Evento evento) {
-		return trabalhoRepository.getByEvento(evento);
+		return trabalhoRepository.getByEventoOrderByTitulo(evento);
 	}
 
 	public List<Trabalho> getTrabalhosTrilha(Trilha trilha) {
@@ -92,13 +92,9 @@ public class TrabalhoService {
 		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento.getId());
 	}
 
-	public void removerSecao(Trabalho trabalho) {
-		trabalho.setSecao(null);
+	public void removerSessao(Trabalho trabalho) {
+		trabalho.setSessao(null);
 		trabalhoRepository.save(trabalho);
-	}
-
-	public List<Trabalho> buscarTodosTrabalhos() {
-		return trabalhoRepository.findAll();
 	}
 
 	public Avaliacao mensurarAvaliacoes(Trabalho trabalho) {
@@ -180,8 +176,8 @@ public class TrabalhoService {
 		return resultadoAvaliacoes;
 	}
 
-	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
-		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
+	public List<Trabalho> buscarTodosTrabalhosDaSessao(Long idSessao) {
+		return trabalhoRepository.findTrabalhoBySessaoId(idSessao);
 
 	}
 
