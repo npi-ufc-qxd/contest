@@ -1,20 +1,16 @@
 package ufc.quixada.npi.contest.model;
 
 public enum Avaliacao {
-	APROVADO("Aprovado"), RESSALVAS("Aprovado com ressalvas"), REPROVADO("Reprovado"), MODERACAO("Moderacao");
+	APROVADO("Aprovado"), RESSALVAS("Aprovado com ressalvas"),
+	REPROVADO("Reprovado"), MODERACAO("Em moderação"), NAO_REVISADO("Não revisado");
 
-	private String tipo;
+	private String descricao;
 
-	Avaliacao(String tipo) {
-		this.tipo = tipo;
+	Avaliacao(String descricao) {
+		this.descricao = descricao;
 	}
 
-	public String getTipo() {
-		return this.tipo;
+	public String getDescricao() {
+		return this.descricao;
 	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
 }

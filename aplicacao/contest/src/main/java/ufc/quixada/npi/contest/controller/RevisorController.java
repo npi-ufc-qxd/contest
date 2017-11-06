@@ -236,7 +236,7 @@ public class RevisorController {
 			}
 			
 			revisaoService.addOrUpdate(revisao);
-			trabalho.setStatus(trabalhoService.mensurarAvaliacoes(trabalho).getTipo());
+			trabalho.setStatus(trabalhoService.mensurarAvaliacoes(trabalho));
 			
 			trabalhoService.adicionarTrabalho(trabalho);
 			
@@ -390,12 +390,10 @@ public class RevisorController {
 		for (ParticipacaoEvento participacaoEvento : participacoesComoRevisor) {
 			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
 		}
-		List<Pessoa> pessoas = pessoaService.getTodos();
 		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
-		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("eventoPrivado", eventoPrivado);
 
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
@@ -420,6 +418,5 @@ public class RevisorController {
 
 		return Constants.TEMPLATE_DETALHES_EVENTO_REV;
 	}
-	
 	
 }

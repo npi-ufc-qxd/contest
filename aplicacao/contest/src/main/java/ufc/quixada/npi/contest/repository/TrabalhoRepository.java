@@ -17,11 +17,16 @@ import ufc.quixada.npi.contest.model.Trilha;
 @Repository
 @Transactional
 public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
-	public List<Trabalho> getByEvento(Evento evento);
+	public List<Trabalho> getByEventoOrderByTitulo(Evento evento);
 	
 	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :idEvento AND t.id in(SELECT pt.trabalho.id FROM ParticipacaoTrabalho"
 			+ " pt where pt.pessoa.id = :idRevisor AND pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.REVISOR)")
 	public List<Trabalho> getTrabalhosParaRevisar(@Param("idRevisor") Long idRevisor, @Param("idEvento") Long idEvento);
+	
+	@Query("SELECT r.trabalho FROM Revisao r "
+			+ "WHERE r.revisor.id = :idRevisor AND "
+			+ "r.trabalho.evento.id = :idEvento")
+	public List<Trabalho> getTrabalhosRevisados(@Param("idRevisor") Long idRevisor, @Param("idEvento") Long idEvento);
 	
 	@Query("SELECT p FROM Pessoa p WHERE p.id in "
 			+ "(SELECT pt.pessoa.id FROM ParticipacaoTrabalho pt WHERE pt.trabalho.id = :idTrabalho AND "
@@ -65,6 +70,6 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 	
 	public List<Trabalho> findAllByEventoId(Long eventoID);
 
-	public List<Trabalho> findTrabalhoBySecaoId(Long idSecao);
+	public List<Trabalho> findTrabalhoBySessaoId(Long idSessao);
 	
 }

@@ -12,7 +12,6 @@ import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
-import ufc.quixada.npi.contest.repository.RevisaoRepository;
 import ufc.quixada.npi.contest.repository.TrabalhoRepository;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
@@ -21,9 +20,6 @@ public class TrabalhoService {
 
 	@Autowired
 	private TrabalhoRepository trabalhoRepository;
-
-	@Autowired
-	private RevisaoRepository revisaoRepository;
 
 	@Autowired
 	private EventoService eventoService;
@@ -37,7 +33,7 @@ public class TrabalhoService {
 	}
 
 	public List<Trabalho> getTrabalhosEvento(Evento evento) {
-		return trabalhoRepository.getByEvento(evento);
+		return trabalhoRepository.getByEventoOrderByTitulo(evento);
 	}
 
 	public List<Trabalho> getTrabalhosTrilha(Trilha trilha) {
@@ -52,16 +48,8 @@ public class TrabalhoService {
 		return trabalhoRepository.getTrabalhosParaRevisar(idRevisor, idEvento);
 	}
 
-	public List<Long> getTrabalhosRevisadosDoRevisor(Long idRevisor, Long idEvento) {
-		List<Trabalho> trabalhosParaRevisar = this.getTrabalhosParaRevisar(idRevisor, idEvento);
-		List<Long> trabalhosRevisados = new ArrayList<Long>();
-		for (Trabalho trabalho : trabalhosParaRevisar) {
-			if (revisaoRepository.trabalhoEstaRevisadoPeloRevisor(trabalho.getId(), idRevisor)) {
-				trabalhosRevisados.add(trabalho.getId());
-			}
-		}
-
-		return trabalhosRevisados;
+	public List<Trabalho> getTrabalhosRevisadosDoRevisor(Long idRevisor, Long idEvento) {
+		return trabalhoRepository.getTrabalhosRevisados(idRevisor, idEvento);
 	}
 
 	public List<Pessoa> getAutoresDoTrabalho(Long idTrabalho) {
@@ -104,22 +92,21 @@ public class TrabalhoService {
 		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento.getId());
 	}
 
-	public void removerSecao(Trabalho trabalho) {
-		trabalho.setSecao(null);
+	public void removerSessao(Trabalho trabalho) {
+		trabalho.setSessao(null);
 		trabalhoRepository.save(trabalho);
-	}
-
-	public List<Trabalho> buscarTodosTrabalhos() {
-		return trabalhoRepository.findAll();
 	}
 
 	public Avaliacao mensurarAvaliacoes(Trabalho trabalho) {
 		int numeroDeAprovacao = 0;
 		int numeroDeReprovacao = 0;
 		int numeroDeRessalvas = 0;
+		int numeroRevisoes = 0;
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
+		
 		if (revisoes != null) {
+			numeroRevisoes = revisoes.size();
 			for (Revisao revisao : revisoes) {
 				Avaliacao avaliacao = revisao.getAvaliacao();
 
@@ -128,20 +115,26 @@ public class TrabalhoService {
 				} else if (avaliacao == Avaliacao.REPROVADO) {
 					numeroDeReprovacao++;
 				} else if (avaliacao == Avaliacao.RESSALVAS) {
-					numeroDeAprovacao++;
 					numeroDeRessalvas++;
 				}
 			}
 		}
 		
-		if (numeroDeReprovacao == trabalho.getRevisoes().size())
+		if(numeroDeAprovacao != 0 && numeroDeReprovacao != 0) {
+			return Avaliacao.MODERACAO;
+		}
+		
+		
+		int maioria = (numeroRevisoes/2) +  1;
+		
+		if (numeroDeReprovacao == numeroRevisoes || numeroDeReprovacao >= maioria)
 			return Avaliacao.REPROVADO;
 		
-		if (numeroDeAprovacao == trabalho.getRevisoes().size()) {
+		if (numeroDeAprovacao == numeroRevisoes || numeroDeAprovacao >= maioria) {
 			return Avaliacao.APROVADO;
 		}
 		
-		if (numeroDeRessalvas == trabalho.getRevisoes().size()) {
+		if (numeroDeRessalvas == numeroRevisoes) {
 			return Avaliacao.RESSALVAS;
 		}
 		
@@ -183,8 +176,8 @@ public class TrabalhoService {
 		return resultadoAvaliacoes;
 	}
 
-	public List<Trabalho> buscarTodosTrabalhosDaSecao(Long idSecao) {
-		return trabalhoRepository.findTrabalhoBySecaoId(idSecao);
+	public List<Trabalho> buscarTodosTrabalhosDaSessao(Long idSessao) {
+		return trabalhoRepository.findTrabalhoBySessaoId(idSessao);
 
 	}
 
@@ -196,4 +189,5 @@ public class TrabalhoService {
 			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
 		}
 	}
+
 }

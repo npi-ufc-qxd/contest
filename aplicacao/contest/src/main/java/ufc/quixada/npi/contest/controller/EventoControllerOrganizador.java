@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.sf.jasperreports.engine.JRException;
 import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
@@ -68,6 +67,7 @@ import ufc.quixada.npi.contest.util.RevisaoJSON;
 @RequestMapping("/eventoOrganizador")
 public class EventoControllerOrganizador extends EventoGenericoController {
 
+	private static final String ORGANIZADOR_SUCESS = "organizadorSucess";
 	private static final String ORGANIZADOR_ERROR = "organizadorError";
 	private static final String ERRO_ENVIO_EMAIL = "ERRO_ENVIO_EMAIL";
 	private static final String EVENTOS_QUE_ORGANIZO = "eventosQueOrganizo";
@@ -124,12 +124,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			eventoPrivado = true;
 		}
 
-		List<Pessoa> pessoas = pessoaService.getTodos();
 		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
-		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("eventoPrivado", eventoPrivado);
 
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
@@ -265,7 +263,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			ParticipacaoEvento participacao = participacaoEventoService.buscarOrganizadorPorPessoaEEvento(evento,
 					pessoa);
 			participacaoEventoService.remover(participacao);
-			redirect.addFlashAttribute("organizadorSucess", "Organizador removido do evento.");
+			redirect.addFlashAttribute(ORGANIZADOR_SUCESS, "Organizador removido do evento.");
 		}
 
 		return "redirect:/eventoOrganizador/evento/" + evento.getId();
@@ -278,7 +276,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		Pessoa pessoa = pessoaService.get(pessoaId);
 		ParticipacaoEvento participacao = participacaoEventoService.buscarRevisorPorPessoaEEvento(evento, pessoa);
 		participacaoEventoService.remover(participacao);
-		redirect.addFlashAttribute("organizadorSucess", "Revisor removido do evento.");
+		redirect.addFlashAttribute(ORGANIZADOR_SUCESS, "Revisor removido do evento.");
 
 		return "redirect:/eventoOrganizador/evento/" + evento.getId();
 	}
@@ -484,7 +482,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			if (!flag) {
 				redirect.addFlashAttribute(ORGANIZADOR_ERROR, messageService.getMessage(ERRO_ENVIO_EMAIL));
 			} else {
-				redirect.addFlashAttribute("organizadorSucess", messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
+				redirect.addFlashAttribute(ORGANIZADOR_SUCESS, messageService.getMessage(EMAIL_ENVIADO_SUCESSO));
 			}
 		} else {
 			redirect.addFlashAttribute(ORGANIZADOR_ERROR, messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
@@ -554,7 +552,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	public String addOrganizadores(@RequestParam(required = false) String idOrganizadores,
 			@RequestParam String idEvento, Model model) {
 		if (idOrganizadores != null) {
-			String ids[] = idOrganizadores.split(Pattern.quote(","));
+			String[] ids = idOrganizadores.split(Pattern.quote(","));
 			List<Pessoa> organizadores = new ArrayList<>();
 
 			for (String id : ids) {
@@ -577,7 +575,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model,
-			HttpServletResponse response) throws FileNotFoundException, IOException {
+			HttpServletResponse response) {
 		Long id = Long.parseLong(idEvento);
 		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(id);
 		model.addAttribute("organizadores", listaOrganizadores);
@@ -586,8 +584,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
-	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model, HttpServletResponse response)
-			throws JRException, FileNotFoundException, IOException {
+	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model, HttpServletResponse response) 
+			throws FileNotFoundException, IOException {
 
 		criarDadosODS(organizadoresIds, model, "Organizadores", response);
 
@@ -596,8 +594,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
-	public String gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, Model model)
-			throws FileNotFoundException, IOException {
+	public String gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, Model model) {
 		Long id = Long.parseLong(idEvento);
 		List<Pessoa> listaRevisores = pessoaService.getRevisoresEvento(id);
 		model.addAttribute("revisores", listaRevisores);
@@ -606,8 +603,8 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
-	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model, HttpServletResponse response)
-			throws JRException, FileNotFoundException, IOException {
+	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model, HttpServletResponse response) 
+			throws FileNotFoundException, IOException {
 
 		criarDadosODS(revisoresIds, model, "Revisores", response);
 
@@ -638,8 +635,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
-	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model, HttpServletResponse response)
-			throws FileNotFoundException, IOException {
+	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model, HttpServletResponse response) {
 		Long id = Long.parseLong(idEvento);
 		Evento e = eventoService.buscarEventoPorId(id);
 		List<Trabalho> listaTrabalhos = trabalhoService.getTrabalhosEvento(e);
@@ -683,7 +679,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return PessoaLogadaUtil.pessoaLogada();
 	}
 
-	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response)
+	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response) 
 			throws FileNotFoundException, IOException {
 		TableModel modelo = new DefaultTableModel(dados, colunas);
 		final File file = new File(nomeDocumento + ".ods");
@@ -707,10 +703,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/avaliar/", method = RequestMethod.POST)
-	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String funcao,
+	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String avaliacao,
 			@RequestParam Long idTrabalho, Model model) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		trabalho.setStatus(funcao);
+		trabalho.setStatus(Avaliacao.valueOf(avaliacao));
 		trabalhoService.adicionarTrabalho(trabalho);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
 

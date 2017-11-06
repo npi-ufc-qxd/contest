@@ -55,7 +55,7 @@ public class Pessoa implements UserDetails, Comparable<Pessoa> {
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 	
 	@OneToMany(mappedBy="responsavel")
-	private List<Secao> secoes;
+	private List<Sessao> sessoes;
 
 	@Column(name = "papel_ldap")
 	@Enumerated(EnumType.STRING)
@@ -154,12 +154,12 @@ public class Pessoa implements UserDetails, Comparable<Pessoa> {
 		}
 	}
 
-	public List<Secao> getSecoes() {
-		return secoes;
+	public List<Sessao> getSessoes() {
+		return sessoes;
 	}
 
-	public void setSecoes(List<Secao> secoes) {
-		this.secoes = secoes;
+	public void setSessoes(List<Sessao> sessoes) {
+		this.sessoes = sessoes;
 	}
 
 	@Override

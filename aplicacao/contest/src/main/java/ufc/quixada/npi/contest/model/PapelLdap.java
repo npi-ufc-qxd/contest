@@ -21,10 +21,6 @@ public class PapelLdap {
 		return nome.name();
 	}
 
-	public void setNome(Tipo nome) {
-		this.nome = nome;
-	}
-
 	public enum Tipo {
 		ADMIN("ADMIN-CONTEST"), DOCENTE("DOCENTE"), DISCENTE("DISCENTE"), STA("STA");
 
@@ -37,10 +33,5 @@ public class PapelLdap {
 		public String getTipo() {
 			return tipo;
 		}
-
-		public void setTipo(String tipo) {
-			this.tipo = tipo;
-		}
-
 	}
 }

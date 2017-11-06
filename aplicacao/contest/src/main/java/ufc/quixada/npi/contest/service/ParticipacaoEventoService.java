@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,21 +66,15 @@ public class ParticipacaoEventoService {
 	}
 	
 	public List<ParticipacaoEvento> getEventosDoOrganizador(EstadoEvento estado, Long id){
-		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
-		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.ORGANIZADOR, id);
-		return listaParticipacaoEventos;
+		return participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.ORGANIZADOR, id);
 	}
 	
 	public List<ParticipacaoEvento> getEventosDoRevisor(EstadoEvento estado, Long id){
-		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
-		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.REVISOR, id);
-		return listaParticipacaoEventos;
+		return participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.REVISOR, id);
 	}
 	
 	public List<ParticipacaoEvento> getEventosDoAutor(EstadoEvento estado, Long id){
-		List<ParticipacaoEvento> listaParticipacaoEventos = new ArrayList<>();
-		listaParticipacaoEventos = participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.AUTOR, id);
-		return listaParticipacaoEventos;
+		return participacaoEventoRepository.findByEventoEstadoAndPapelAndPessoaId(estado, Tipo.AUTOR, id);
 	}
 	
 	public List<ParticipacaoEvento> getParticipacaoComoRevisorPorEvento(Long idEvento){
@@ -117,9 +110,5 @@ public class ParticipacaoEventoService {
 	
 	public ParticipacaoEvento buscarRevisorPorPessoaEEvento(Evento evento, Pessoa pessoa){
 		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.REVISOR);
-	}
-	
-	public List<ParticipacaoEvento> getParticipacoesPorEvento(Evento e){
-		return participacaoEventoRepository.findByEvento(e);
 	}
 }

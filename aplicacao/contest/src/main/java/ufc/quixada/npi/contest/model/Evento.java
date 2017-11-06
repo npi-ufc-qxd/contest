@@ -2,6 +2,7 @@ package ufc.quixada.npi.contest.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -76,7 +77,8 @@ public class Evento {
 	private List<Trilha> trilhas;
 	
 	@OneToMany(mappedBy="evento",cascade=CascadeType.ALL, orphanRemoval=false)
-	private List<Secao> secoes;
+	@OrderBy("nome ASC")
+	private List<Sessao> sessoes;
 
 	public Long getId() {
 		return id;
@@ -265,27 +267,33 @@ public class Evento {
 	}
 	
 	public List<Pessoa> getOrganizadores(){
-		return getByPapel(Tipo.ORGANIZADOR);
+		List<Pessoa> organizadores = getByPapel(Tipo.ORGANIZADOR);
+		Collections.sort(organizadores);
+		return organizadores;
 	}
 	
 	public List<Pessoa> getRevisores(){
-		return getByPapel(Tipo.REVISOR);
+		List<Pessoa> organizadores = getByPapel(Tipo.REVISOR);
+		Collections.sort(organizadores);
+		return organizadores;
 	}
 	
 	public List<Pessoa> getAutores(){
-		return getByPapel(Tipo.AUTOR);
+		List<Pessoa> organizadores = getByPapel(Tipo.AUTOR);
+		Collections.sort(organizadores);
+		return organizadores;
 	}
 	
-	public List<Secao> getSecoes() {
-		return secoes;
+	public List<Sessao> getSessoes() {
+		return sessoes;
 	}
 
-	public void setSecoes(List<Secao> secoes) {
-		if(this.secoes == null){
-			this.secoes = secoes;
+	public void setSessoes(List<Sessao> sessoes) {
+		if(this.sessoes == null){
+			this.sessoes = sessoes;
 		}
-		this.secoes.clear();
-		this.secoes.addAll(secoes);
+		this.sessoes.clear();
+		this.sessoes.addAll(sessoes);
 	}
 	
 }
