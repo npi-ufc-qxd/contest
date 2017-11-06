@@ -27,6 +27,11 @@ import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
 @Controller
 public class SessaoController {
+	private static final String TRABALHOS = "trabalhos";
+	private static final String SESSAO = "sessao";
+	private static final String PESSOAS = "pessoas";
+	private static final String EVENTO = "evento";
+	private static final String SESSOES = "sessoes";
 	@Autowired
 	private SessaoService sessaoService;
 	@Autowired
@@ -42,8 +47,8 @@ public class SessaoController {
 		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 			List<Sessao> sessoes = sessaoService.listByEvento(evento);
-			model.addAttribute("sessoes", sessoes);
-			model.addAttribute("evento", evento);
+			model.addAttribute(SESSOES, sessoes);
+			model.addAttribute(EVENTO, evento);
 			return "sessao/sessao_listar_sessoes";
 		} else {
 			return validateResult;
@@ -58,8 +63,8 @@ public class SessaoController {
 		String validateResult = validateEventParams(evento);
 		if (validateResult.equals(Constants.NO_ERROR)) {
 			List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
-			model.addAttribute("pessoas", pessoas);
-			model.addAttribute("evento", evento);
+			model.addAttribute(PESSOAS, pessoas);
+			model.addAttribute(EVENTO, evento);
 			return "sessao/sessao_cadastrar";
 		} else {
 			return validateResult;
@@ -81,9 +86,9 @@ public class SessaoController {
 		
 		Evento evento = sessao.getEvento();
 		List<Pessoa> pessoas = pessoaService.getTodosInEvento(evento);
-		model.addAttribute("pessoas", pessoas);
-		model.addAttribute("evento", evento);
-		model.addAttribute("sessao", sessao);
+		model.addAttribute(PESSOAS, pessoas);
+		model.addAttribute(EVENTO, evento);
+		model.addAttribute(SESSAO, sessao);
 		model.addAttribute("responsavel", sessao.getResponsavel().getId());
 		return "sessao/sessao_cadastrar";
 
@@ -120,8 +125,8 @@ public class SessaoController {
 			return resultValidate;
 		}
 		
-		model.addAttribute("trabalhos", trabalhoService.getTrabalhosSemSessaoNoEvento(sessao.getEvento()));
-		model.addAttribute("sessao", sessao);
+		model.addAttribute(TRABALHOS, trabalhoService.getTrabalhosSemSessaoNoEvento(sessao.getEvento()));
+		model.addAttribute(SESSAO, sessao);
 		model.addAttribute("qtdTrabalhos", sessao.getTrabalhos().size());
 		return "sessao/sessao_ver_trabalhos";
 	}
@@ -182,8 +187,8 @@ public class SessaoController {
 			return Constants.ERROR_404;
 		}
 		
-		model.addAttribute("sessao", sessao);
-		model.addAttribute("trabalhos", trabalhoService.buscarTodosTrabalhosDaSessao(idSessao));
+		model.addAttribute(SESSAO, sessao);
+		model.addAttribute(TRABALHOS, trabalhoService.buscarTodosTrabalhosDaSessao(idSessao));
 		return "sessao/sessao_listar_participantes";
 
 	}
