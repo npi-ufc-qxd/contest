@@ -23,6 +23,11 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 			+ " pt where pt.pessoa.id = :idRevisor AND pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.REVISOR)")
 	public List<Trabalho> getTrabalhosParaRevisar(@Param("idRevisor") Long idRevisor, @Param("idEvento") Long idEvento);
 	
+	@Query("SELECT r.trabalho FROM Revisao r "
+			+ "WHERE r.revisor.id = :idRevisor AND "
+			+ "r.trabalho.evento.id = :idEvento")
+	public List<Trabalho> getTrabalhosRevisados(@Param("idRevisor") Long idRevisor, @Param("idEvento") Long idEvento);
+	
 	@Query("SELECT p FROM Pessoa p WHERE p.id in "
 			+ "(SELECT pt.pessoa.id FROM ParticipacaoTrabalho pt WHERE pt.trabalho.id = :idTrabalho AND "
 			+ "pt.papel = ufc.quixada.npi.contest.model.Papel$Tipo.AUTOR)")

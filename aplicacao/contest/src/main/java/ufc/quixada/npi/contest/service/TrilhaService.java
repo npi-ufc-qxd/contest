@@ -1,6 +1,5 @@
 package ufc.quixada.npi.contest.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +27,7 @@ public class TrilhaService {
 	}
 	
 	public List<Trilha> buscarTrilhas(Long id) {
-		List<Trilha> trilhas = new ArrayList<>();
-		trilhas = trilhaRepository.findAllByEventoId(id);
-		return trilhas;
+		return trilhaRepository.findAllByEventoId(id);
 	}
 	
 	public Trilha get(Long trilhaId, Long eventoId) {
@@ -46,8 +43,7 @@ public class TrilhaService {
 	}
 	
 	public int buscarQtdTrilhasPorEvento(Long eventoId){
-		int qtdTrilhas = trilhaRepository.findAllByEventoId(eventoId).size();
-		return qtdTrilhas;
+		return trilhaRepository.findAllByEventoId(eventoId).size();
 	}
 	public boolean existeTrilha(Long id){
 		return trilhaRepository.exists(id);

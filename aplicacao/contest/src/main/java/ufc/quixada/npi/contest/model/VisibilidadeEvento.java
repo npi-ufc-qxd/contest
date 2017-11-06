@@ -6,14 +6,10 @@ public enum VisibilidadeEvento {
 	private String visibilidade;
 
 	VisibilidadeEvento(String visibilidade) {
-		this.setVisibilidade(visibilidade);
+		this.visibilidade = visibilidade;
 	}
 
 	public String getVisibilidade() {
 		return visibilidade;
-	}
-
-	public void setVisibilidade(String visibilidade) {
-		this.visibilidade = visibilidade;
 	}
 }

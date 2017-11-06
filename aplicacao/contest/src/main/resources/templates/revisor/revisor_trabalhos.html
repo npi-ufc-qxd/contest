@@ -38,7 +38,7 @@
 								
 							
 							</div>
-							<div class="card-action" th:switch="${#lists.contains(trabalhosRevisados, trabalho.id)}">
+							<div class="card-action" th:switch="${#lists.contains(trabalhosRevisados, trabalho)}">
 								<a th:case='false' th:href="@{'/revisor/' + ${trabalho.id} + '/revisar'}"
 									class="btn white-text waves-effect waves-light btn-large">REVISAR</a>
 								<a th:case='true' th:href="@{'/revisor/' + ${trabalho.id} + '/revisao'}"
