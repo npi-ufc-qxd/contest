@@ -275,9 +275,9 @@ public class Trabalho implements Comparable<Trabalho> {
 	
 	public boolean isAutorInTrabalho(Pessoa pessoa){
 		if(this.getAutor().equals(pessoa) || this.getCoAutoresDoTrabalho().contains(pessoa)){
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public boolean getStatusApresentacao() {
