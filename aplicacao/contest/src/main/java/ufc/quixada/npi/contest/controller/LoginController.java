@@ -161,7 +161,7 @@ public class LoginController {
 		List<Evento> eventosMinhaCoutoria = eventoService.getMeusEventosComoCoautor(idPessoaLogada);
 		List<Evento> eventosQueSouAutor = eventoService.getMeusEventosComoAutor(idPessoaLogada);
 		List<Evento> eventosInativos = eventoService.getMeusEventosInativosComoOrganizador(idPessoaLogada);
-    
+		
 		model.addAttribute("eventosQueSouAutor", eventosQueSouAutor);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);
