@@ -31,7 +31,7 @@
 										<i class="small material-icons left">description</i>
 										<h5 th:text="${trabalho.titulo}"></h5> <br/>
 									</div>
-									<h6 th:text="'REVISAO ' +	${count.index + 1}"></h6>
+									<h6 th:text="'REVISÃO ' +	${count.index + 1}"></h6>
 									<p><strong>Revisor:</strong><br/><span th:text="${revisao.revisor.nome}"></span></p>
 									<div
 										th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${revisao.trabalho.autoresDoTrabalho})">
