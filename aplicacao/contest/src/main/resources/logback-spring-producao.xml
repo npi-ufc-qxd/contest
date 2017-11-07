@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+	
+	<property resource="application.properties" />
+
+	<appender name="gelf"
+		class="biz.paluch.logging.gelf.logback.GelfLogbackAppender">
+		<host>tcp:logs.quixada.ufc.br</host>
+		<port>12201</port>
+		<version>1.0</version>
+		<extractStackTrace>true</extractStackTrace>
+		<filterStackTrace>true</filterStackTrace>
+		<mdcProfiling>true</mdcProfiling>
+		<timestampPattern>dd-MM-yyyy HH:mm:ss,SSSS</timestampPattern>
+		<maximumMessageSize>8192</maximumMessageSize>
+		<additionalFields>appName=${app.name}</additionalFields>
+		<additionalFieldTypes>fieldName1=String</additionalFieldTypes>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="gelf" />	
+		<appender-ref ref="CONSOLE" />
+	</root>
+</configuration>
