@@ -55,7 +55,11 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosRevisadosDoRevisor(Long idRevisor, Long idEvento) {
 		return trabalhoRepository.getTrabalhosRevisados(idRevisor, idEvento);
 	}
-
+	
+	public List<Trabalho> getTrabalhosRevisadosComentadosByEvento(Long evento){
+		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento);
+	}
+	
 	public List<Pessoa> getAutoresDoTrabalho(Long idTrabalho) {
 		return trabalhoRepository.getAutoresDoTrabalho(idTrabalho);
 	}
@@ -93,7 +97,7 @@ public class TrabalhoService {
 	}
 
 	public int buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(Evento evento) {
-		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento.getId());
+		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento.getId()).size();
 	}
 
 	public void removerSessao(Trabalho trabalho) {

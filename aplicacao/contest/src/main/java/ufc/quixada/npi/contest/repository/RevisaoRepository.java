@@ -30,15 +30,5 @@ public interface RevisaoRepository extends CrudRepository<Revisao, Long>{
 	public Revisao findRevisaoDoAutorNoTrabalho(@Param("idTrabalho") Long idTrabalho, @Param("idRevisor") Long idRevisor);
 	
 	public List<Revisao> findRevisaoByTrabalho(Revisao revisao);
-	
-	@Query("SELECT r "
-			+ "FROM Revisao r, Trabalho t WHERE "
-			+ "r.trabalho.id = t.id "
-			+ "AND t.evento.id = :idEvento "
-			+ "AND r.observacoes <> '' "
-			+ "ORDER BY r.trabalho.titulo")
-	public List<Revisao> revisoesEvento(@Param("idEvento") Long evento );
-
-	
-	
+		
 }
