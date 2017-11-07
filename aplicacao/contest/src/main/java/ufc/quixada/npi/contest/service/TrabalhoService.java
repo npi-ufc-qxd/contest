@@ -186,12 +186,15 @@ public class TrabalhoService {
 	}
 
 	public void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
-		eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
+		eventoService.notificarPessoaParticipantesDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
 
 		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
 		for (Pessoa coautor : coautores) {
-			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
+			eventoService.notificarPessoaParticipantesDoArtigo(trabalho, coautor.getEmail(), evento);
 		}
 	}
-
+	
+	public void notificarAutorPrincipalDoArtigo(Evento evento, Trabalho trabalho){
+		eventoService.notificarPessoaTrabalhoAdicionadoASessao(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
+	}
 }

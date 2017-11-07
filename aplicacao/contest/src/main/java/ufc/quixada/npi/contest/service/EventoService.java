@@ -27,7 +27,7 @@ public class EventoService {
 	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String ASSUNTO_EMAIL_CONFIRMACAO = "ASSUNTO_EMAIL_CONFIRMACAO";
 	private static final String TEXTO_EMAIL_CONFIRMACAO = ".Fique atento aos prazos, o próximo passo será a fase das revisões, confira no edital os prazos. Boa sorte!";
-
+	//private static final String ASSUNTO_EMAIL_NOTIFICACAO_AUTOR_PRINCIPAL = "ASSUNTO_EMAIL_NOTIFICACAO_AUTOR_PRINCIPAL";
 	
 	@Autowired
 	EventoRepository eventoRepository;
@@ -210,12 +210,20 @@ public class EventoService {
 		return eventoRepository.findEventoByEstadoAndVisibilidade(estado, VisibilidadeEvento.PUBLICO);
 	}
 	
-	public void notificarPessoa (Trabalho trabalho, String email, Evento evento) {
+	public void notificarPessoaParticipantesDoArtigo (Trabalho trabalho, String email, Evento evento) {
 		String assunto = messageService.getMessage(ASSUNTO_EMAIL_CONFIRMACAO) + " " + trabalho.getTitulo();
 		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + " foi enviado com sucesso para o evento "
 				+ evento.getNome() + TEXTO_EMAIL_CONFIRMACAO;
 		String titulo = "[CONTEST] Confirmação de envio do trabalho: " + trabalho.getTitulo();
 		
+		emailService.enviarEmail(titulo, assunto, email, corpo);
+	}
+	public void notificarPessoaTrabalhoAdicionadoASessao(Trabalho trabalho, String email, Evento evento) {
+		String assunto = "Email confirmando a atribuição do trabalho "+ trabalho.getTitulo()+ " à sessão " + trabalho.getSessao(); 
+		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + "foi adicionado com sucesso na sessao" + trabalho.getSessao() +"no evento:" 
+		+ evento.getNome();
+		String titulo = "[CONTEST] Notificação de adição do trabalho:"+ trabalho.getTitulo() +"à sessão: " + trabalho.getSessao();
+				
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
 

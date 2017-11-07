@@ -358,8 +358,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@RequestMapping(value = "/editar", method = RequestMethod.POST)
 	public String editarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect) {
-		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos",
-				Constants.TEMPLATE_EDITAR_EVENTO_ORG);
+		return ativarOuEditarEvento(evento, result, model, redirect, "redirect:/eventoOrganizador/ativos",Constants.TEMPLATE_EDITAR_EVENTO_ORG);
 	}
 
 	@RequestMapping(value = "/ativar/{id}", method = RequestMethod.GET)
