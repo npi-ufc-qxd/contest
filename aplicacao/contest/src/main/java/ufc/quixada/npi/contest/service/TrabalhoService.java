@@ -56,7 +56,7 @@ public class TrabalhoService {
 		return trabalhoRepository.getTrabalhosRevisados(idRevisor, idEvento);
 	}
 	
-	public List<Trabalho> getTrabalhosRevisadosByEvento(Long evento){
+	public List<Trabalho> getTrabalhosRevisadosComentadosByEvento(Long evento){
 		return trabalhoRepository.getTrabalhoRevisadoComentadoEvento(evento);
 	}
 	

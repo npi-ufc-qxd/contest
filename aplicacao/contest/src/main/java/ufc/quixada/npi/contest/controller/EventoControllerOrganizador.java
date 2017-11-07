@@ -156,7 +156,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
 	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
-		List<Trabalho> trabalhos = trabalhoService.getTrabalhosRevisadosByEvento(eventoId);
+		List<Trabalho> trabalhos = trabalhoService.getTrabalhosRevisadosComentadosByEvento(eventoId);
 
 		Pessoa organizadorLogado = PessoaLogadaUtil.pessoaLogada();
 		Boolean participacaoComoOrganizador = participacaoEventoService.isOrganizadorDoEvento(organizadorLogado,
