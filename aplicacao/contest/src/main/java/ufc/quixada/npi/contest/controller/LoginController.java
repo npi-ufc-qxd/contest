@@ -151,6 +151,13 @@ public class LoginController {
 
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
+	
+	@RequestMapping(value = "/perfil")
+	public String perfil(Model model){
+		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+		model.addAttribute("pessoa", pessoa);
+		return "perfil";
+	}
 
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model) {
