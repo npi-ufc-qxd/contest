@@ -25,7 +25,7 @@
 				<div th:if="${not #lists.isEmpty(trabalhos)}">
 					<form th:action="@{/eventoOrganizador/gerarCertificadosTrabalho}" method="POST">
 						<div th:each="trabalho,count : ${trabalhos}">
-		      				<input type="checkbox" th:id="${count.index}"  name="trabalhosIds" th:value="${trabalho.id}"/>
+		      				<input type="checkbox" th:id="${count.index}"  name="trabalhosIds" th:value="${trabalho.id}" th:checked="${trabalho.statusApresentacao}" />
 		      				<label class="black-text" th:for="${count.index}" th:text="${trabalho.titulo}" ></label>
 						</div>
 						<br/>
