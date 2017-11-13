@@ -55,7 +55,6 @@ public class SessaoController {
 		}
 
 	}
-	
 
 	@RequestMapping(value = "/evento/{eventoId}/sessao/adicionar", method = RequestMethod.GET)
 	public String adicionarSessaoForm(Model model, @PathVariable("eventoId") Long eventoId) {
@@ -166,34 +165,20 @@ public class SessaoController {
 
 	@RequestMapping("/sessao/adicionar/trabalho")
 	public String adicionarTrabalhoNaSessao(@RequestParam Long idSessao, @RequestParam List<Long> idTrabalhos) {
-		Sessao sessao = sessaoService.get(idSessao);		
+		Sessao sessao = sessaoService.get(idSessao);
 		
 		if(sessao == null){
 			return Constants.ERROR_404;
 		}
-		Evento evento = sessao.getEvento();
 		
 		for (int i = 0; i < idTrabalhos.size(); i++) {
 			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalhos.get(i));
 			trabalho.setSessao(sessao);
-			trabalhoService.adicionarTrabalho(trabalho);			
-			trabalhoService.notificarAutorPrincipalDoArtigo(evento, trabalho);			
+			trabalhoService.adicionarTrabalho(trabalho);
 		}
 		return "redirect:/sessao/ver/" + idSessao;
 	}
 
-	@RequestMapping(value = "/enviarEmailParaAutores", method = RequestMethod.POST)
-	public void enviarEmailsParaAutoresDaSessao(@RequestParam Long idSessao, @RequestParam Long idTrabalho){
-		Sessao sessao = sessaoService.get(idSessao);		
-		Evento evento = sessao.getEvento();
-		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		
-		List<Pessoa> autores = trabalho.getAutoresDoTrabalho();
-		for (Pessoa autor : autores) {
-			eventoService.notificarPessoaParticipantesDoArtigo(trabalho, autor.getEmail(), evento);
-		}
-		
-	}
 	@RequestMapping("/sessao/listarParticipantes/{idSessao}")
 	public String listarParticipantes(@PathVariable("idSessao") Long idSessao, Model model) {
 		Sessao sessao = sessaoService.get(idSessao);
@@ -208,6 +193,12 @@ public class SessaoController {
 
 	}
 
+	@RequestMapping("/sessao/notificarAutor")
+	public void enviarEmailParaAutoresPrincipaisDaSessao(Evento evento, Trabalho trabalho){
+		trabalhoService.notificarAutorPrincipalDoArtigo(evento, trabalho);
+		
+	}
+	
 	private String validateEventParams(Evento evento) {
 		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
 		if (evento == null) {
@@ -231,7 +222,5 @@ public class SessaoController {
 		}
 		return "{\"result\":\"ok\"}";
 	}
-	
-	
 	
 }

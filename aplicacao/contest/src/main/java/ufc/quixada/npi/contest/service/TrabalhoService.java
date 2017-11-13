@@ -195,6 +195,11 @@ public class TrabalhoService {
 	}
 	
 	public void notificarAutorPrincipalDoArtigo(Evento evento, Trabalho trabalho){
-		eventoService.notificarPessoaTrabalhoAdicionadoASessao(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
+		List<Pessoa> autores = trabalho.getAutoresDoTrabalho();
+		for(Pessoa autor : autores){
+			eventoService.notificarPessoaTrabalhoAdicionadoASessao(trabalho, autor.getEmail(), evento);
+		}
+		
+		
 	}
 }

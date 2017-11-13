@@ -220,8 +220,7 @@ public class EventoService {
 	}
 	public void notificarPessoaTrabalhoAdicionadoASessao(Trabalho trabalho, String email, Evento evento) {
 		String assunto = "Email confirmando a atribuição do trabalho "+ trabalho.getTitulo()+ " à sessão " + trabalho.getSessao(); 
-		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + "foi adicionado com sucesso na sessao" + trabalho.getSessao() +"no evento:" 
-		+ evento.getNome();
+		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + "foi adicionado com sucesso na sessao" + trabalho.getSessao() +"no evento:" + evento.getNome();
 		String titulo = "[CONTEST] Notificação de adição do trabalho:"+ trabalho.getTitulo() +"à sessão: " + trabalho.getSessao();
 				
 		emailService.enviarEmail(titulo, assunto, email, corpo);
