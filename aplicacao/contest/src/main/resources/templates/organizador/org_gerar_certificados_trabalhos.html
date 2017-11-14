@@ -25,8 +25,9 @@
 				<div th:if="${not #lists.isEmpty(trabalhos)}">
 					<form th:action="@{/eventoOrganizador/gerarCertificadosTrabalho}" method="POST">
 						<div th:each="trabalho,count : ${trabalhos}">
-		      				<input type="checkbox" th:id="${count.index}"  name="trabalhosIds" th:value="${trabalho.id}" th:checked="${trabalho.statusApresentacao}" />
+		      				<input type="checkbox" th:id="${count.index}" name="trabalhosIds" th:value="${trabalho.id}" th:checked="${trabalho.statusApresentacao}" /> 
 		      				<label class="black-text" th:for="${count.index}" th:text="${trabalho.titulo}" ></label>
+		      				<a th:if="${trabalho.statusApresentacao}" class="green-text"><small><b>revisado</b></small></a>
 						</div>
 						<br/>
 						<button type="submit" class="waves-effect waves-light btn white-text">Gerar Planilha</button>		
