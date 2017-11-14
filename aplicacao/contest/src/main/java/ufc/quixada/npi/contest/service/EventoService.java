@@ -212,18 +212,20 @@ public class EventoService {
 	
 	public void notificarPessoaParticipantesDoArtigo (Trabalho trabalho, String email, Evento evento) {
 		String assunto = messageService.getMessage(ASSUNTO_EMAIL_CONFIRMACAO) + " " + trabalho.getTitulo();
-		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + " foi enviado com sucesso para o evento "
-				+ evento.getNome() + TEXTO_EMAIL_CONFIRMACAO;
+		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + " foi enviado com sucesso para o evento "+ evento.getNome() + TEXTO_EMAIL_CONFIRMACAO;
 		String titulo = "[CONTEST] Confirmação de envio do trabalho: " + trabalho.getTitulo();
 		
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
-	public void notificarPessoaTrabalhoAdicionadoASessao(Trabalho trabalho, String email, Evento evento) {
-		String assunto = "Email confirmando a atribuição do trabalho "+ trabalho.getTitulo()+ " à sessão " + trabalho.getSessao(); 
-		String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + "foi adicionado com sucesso na sessao" + trabalho.getSessao() +"no evento:" + evento.getNome();
-		String titulo = "[CONTEST] Notificação de adição do trabalho:"+ trabalho.getTitulo() +"à sessão: " + trabalho.getSessao();
-				
-		emailService.enviarEmail(titulo, assunto, email, corpo);
+	public void notificarAutoresTrabalhoAdicionadoASessao(Trabalho trabalho) {
+		
+		for(Pessoa pessoa : trabalho.getAutoresDoTrabalho()){
+			String assunto = "Email confirmando a atribuição do trabalho " + " " +  trabalho.getTitulo()+ " à sessão " + trabalho.getSessao(); 
+			String corpo = "Olá, seu trabalho " + trabalho.getTitulo() + " " + "foi adicionado com sucesso na sessao" + trabalho.getSessao().getNome() +"no evento:" + trabalho.getEvento().getNome();
+			String titulo = "[CONTEST] Notificação de adição do trabalho: " + " " + trabalho.getTitulo() +"à sessão: " + trabalho.getSessao().getNome();
+					
+			emailService.enviarEmail(titulo, assunto, pessoa.getEmail(), corpo);
+		}
 	}
 
 	

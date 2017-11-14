@@ -66,7 +66,7 @@
 			<a th:href="@{'/sessao/listarParticipantes/'+ ${sessao.id}}"
 				class=" waves-effect btn-flat teal white-text" target="_blank">LISTAR
 				PARTICIPANTES</a>
-			<a th:href="@{/sessao/notificarAutor}" class="waves-effect btn-flat teal white-text row right" target="_blank">Notificar participantes</a>
+			<a th:href="@{|/sessao/notificar/${sessao.id}|}" class="waves-effect btn-flat teal white-text row right" target="_blank">Notificar participantes</a>
 		</div>
 
 		<div th:if="${#lists.isEmpty(sessao.trabalhos)}">
