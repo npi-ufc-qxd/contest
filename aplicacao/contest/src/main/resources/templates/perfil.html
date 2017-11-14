@@ -22,17 +22,17 @@
             
             <div class="input-field">
               <input type="text" id="nome" th:field="*{nome}" required="required"/>
-              <label for="nome">Nome</label>
+              <label for="nome">*Nome</label>
             </div>
 
             <div class="input-field">
               <input type="email" id="email" value="formInput" name="email" th:field="*{email}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-              <label for="email">Email</label>
+              <label for="email">*Email</label>
             </div>
             
             <div class="input-field">
               <input type="number" id="cpf" name="cpf" th:field="*{cpf}" placeholder="Exemplo: 11111111111" required="required" disabled="disabled"/>
-              <label for="cpf">CPF</label>
+              <label for="cpf">*CPF</label>
             </div>
 
             <br/>

@@ -156,7 +156,7 @@ public class LoginController {
 	public String perfil(Model model){
 		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute("pessoa", pessoa);
-		return "perfil";
+		return Constants.PERFIL_USER;
 	}
 
 	@RequestMapping(value = "/dashboard")
