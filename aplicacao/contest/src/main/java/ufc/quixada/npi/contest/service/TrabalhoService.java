@@ -68,7 +68,7 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosDoCoautorNoEvento(Pessoa pessoa, Evento evento) {
 		return trabalhoRepository.getTrabalhoDoCoautorNoEvento(pessoa.getId(), evento.getId());
 	}
-	
+
 	public List<Trabalho> getTrabalhosBySessao(Sessao sessao) {
 		return trabalhoRepository.getTrabalhoBySessao(sessao);
 	}
@@ -190,7 +190,8 @@ public class TrabalhoService {
 	}
 
 	public void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
-		eventoService.notificarPessoaParticipantesDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(),evento);
+		eventoService.notificarPessoaParticipantesDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(),
+				evento);
 
 		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
 		for (Pessoa coautor : coautores) {
@@ -201,7 +202,8 @@ public class TrabalhoService {
 	public void notificarAutorPrincipalDoArtigo(Sessao sessao) {
 		List<Trabalho> trabalhosSessao = getTrabalhosBySessao(sessao);
 		for (Trabalho trabalho : trabalhosSessao) {
-			eventoService.notificarAutoresTrabalhoAdicionadoASessao(trabalho);
+			eventoService.notificarAutoresTrabalhoAdicionadoASessao(trabalho, trabalho.getAutor().getEmail());
+
 		}
 
 	}
