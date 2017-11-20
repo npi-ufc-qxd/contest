@@ -35,6 +35,10 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long>{
 			+ "(p.papelLdap <> ufc.quixada.npi.contest.model.PapelLdap$Tipo.DISCENTE)")	
 	public List<Pessoa> getPossiveisOrganizadoresDoEvento(@Param("idEvento")Long idEvento);
 	
+	@Query("SELECT DISTINCT p FROM Pessoa p, ParticipacaoEvento pe " 
+	 + "WHERE p.id = pe.pessoa.id AND pe.evento.id = :idEvento ORDER BY p.nome")
+	public List<Pessoa> getParticipantesDoEvento(@Param("idEvento")Long idEvento);
+	
 	public List<Pessoa> findPessoaByParticipacoesEventoPapelAndParticipacoesEventoEventoIdOrderByParticipacoesEventoPessoaNome(Tipo papel, Long id);
 	
 }

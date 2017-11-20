@@ -118,8 +118,4 @@ public class ParticipacaoEventoService {
 	public ParticipacaoEvento buscarRevisorPorPessoaEEvento(Evento evento, Pessoa pessoa){
 		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.REVISOR);
 	}
-	
-	public List<ParticipacaoEvento> getParticipacoesPorEvento(Evento e){
-		return participacaoEventoRepository.findByEvento(e);
-	}
 }

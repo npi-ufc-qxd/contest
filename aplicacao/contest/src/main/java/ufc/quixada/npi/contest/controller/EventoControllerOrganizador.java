@@ -124,12 +124,10 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			eventoPrivado = true;
 		}
 
-		List<Pessoa> pessoas = pessoaService.getTodos();
 		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
 
 		model.addAttribute("organizaEvento", organizaEvento);
 		model.addAttribute("evento", evento);
-		model.addAttribute("pessoas", pessoas);
 		model.addAttribute("eventoPrivado", eventoPrivado);
 
 		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
