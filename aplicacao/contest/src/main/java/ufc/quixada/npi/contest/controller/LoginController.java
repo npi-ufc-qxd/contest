@@ -46,6 +46,8 @@ public class LoginController {
 
 	@Autowired
 	TrabalhoService trabalhoService;
+	
+	public static final String PESSOA = "pessoa";
 
 	@Autowired
 	private ParticipacaoEventoService participacaoEventoService;
@@ -97,7 +99,7 @@ public class LoginController {
 
 		if (token.getAcao().equals(Constants.ACAO_COMPLETAR_CADASTRO)) {
 			model.setViewName("completar-cadastro");
-			model.addObject("pessoa", token.getPessoa());
+			model.addObject(PESSOA, token.getPessoa());
 		} else {
 			throw new IllegalArgumentException("O token passado não corresponde a ação de completar cadastro.");
 		}
@@ -151,6 +153,13 @@ public class LoginController {
 
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
+	
+	@RequestMapping(value = "/perfil")
+	public String perfil(Model model){
+		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
+		model.addAttribute(PESSOA, pessoa);
+		return Constants.PERFIL_USER;
+	}
 
 	@RequestMapping(value = "/dashboard")
 	public String dashboard(Model model) {
@@ -161,13 +170,13 @@ public class LoginController {
 		List<Evento> eventosMinhaCoutoria = eventoService.getMeusEventosComoCoautor(idPessoaLogada);
 		List<Evento> eventosQueSouAutor = eventoService.getMeusEventosComoAutor(idPessoaLogada);
 		List<Evento> eventosInativos = eventoService.getMeusEventosInativosComoOrganizador(idPessoaLogada);
-    
+		
 		model.addAttribute("eventosQueSouAutor", eventosQueSouAutor);
 		model.addAttribute("eventosQueOrganizo", eventoQueOrganizo);
 		model.addAttribute("eventos", eventosAtivos);
 		model.addAttribute("eventosQueReviso", eventosQueReviso);
 		model.addAttribute("eventosMinhaCoautoria", eventosMinhaCoutoria);
-		model.addAttribute("pessoa", PessoaLogadaUtil.pessoaLogada());
+		model.addAttribute(PESSOA, PessoaLogadaUtil.pessoaLogada());
 		model.addAttribute("eventosInativos", eventosInativos);
 		return "dashboard";
 	}

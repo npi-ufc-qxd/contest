@@ -200,7 +200,7 @@ public class EventoService {
 	}
 
 	public List<Evento> getMeusEventosInativosComoOrganizador(Long idOrganizador) {
-		return eventoRepository.eventosPorPapelEstado(idOrganizador, Tipo.ORGANIZADOR, EstadoEvento.INATIVO);
+		return eventoRepository.eventosComoOrganizadorEstado(idOrganizador, EstadoEvento.INATIVO);
 	}
 
 	public List<Evento> getMeusEventosAtivosComoRevisor(Long idRevisor) {

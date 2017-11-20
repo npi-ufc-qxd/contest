@@ -67,6 +67,9 @@
 				class=" waves-effect btn-flat teal white-text" target="_blank">LISTAR
 				PARTICIPANTES</a>
 			<a th:href="@{|/sessao/notificar/${sessao.id}|}" class="waves-effect btn-flat teal white-text row right" target="_blank">Notificar participantes</a>
+
+
+
 		</div>
 
 		<div th:if="${#lists.isEmpty(sessao.trabalhos)}">
@@ -80,32 +83,28 @@
 					<th>Nome Trabalho</th>
 					<th>Trilha</th>
 					<th>Presença</th>
+					<th>Opções</th>
 				</tr>
 			</thead>
 
 			<tbody th:each="trabalho,count : ${sessao.trabalhos}">
 				<tr>
-					<td width="250" th:text="${trabalho.autor.nome}"></td>
-					<td width="300" th:text="${trabalho.titulo}"></td>
-					<td width="100" th:text="${trabalho.trilha.nome}"></td>
-					<td width="100">
+					<td th:text="${trabalho.autor.nome}"></td>
+					<td th:text="${trabalho.titulo}">Título do trabalho</td>
+					<td th:text="${trabalho.trilha.nome}"></td>
+					<td>
 						<input type="checkbox" th:id="|check${count.index}|"
 							th:onclick="|addPresenca(${trabalho.id})|"
-							name="statusApresentacao" th:checked="checked"
-							th:if="${trabalho.statusApresentacao}"
-						/>
-						<input type="checkbox" th:id="|check${count.index}|"
-							th:onclick="|addPresenca(${trabalho.id})|"
-							name="statusApresentacao"
-							th:unless="${trabalho.statusApresentacao}"
+							name="statusApresentacao" th:checked="${trabalho.statusApresentacao}"
 						/>
 						 <label 
-						class="black-text" th:for="|check${count.index}|"> </label></td>
-					<td><a
-						th:href="@{'/sessao/'+${sessao.id}+'/excluirTrabalho/'+${trabalho.id}}"
-						class="waves-effect btn-flat red accent-4 white-text"
-						id="btn_excluir_trabalho">Deletar<i
-							class="material-icons right">delete</i></a></td>
+						class="black-text" th:for="|check${count.index}|"></label>
+						</td>
+						<td>
+						<a th:href="@{'/autor/file/'+ ${trabalho.id}}"><i class="material-icons">file_download</i></a>
+						<a	th:href="@{'/sessao/'+${sessao.id}+'/excluirTrabalho/'+${trabalho.id}}"
+						><i class="material-icons">delete</i></a>
+						</td>
 				</tr>
 			</tbody>
 		</table>

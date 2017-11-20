@@ -17,18 +17,21 @@
 
 		<h2>Considerações dos Revisores</h2>
 
-		<div th:unless="${#lists.isEmpty(revisoes)}" class="row holder center"></div>
+		<div th:unless="${#lists.isEmpty(trabalhos)}" class="row holder center"></div>
 		<div id="itemContainer" class="col s12"
-			th:if="${not #lists.isEmpty(revisoes)}">
+			th:if="${not #lists.isEmpty(trabalhos)}">
 
-			<div th:each="revisao : ${revisoes}">
+			<div th:each="trabalho : ${trabalhos}">
 				<div class="col s12">
 					<div class="col s12 m7">
 						<div class="card horizontal">
 							<div class="card-stacked">
-								<div class="card-content">
-
-									<h5 th:text="${revisao.trabalho.titulo}"></h5>
+								<div class="card-content" th:each="revisao,count : ${trabalho.revisoes}">
+									<div th:if="${count.index} == 0">
+										<i class="small material-icons left">description</i>
+										<h5 th:text="${trabalho.titulo}"></h5> <br/>
+									</div>
+									<h6 th:text="'REVISÃO ' +	${count.index + 1}"></h6>
 									<p><strong>Revisor:</strong><br/><span th:text="${revisao.revisor.nome}"></span></p>
 									<div
 										th:include="fragments/listar_participacoes :: listar-inline('Autor(es):', ${revisao.trabalho.autoresDoTrabalho})">

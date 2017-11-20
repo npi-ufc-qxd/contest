@@ -259,6 +259,13 @@
 		    <version>${npi.mail.version}</version>
 		  </dependency>
 
+		<!-- Gelf para usar com Graylog -->
+		    <dependency>
+		        <groupId>biz.paluch.logging</groupId>
+		        <artifactId>logstash-gelf</artifactId>
+		        <version>1.11.1</version>
+		    </dependency>
+
 
 	</dependencies>
 

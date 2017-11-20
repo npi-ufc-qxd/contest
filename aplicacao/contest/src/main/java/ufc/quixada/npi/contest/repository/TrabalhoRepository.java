@@ -65,9 +65,9 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 			+ " rev where rev.trabalho.id = t.id)")
 	public List<Trabalho> getTrabalhoRevisadoEvento(@Param("eventoId") Long eventoId);
 	
-	@Query("SELECT count(*) FROM Trabalho t WHERE t.evento.id = :eventoId AND t.id in (SELECT rev.trabalho.id FROM Revisao"
+	@Query("SELECT t FROM Trabalho t WHERE t.evento.id = :eventoId AND t.id in (SELECT rev.trabalho.id FROM Revisao"
 			+ " rev where rev.trabalho.id = t.id AND rev.observacoes <> '')")
-	public int getTrabalhoRevisadoComentadoEvento(@Param("eventoId") Long eventoId);
+	public List<Trabalho> getTrabalhoRevisadoComentadoEvento(@Param("eventoId") Long eventoId);
 	
 	@Query("SELECT t FROM Trabalho t "
 			+ "WHERE t.evento.id = :eventoId AND "
@@ -75,7 +75,7 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 	public List<Trabalho> getTrabalhosSemSessaoNoEvento(@Param("eventoId") Long eventoId);
 	
 	public List<Trabalho> findAllByEventoId(Long eventoID);
-
+	
 	public List<Trabalho> findTrabalhoBySessaoId(Long idSessao);
 
 	public List<Trabalho> getTrabalhoBySessao(Sessao sessao);
