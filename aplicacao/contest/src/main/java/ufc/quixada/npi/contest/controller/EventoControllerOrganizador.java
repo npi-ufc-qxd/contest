@@ -147,8 +147,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
 		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
 
-		model.addAttribute("comentarios",
-				trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+		model.addAttribute("comentarios",trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
 
 		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 	}
@@ -429,11 +428,9 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		Evento evento = eventoService.buscarEventoPorId(eventoId);
 		Pessoa professorLogado = PessoaLogadaUtil.pessoaLogada();
 
-		if (EstadoEvento.ATIVO.equals(evento.getEstado())
-				&& PapelLdap.Tipo.DOCENTE.equals(professorLogado.getPapelLdap())) {
+		if (EstadoEvento.ATIVO.equals(evento.getEstado()) && PapelLdap.Tipo.DOCENTE.equals(professorLogado.getPapelLdap())) {
 			model.addAttribute("eventoId", eventoId);
 			return Constants.TEMPLATE_CONVIDAR_PESSOAS_EMAIL_ORG;
-
 		} else {
 			redirect.addFlashAttribute(ORGANIZADOR_ERROR, messageService.getMessage(CONVIDAR_EVENTO_INATIVO));
 			return "redirect:/eventoOrganizador/evento/" + eventoId;

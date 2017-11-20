@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.PresencaJsonWrapper;
@@ -32,6 +31,7 @@ public class SessaoController {
 	private static final String PESSOAS = "pessoas";
 	private static final String EVENTO = "evento";
 	private static final String SESSOES = "sessoes";
+	
 	@Autowired
 	private SessaoService sessaoService;
 	@Autowired
@@ -40,6 +40,7 @@ public class SessaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
+	
 
 	@RequestMapping(value = "/evento/{eventoId}/sessao/")
 	public String indexSessao(Model model, @PathVariable("eventoId") Long eventoId) {
@@ -195,10 +196,9 @@ public class SessaoController {
 
 	@RequestMapping("/sessao/notificar/{idSessao}")
 	public String enviarEmailParaAutoresPrincipaisDoArtigo(@PathVariable("idSessao") Long idSessao){
-		Sessao sessao = sessaoService.get(idSessao);
-		
-		trabalhoService.notificarAutorPrincipalDoArtigo(sessao);
-		return "redirect:/sessao/ver/" + idSessao;
+		Sessao sessao = sessaoService.get(idSessao);		
+		trabalhoService.notificarAutorPrincipalDoArtigo(sessao);		
+		return "redirect:/sessao/ver/" + idSessao;			
 	}
 	
 	private String validateEventParams(Evento evento) {
