@@ -10,10 +10,10 @@
 					<a sec:authorize = "hasRole('USER')" th:href="@{/dashboard}"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px" /></a>
 					<a sec:authorize = "hasRole('ADMIN')" th:href="@{/evento/ativos}"><img th:src="@{/img/logotipo_white.png}" alt="Contest" width="200px" /></a>
 					<ul class="white-text right hide-on-med-and-down">
-						<li> <a th:href="@{/dashboard}"> Ir para Dashboard </a> </li>
+						<li> <a th:href="@{/dashboard}"> Ir para Dashboard </a></li>
 						<li sec:authorize = "hasRole('ADMIN')"> <a th:href="@{/evento/ativos}"> Ir para Início </a> </li>
 						
-						<li><a href="#"
+						<li><a th:href="@{/perfil}"
 							th:text="${#authentication.getPrincipal().getNome()}"></a></li>
 	
 						<li><form th:action="@{/logout}" method="POST" id="logout">
@@ -28,7 +28,7 @@
 				<!-- Dropdown Trigger -->
 				<div class="right">
 					<ul id="nav-mobile" class="side-nav">
-						<li><a href="#">Nome</a></li>
+						<li><a href="#">Nome </a></li>
 						<li><a href="#">Sair&nbsp;<i class="fa fa-sign-out"
 								aria-hidden="true"></i></a></li>
 					</ul>
