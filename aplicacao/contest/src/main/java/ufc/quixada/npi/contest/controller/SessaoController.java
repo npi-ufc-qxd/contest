@@ -194,11 +194,11 @@ public class SessaoController {
 
 	}
 
-	@RequestMapping("/sessao/notificar/{idSessao}")
-	public String enviarEmailParaAutoresPrincipaisDoArtigo(@PathVariable("idSessao") Long idSessao){
-		Sessao sessao = sessaoService.get(idSessao);		
+	@RequestMapping("/sessao/notificar/{id}")
+	public String enviarEmailParaAutoresPrincipaisDoArtigo(@PathVariable("id") Long id){
+		Sessao sessao = sessaoService.get(id);		
 		trabalhoService.notificarAutorPrincipalDoArtigo(sessao);		
-		return "redirect:/sessao/ver/" + idSessao;			
+		return "redirect:/sessao/ver/" + id;			
 	}
 	
 	private String validateEventParams(Evento evento) {
