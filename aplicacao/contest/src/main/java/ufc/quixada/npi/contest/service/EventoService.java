@@ -26,9 +26,7 @@ public class EventoService {
 	private static final String TITULO_EMAIL_ORGANIZADOR = "TITULO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String ASSUNTO_EMAIL_CONFIRMACAO = "ASSUNTO_EMAIL_CONFIRMACAO";
-	private static final String TEXTO_EMAIL_CONFIRMACAO = ".Fique atento aos prazos, o próximo passo será a fase das revisões, confira no edital os prazos. Boa sorte!";
-	// private static final String ASSUNTO_EMAIL_NOTIFICACAO_AUTOR_PRINCIPAL =
-	// "ASSUNTO_EMAIL_NOTIFICACAO_AUTOR_PRINCIPAL";
+	private static final String TEXTO_EMAIL_CONFIRMACAO = ".Fique atento aos prazos, o próximo passo será a fase das revisões, confira no edital os prazos. Boa sorte!";	
 
 	@Autowired
 	EventoRepository eventoRepository;

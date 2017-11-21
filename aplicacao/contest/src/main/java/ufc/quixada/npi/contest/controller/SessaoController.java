@@ -151,8 +151,8 @@ public class SessaoController {
 		return "redirect:/evento/" + eventoId + "/sessao/";
 	}
 
-	@RequestMapping("/sessao/{idSessao}/excluirTrabalho/{idTrabalho}")
-	public String excluirTrabalhoSessao(@PathVariable("idSessao") Long idSessao,
+	@RequestMapping("/sessao/{id}/excluirTrabalho/{idTrabalho}")
+	public String excluirTrabalhoSessao(@PathVariable("id") Long id,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		
@@ -161,7 +161,7 @@ public class SessaoController {
 		}
 		
 		trabalhoService.removerSessao(trabalho);
-		return "redirect:/sessao/ver/" + idSessao;
+		return "redirect:/sessao/ver/" + id;
 	}
 
 	@RequestMapping("/sessao/adicionar/trabalho")
