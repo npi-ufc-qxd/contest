@@ -31,6 +31,7 @@ public class SessaoController {
 	private static final String PESSOAS = "pessoas";
 	private static final String EVENTO = "evento";
 	private static final String SESSOES = "sessoes";
+	private static final String VER_SESSAO = "redirect:/sessao/ver/";
 	
 	@Autowired
 	private SessaoService sessaoService;
@@ -161,7 +162,7 @@ public class SessaoController {
 		}
 		
 		trabalhoService.removerSessao(trabalho);
-		return "redirect:/sessao/ver/" + id;
+		return VER_SESSAO + id;
 	}
 
 	@RequestMapping("/sessao/adicionar/trabalho")
@@ -177,7 +178,7 @@ public class SessaoController {
 			trabalho.setSessao(sessao);
 			trabalhoService.adicionarTrabalho(trabalho);
 		}
-		return "redirect:/sessao/ver/" + idSessao;
+		return VER_SESSAO + idSessao;
 	}
 
 	@RequestMapping("/sessao/listarParticipantes/{idSessao}")
@@ -198,7 +199,7 @@ public class SessaoController {
 	public String enviarEmailParaAutoresPrincipaisDoArtigo(@PathVariable("id") Long id){
 		Sessao sessao = sessaoService.get(id);		
 		trabalhoService.notificarAutorPrincipalDoArtigo(sessao);		
-		return "redirect:/sessao/ver/" + id;			
+		return VER_SESSAO + id;			
 	}
 	
 	private String validateEventParams(Evento evento) {
