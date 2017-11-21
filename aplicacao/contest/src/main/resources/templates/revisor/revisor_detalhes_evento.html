@@ -22,10 +22,10 @@
 				<span class="white-text" th:text="${NAO_ORGANIZADOR}"></span> <i
 					class="material-icons">close</i>
 			</div>
-			<h2>
+			<h3>
 				Detalhes do Evento: <span class="card-title"
 					th:text="${evento.nome}"></span>
-			</h2>
+			</h3>
 
 
 			<!-- Modal Trigger -->
@@ -39,13 +39,16 @@
 				</div>
 			</div>
 			<div>
-				<div class="col s3">
-					<div class="card horizontal">
+				<div class="col s6">
+					<div class="card horizontal" >
 						<div class="card-stacked">
 							<div class="card-content">
 								<span class="card-title">Trilhas</span>
-								<p th:text="'Cadastradas: '+ ${#lists.size(evento.trilhas)}"></p>
-								<br /> <br />
+								<div class="" style="max-height: 90px; overflow-x: auto; white-space: nowrap">
+								<div th:each="trilha : ${evento.trilhas}">
+									<a th:text="${trilha.nome}" th:href="@{'/eventoOrganizador/trilha/' + ${trilha.id} +'/'+ ${evento.id}}"></a>
+								</div>
+								<br />
 							</div>
 							<div class="card-action" th:if="${organizaEvento}">
 								<a th:href="@{'/eventoOrganizador/trilhas/' + ${evento.id}}"
@@ -53,27 +56,11 @@
 									Trilhas</a>
 							</div>
 						</div>
-					</div>
-				</div>
-				<div class="col s3">
-					<div class="card horizontal">
-						<div class="card-stacked">
-							<div class="card-content">
-								<span class="card-title">Revisores</span>
-								<p th:text="'Cadastrados: '+ ${#lists.size(evento.revisores)}"></p>
-								<br /> <br />
-							</div>
-							<div class="card-action" th:if="${organizaEvento}">
-								<a
-									th:href="@{'/eventoOrganizador/evento/'+ ${evento.id} +'/revisores'}"
-									class="btn white-text waves-effect waves-light blue-grey">Atribuir
-									Revisores</a>
-							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col s3">
-					<div class="card horizontal">
+					<div class="card horizontal" style="height: 160px">
 						<div class="card-stacked">
 							<div class="card-content">
 								<span class="card-title">Trabalhos</span>
@@ -91,7 +78,7 @@
 					</div>
 				</div>
 				<div class="col s3">
-					<div class="card horizontal">
+					<div class="card horizontal" style="height: 160px">
 						<div class="card-stacked">
 							<div class="card-content">
 								<span class="card-title">Revisões</span>
