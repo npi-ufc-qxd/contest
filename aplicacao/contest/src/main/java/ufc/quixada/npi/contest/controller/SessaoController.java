@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.PresencaJsonWrapper;
@@ -32,6 +31,8 @@ public class SessaoController {
 	private static final String PESSOAS = "pessoas";
 	private static final String EVENTO = "evento";
 	private static final String SESSOES = "sessoes";
+	private static final String VER_SESSAO = "redirect:/sessao/ver/";
+	
 	@Autowired
 	private SessaoService sessaoService;
 	@Autowired
@@ -40,6 +41,7 @@ public class SessaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
+	
 
 	@RequestMapping(value = "/evento/{eventoId}/sessao/")
 	public String indexSessao(Model model, @PathVariable("eventoId") Long eventoId) {
@@ -150,8 +152,8 @@ public class SessaoController {
 		return "redirect:/evento/" + eventoId + "/sessao/";
 	}
 
-	@RequestMapping("/sessao/{idSessao}/excluirTrabalho/{idTrabalho}")
-	public String excluirTrabalhoSessao(@PathVariable("idSessao") Long idSessao,
+	@RequestMapping("/sessao/{id}/excluirTrabalho/{idTrabalho}")
+	public String excluirTrabalhoSessao(@PathVariable("id") Long id,
 			@PathVariable("idTrabalho") Long idTrabalho) {
 		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
 		
@@ -160,7 +162,7 @@ public class SessaoController {
 		}
 		
 		trabalhoService.removerSessao(trabalho);
-		return "redirect:/sessao/ver/" + idSessao;
+		return VER_SESSAO + id;
 	}
 
 	@RequestMapping("/sessao/adicionar/trabalho")
@@ -176,7 +178,7 @@ public class SessaoController {
 			trabalho.setSessao(sessao);
 			trabalhoService.adicionarTrabalho(trabalho);
 		}
-		return "redirect:/sessao/ver/" + idSessao;
+		return VER_SESSAO + idSessao;
 	}
 
 	@RequestMapping("/sessao/listarParticipantes/{idSessao}")
@@ -193,6 +195,13 @@ public class SessaoController {
 
 	}
 
+	@RequestMapping("/sessao/notificar/{id}")
+	public String enviarEmailParaAutoresPrincipaisDoArtigo(@PathVariable("id") Long id){
+		Sessao sessao = sessaoService.get(id);		
+		trabalhoService.notificarAutorPrincipalDoArtigo(sessao);		
+		return VER_SESSAO + id;			
+	}
+	
 	private String validateEventParams(Evento evento) {
 		Pessoa pessoa = pessoaService.getByCpf(PessoaLogadaUtil.pessoaLogada().getCpf());
 		if (evento == null) {
