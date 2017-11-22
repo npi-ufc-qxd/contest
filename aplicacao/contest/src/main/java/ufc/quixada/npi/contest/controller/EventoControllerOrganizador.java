@@ -76,7 +76,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	private static final String SUBMISSAO_FINAL = "existeSubmissaoFinal";
 	private static final String EVENTOS_INATIVOS = "eventosInativos";
 	private static final String TRABALHOS_DO_EVENTO = "organizador/org_ver_trabalhos_evento";
-
 	private static final String CONVIDAR_EVENTO_INATIVO = "CONVIDAR_EVENTO_INATIVO";
 	private static final String EMAIL_ENVIADO_SUCESSO = "EMAIL_ENVIADO_SUCESSO";
 

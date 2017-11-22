@@ -104,6 +104,17 @@ public class ParticipacaoEventoService {
 		return false;
 	}
 	
+	public boolean isCoautorDoEvento(Long idEvento, Pessoa coautor) {
+		if(coautor.getParticipacoesEvento() != null){
+			for(ParticipacaoEvento participacaoEvento : coautor.getParticipacoesEvento()){
+				if(participacaoEvento.getEvento().getId() == idEvento && 
+						participacaoEvento.getPapel() == Tipo.COAUTOR) return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public ParticipacaoEvento buscarOrganizadorPorPessoaEEvento(Evento evento, Pessoa pessoa){
 		return participacaoEventoRepository.findOneByEventoAndPessoaAndPapel(evento, pessoa, Tipo.ORGANIZADOR);
 	}

@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.ufc.quixada.npi.ldap.model.Usuario;
-import br.ufc.quixada.npi.ldap.service.UsuarioService;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -18,7 +16,6 @@ import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
 import ufc.quixada.npi.contest.repository.EventoRepository;
 import ufc.quixada.npi.contest.util.Constants;
-import ufc.quixada.npi.contest.util.ContestUtil;
 
 @Service
 public class EventoService {
@@ -50,55 +47,38 @@ public class EventoService {
 	@Autowired
 	private TrilhaService trilhaService;
 	
-	@Autowired
-	private UsuarioService usuarioService;
-
 	private boolean adicionarPessoa(String email, Evento evento, Tipo papel, String url) {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		String nome = "Nome Temporário "+"<"+ email +">";
-
-		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
-		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
-		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
+		String corpo = "";
 		String pageCadastro = "/completar-cadastro/";
 		Token token =  new Token();
 		
 		if (pessoa == null) {
 			
-			try {
-				Usuario usuarioLdap = usuarioService.getByEmail(email);
-				
-				if(usuarioLdap != null){
-					pessoa = ContestUtil.convertUsuarioToPessoa("", usuarioLdap, new Pessoa());
-				}else{
-					pessoa = new Pessoa(nome, email);
-					pessoa.setPapel(Tipo.USER);
-				}
-				pessoaService.addOrUpdate(pessoa);
+			pessoa = new Pessoa(nome, email);
+			pessoa.setPapel(Tipo.USER);
+		
+			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
 			
+			if (notificarPessoaAoAddTrabalho (corpo ,papel, email, evento)) {
+				pessoaService.addOrUpdate(pessoa);
 				token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
-			} catch (Exception e) {
-				e.printStackTrace();
+				
+				ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
+				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
+				
+				return true;
 			}
 			
-			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
 		} else {
 			corpo = corpo + ". Realize o login em " + url + "/login";
+			notificarPessoaAoAddTrabalho (corpo ,papel, email, evento);
+			return true;
 		}
 		
-		
-		if (!emailService.enviarEmail(titulo, assunto, email, corpo)) {
-			try{
-				pessoaService.delete(pessoa.getId());
-			}catch (Exception ex){
-				ex.printStackTrace();
-			}
-			return false;
-		}
-		ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
-		participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
-		return true;
+		return false;
 	}
 
 	public boolean adicionarOrganizador(String email, Evento evento, String url) {
@@ -218,6 +198,12 @@ public class EventoService {
 		
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
-
 	
+	public boolean notificarPessoaAoAddTrabalho (String corpo, Tipo papel, String email, Evento evento) {
+		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
+		corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
+		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
+		
+		return emailService.enviarEmail(titulo, assunto, email, corpo);
+	}
 }
