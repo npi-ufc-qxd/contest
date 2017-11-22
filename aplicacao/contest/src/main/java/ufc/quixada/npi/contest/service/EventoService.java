@@ -59,22 +59,21 @@ public class EventoService {
 			
 			pessoa = new Pessoa(nome, email);
 			pessoa.setPapel(Tipo.USER);
-		
+			
+			token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
 			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
 			
-			if (notificarPessoaAoAddTrabalho (corpo ,papel, email, evento)) {
+			if (notificarPessoaAoAddTrabalho (evento, email, papel, corpo)) {
 				pessoaService.addOrUpdate(pessoa);
-				token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
-				
 				ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
-				
 				return true;
 			}
 			
 		} else {
 			corpo = corpo + ". Realize o login em " + url + "/login";
-			notificarPessoaAoAddTrabalho (corpo ,papel, email, evento);
+			notificarPessoaAoAddTrabalho (evento, email, papel, corpo);
+			tokenService.deletar(token);
 			return true;
 		}
 		
@@ -199,7 +198,7 @@ public class EventoService {
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
 	
-	public boolean notificarPessoaAoAddTrabalho (String corpo, Tipo papel, String email, Evento evento) {
+	public boolean notificarPessoaAoAddTrabalho (Evento evento, String email, Tipo papel, String corpo) {
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
 		corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
