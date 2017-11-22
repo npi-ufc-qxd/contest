@@ -63,7 +63,7 @@ public class EventoService {
 			token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
 			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
 			
-			if (notificarPessoaAoAddTrabalho (evento, email, papel, corpo)) {
+			if (notificarPessoaAoAddTrabalho (evento, email, corpo)) {
 				pessoaService.addOrUpdate(pessoa);
 				ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
@@ -71,7 +71,7 @@ public class EventoService {
 			}
 		} else {
 			corpo = corpo + ". Realize o login em " + url + "/login";
-			notificarPessoaAoAddTrabalho (evento, email, papel, corpo);
+			notificarPessoaAoAddTrabalho (evento, email, corpo);
 			tokenService.deletar(token);
 			return true;
 		}		
@@ -213,7 +213,7 @@ public class EventoService {
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
 	
-	public boolean notificarPessoaAoAddTrabalho (Evento evento, String email, Tipo papel, String corpo) {
+	public boolean notificarPessoaAoAddTrabalho (Evento evento, String email, String corpo) {
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
 		
