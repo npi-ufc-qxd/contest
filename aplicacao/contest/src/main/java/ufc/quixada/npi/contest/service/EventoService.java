@@ -51,8 +51,8 @@ public class EventoService {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		String nome = "Nome Temporário "+"<"+ email +">";
-		String corpo = "";
-
+		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
+		
 		String pageCadastro = "/completar-cadastro/";
 		Token token = new Token();
 
@@ -215,7 +215,6 @@ public class EventoService {
 	
 	public boolean notificarPessoaAoAddTrabalho (Evento evento, String email, Tipo papel, String corpo) {
 		String assunto = messageService.getMessage(TITULO_EMAIL_ORGANIZADOR) + " " + evento.getNome();
-		corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		String titulo = "[CONTEST] Convite para o Evento: " + evento.getNome();
 		
 		return emailService.enviarEmail(titulo, assunto, email, corpo);
