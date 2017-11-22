@@ -1,8 +1,11 @@
 package ufc.quixada.npi.contest.controller;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +60,8 @@ public class LoginController {
 
 	@Autowired
 	private EnviarEmailService enviarEmailService;
+	
+	Logger logger = Logger.getLogger(LoginController.class.toString());
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
@@ -154,11 +159,33 @@ public class LoginController {
 		return Constants.REDIRECIONAR_PARA_LOGIN;
 	}
 	
-	@RequestMapping(value = "/perfil")
+	@RequestMapping(value = "/perfil", method=RequestMethod.GET)
 	public String perfil(Model model){
 		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
 		model.addAttribute(PESSOA, pessoa);
 		return Constants.PERFIL_USER;
+	}
+	
+	@RequestMapping(value = "/perfil", method=RequestMethod.POST)
+	public ModelAndView perfil(Model model, Pessoa pessoa){
+		
+		ModelAndView mav = new ModelAndView(Constants.PERFIL_USER);
+		Pessoa pessoaLogada = PessoaLogadaUtil.pessoaLogada();
+		
+		try{
+			
+			pessoaLogada.setNome(pessoa.getNome());
+			pessoaLogada.setEmail(pessoa.getEmail());
+			
+			pessoaService.addOrUpdate(pessoaLogada);
+			mav.addObject(PESSOA, pessoa);
+			mav.addObject("success","Dados alterados com sucesso.");
+		}catch(ConstraintViolationException ex){
+			logger.log(Level.WARNING, ex.getMessage(), ex);
+			mav.addObject("error", "Existe algum cadastro com o email selecionado");
+		}
+		
+		return mav;
 	}
 
 	@RequestMapping(value = "/dashboard")
