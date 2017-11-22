@@ -1,50 +1,86 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <div th:include="fragments/head :: head"></div></head>
-  
+<div th:include="fragments/head :: head"></div>
+</head>
+
 <body>
-	<nav class="purple darken-4" role="navigation">
-    	<div class="nav-wrapper container">
-      		<a id="logo-container" href="#" class="brand-logo center"><img th:src="@{/img/logotipo_white.png}" width="200px" alt="logo" /></a>
-    	</div>
-  	</nav>
-  	
-  	<div class="section no-pad-bot" id="">
-  		<div class="container">
-  			<a class=" btn-large waves-effect waves-light purple right white-text"  onclick="window.history.back()" alt="VOLTAR" >
-	       		Voltar
-	       	</a>
-  			<div class="row">
-        <h1 class="center header">Perfil</h1>
-        <div class="col s12">
-          <form th:action="@{/perfil}" class="valign" th:object="${pessoa}">
-            
-            <div class="input-field">
-              <input type="text" id="nome" th:field="*{nome}" required="required"/>
-              <label for="nome">*Nome</label>
-            </div>
+	<div th:include="fragments/header :: header"></div>
 
-            <div class="input-field">
-              <input type="email" id="email" value="formInput" name="email" th:field="*{email}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-              <label for="email">*Email</label>
-            </div>
-            
-            <div class="input-field">
-              <input type="number" id="cpf" name="cpf" th:field="*{cpf}" placeholder="Exemplo: 11111111111" required="required" disabled="disabled"/>
-              <label for="cpf">*CPF</label>
-            </div>
+	<div class="section no-pad-bot" id="">
+		<div class="container">
+			<a
+				class=" btn-large waves-effect waves-light purple right white-text"
+				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
+			<div class="row">
+				<h1 class="center header">Perfil</h1>
 
-            <br/>
-            <div class="right">
-            <button class="right btn waves-effect waves-light" type="submit" id="btn_confirmar">Salvar alterações</button>
-          </div>
-          </form>
-        </div>
-      </div>
-  	</div>
-  	</div>
+				<div th:if="${success}" class="chip green darken-1">
+					<span class="white-text" th:text="${success}"></span> <i
+						class="material-icons">close</i>
+				</div>
+				<div th:if="${error}" class="chip red darken-1">
+					<span class="white-text" th:text="${error}"></span> <i
+						class="material-icons">close</i>
+				</div>
+
+				<div class="col s12">
+					<form th:action="@{/perfil}" method="POST" class="valign"
+						th:object="${pessoa}">
+						
+						<input type="hidden" th:field="*{id}" />
+						
+						<div class="input-field">
+							<input type="text" id="nome" th:field="*{nome}"
+								required="required" /> <label for="nome">*Nome</label>
+						</div>
+
+						<div class="input-field">
+							<input type="email" id="email" name="email"
+								th:field="*{email}"
+								pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+								onkeyup="confirm_check()" /> <label for="email">*Email</label>
+						</div>
+
+						<div class="input-field">
+							<input type="email" id="confirm-email" name="confirm-email"
+								placeholder="Coloque seu e-mail para confirmar as mudanças."
+								pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+								onkeyup="confirm_check()" /> <label for="confirm-email">*Confirmar
+								Email</label>
+						</div>
+
+						<div class="input-field">
+							<input type="number" id="cpf" name="cpf" th:field="*{cpf}"
+								placeholder="Exemplo: 11111111111" required="required"
+								disabled="disabled" /> <label for="cpf">*CPF</label>
+						</div>
+
+						<br />
+						<div class="right">
+							<button class="disabled right btn waves-effect waves-light"
+								type="submit" id="btn_salvar" disabled="disabled">Salvar
+								alterações</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div th:include="fragments/footer :: footer"></div>
 	<script type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var confirm_check = function() {
+			if ($("#email").val() === $("#confirm-email").val()) {
+				$("#btn_salvar").removeAttr("disabled");
+				$("#btn_salvar").removeClass("disabled");
+			} else {
+				$("#btn_salvar").attr("disabled", "disabled");
+				$("#btn_salvar").addClass("disabled");
+			}
+		}
+		confirm_check();
+	</script>
 </body>
 </html>

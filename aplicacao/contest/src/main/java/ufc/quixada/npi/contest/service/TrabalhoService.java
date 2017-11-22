@@ -10,6 +10,7 @@ import ufc.quixada.npi.contest.model.Avaliacao;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
+import ufc.quixada.npi.contest.model.Sessao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.repository.TrabalhoRepository;
@@ -35,8 +36,8 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosEvento(Evento evento) {
 		return trabalhoRepository.getByEventoOrderByTitulo(evento);
 	}
-	
-	public List<Trabalho> getTrabalhosSemSessaoNoEvento(Evento evento){
+
+	public List<Trabalho> getTrabalhosSemSessaoNoEvento(Evento evento) {
 		return trabalhoRepository.getTrabalhosSemSessaoNoEvento(evento.getId());
 	}
 
@@ -67,11 +68,15 @@ public class TrabalhoService {
 	public List<Trabalho> getTrabalhosDoAutorNoEvento(Pessoa pessoa, Evento evento) {
 		return trabalhoRepository.getTrabalhoDoAutorNoEvento(pessoa.getId(), evento.getId());
 	}
-	
+
 	public List<Trabalho> getTrabalhosDoCoautorNoEvento(Pessoa pessoa, Evento evento) {
 		return trabalhoRepository.getTrabalhoDoCoautorNoEvento(pessoa.getId(), evento.getId());
 	}
-	
+
+	public List<Trabalho> getTrabalhosBySessao(Sessao sessao) {
+		return trabalhoRepository.getTrabalhoBySessao(sessao);
+	}
+
 	public List<Trabalho> getTrabalhosComoAutorECoautorNoEvento(Pessoa pessoa, Evento evento) {
 		return trabalhoRepository.getTrabalhoComoAutorECoautorNoEvento(pessoa.getId(), evento.getId());
 	}
@@ -112,7 +117,7 @@ public class TrabalhoService {
 		int numeroRevisoes = 0;
 
 		List<Revisao> revisoes = trabalho.getRevisoes();
-		
+
 		if (revisoes != null) {
 			numeroRevisoes = revisoes.size();
 			for (Revisao revisao : revisoes) {
@@ -127,25 +132,24 @@ public class TrabalhoService {
 				}
 			}
 		}
-		
-		if(numeroDeAprovacao != 0 && numeroDeReprovacao != 0) {
+
+		if (numeroDeAprovacao != 0 && numeroDeReprovacao != 0) {
 			return Avaliacao.MODERACAO;
 		}
-		
-		
-		int maioria = (numeroRevisoes/2) +  1;
-		
+
+		int maioria = (numeroRevisoes / 2) + 1;
+
 		if (numeroDeReprovacao == numeroRevisoes || numeroDeReprovacao >= maioria)
 			return Avaliacao.REPROVADO;
-		
+
 		if (numeroDeAprovacao == numeroRevisoes || numeroDeAprovacao >= maioria) {
 			return Avaliacao.APROVADO;
 		}
-		
+
 		if (numeroDeRessalvas == numeroRevisoes) {
 			return Avaliacao.RESSALVAS;
 		}
-		
+
 		return Avaliacao.MODERACAO;
 	}
 
@@ -190,12 +194,29 @@ public class TrabalhoService {
 	}
 
 	public void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
-		eventoService.notificarPessoa(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(), evento);
+		eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoEnvioDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(),
+				evento);
 
 		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
 		for (Pessoa coautor : coautores) {
-			eventoService.notificarPessoa(trabalho, coautor.getEmail(), evento);
+			eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoEnvioDoArtigo(trabalho, coautor.getEmail(), evento);
 		}
 	}
+	public void notificarAutoresReenvioTrabalho(Evento evento, Trabalho trabalho) {
+		eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoReenvioDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(),
+				evento);
 
+		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
+		for (Pessoa coautor : coautores) {
+			eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoReenvioDoArtigo(trabalho, coautor.getEmail(), evento);
+		}
+	}
+	public void notificarAutorPrincipalDoArtigo(Sessao sessao) {
+		List<Trabalho> trabalhosSessao = getTrabalhosBySessao(sessao);
+		for (Trabalho trabalho : trabalhosSessao) {
+			eventoService.notificarAutoresTrabalhoAdicionadoASessao(trabalho, trabalho.getAutor().getEmail());
+
+		}
+
+	}
 }

@@ -64,7 +64,12 @@
 			<h6 th:text="'Local: '+${sessao.local}"></h6>
 			<h6 th:text="'Nº de Trabalhos: '+${qtdTrabalhos}"></h6>
 			<a th:href="@{'/sessao/listarParticipantes/'+ ${sessao.id}}"
-				class=" waves-effect btn-flat teal white-text" target="_blank">Lista de frequência</a>
+				class=" waves-effect btn-flat teal white-text" target="_blank">LISTAR
+				PARTICIPANTES</a>
+			<a th:href="@{|/sessao/notificar/${sessao.id}|}" class="waves-effect btn-flat teal white-text row right" target="_blank">Notificar participantes</a>
+
+
+
 		</div>
 
 		<div th:if="${#lists.isEmpty(sessao.trabalhos)}">

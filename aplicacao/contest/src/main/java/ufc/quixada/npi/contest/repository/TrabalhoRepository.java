@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
+import ufc.quixada.npi.contest.model.Sessao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 
@@ -76,5 +77,7 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long>{
 	public List<Trabalho> findAllByEventoId(Long eventoID);
 	
 	public List<Trabalho> findTrabalhoBySessaoId(Long idSessao);
+
+	public List<Trabalho> getTrabalhoBySessao(Sessao sessao);
 	
 }
