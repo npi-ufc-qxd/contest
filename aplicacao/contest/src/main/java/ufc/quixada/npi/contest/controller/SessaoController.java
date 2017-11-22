@@ -1,5 +1,6 @@
 package ufc.quixada.npi.contest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.PresencaJsonWrapper;
 import ufc.quixada.npi.contest.model.Sessao;
 import ufc.quixada.npi.contest.model.Trabalho;
+import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.SessaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
+import ufc.quixada.npi.contest.service.TrilhaService;
 import ufc.quixada.npi.contest.util.Constants;
 import ufc.quixada.npi.contest.util.PessoaLogadaUtil;
 
@@ -41,6 +45,8 @@ public class SessaoController {
 	private EventoService eventoService;
 	@Autowired
 	private PessoaService pessoaService;
+	@Autowired
+	private TrilhaService trilhaService;
 	
 
 	@RequestMapping(value = "/evento/{eventoId}/sessao/")
@@ -119,6 +125,9 @@ public class SessaoController {
 	@RequestMapping(value = "/sessao/ver/{id}", method = RequestMethod.GET)
 	public String verTrabalhos(@PathVariable("id") Long idSessao, Model model) {
 		Sessao sessao = sessaoService.get(idSessao);
+		Evento evento = eventoService.buscarEventoPorId(sessao.getEvento().getId());
+		List<Trilha> trilhas = trilhaService.buscarTrilhas(evento.getId());
+		
 		if(sessao == null){
 			return Constants.ERROR_404;
 		}
@@ -129,6 +138,7 @@ public class SessaoController {
 		
 		model.addAttribute(TRABALHOS, trabalhoService.getTrabalhosSemSessaoNoEvento(sessao.getEvento()));
 		model.addAttribute(SESSAO, sessao);
+		model.addAttribute("trilhas",trilhas);
 		model.addAttribute("qtdTrabalhos", sessao.getTrabalhos().size());
 		return "sessao/sessao_ver_trabalhos";
 	}
