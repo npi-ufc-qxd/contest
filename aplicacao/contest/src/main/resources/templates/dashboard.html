@@ -60,6 +60,8 @@
 											<a th:unless="${evento.isPeriodoInicial()}"
 												class="btn disabled white-text grey">Período de
 												inscrição encerrado</a>
+											<div th:if="${#lists.size(pessoa.getParticipacoesNoEvento(evento))} > 0">
+						
 											<span th:if="${#lists.size(pessoa.getParticipacoesNoEvento(evento))} == 1">
 												<a th:if="${pessoa.getParticipacoesNoEvento(evento)[0].papel.name() == 'AUTOR'}"
 													th:href="@{|/autor/meusTrabalhos/evento/${evento.id}|}" 
@@ -81,7 +83,8 @@
 											<span th:if="${#lists.size(pessoa.getParticipacoesNoEvento(evento))} > 1">
 												<a 	th:attr="href='#modal-participacao' + ${evento.id}"
 													class="btn white-text waves-effect waves-light confirmar modal-trigger">Ver participações</a>
-											</span>											
+											</span>
+											</div>										
 										</div>
 									<div th:attr="id='modal' + ${evento.id}" class="modal">
 										<div class="modal-content">

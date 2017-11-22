@@ -41,6 +41,7 @@ import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
 import ufc.quixada.npi.contest.service.MessageService;
+import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.StorageService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
@@ -78,6 +79,8 @@ public class EnviarTrabalhoSteps {
 	private TrabalhoService trabalhoService;
 	@Mock
 	private UsuarioService usuarioService;
+	@Mock
+	private ParticipacaoEventoService participacaoEventoService;
 	
 	
 	@Mock
@@ -170,6 +173,7 @@ public class EnviarTrabalhoSteps {
 		when(eventoService.buscarEventoPorId(evento.getId())).thenReturn(evento);
 		when(trilhaService.get(trilha.getId(), evento.getId())).thenReturn(trilha);
 		when(pessoaService.getByEmail(coautor.getEmail())).thenReturn(coautor);
+		when(participacaoEventoService.isCoautorDoEvento(evento.getId(), coautor)).thenReturn(true);
 		doNothing().when(trabalhoService).notificarAutoresEnvioTrabalho(evento, new Trabalho());
 		
 		when(submissaoService.adicionarOuEditar(submissao)).thenReturn(true);

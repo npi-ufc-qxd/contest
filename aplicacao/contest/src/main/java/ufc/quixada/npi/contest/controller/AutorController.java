@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.ufc.quixada.npi.ldap.model.Usuario;
-import br.ufc.quixada.npi.ldap.service.UsuarioService;
 import ufc.quixada.npi.contest.model.EstadoEvento;
 import ufc.quixada.npi.contest.model.Evento;
 import ufc.quixada.npi.contest.model.Papel.Tipo;
@@ -109,9 +107,6 @@ public class AutorController {
 
 	@Autowired
 	private ParticipacaoTrabalhoService participacaoTrabalhoService;
-
-	@Autowired
-	private UsuarioService usuarioService;
 
 	@RequestMapping
 	public String index(Model model) {
@@ -240,9 +235,11 @@ public class AutorController {
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			@RequestParam("eventoId") String eventoId, @RequestParam(required = false) String trilhaId,
 			RedirectAttributes redirect, HttpServletRequest request) {
+		
 		Evento evento;
 		Trilha trilha;
 		Submissao submissao;
+		
 		try {
 			String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 					+ request.getContextPath();
@@ -251,10 +248,12 @@ public class AutorController {
 
 			evento = eventoService.buscarEventoPorId(idEvento);
 			trilha = trilhaService.get(idTrilha, idEvento);
+
 			if (evento == null || trilha == null) {
 				redirect.addFlashAttribute("erroAoCadastrar", messageService.getMessage(ERRO_CADASTRO_TRABALHO));
 				return "redirect:/autor/meusTrabalhos";
 			}
+			
 			trabalho.setEvento(evento);
 			trabalho.setTrilha(trilha);
 
@@ -262,14 +261,7 @@ public class AutorController {
 			if (trabalho.getParticipacoes() != null) {
 				for (ParticipacaoTrabalho participacao : trabalho.getParticipacoes()) {
 
-					Usuario usuarioLdap = usuarioService.getByEmail(participacao.getPessoa().getEmail());
-					Pessoa coautor; 
-					
-					if(usuarioLdap==null){
-						coautor = pessoaService.getByEmail(participacao.getPessoa().getEmail());
-					}else{
-						coautor = pessoaService.getByCpf(usuarioLdap.getCpf());
-					}
+					Pessoa coautor =  pessoaService.getByEmail(participacao.getPessoa().getEmail());
 
 					if (coautor == null) {
 
@@ -280,13 +272,17 @@ public class AutorController {
 
 						coautor.setNome(participacao.getPessoa().getNome());
 						pessoaService.addOrUpdate(coautor);
-
+					}else{
+						coautores.add(coautor);
+						if(!participacaoEventoService.isCoautorDoEvento(idEvento, coautor) && PessoaLogadaUtil.pessoaLogada() != coautor){
+							ParticipacaoEvento participacaoEvento = new ParticipacaoEvento(Tipo.COAUTOR, coautor, evento);
+							participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacaoEvento);
+						}
 					}
-					coautores.add(coautor);
 				}
 			}
 			trabalho.setAutores(PessoaLogadaUtil.pessoaLogada(), coautores);
-
+			
 			submissao = new Submissao();
 			submissao.setTrabalho(trabalho);
 
@@ -309,9 +305,9 @@ public class AutorController {
 						submissaoService.adicionarOuEditar(submissao);
 						redirect.addFlashAttribute("sucessoEnviarTrabalho",
 								messageService.getMessage(TRABALHO_ENVIADO));
-
+		
 						trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
-
+												
 						return "redirect:/autor/meusTrabalhos";
 					} else {
 						return "redirect:/erro/500";
