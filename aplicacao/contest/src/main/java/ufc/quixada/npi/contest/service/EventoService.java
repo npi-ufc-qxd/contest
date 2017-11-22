@@ -26,6 +26,7 @@ public class EventoService {
 	private static final String TITULO_EMAIL_ORGANIZADOR = "TITULO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String TEXTO_EMAIL_ORGANIZADOR = "TEXTO_EMAIL_CONVITE_ORGANIZADOR";
 	private static final String ASSUNTO_EMAIL_CONFIRMACAO = "ASSUNTO_EMAIL_CONFIRMACAO";
+	private static final String ASSUNTO_EMAIL_CONFIRMACAO_REENVIO = "ASSUNTO_EMAIL_CONFIRMACAO_REENVIO"; 
 	private static final String TEXTO_EMAIL_CONFIRMACAO = ".Fique atento aos prazos, o próximo passo será a fase das revisões, confira no edital os prazos. Boa sorte!";	
 
 	@Autowired
@@ -218,9 +219,9 @@ public class EventoService {
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
 	public void notificarPessoasParticipantesNoTrabalhoMomentoDoReenvioDoArtigo(Trabalho trabalho, String email, Evento evento) {
-		String assunto = messageService.getMessage(ASSUNTO_EMAIL_CONFIRMACAO) + " " + trabalho.getTitulo();
-		String corpo = "Olá, uma nova versão do seu trabalho intitulado" + trabalho.getTitulo() + " foi enviado com sucesso para o evento "+ evento.getNome();
-		String titulo = "[CONTEST] Confirmação de envio do trabalho: " + trabalho.getTitulo();
+		String assunto = messageService.getMessage(ASSUNTO_EMAIL_CONFIRMACAO_REENVIO) + " " + trabalho.getTitulo();
+		String corpo = "Olá, uma nova versão do seu trabalho intitulado " + trabalho.getTitulo() + " foi reenviado com sucesso para o evento "+ evento.getNome();
+		String titulo = "[CONTEST] Confirmação de reenvio do trabalho: " + trabalho.getTitulo();
 
 		emailService.enviarEmail(titulo, assunto, email, corpo);
 	}
@@ -228,7 +229,7 @@ public class EventoService {
 	public void notificarAutoresTrabalhoAdicionadoASessao(Trabalho trabalho, String email) {
 
 		String assunto = "Seu trabalho " + " " + trabalho.getTitulo() + " foi adicionado à uma sessão";
-		String corpo = "Olá, seu trabalho intitulado " + trabalho.getTitulo() + " " + "foi adicionado com sucesso na sessao "
+		String corpo = "Olá, seu trabalho intitulado " + trabalho.getTitulo() + " " + " foi adicionado com sucesso na sessao "
 				+ trabalho.getSessao().getNome() + " no evento: " + trabalho.getEvento().getNome() + " Data : "
 				+ trabalho.getSessao().getDataSecao() + " Local : " + trabalho.getSessao().getLocal();
 		String titulo = "[CONTEST] Notificação de adição do trabalho: " + " " + trabalho.getTitulo() + " à sessão: "
