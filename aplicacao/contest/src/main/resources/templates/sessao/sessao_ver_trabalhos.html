@@ -47,10 +47,9 @@
 		<div class="row opcoes">
 			<a th:href="@{/eventoOrganizador}" style="color: #6a1b9a;">Meus
 				Eventos</a> <a th:href="@{|/evento/${sessao.evento.id}/sessao/|}" style="color: #6a1b9a;">Sessões</a>
-			<a href="#modalAdicionarTrabalho" class="modal-trigger"
-				style="color: #6a1b9a;">Adicionar Trabalhos</a> <a
-				class=" btn-large waves-effect waves-light purple right white-text"
-				onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
+			<a th:href="@{'/sessao/editar/'+${sessao.id}}" style="color: #6a1b9a">Editar</a>	
+			<a href="#modalAdicionarTrabalho" class="modal-trigger"	style="color: #6a1b9a;">Adicionar Trabalhos</a> 
+			<a class=" btn-large waves-effect waves-light purple right white-text"	onclick="window.history.back()" alt="VOLTAR"> Voltar </a>
 		</div>
 	</div>
 
