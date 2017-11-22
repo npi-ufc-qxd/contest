@@ -194,15 +194,23 @@ public class TrabalhoService {
 	}
 
 	public void notificarAutoresEnvioTrabalho(Evento evento, Trabalho trabalho) {
-		eventoService.notificarPessoaParticipantesDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(),
+		eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoEnvioDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(),
 				evento);
 
 		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
 		for (Pessoa coautor : coautores) {
-			eventoService.notificarPessoaParticipantesDoArtigo(trabalho, coautor.getEmail(), evento);
+			eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoEnvioDoArtigo(trabalho, coautor.getEmail(), evento);
 		}
 	}
+	public void notificarAutoresReenvioTrabalho(Evento evento, Trabalho trabalho) {
+		eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoReenvioDoArtigo(trabalho, PessoaLogadaUtil.pessoaLogada().getEmail(),
+				evento);
 
+		List<Pessoa> coautores = trabalho.getCoAutoresDoTrabalho();
+		for (Pessoa coautor : coautores) {
+			eventoService.notificarPessoasParticipantesNoTrabalhoMomentoDoReenvioDoArtigo(trabalho, coautor.getEmail(), evento);
+		}
+	}
 	public void notificarAutorPrincipalDoArtigo(Sessao sessao) {
 		List<Trabalho> trabalhosSessao = getTrabalhosBySessao(sessao);
 		for (Trabalho trabalho : trabalhosSessao) {

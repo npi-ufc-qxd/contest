@@ -349,7 +349,7 @@ public class AutorController {
 							redirect.addFlashAttribute("sucessoEnviarTrabalho",
 									messageService.getMessage(TRABALHO_ENVIADO));
 
-							trabalhoService.notificarAutoresEnvioTrabalho(evento, trabalho);
+							trabalhoService.notificarAutoresReenvioTrabalho(evento, trabalho);
 
 							return "redirect:/autor/meusTrabalhos";
 						}
@@ -372,7 +372,7 @@ public class AutorController {
 		}
 	}
 
-	//TODO: Adicionar verificao de autoria
+
 	@RequestMapping(value = "/listarTrabalhos/{id}", method = RequestMethod.GET)
 	public String listarTrabalhos(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		try {
