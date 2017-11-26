@@ -23,7 +23,6 @@ import org.apache.commons.io.IOUtils;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -111,54 +110,55 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return pessoaService.getPossiveisOrganizadores();
 	}
 
-	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/evento/{id}", method = RequestMethod.GET)
 	public String detalhesEvento(@PathVariable String id, Model model) {
 		Long eventoId = Long.parseLong(id);
 		Pessoa pessoa = PessoaLogadaUtil.pessoaLogada();
-		Evento evento = eventoService.buscarEventoPorId(eventoId);
-		Boolean eventoPrivado = false;
-
-		if (evento.getVisibilidade() == VisibilidadeEvento.PRIVADO) {
-			eventoPrivado = true;
-		}
-
-		boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
-
-		model.addAttribute("organizaEvento", organizaEvento);
-		model.addAttribute("evento", evento);
-		model.addAttribute("eventoPrivado", eventoPrivado);
-
-		int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
-		int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
-		int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
-
-		List<Pessoa> organizadores = pessoaService.getOrganizadoresEvento(eventoId);
-
-		for (Pessoa organizador : organizadores) {
-			if (organizador.getId().equals(pessoa.getId())) {
-				model.addAttribute("gerarCertificado", true);
-				break;
+		
+		if(isUsuarioLogadoOrganizadorEvento(eventoId)) {
+			
+			Evento evento = eventoService.buscarEventoPorId(eventoId);
+			Boolean eventoPrivado = false;
+			
+			if (evento.getVisibilidade() == VisibilidadeEvento.PRIVADO) {
+				eventoPrivado = true;
 			}
+			
+			boolean organizaEvento = evento.getOrganizadores().contains(pessoa);
+			
+			model.addAttribute("organizaEvento", organizaEvento);
+			model.addAttribute("evento", evento);
+			model.addAttribute("eventoPrivado", eventoPrivado);
+			
+			int trabalhosSubmetidos = trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento);
+			int trabalhosNaoRevisados = trabalhoService.buscarQuantidadeTrabalhosNaoRevisadosPorEvento(evento);
+			int trabalhosRevisados = trabalhosSubmetidos - trabalhosNaoRevisados;
+			
+			List<Pessoa> organizadores = pessoaService.getOrganizadoresEvento(eventoId);
+			
+			for (Pessoa organizador : organizadores) {
+				if (organizador.getId().equals(pessoa.getId())) {
+					model.addAttribute("gerarCertificado", true);
+					break;
+				}
+			}
+			
+			model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
+			model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
+			model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
+			
+			model.addAttribute("comentarios",trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
+			
+			return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
 		}
-
-		model.addAttribute("numeroTrabalhos", trabalhosSubmetidos);
-		model.addAttribute("numeroTrabalhosNaoRevisados", trabalhosNaoRevisados);
-		model.addAttribute("numeroTrabalhosRevisados", trabalhosRevisados);
-
-		model.addAttribute("comentarios",trabalhoService.buscarQuantidadeTrabalhosRevisadosEComentadosPorEvento(evento));
-
-		return Constants.TEMPLATE_DETALHES_EVENTO_ORG;
+		return Constants.ERROR_403;
 	}
 
 	@RequestMapping(value = "/evento/{id}/revisoes", method = RequestMethod.GET)
 	public String consideracoesRevisores(@PathVariable String id, Model model, RedirectAttributes redirect) {
 		Long eventoId = Long.parseLong(id);
 		List<Trabalho> trabalhos = trabalhoService.getTrabalhosRevisadosComentadosByEvento(eventoId);
-
-		Pessoa organizadorLogado = PessoaLogadaUtil.pessoaLogada();
-		Boolean participacaoComoOrganizador = participacaoEventoService.isOrganizadorDoEvento(organizadorLogado,
-				eventoId);
+		Boolean participacaoComoOrganizador = isUsuarioLogadoOrganizadorEvento(eventoId);
 
 		if (participacaoComoOrganizador) {
 			if (!trabalhos.isEmpty()) {
@@ -332,26 +332,31 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return Constants.TEMPLATE_LISTAR_EVENTOS_INATIVOS_ORG;
 	}
 
-	@PreAuthorize("isOrganizadorInEvento(#id)")
 	@RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 	public String alterarEventoOrganizador(@PathVariable String id, Model model, RedirectAttributes redirect) {
+		
 		Long eventoId = Long.valueOf(id);
-		boolean existeSubmissao = submissaoService.existeTrabalhoNesseEvento(eventoId);
-		boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(eventoId);
-		boolean existeSubmissaoFinal = submissaoService.existeTrabalhoFinalNesseEvento(eventoId);
-
-		if (existeSubmissao) {
-			model.addAttribute(EXISTE_SUBMISSAO, existeSubmissao);
-			if (existeRevisao) {
-				model.addAttribute(SUBMISSAO_REVISAO, existeSubmissao);
-				if (existeSubmissaoFinal) {
-					model.addAttribute(SUBMISSAO_FINAL, existeSubmissaoFinal);
+		
+		if(isUsuarioLogadoOrganizadorEvento(eventoId)) {
+			boolean existeSubmissao = submissaoService.existeTrabalhoNesseEvento(eventoId);
+			boolean existeRevisao = revisaoService.existeTrabalhoNesseEvento(eventoId);
+			boolean existeSubmissaoFinal = submissaoService.existeTrabalhoFinalNesseEvento(eventoId);
+	
+			if (existeSubmissao) {
+				model.addAttribute(EXISTE_SUBMISSAO, existeSubmissao);
+				if (existeRevisao) {
+					model.addAttribute(SUBMISSAO_REVISAO, existeSubmissao);
+					if (existeSubmissaoFinal) {
+						model.addAttribute(SUBMISSAO_FINAL, existeSubmissaoFinal);
+					}
 				}
 			}
+			return alterarEvento(id, model, redirect, Constants.TEMPLATE_EDITAR_EVENTO_ORG,
+					"redirect:/eventoOrganizador/inativos");
 		}
-		return alterarEvento(id, model, redirect, Constants.TEMPLATE_EDITAR_EVENTO_ORG,
-				"redirect:/eventoOrganizador/inativos");
+		return Constants.ERROR_403;
 	}
+
 
 	@RequestMapping(value = "/editar", method = RequestMethod.POST)
 	public String editarEvento(@Valid Evento evento, BindingResult result, Model model, RedirectAttributes redirect) {
@@ -402,12 +407,11 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	@RequestMapping(value = "/trilha/{idTrilha}/{idEvento}", method = RequestMethod.GET)
 	public String detalhesTrilha(@PathVariable String idTrilha, @PathVariable String idEvento, Model model,
 			RedirectAttributes redirect) {
-		Pessoa pessoaLogado = PessoaLogadaUtil.pessoaLogada();
 		try {
 			Long trilhaId = Long.valueOf(idTrilha);
 			Long eventoId = Long.valueOf(idEvento);
 			Trilha trilha = trilhaService.get(trilhaId, eventoId);
-			if (participacaoEventoService.isOrganizadorDoEvento(pessoaLogado, eventoId)) {
+			if (isUsuarioLogadoOrganizadorEvento(eventoId)) {
 				model.addAttribute("trilha", trilha);
 				model.addAttribute("trabalhos", trabalhoService.getTrabalhosTrilha(trilha));
 				return Constants.TEMPLATE_DETALHES_TRILHA_ORG;
@@ -566,15 +570,18 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "redirect:/eventoOrganizador/evento/" + idEvento;
 	}
 
-	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosOrganizador/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoOrganizador(@PathVariable("idEvento") String idEvento, Model model,
 			HttpServletResponse response) {
 		Long id = Long.parseLong(idEvento);
-		List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(id);
-		model.addAttribute("organizadores", listaOrganizadores);
+		
+		if(isUsuarioLogadoOrganizadorEvento(id)){
+			List<Pessoa> listaOrganizadores = pessoaService.getOrganizadoresEvento(id);
+			model.addAttribute("organizadores", listaOrganizadores);
+			return Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES;
+		}
+		return Constants.ERROR_403;
 
-		return Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES;
 	}
 
 	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
@@ -586,14 +593,15 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "DADOS_ORGANIZADOR";
 	}
 
-	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoRevisores(@PathVariable("idEvento") String idEvento, Model model) {
 		Long id = Long.parseLong(idEvento);
-		List<Pessoa> listaRevisores = pessoaService.getRevisoresEvento(id);
-		model.addAttribute("revisores", listaRevisores);
-
-		return Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES;
+		if(isUsuarioLogadoOrganizadorEvento(id)){
+			List<Pessoa> listaRevisores = pessoaService.getRevisoresEvento(id);
+			model.addAttribute("revisores", listaRevisores);
+			return Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES;
+		}
+		return Constants.ERROR_403;
 	}
 
 	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
@@ -604,39 +612,17 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 		return "DADOS_REVISORES";
 	}
-
-	public void criarDadosODS(Long[] ids, Model model, String nomeDocumento, HttpServletResponse response)
-			throws FileNotFoundException, IOException {
-		if (ids != null) {
-			List<Pessoa> pessoas = new ArrayList<>();
-			for (Long id : ids) {
-				Pessoa p = pessoaService.get(id);
-				p.setNome(p.getNome().toUpperCase());
-				pessoas.add(p);
-			}
-
-			if (pessoas != null) {
-				final Object[][] dados = new Object[pessoas.size()][1];
-				for (int i = 0; i < pessoas.size(); i++) {
-					dados[i] = new Object[] { pessoas.get(i).getNome().toUpperCase() };
-				}
-
-				String[] colunas = new String[] { nomeDocumento };
-				gerarODS(nomeDocumento, colunas, dados, response);
-			}
-		}
-	}
-
-	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
+	
 	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
 	public String gerarCertificadoTrabalhos(@PathVariable String idEvento, Model model, HttpServletResponse response) {
 		Long id = Long.parseLong(idEvento);
-		Evento e = eventoService.buscarEventoPorId(id);
-		List<Trabalho> listaTrabalhos = trabalhoService.getTrabalhosEvento(e);
-		model.addAttribute("trabalhos", listaTrabalhos);
-
-		return Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO;
-
+		if(isUsuarioLogadoOrganizadorEvento(id)){
+			Evento e = eventoService.buscarEventoPorId(id);
+			List<Trabalho> listaTrabalhos = trabalhoService.getTrabalhosEvento(e);
+			model.addAttribute("trabalhos", listaTrabalhos);
+			return Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO;
+		}
+		return Constants.ERROR_403;
 	}
 
 	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.POST)
@@ -669,8 +655,35 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "DADOS_TRABALHOS";
 	}
 
+	public void criarDadosODS(Long[] ids, Model model, String nomeDocumento, HttpServletResponse response)
+			throws FileNotFoundException, IOException {
+		if (ids != null) {
+			List<Pessoa> pessoas = new ArrayList<>();
+			for (Long id : ids) {
+				Pessoa p = pessoaService.get(id);
+				p.setNome(p.getNome().toUpperCase());
+				pessoas.add(p);
+			}
+
+			if (pessoas != null) {
+				final Object[][] dados = new Object[pessoas.size()][1];
+				for (int i = 0; i < pessoas.size(); i++) {
+					dados[i] = new Object[] { pessoas.get(i).getNome().toUpperCase() };
+				}
+
+				String[] colunas = new String[] { nomeDocumento };
+				gerarODS(nomeDocumento, colunas, dados, response);
+			}
+		}
+	}
+
 	public Pessoa getUsuarioLogado() {
 		return PessoaLogadaUtil.pessoaLogada();
+	}
+	
+	private boolean isUsuarioLogadoOrganizadorEvento(Long eventoId) {
+		Pessoa usuarioLogado = PessoaLogadaUtil.pessoaLogada();
+		return participacaoEventoService.isOrganizadorDoEvento(usuarioLogado, eventoId);
 	}
 
 	public void gerarODS(String nomeDocumento, String[] colunas, Object[][] dados, HttpServletResponse response) 
@@ -686,7 +699,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		response.flushBuffer();
 	}
 
-	@PreAuthorize("isOrganizador")
 	@RequestMapping(value = "/")
 	public String paginaOrganizador(Model model) {
 		String cpf = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -695,25 +707,27 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return "organizador/organizador_meus_eventos";
 	}
 
-	@PreAuthorize("isOrganizadorInEvento(#idEvento)")
 	@RequestMapping(value = "/avaliar/", method = RequestMethod.POST)
 	public String avaliarTrabalhoModerado(@RequestParam Long idEvento, @RequestParam String avaliacao,
 			@RequestParam Long idTrabalho, Model model) {
-		Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
-		trabalho.setStatus(Avaliacao.valueOf(avaliacao));
-		trabalhoService.adicionarTrabalho(trabalho);
-		List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
-
-		Evento evento = eventoService.buscarEventoPorId(idEvento);
-		if (evento == null) {
-			return "redirect:/error";
+		
+		if(isUsuarioLogadoOrganizadorEvento(idEvento)){
+			Trabalho trabalho = trabalhoService.getTrabalhoById(idTrabalho);
+			trabalho.setStatus(Avaliacao.valueOf(avaliacao));
+			trabalhoService.adicionarTrabalho(trabalho);
+			List<Trabalho> trabalhos = trabalhoService.getTrabalhosEvento(eventoService.buscarEventoPorId(idEvento));
+			
+			Evento evento = eventoService.buscarEventoPorId(idEvento);
+			if (evento == null) {
+				return "redirect:/error";
+			}
+			
+			model.addAttribute("evento", evento);
+			model.addAttribute("opcoesFiltro", Avaliacao.values());
+			model.addAttribute("trabalhos", trabalhos);
+			
+			return verTrabalhosDoEvento(idEvento, model);
 		}
-
-		model.addAttribute("evento", evento);
-		model.addAttribute("opcoesFiltro", Avaliacao.values());
-		model.addAttribute("trabalhos", trabalhos);
-
-		return verTrabalhosDoEvento(idEvento, model);
-
+		return Constants.ERROR_403;
 	}
 }

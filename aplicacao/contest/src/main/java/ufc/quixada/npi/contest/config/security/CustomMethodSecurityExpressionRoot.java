@@ -5,7 +5,6 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.core.Authentication;
 
 import ufc.quixada.npi.contest.model.Papel.Tipo;
-import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 
@@ -13,17 +12,6 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 	
 	public CustomMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
-    }
-   //RESTRIÇÕES PARA ORGANIZADOR
-    public boolean isOrganizadorInEvento(Long eventoId){
-    	Pessoa pessoa = (Pessoa) this.getPrincipal();
-    	
-    	for(ParticipacaoEvento participacao : pessoa.getParticipacoesEvento()){
-    		if(participacao.getEvento().getId().equals(eventoId) && participacao.getPapel()== Tipo.ORGANIZADOR){
-    			return true;
-    		}
-    	}
-    	return false;
     }
     
     //RESTRIÇÕES PARA REVISOR
