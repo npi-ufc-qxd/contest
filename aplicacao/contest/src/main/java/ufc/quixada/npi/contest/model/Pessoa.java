@@ -48,10 +48,10 @@ public class Pessoa implements UserDetails, Comparable<Pessoa> {
 	@NotEmpty
 	private String email;
 
-	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE}, fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "pessoa", cascade = {CascadeType.REMOVE})
 	private List<ParticipacaoEvento> participacoesEvento;
 
-	@OneToMany(mappedBy = "pessoa", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "pessoa")
 	private List<ParticipacaoTrabalho> participacoesTrabalho;
 	
 	@OneToMany(mappedBy="responsavel")

@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,6 +71,8 @@ public class RevisorController {
 
 	@Autowired
 	private RevisaoService revisaoService;
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private static final String REVISOR_TRABALHOS_REVISAO = "revisor/revisor_trabalhos";
 	private static final String REVISOR_AVALIAR_TRABALHO = "revisor/revisor_avaliar_trabalho";
@@ -249,22 +252,28 @@ public class RevisorController {
 		return REVISOR_SEM_PERMISSAO;
 	}
 
-	@PreAuthorize("isRevisorInTrabalho(#idTrabalho)")
 	@RequestMapping(value = "/trabalho/{trabalhoID}", method = RequestMethod.GET)
 	public String validaTrabalho(HttpSession session, @PathVariable("trabalhoID") String idTrabalho,
-			HttpServletResponse response, RedirectAttributes redirect) throws IOException {
+			HttpServletResponse response, RedirectAttributes redirect) {
+		
+		Pessoa usuarioLogado = PessoaLogadaUtil.pessoaLogada();
+		Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
 
-		if (trabalhoService.existeTrabalho(Long.valueOf(idTrabalho))) {
-			Trabalho trabalho = trabalhoService.getTrabalhoById(Long.valueOf(idTrabalho));
-			baixarTrabalho(response, trabalho);
+		if (trabalho != null && trabalho.getRevisores().contains(usuarioLogado)) {
+			try {
+				baixarTrabalho(response, trabalho);
+			} catch (IOException e) {
+				logger.error("O trabalho[id={}] nao foi encontrado no path {}",
+						trabalho.getId(), trabalho.getPath(), e);
+				return Constants.ERROR_404;
+			}
 
 			session.setAttribute("ID_TRABALHO_REVISOR", idTrabalho);
 			return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") + "/" + idTrabalho + "/revisar";
 		}
 
 		redirect.addFlashAttribute("trabalhoNaoExisteError", messageService.getMessage(TRABALHO_NAO_EXISTE));
-		return "redirect:/revisor/" + session.getAttribute("ID_EVENTO_REVISOR") + "/"
-				+ session.getAttribute("ID_TRABALHO_REVISOR") + "/revisar";
+		return Constants.ERROR_403;
 	}
 
 	@ResponseBody
@@ -272,10 +281,10 @@ public class RevisorController {
 		String titulo = trabalho.getTitulo();
 		titulo = titulo.replaceAll("\\s", "_");
 		String src = trabalho.getPath();
-		response.setContentType("application/pdf");
-		response.setHeader("Content-Disposition", "attachment; filename = " + titulo + ".pdf");
 		InputStream is = new FileInputStream(src);
 		IOUtils.copy(is, response.getOutputStream());
+		response.setContentType("application/pdf");
+		response.setHeader("Content-Disposition", "attachment; filename = " + titulo + ".pdf");
 		response.flushBuffer();
 	}
 
