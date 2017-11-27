@@ -49,7 +49,7 @@
               <div class="card-stacked">
                 <div th:include="fragments/evento_timeline::evento-timeline(evento=${evento})"></div>
                 <div class="card-action">
-                	<a th:if="${evento.isPeriodoRevisao()}" th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a>
+                	<a th:unless="${evento.isPeriodoInicial()}" th:href="@{'/revisor/' + ${evento.id} + '/trabalhosRevisao'}" class="waves-effect waves-light btn-large white-text">Ver Trabalhos para revisão</a>
                 	<a th:if="${evento.isPeriodoFinal()}" class="btn disabled grey white-text">Prazo de revisão encerrado</a>
                     <a th:href="@{'/revisor/evento/' + ${evento.id}}+ '/detalhes'" class="purple-text">Detalhes </a>
                 </div>
