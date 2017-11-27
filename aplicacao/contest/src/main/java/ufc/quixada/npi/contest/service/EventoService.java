@@ -51,7 +51,7 @@ public class EventoService {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		String nome = "Nome Temporário "+"<"+ email +">";
-		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
+		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome() + ". ";
 		
 		String pageCadastro = "/completar-cadastro/";
 		Token token = new Token();
@@ -59,20 +59,25 @@ public class EventoService {
 		if (pessoa == null) {			
 			pessoa = new Pessoa(nome, email);
 			pessoa.setPapel(Tipo.USER);
+			pessoaService.addOrUpdate(pessoa);
 			
 			token = tokenService.novoToken(pessoa, Constants.ACAO_COMPLETAR_CADASTRO);
 			corpo = corpo + ". Você não está cadastrado na nossa base de dados. Acesse: " + url + pageCadastro + token.getToken() + " e termine o seu cadastro";
 			
 			if (notificarPessoaAoAddTrabalho (evento, email, corpo)) {
-				pessoaService.addOrUpdate(pessoa);
 				ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
 				participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 				return true;
+			} else {
+				tokenService.deletar(token);
+				pessoaService.delete(pessoa.getId());
+				
 			}
 		} else {
 			corpo = corpo + ". Realize o login em " + url + "/login";
 			notificarPessoaAoAddTrabalho (evento, email, corpo);
-			tokenService.deletar(token);
+			ParticipacaoEvento participacao = new ParticipacaoEvento(papel, pessoa, evento);
+			participacaoEventoService.adicionarOuEditarParticipacaoEvento(participacao);
 			return true;
 		}		
 		return false;
