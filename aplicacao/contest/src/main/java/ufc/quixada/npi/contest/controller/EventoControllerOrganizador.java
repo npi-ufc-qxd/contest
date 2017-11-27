@@ -661,27 +661,18 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 			HttpServletResponse response) throws FileNotFoundException, IOException {
 
 		if (trabalhosIds != null) {
-			List<Trabalho> trabalhos = new ArrayList<>();
-			for (Long id : trabalhosIds) {
+			final Object[][] dados = new Object[trabalhosIds.length][4];
+			SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
+			for (int i = 0; i < trabalhosIds.length; i++) {
+				Long id = trabalhosIds[i];
 				Trabalho t = trabalhoService.getTrabalhoById(id);
-				t.setTitulo(t.getTitulo().toUpperCase());
-				trabalhos.add(trabalhoService.getTrabalhoById(id));
+				String data = formatadorData.format(t.getEvento().getPrazoSubmissaoFinal());
+				dados[i] = new Object[] { t.getAutor().getNome().toUpperCase(),
+						t.getCoautoresInString().toUpperCase(), t.getTitulo().toUpperCase(),
+						t.getTrilha().getNome().toUpperCase(), data };
 			}
-			if (!trabalhos.isEmpty()) {
-				final Object[][] dados = new Object[trabalhos.size()][4];
-				for (int i = 0; i < trabalhos.size(); i++) {
-					Trabalho t = trabalhos.get(i);
-
-					SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
-					String data = formatadorData.format(t.getEvento().getPrazoSubmissaoFinal());
-
-					dados[i] = new Object[] { t.getAutor().getNome().toUpperCase(),
-							t.getCoautoresInString().toUpperCase(), t.getTitulo().toUpperCase(),
-							t.getTrilha().getNome().toUpperCase(), data };
-				}
-				String[] colunas = new String[] { "Nome", "Coautores", "Título", "Trilha", "Data" };
-				gerarODS("trabalhos", colunas, dados, response);
-			}
+			String[] colunas = new String[] { "Nome", "Coautores", "Título", "Trilha", "Data" };
+			gerarODS("trabalhos", colunas, dados, response);
 		}
 	}
 
