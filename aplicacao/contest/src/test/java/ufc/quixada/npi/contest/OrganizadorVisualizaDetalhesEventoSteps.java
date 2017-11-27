@@ -34,6 +34,7 @@ import ufc.quixada.npi.contest.model.ParticipacaoEvento;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 
@@ -47,6 +48,9 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 
 	@Mock
 	private PessoaService pessoaService;
+	
+	@Mock
+	private ParticipacaoEventoService participacaoEventoService;
 	
 	@Mock
 	private TrabalhoService trabalhoService;
@@ -134,11 +138,12 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 		Authentication auth = Mockito.mock(Authentication.class);
 		
 		when(context.getAuthentication()).thenReturn(auth);
-		when(auth.getName()).thenReturn(organizadorLogado.getCpf());
+		when(auth.getPrincipal()).thenReturn(organizadorLogado);
+		when(participacaoEventoService.isOrganizadorDoEvento(organizadorLogado,  EVENTO_ID)).thenReturn(true);
+		when(pessoaService.getByCpf(organizadorLogado.getCpf())).thenReturn(organizadorLogado);
 		
 		SecurityContextHolder.setContext(context);
 		
-		when(pessoaService.getByCpf(organizadorLogado.getCpf())).thenReturn(organizadorLogado);
 		
 	}
 	

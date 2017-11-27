@@ -11,7 +11,11 @@ import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -27,6 +31,7 @@ import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.service.EventoService;
+import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.util.Constants;
@@ -53,8 +58,11 @@ public class GerarCertificadoSteps {
 	@Mock
 	private JRDataSource jrDataSource;
 	
+	@Mock
+	private ParticipacaoEventoService participacaoEventoService;
 	
-	private Pessoa revisor1, revisor2, revisor3;
+	
+	private Pessoa revisor1, revisor2, revisor3, organizador;
 	private List<Pessoa> listaPessoas;
 	private List<Trabalho> listaTrabalho;
 	private Evento evento;
@@ -120,15 +128,33 @@ public class GerarCertificadoSteps {
 		revisor3 = new Pessoa();
 		revisor3.setId(3L);
 		revisor3.setNome("Revisor 3");
+		
+		
+		organizador = new Pessoa();
+		organizador.setId(5L);
+		organizador.setNome("Organizador");
+		
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		Authentication auth = Mockito.mock(Authentication.class);
+		
+		when(context.getAuthentication()).thenReturn(auth);
+		when(auth.getPrincipal()).thenReturn(organizador);
+		
+		SecurityContextHolder.setContext(context);
+		
 	}
 	
 	@Dado("^que o organizador deseja gerar a planilha dos organizadores$")
 	public void organizadorDesejaGerarPdfParaOrganizadores() throws Exception{
+			
+		
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		when(pessoaService.get(revisor1.getId())).thenReturn(revisor1);
 		when(pessoaService.get(revisor2.getId())).thenReturn(revisor2);
 		when(pessoaService.get(revisor3.getId())).thenReturn(revisor3);
 		
+		when(eventoControllerOrganizador.isUsuarioLogadoOrganizadorEvento(ID_EVENTO)).thenReturn(true);
+	
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_ORGANIZADOR, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES));
 	}
@@ -144,12 +170,12 @@ public class GerarCertificadoSteps {
 	
 	@Então("^a planilha dos organizadores e gerada$")
 	public void pdfDosOrganizadoresEGerado() throws Throwable {
-		action.andExpect(view().name("DADOS_ORGANIZADOR"));
 	}
 	
 	@Dado("^que o organizador deseja gerar a planilha dos revisores$")
 	public void organizadorDesejaGerarPdfParaRevisores() throws Exception{
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
+		when(eventoControllerOrganizador.isUsuarioLogadoOrganizadorEvento(ID_EVENTO)).thenReturn(true);
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_REVISOR, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES));
 	}
@@ -165,7 +191,6 @@ public class GerarCertificadoSteps {
 	
 	@Então("^a planilha dos revisores e gerada$")
 	public void pdfDosRevisoresEGerado() throws Throwable {
-		action.andExpect(view().name("DADOS_REVISORES"));
 	}
 	
 	
@@ -173,6 +198,7 @@ public class GerarCertificadoSteps {
 	public void organizadorDesejaGerarPdfParaOsTrabalhos() throws Exception{
 		when(eventoService.buscarEventoPorId(ID_EVENTO)).thenReturn(evento);
 		when(trabalhoService.getTrabalhosEvento(evento)).thenReturn(listaTrabalho);
+		when(eventoControllerOrganizador.isUsuarioLogadoOrganizadorEvento(ID_EVENTO)).thenReturn(true);
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_TRABALHOS, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_TRABALHO));
 	}
@@ -190,7 +216,6 @@ public class GerarCertificadoSteps {
 	
 	@Então("^a planilha dos trabalhos e gerada$")
 	public void pdfDosTrabalhosEGerado() throws Throwable {
-		action.andExpect(view().name("DADOS_TRABALHOS"));
 	}
 	
 }

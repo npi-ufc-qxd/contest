@@ -702,7 +702,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 		return PessoaLogadaUtil.pessoaLogada();
 	}
 	
-	private boolean isUsuarioLogadoOrganizadorEvento(Long eventoId) {
+	public boolean isUsuarioLogadoOrganizadorEvento(Long eventoId) {
 		Pessoa usuarioLogado = PessoaLogadaUtil.pessoaLogada();
 		return participacaoEventoService.isOrganizadorDoEvento(usuarioLogado, eventoId);
 	}
