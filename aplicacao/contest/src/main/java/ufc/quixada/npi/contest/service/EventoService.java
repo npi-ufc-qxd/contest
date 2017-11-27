@@ -51,7 +51,7 @@ public class EventoService {
 
 		Pessoa pessoa = pessoaService.getByEmail(email);
 		String nome = "Nome Temporário "+"<"+ email +">";
-		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome() + ". ";
+		String corpo = "Olá"+ messageService.getMessage(TEXTO_EMAIL_ORGANIZADOR) + " " + evento.getNome() + " como "+ papel.getNome();
 		
 		String pageCadastro = "/completar-cadastro/";
 		Token token = new Token();
@@ -71,6 +71,7 @@ public class EventoService {
 			} else {
 				tokenService.deletar(token);
 				pessoaService.delete(pessoa.getId());
+				return false;
 				
 			}
 		} else {
