@@ -134,6 +134,7 @@ public class AlterarDetalheEventoSteps {
 		when(trilhaService.buscarQtdTrilhasPorEvento(evento.getId())).thenReturn(12);
 		when(trabalhoService.buscarQuantidadeTrabalhosPorEvento(evento)).thenReturn(10);
 		when(participacaoEventoService.isOrganizadorDoEvento(org,  evento.getId())).thenReturn(true);
+		when(eventoControllerOrganizador.isUsuarioLogadoOrganizadorEvento(evento.getId())).thenReturn(true);
 		
 		action = mockMvc.perform(
 				get(PAGINA_EDITAR_EVENTO_GET, Long.valueOf(evento.getId())))

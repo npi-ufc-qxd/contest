@@ -139,10 +139,13 @@ public class OrganizadorVisualizaDetalhesEventoSteps {
 		
 		when(context.getAuthentication()).thenReturn(auth);
 		when(auth.getPrincipal()).thenReturn(organizadorLogado);
+		SecurityContextHolder.setContext(context);
+		
 		when(participacaoEventoService.isOrganizadorDoEvento(organizadorLogado,  EVENTO_ID)).thenReturn(true);
 		when(pessoaService.getByCpf(organizadorLogado.getCpf())).thenReturn(organizadorLogado);
+		when(pessoaService.get(organizadorLogado.getId())).thenReturn(organizadorLogado);
+		when(eventoControllerOrganizador.isUsuarioLogadoOrganizadorEvento(EVENTO_ID)).thenReturn(true);
 		
-		SecurityContextHolder.setContext(context);
 		
 		
 	}

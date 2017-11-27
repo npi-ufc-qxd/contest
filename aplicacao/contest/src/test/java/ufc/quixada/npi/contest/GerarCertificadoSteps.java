@@ -139,6 +139,7 @@ public class GerarCertificadoSteps {
 		
 		when(context.getAuthentication()).thenReturn(auth);
 		when(auth.getPrincipal()).thenReturn(organizador);
+		when(pessoaService.get(organizador.getId())).thenReturn(organizador);
 		
 		SecurityContextHolder.setContext(context);
 		
@@ -176,6 +177,7 @@ public class GerarCertificadoSteps {
 	public void organizadorDesejaGerarPdfParaRevisores() throws Exception{
 		when(pessoaService.getOrganizadoresEvento(ID_EVENTO)).thenReturn(listaPessoas);
 		when(eventoControllerOrganizador.isUsuarioLogadoOrganizadorEvento(ID_EVENTO)).thenReturn(true);
+		
 		action = mockMvc.perform(get(PAGINA_EVENTO_ORGANIZADOR_GERAR_CERTIFICADOS_REVISOR, ID_EVENTO))
 				.andExpect(view().name(Constants.TEMPLATE_GERAR_CERTIFICADOS_REVISORES));
 	}
