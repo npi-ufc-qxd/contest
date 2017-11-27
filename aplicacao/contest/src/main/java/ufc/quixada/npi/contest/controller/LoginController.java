@@ -204,7 +204,7 @@ public class LoginController {
 		model.addAttribute("eventos", eventosAtivos);
 		model.addAttribute("eventosQueReviso", eventosQueReviso);
 		model.addAttribute("eventosMinhaCoautoria", eventosMinhaCoutoria);
-		model.addAttribute(PESSOA, PessoaLogadaUtil.pessoaLogada());
+		model.addAttribute(PESSOA, pessoaService.get(idPessoaLogada));
 		model.addAttribute("eventosInativos", eventosInativos);
 		return "dashboard";
 	}
