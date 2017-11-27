@@ -1,14 +1,14 @@
 package ufc.quixada.npi.contest.controller;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,7 +61,7 @@ public class LoginController {
 	@Autowired
 	private EnviarEmailService enviarEmailService;
 	
-	Logger logger = Logger.getLogger(LoginController.class.toString());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
@@ -180,8 +180,9 @@ public class LoginController {
 			pessoaService.addOrUpdate(pessoaLogada);
 			mav.addObject(PESSOA, pessoa);
 			mav.addObject("success","Dados alterados com sucesso.");
-		}catch(ConstraintViolationException ex){
-			logger.log(Level.WARNING, ex.getMessage(), ex);
+		}catch(DataIntegrityViolationException ex){
+			logger.warn("Usuario[id={}] - O email {} pertence a outro usuario do sistema", pessoaLogada.getId()
+					,pessoa.getEmail(), ex);
 			mav.addObject("error", "Existe algum cadastro com o email selecionado");
 		}
 		
