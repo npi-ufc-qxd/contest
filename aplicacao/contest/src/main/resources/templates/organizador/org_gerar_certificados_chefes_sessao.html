@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+  <head>
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Contest - Controle de Eventos de Submissão</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link th:href="@{/webjars/materialize/0.97.6/dist/css/materialize.min.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+		<link th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}" type="text/css" rel="stylesheet" />
+		<link th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page">
+		<div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
+    	<h2>Gerar planilha de dados dos Chefes de Sessão</h2>
+		<div class="row">
+			<a href="#" onclick="selecionarTodos()">Selecionar todos</a>
+			<a href="#" onclick="removerTodos()">Não selecionar todos</a>
+			<div class="col m12 s12">
+			    <br/>
+				<form th:action="@{/eventoOrganizador/gerarCertificadosChefeSessao}" method="POST">
+					<table class="striped bordered">
+					<tr>
+						<th>Chefe de Sessão</th><th>Sessão</th>
+					</tr>
+					<tr th:each="sessao,count : ${sessoes}">
+						<td>
+	      					<input type="checkbox" th:id="${count.index}"  name="sessoesId" th:value="${sessao.id}"/>
+		      				<label class="black-text" th:for="${count.index}" th:text="${sessao.responsavel.nome}" ></label>
+	      				</td>
+	      				<td th:text="${sessao.nome}"></td>
+					</tr>
+					</table>
+					<br/>
+					<button type="submit" class="waves-effect waves-light btn white-text">Gerar Planilha</button>		
+				</form>
+				<div th:if="${#lists.isEmpty(sessoes)}">
+					Não há dados disponíveis
+				</div>
+			</div>
+		</div>
+	</div>
+   <div th:include="fragments/footer :: footer"></div>
+   <script  type="text/javascript" th:src="@{/js/selecionar_trabalhos_pdf.js}"></script>
+  </body>
+</html>

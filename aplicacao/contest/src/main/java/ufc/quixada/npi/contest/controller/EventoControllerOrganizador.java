@@ -46,6 +46,7 @@ import ufc.quixada.npi.contest.model.ParticipacaoTrabalho;
 import ufc.quixada.npi.contest.model.Pessoa;
 import ufc.quixada.npi.contest.model.Revisao;
 import ufc.quixada.npi.contest.model.RevisaoJsonWrapper;
+import ufc.quixada.npi.contest.model.Sessao;
 import ufc.quixada.npi.contest.model.Trabalho;
 import ufc.quixada.npi.contest.model.Trilha;
 import ufc.quixada.npi.contest.model.VisibilidadeEvento;
@@ -55,6 +56,7 @@ import ufc.quixada.npi.contest.service.ParticipacaoEventoService;
 import ufc.quixada.npi.contest.service.ParticipacaoTrabalhoService;
 import ufc.quixada.npi.contest.service.PessoaService;
 import ufc.quixada.npi.contest.service.RevisaoService;
+import ufc.quixada.npi.contest.service.SessaoService;
 import ufc.quixada.npi.contest.service.SubmissaoService;
 import ufc.quixada.npi.contest.service.TrabalhoService;
 import ufc.quixada.npi.contest.service.TrilhaService;
@@ -104,6 +106,9 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 
 	@Autowired
 	private SubmissaoService submissaoService;
+	
+	@Autowired
+	private SessaoService sessaoService;
 
 	@ModelAttribute("pessoas")
 	public List<Pessoa> listaPossiveisOrganizadores() {
@@ -585,12 +590,9 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/gerarCertificadosOrganizadores", method = RequestMethod.POST)
-	public String gerarCertificadoOrganizador(Long[] organizadoresIds, Model model, HttpServletResponse response) 
+	public void gerarCertificadoOrganizador(Long[] organizadoresIds, Model model, HttpServletResponse response) 
 			throws FileNotFoundException, IOException {
-
 		criarDadosODS(organizadoresIds, model, "Organizadores", response);
-
-		return "DADOS_ORGANIZADOR";
 	}
 
 	@RequestMapping(value = "/gerarCertificadosRevisores/{idEvento}", method = RequestMethod.GET)
@@ -605,12 +607,41 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/gerarCertificadosRevisores", method = RequestMethod.POST)
-	public String gerarCertificadoRevisores(Long[] revisoresIds, Model model, HttpServletResponse response) 
+	public void gerarCertificadoRevisores(Long[] revisoresIds, Model model, HttpServletResponse response) 
 			throws FileNotFoundException, IOException {
-
 		criarDadosODS(revisoresIds, model, "Revisores", response);
+	}
+	
+	@RequestMapping(value = "/gerarCertificadosChefeSessao/{idEvento}", method = RequestMethod.GET)
+	public String gerarCertificadoChefeSessao(@PathVariable("idEvento") String idEvento, Model model) {
+		Long id = Long.parseLong(idEvento);
+		if(isUsuarioLogadoOrganizadorEvento(id)){
+			
+			Evento evento = eventoService.buscarEventoPorId(id);
+			if(evento != null) {
+				List<Sessao> sessoes = sessaoService.listByEvento(evento);				
+				model.addAttribute("sessoes", sessoes);
+				return Constants.TEMPLATE_GERAR_CERTIFICADOS_CHEFES_SESSAO;
+			}
+		}
+		return Constants.ERROR_403;
+	}
 
-		return "DADOS_REVISORES";
+	@RequestMapping(value = "/gerarCertificadosChefeSessao", method = RequestMethod.POST)
+	public void gerarCertificadoChefeSessao(Long[] sessoesId, Model model, HttpServletResponse response) 
+			throws FileNotFoundException, IOException {
+		
+		if (sessoesId != null) {
+			final Object[][] dados = new Object[sessoesId.length][2];			
+			for (int i = 0; i < sessoesId.length; i++) {
+				Sessao sessao = sessaoService.get(sessoesId[i]);
+				dados[i] = new Object[] {sessao.getResponsavel().getNome().toUpperCase(),
+						sessao.getNome().toUpperCase()};
+			}
+
+			String[] colunas = new String[] {"chefe_de_sessao", "nome_da_sessao"};
+			gerarODS("chefe_de_sessao", colunas, dados, response);
+		}
 	}
 	
 	@RequestMapping(value = "/gerarCertificadosTrabalho/{idEvento}", method = RequestMethod.GET)
@@ -626,7 +657,7 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 	}
 
 	@RequestMapping(value = "/gerarCertificadosTrabalho", method = RequestMethod.POST)
-	public String gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model,
+	public void gerarCertificadoTrabalhos(@RequestParam Long[] trabalhosIds, Model model,
 			HttpServletResponse response) throws FileNotFoundException, IOException {
 
 		if (trabalhosIds != null) {
@@ -652,7 +683,6 @@ public class EventoControllerOrganizador extends EventoGenericoController {
 				gerarODS("trabalhos", colunas, dados, response);
 			}
 		}
-		return "DADOS_TRABALHOS";
 	}
 
 	public void criarDadosODS(Long[] ids, Model model, String nomeDocumento, HttpServletResponse response)
