@@ -25,6 +25,7 @@ public class Constants {
 	public static final String TEMPLATE_GERAR_CERTIFICADOS_TRABALHO = "organizador/org_gerar_certificados_trabalhos";
 	public static final String TEMPLATE_GERAR_CERTIFICADOS_ORGANIZADORES = "organizador/org_gerar_certificados_organizadores";
 	public static final String TEMPLATE_GERAR_CERTIFICADOS_REVISORES = "organizador/org_gerar_certificados_revisores";
+	public static final String TEMPLATE_GERAR_CERTIFICADOS_CHEFES_SESSAO = "organizador/org_gerar_certificados_chefes_sessao";
 	public static final String TEMPLATE_LISTAR_EVENTOS_ATIVOS_REV = "revisor/revisor_eventos_listar_ativos";
 	
 	public static final String TEMPLATE_LISTAR_TRILHAS_ORG = "organizador/org_trilhas";
@@ -57,5 +58,6 @@ public class Constants {
 	public static final String ERROR_403 = "error/403";
 	public static final String ERROR_404 = "error/404";
 	public static final String NO_ERROR = "NO_ERROR";
+	
 	
 	}
