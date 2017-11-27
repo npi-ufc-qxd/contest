@@ -70,9 +70,7 @@ public class EventoService {
 				return true;
 			} else {
 				tokenService.deletar(token);
-				pessoaService.delete(pessoa.getId());
-				return false;
-				
+				pessoaService.delete(pessoa.getId());				
 			}
 		} else {
 			corpo = corpo + ". Realize o login em " + url + "/login";
