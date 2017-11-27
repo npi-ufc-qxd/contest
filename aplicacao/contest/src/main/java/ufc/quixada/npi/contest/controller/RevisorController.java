@@ -87,6 +87,7 @@ public class RevisorController {
 	private static final String TRABALHO_NAO_EXISTE = "TRABALHO_NAO_EXISTE";
 	private static final String TRABALHO_REVISADO = "TRABALHO_REVISADO";
 	private static final String FORA_PERIODO_REVISAO = "FORA_PERIODO_REVISAO";
+	private static final String NAO_HA_REVISAO = "NA_HA_REVISAO";
 
 	@RequestMapping(value = "/{idEvento}/trabalhosRevisao")
 	public String trabalhosRevisao(Model model, @PathVariable("idEvento") Long idEvento, RedirectAttributes redirect) {
@@ -99,8 +100,8 @@ public class RevisorController {
 			eventosComoRevisor.add(participacaoEvento.getEvento().getId());
 		}
 
-		if (!evento.isPeriodoRevisao()) {
-			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(FORA_PERIODO_REVISAO));
+		if (evento.isPeriodoInicial()) {
+			redirect.addFlashAttribute("periodoRevisaoError", messageService.getMessage(NAO_HA_REVISAO));
 			return "redirect:/eventoOrganizador";
 		}
 
