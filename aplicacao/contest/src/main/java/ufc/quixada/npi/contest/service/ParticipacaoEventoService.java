@@ -18,6 +18,9 @@ public class ParticipacaoEventoService {
 	@Autowired
 	private ParticipacaoEventoRepository participacaoEventoRepository;
 	
+	@Autowired
+	private EventoService eventoService;
+	
 	public List<ParticipacaoEvento> findParticipacaoEventoPorPessoa(Long id){
 		return participacaoEventoRepository.findParticipacaoEventoByPessoaId(id);
 	}
@@ -94,8 +97,10 @@ public class ParticipacaoEventoService {
 	}
 	
 	public boolean isOrganizadorDoEvento(Pessoa organizador, Long idEvento){
-		if(organizador.getParticipacoesEvento() != null){
-			for(ParticipacaoEvento participacaoEvento : organizador.getParticipacoesEvento()){
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		List<ParticipacaoEvento> participacoes = participacaoEventoRepository.findByEventoAndPessoa(evento, organizador);
+		if(participacoes != null){
+			for(ParticipacaoEvento participacaoEvento : participacoes){
 				if(participacaoEvento.getEvento().getId() == idEvento && 
 						participacaoEvento.getPapel() == Tipo.ORGANIZADOR) return true;
 			}
@@ -105,8 +110,10 @@ public class ParticipacaoEventoService {
 	}
 	
 	public boolean isCoautorDoEvento(Long idEvento, Pessoa coautor) {
-		if(coautor.getParticipacoesEvento() != null){
-			for(ParticipacaoEvento participacaoEvento : coautor.getParticipacoesEvento()){
+		Evento evento = eventoService.buscarEventoPorId(idEvento);
+		List<ParticipacaoEvento> participacoes = participacaoEventoRepository.findByEventoAndPessoa(evento, coautor);
+		if(participacoes != null){
+			for(ParticipacaoEvento participacaoEvento : participacoes){
 				if(participacaoEvento.getEvento().getId() == idEvento && 
 						participacaoEvento.getPapel() == Tipo.COAUTOR) return true;
 			}
